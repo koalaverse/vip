@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "# Load the data\nload(\"C:\\\\Users\\\\greenweb\\\\Desktop\\\\R code\\\\SmithJrawarticle.RData\")\nart <- DFArticles\nclass(art)\ndim(art)\nnames(art)\n\n# Write the raw text to individual files\nfor (i in 3:nrow(art)) {\n  # The first two contain no text?\n  file.conn<-file(paste0(\"C:\\\\Users\\\\greenweb\\\\Desktop\\\\R code\\\\articles\\\\article-\", i, \".txt\"))\n  writeLines(art$Text[i], file.conn)\n  close(file.conn)\n}\n\n# Load required packages\nlibrary(tidytext)\nlibrary(tm)\nlibrary(topicmodels)\n\n# Create a document term matrix\nart.vcorpus <- VCorpus(DirSource(\"C:\\\\Users\\\\greenweb\\\\Desktop\\\\R code\\\\articles\"), \n                       list(reader = readPlain))\nart.dtm <- DocumentTermMatrix(art.vcorpus, control = list(stopwords = TRUE))\n\n# Analyze\nart.lda <- LDA(art.dtm, k = 2)\nget_topics(art.lda)  # show which topic each document belongs to\nget_terms(art.lda)  # most likely topics\n",
+    "created" : 1501597179544.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1394961852",
+    "id" : "4BEA5BC6",
+    "lastKnownWriteTime" : 1501085673,
+    "last_content_update" : 1501085673,
+    "path" : "C:/Users/greenweb/Desktop/R code/TextScrapper.R",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

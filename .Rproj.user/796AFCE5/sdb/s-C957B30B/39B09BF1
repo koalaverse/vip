@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "---\noutput:\n  md_document:\n    variant: markdown_github\n---\n\n<!-- README.md is generated from README.Rmd. Please edit that file -->\n\n```{r, echo = FALSE}\nknitr::opts_chunk$set(\n  collapse = TRUE,\n  comment = \"#>\",\n  fig.path = \"tools/README-\"\n)\n```\n\n# vip\n\nVariable importance plots.\n\n\n## Linear model example\n\n```{r example-lm, fig.width=8, fig.height=4, message=FALSE}\nlibrary(vip)\n# install.packages(\"pdp\")\ndata(boston, package = \"pdp\")  # load the boston housing data\nboston.lm <- lm(cmedv ~ ., data = boston)\nvip(boston.lm)\n```\n\n",
+    "created" : 1501600232103.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1149970179",
+    "id" : "39B09BF1",
+    "lastKnownWriteTime" : 1501600577,
+    "last_content_update" : 1501600577282,
+    "path" : "C:/Users/greenweb/Desktop/devel/vip/README.Rmd",
+    "project_path" : "README.Rmd",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

@@ -1,0 +1,31 @@
+---
+output:
+  md_document:
+    variant: markdown_github
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "tools/README-"
+)
+```
+
+# vip
+
+Variable importance plots.
+
+
+## Linear model example
+
+```{r example-lm, fig.width=8, fig.height=4, message=FALSE}
+library(vip)
+# install.packages("pdp")
+data(boston, package = "pdp")  # load the boston housing data
+boston.lm <- lm(cmedv ~ ., data = boston)
+vip(boston.lm)
+```
+
