@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#' Variable Importance Plots\n#'\n#' Plot variable importance scores for the predictors in a model.\n#'\n#' @param object A fitted model object (e.g., a \\code{\"randomForest\"} object).\n#'\n#' @param ... Additional optional arguments to be passed onto\n#' \\code{\\link[ggplot2]{geom_col}}.\n#'\n#' @rdname vip\n#'\n#' @export\n#'\n#' @examples\n#' \\dontrun{\n#' mtcars.lm <- lm(mpg ~ ., data = mtcars)\n#' vip(mtcars.lm) + theme_light()\n#' }\nvip <- function(object, ...) {\n  UseMethod(\"vip\")\n}\n\n\n#' @rdname vip\n#'\n#' @export\nvip.default <- function(object, ...) {\n  imp <- vi(object)  # variable importance scores\n  string <- \"reorder(Variable, Importance)\"\n  ggplot2::ggplot(imp, ggplot2::aes_string(x = string, y = \"Importance\")) +\n    ggplot2::geom_col(...) +\n    ggplot2::xlab(\"\") +\n    ggplot2::coord_flip()\n}\n",
+    "created" : 1501595759458.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "752656481",
+    "id" : "27D13D30",
+    "lastKnownWriteTime" : 1501597096,
+    "last_content_update" : 1501597096180,
+    "path" : "C:/Users/greenweb/Desktop/devel/vip/R/vip.R",
+    "project_path" : "R/vip.R",
+    "properties" : {
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

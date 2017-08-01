@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "Package: vip\nType: Package\nTitle: Variable importance plots using ggplot2-based graphics\nVersion: 0.0.1\nAuthor: Who wrote it\nMaintainer: The package maintainer <yourself@somewhere.net>\nDescription: More about what it does (maybe more than one line)\n    Use four spaces when indenting paragraphs within the Description.\nLicense: What license is it under?\nEncoding: UTF-8\nLazyData: true\nImports:\n    dplyr,\n    ggplot2 (>= 0.9.0),\n    gridExtra,\n    magrittr,\n    tibble,\n    tidyr\n",
+    "created" : 1501592932143.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2073491975",
+    "id" : "AE97ABB0",
+    "lastKnownWriteTime" : 1501595219,
+    "last_content_update" : 1501595219731,
+    "path" : "C:/Users/greenweb/Desktop/devel/vip/DESCRIPTION",
+    "project_path" : "DESCRIPTION",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "dcf"
+}
