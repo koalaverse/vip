@@ -1,6 +1,6 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-vip
-===
+vip: Variable Importance Plots <img src="tools/vip-logo.png" align="right" width="120" height="139" />
+======================================================================================================
 
 Variable importance plots.
 

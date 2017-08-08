@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# vip
+# vip: Variable Importance Plots <img src="tools/vip-logo.png" align="right" width="120" height="139" />
 
 Variable importance plots.
 
