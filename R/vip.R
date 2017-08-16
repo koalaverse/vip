@@ -4,8 +4,7 @@
 #'
 #' @param object A fitted model object (e.g., a \code{"randomForest"} object).
 #'
-#' @param ... Additional optional arguments to be passed onto
-#' \code{\link[ggplot2]{geom_col}}.
+#' @param ... Additional optional arguments to be passed onto \code{\link{vi}}.
 #'
 #' @rdname vip
 #'
@@ -25,10 +24,10 @@ vip <- function(object, ...) {
 #'
 #' @export
 vip.default <- function(object, ...) {
-  imp <- vi(object)  # variable importance scores
+  imp <- vi(object, ...)  # variable importance scores
   string <- "reorder(Variable, Importance)"
   ggplot2::ggplot(imp, ggplot2::aes_string(x = string, y = "Importance")) +
-    ggplot2::geom_col(...) +
+    ggplot2::geom_col() +
     ggplot2::xlab("") +
     ggplot2::coord_flip()
 }

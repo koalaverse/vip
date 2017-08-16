@@ -1,5 +1,0 @@
-"0","library(vip)"
-"0","# install.packages(""pdp"")"
-"0","data(boston, package = ""pdp"")  # load the boston housing data"
-"0","boston.lm <- lm(cmedv ~ ., data = boston)"
-"0","vip(boston.lm)"

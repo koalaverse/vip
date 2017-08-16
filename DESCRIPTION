@@ -2,11 +2,13 @@ Package: vip
 Type: Package
 Title: Variable importance plots using ggplot2-based graphics
 Version: 0.0.1
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Authors@R: person("Brandon", "Greenwell", email = "greenwell.brandon@gmail.com",
+  role = c("aut", "cre"))
+Description: Construct and/or plot variable importance scores for various 
+    classes of fitted machine learning models in R. A new variable importance
+    metric based on Friedman's partial dependence functions is also made
+    available.
+License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
 Imports:
@@ -14,5 +16,7 @@ Imports:
     ggplot2 (>= 0.9.0),
     gridExtra,
     magrittr,
+    pdp,
     tibble,
     tidyr
+RoxygenNote: 6.0.1
