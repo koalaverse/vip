@@ -18,8 +18,10 @@ Example usage
 -------------
 
 For illustration, we use one of the regression problems described in Friedman (1991) and Breiman (1996). Inputs are 10 independent variables uniformly distributed on the interval \[0,1\]; only 5 out of these 10 are actually used. Outputs are created according to the formula
+
 𝒴 = 10sin(*π**x*<sub>1</sub>*x*<sub>2</sub>) + 20(*x*<sub>3</sub>−0.5)<sup>2</sup> + 10*x*<sub>4</sub> + 5*x*<sub>5</sub> + *ϵ*,
- where *ϵ* ∼ 𝒩(0,*σ*). These data are available in the [mlbench](https://CRAN.R-project.org/package=mlbench) package. The code chunk below simulate 500 observations from the above model with $\\simga = 1$.
+
+where *ϵ* ∼ 𝒩(0,*σ*). These data are available in the [mlbench](https://CRAN.R-project.org/package=mlbench) package. The code chunk below simulate 500 observations from the above model with $\\simga = 1$.
 
 ``` r
 if (!requireNamespace("mlbench")) install.packages("mlbench")
@@ -103,7 +105,7 @@ vip(trn.nn, use.partial = TRUE, pred.var = paste0("x.", 1:10), alpha = 0.5) +
 You can also request the partial dependence data be returned in an attribute called `"partial"`. For example, we can see that the fitted neural network did indeed pick up the quadratic relationship between *x*<sub>3</sub> and 𝒴:
 
 ``` r
-pdVarImp(trn.nn, pred.var = "x.3")
+pdVarImp(trn.nn, pred.var = "x.3")  # same value displayed in above plot
 #> [1] 4.813074
 imp <- pdVarImp(trn.nn, pred.var = "x.3", return.partial = TRUE)
 ggplot2::autoplot(attr(imp, "partial"))
