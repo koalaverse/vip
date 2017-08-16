@@ -99,3 +99,14 @@ vip(trn.nn, use.partial = TRUE, pred.var = paste0("x.", 1:10), alpha = 0.5) +
 ```
 
 ![](tools/README-example-nn-1.png)
+
+You can also request the partial dependence data be returned in an attribute called `"partial"`. For example, we can see that the fitted neural network did indeed pick up the linear relationship between *x*<sub>3</sub> and 𝒴:
+
+``` r
+pdVarImp(trn.nn, pred.var = "x.3")
+#> [1] 4.813074
+imp <- pdVarImp(trn.nn, pred.var = "x.3", return.partial = TRUE)
+ggplot2::autoplot(attr(imp, "partial"))
+```
+
+![](tools/README-exampe-nn-2-1.png)

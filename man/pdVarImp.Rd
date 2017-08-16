@@ -4,7 +4,7 @@
 \alias{pdVarImp}
 \title{Partial Dependence-based Variable Importance}
 \usage{
-pdVarImp(object, pred.var, ...)
+pdVarImp(object, pred.var, return.partial = FALSE, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
@@ -12,6 +12,10 @@ pdVarImp(object, pred.var, ...)
 \item{pred.var}{Character string giving the names of the predictor variables
 of interest. For reasons of computation/interpretation, this should include
 no more than three variables.}
+
+\item{return.partial}{Logical indicating whether or not to return the partial
+dependence output in an attribute called \code{"partial"}. Default is
+\code{FALSE}.}
 
 \item{...}{Additional optional arguments to be passed on to
 \code{\link[pdp]{partial}}.}

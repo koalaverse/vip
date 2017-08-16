@@ -9,11 +9,19 @@
 #' of interest. For reasons of computation/interpretation, this should include
 #' no more than three variables.
 #'
+#' @param return.partial Logical indicating whether or not to return the partial
+#' dependence output in an attribute called \code{"partial"}. Default is
+#' \code{FALSE}.
+#'
 #' @param ... Additional optional arguments to be passed on to
 #' \code{\link[pdp]{partial}}.
 #'
 #' @export
-pdVarImp <- function(object, pred.var, ...) {
+pdVarImp <- function(object, pred.var, return.partial = FALSE, ...) {
   pd <- pdp::partial(object, pred.var = pred.var, ...)
-  diff(range(pd$yhat))
+  res <- diff(range(pd$yhat))
+  if (return.partial) {
+    attr(res, "partial") <- pd
+  }
+  res
 }
