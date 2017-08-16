@@ -36,8 +36,8 @@ vip <- function(object, ...) {
 vip.default <- function(object, alpha = 1, color = "#444444", fill = "#444444",
                         ...) {
   imp <- vi(object, ...)  # variable importance scores
-  string <- "reorder(Variable, Importance)"
-  ggplot2::ggplot(imp, ggplot2::aes_string(x = string, y = "Importance")) +
+  x.string <- "reorder(Variable, Importance)"
+  ggplot2::ggplot(imp, ggplot2::aes_string(x = x.string, y = "Importance")) +
     ggplot2::geom_col(color = color, fill = fill, alpha = alpha) +
     ggplot2::xlab("") +
     ggplot2::coord_flip()

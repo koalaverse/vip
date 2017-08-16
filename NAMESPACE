@@ -3,6 +3,8 @@
 S3method(vi,default)
 S3method(vi,lm)
 S3method(vip,default)
+export(grid.arrange)
 export(pdVarImp)
 export(vi)
 export(vip)
+importFrom(gridExtra,grid.arrange)

@@ -50,7 +50,7 @@ library(vip)
 trn.lm <- lm(y ~ ., data = trn)
 p1 <- vip(trn.lm)
 p2 <- vip(trn.lm, use.partial = TRUE)
-gridExtra::grid.arrange(p1, p2, ncol = 2)  # display plots side-by-side
+grid.arrange(p1, p2, ncol = 2)  # display plots side-by-side
 ```
 
 
