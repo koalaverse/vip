@@ -82,11 +82,20 @@ vip(trn.rf, use.partial = TRUE, pred.var = paste0("x.", 1:10))
 ### Neural network
 
 ``` r
+library(ggplot2)
+#> 
+#> Attaching package: 'ggplot2'
+#> The following object is masked from 'package:randomForest':
+#> 
+#>     margin
 library(nnet)  # install.packages("nnet")
 set.seed(103)
 trn.nn <- nnet(y ~ ., data = trn, size = 10, linout = TRUE, decay = 0.001,
                maxit = 1000, trace = FALSE)
-vip(trn.nn, use.partial = TRUE, pred.var = paste0("x.", 1:10))
+vip(trn.nn, use.partial = TRUE, pred.var = paste0("x.", 1:10), alpha = 0.5) +
+  theme_light() +
+  ylab("Partial dependence-based variable importance") +
+  ggtitle("Neural network variable importance scores")
 ```
 
 ![](tools/README-example-nn-1.png)

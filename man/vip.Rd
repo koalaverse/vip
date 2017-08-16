@@ -7,12 +7,23 @@
 \usage{
 vip(object, ...)
 
-\method{vip}{default}(object, ...)
+\method{vip}{default}(object, alpha = 1, color = "#444444",
+  fill = "#444444", ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
 
 \item{...}{Additional optional arguments to be passed onto \code{\link{vi}}.}
+
+\item{alpha}{Numeric value between 0 and 1 giving the trasparency of the
+bars.}
+
+\item{color}{Character string specifying the color to use for the borders of
+the bars. Could also be a function, such as
+\code{\link[grDevices]{heat.colors}}.}
+
+\item{fill}{Character string specifying the color to use to fill the bars.
+Could also be a function, such as \code{\link[grDevices]{heat.colors}}.}
 }
 \description{
 Plot variable importance scores for the predictors in a model.
