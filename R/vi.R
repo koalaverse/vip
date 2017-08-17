@@ -28,10 +28,14 @@ vi <- function(object, ...) {
 #' @export
 vi.default <- function(object, pred.var, ...) {
   # pred.var <- all.vars(stats::formula(object)[[3L]])
-  imp <- sapply(pred.var, function(x) pdVarImp(object, pred.var = x, ...))
+  # imp <- sapply(pred.var, function(x) pdVarImp(object, pred.var = x, ...))
+  imp <- vi_all(object, pred.var = pred.var, ...)
   pred.var <- pred.var[order(imp, decreasing = TRUE)]
-  tibble::tibble("Variable" = pred.var,
-                 "Importance" = sort(imp, decreasing = TRUE))
+  res <- tibble::tibble("Variable" = pred.var,
+                        "Importance" = sort(imp, decreasing = TRUE))
+  class(res) <- c("vi", class(res))
+  attr(res, "partial") <- attr(imp, "partial")
+  res
 }
 
 
@@ -58,3 +62,11 @@ vi.lm <- function(object, use.partial = FALSE, ...) {
   }
 
 }
+
+
+#' #' @keywords internal
+#' #' @export
+#' print.vi <- function(x, ...) {
+#'   attributes(x) <- NULL
+#'   print(x, ...)
+#' }
