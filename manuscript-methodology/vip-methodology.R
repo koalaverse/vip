@@ -24,7 +24,19 @@ data(boston, package = "pdp")
 set.seed(101)
 boston.rf <- randomForest(cmedv ~ ., data = boston, importance = TRUE)
 
-varImpPlot(boston.rf)
+imp <- importance(boston.rf) %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("Variable") %>%
+  tidyr::gather(Method, Importance, -Variable)
+
+pdf(file = "manuscript-methodology\\boston-rf-vip.pdf", width = 8, height = 5)
+ggplot(imp, aes(x = reorder(Variable, Importance), y = Importance)) +
+  geom_col() +
+  coord_flip() +
+  xlab("") +
+  facet_wrap(~ Method, scales = "free_x") +
+  theme_bw()
+dev.off()
 
 p1 <- partial(boston.rf, pred.var = "lstat") %>%
   autoplot() +

@@ -1,5 +1,6 @@
 \documentclass{article}
 
+\usepackage{algorithm2e}
 \usepackage{amsmath}
 \usepackage{booktabs}
 \usepackage[a4paper,textwidth=14cm, top=1cm, bottom=1cm,includehead,includefoot,
@@ -17,6 +18,8 @@ centering,footskip=1.5cm]{geometry}
   filecolor=blue,
   urlcolor=blue
 }
+
+\def\code#1{\texttt{#1}}
 
 \title{A New Model-Based Notion of Variable Importance}
 \date{}
@@ -41,6 +44,25 @@ Keep to 200 words or less and don't use references or mathematical markup.
 \section{Introduction}
 
 Talk about the improtance of extracting information from black-box models, blah, blah, blah.
+
+
+\subsection{Variable importance metrics}
+
+\subsubsection{Model-based approaches}
+\begin{itemize}
+  \item tree-based methods;
+  \item linear and generalized linear models;
+  \item MARS algorithm;
+  \item Neural networks (specifically, the two approaches used later).
+\end{itemize}
+
+\subsubsection{Filter-based approaches}
+
+% Currently lifted from ?caret::filterVarImp
+
+For classification problems, the area under the ROC curve (AUC) is used as a measure of variable importance. For two class problems, a series a split points are chosen (not unlike a decision tree) for each predictor to predict each class and generate an ROC curve from which the AUC statistic is taken. For classification problems involving more than two classes, the problem is broken down into every possible one-vs-one problem, and the same procedure is applied. The maximum AUC for each variable is used as a measure of variable importance.
+
+For regression, a parametric or nonparametric model is fit between each predictor and the outcome. For parametric models, some measure depending on the absolute value of the associated $t$-value is used as a measure of importance. Otherwise, the $R^2$ statistic is used.
 
 
 \subsection{Partial dependence plots}
@@ -73,13 +95,52 @@ Equation~\eqref{eqn:avg_fun} can be estimated from a set of training data by
 \end{equation}
 where $\boldsymbol{z}_{i, c}$ $\left(i = 1, 2, \dots, n\right)$ are the values of $\boldsymbol{z}_c$ that occur in the training sample; that is, we average out the effects of all the other predictors in the model.
 
-A random forest analysis...
+Constructing a PDP \eqref{eqn:pdf} in practice is rather straightforward. To simplify, let $\boldsymbol{z}_s = x_1$ be the predictor variable of interest with unique values $\left\{x_{11}, x_{12}, \dots, x_{1k}\right\}$. The partial dependence of the response on $x_1$ can be constructed as follows:
+
+\begin{algorithm}
+\begin{enumerate}
+  \item For $i \in \left\{1, 2, \dots, k\right\}$:
+  \begin{enumerate}
+    \item Copy the training data and replace the original values of $x_1$ with the constant $x_{1i}$.
+    \item Compute the vector of predicted values from the modified copy of the training data.
+    \item Compute the average prediction to obtain $\bar{f}_1\left(x_{1i}\right)$.
+  \end{enumerate}
+  \item Plot the pairs $\left\{x_{1i}, \bar{f}_1\left(x_{1i}\right)\right\}$ for $i = 1, 2, \dotsc, k$.
+\end{enumerate}
+\caption{A simple algorithm for constructing the partial dependence of the response on a single predictor $x_1$. \label{alg:pdp}}
+\end{algorithm}
+Algorithm~\ref{alg:pdp} can be quite computationally intensive since it involves $k$ passes over the training records. Fortunately, the algorithm can be parallelized quite easily (more on this in Section~\ref{sec:computational}). It can also be easily extended to larger subsets of two or more features as well.
+
+For illustration, we will use a corrected version of the Boston housing data analyzed in \citet{harrison-1978-hedonic}; the data are available from Statlib at \url{http://lib.stat.cmu.edu/datasets/boston_corrected.txt}. Using the R package \texttt{randomForest} [REFERENCE], we fit a random forest with default tuning parameters and 500 trees. The model fit is reasonable, with an \textit{out-of-bag} (pseudo) $R^2$ of 0.89. The variable importance scores are displayed in Figure~\ref{fig:boston-rf-vip}. Both plots indicate that the percentage of lower status of the population (\code{lstat}) and the average number of rooms per dwelling (\code{rm}) are highly associated with the median value of owner-occupied homes (\code{cmedv}). They also indicate that the proportion of residential land zoned for lots over 25,000 sq.ft (\code{zn}) has little association with \code{cmedv}.
+\begin{figure}[!htb]
+  \label{boston-rf-vip}
+  \centering
+  \includegraphics[width=1.0\textwidth]{boston-rf-vip}
+  \caption{TBD.}
+\end{figure}
+
+The partial dependence functions for these three variables are displayed in Figure~\ref{fig:boston-rf-pdps}. Notice how the PDP for \code{zn} is essentially flat. It is this notion of "flatness" which we will use to define our variable importance measure.
 \begin{figure}[!htb]
   \label{boston-rf-pdps}
   \centering
   \includegraphics[width=1.0\textwidth]{boston-rf-pdps}
   \caption{TBD.}
 \end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Prediction-based variable importance
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Prediction-based variable importance}
+
+Our notion of variable importance is based on any measure of the "flatness" of the partial dependence function. In general, we define
+\begin{equation}
+  imp\left(x\right) = flatness\left(\bar{f}_s\left(\boldsymbol{z}_s\right)\right),
+\end{equation}
+where $flatness$ is any measure of "flatness" of the curve. A simplle and effective measure to use is the range statistic. Based on Algorithm~\ref{alg:pdp}, our importance metric for predictor $x_1$ is simply
+\begin{equation}
+  imp\left(x_1\right) = \max_{i \in \left\{1, 2, \dots, k\right\}} \bar{f}_1\left(x_{1i}\right) - \min_{i \in \left\{1, 2, \dots, k\right\}} \bar{f}_1\left(x_{1i}\right).
+\end{equation}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
