@@ -4,7 +4,7 @@
 \alias{pdVarImp}
 \title{Partial Dependence-based Variable Importance}
 \usage{
-pdVarImp(object, pred.var, return.partial = FALSE, ...)
+pdVarImp(object, pred.var, return.partial = FALSE, FUN = NULL, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
@@ -16,6 +16,9 @@ no more than three variables.}
 \item{return.partial}{Logical indicating whether or not to return the partial
 dependence output in an attribute called \code{"partial"}. Default is
 \code{FALSE}.}
+
+\item{FUN}{Function used to measure the "flatness" of the partial dependence
+function. If \code{NULL}, the variance is used (i.e., \code{FUN = var}).}
 
 \item{...}{Additional optional arguments to be passed on to
 \code{\link[pdp]{partial}}.}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.6.27)  17 AUG 2017 22:36
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.6.27)  20 AUG 2017 20:48
 entering extended mode
 **./vip-methodology.tex
 (vip-methodology.tex
@@ -373,20 +373,20 @@ Package hyperref Info: Option `colorlinks' set `true' on input line 20.
  (vip-methodology.aux)
 \openout1 = `vip-methodology.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -467,7 +467,7 @@ File: color.cfg 2016/01/02 v1.6 sample color configuration
 )
 Package color Info: Driver file: pdftex.def on input line 147.
 )
-Package hyperref Info: Link coloring ON on input line 28.
+Package hyperref Info: Link coloring ON on input line 32.
 
 ("C:\Users\greenweb\AppData\Local\Programs\MiKTeX 2.9\tex\latex\hyperref\namere
 f.sty"
@@ -479,111 +479,124 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count129
 )
-LaTeX Info: Redefining \ref on input line 28.
-LaTeX Info: Redefining \pageref on input line 28.
-LaTeX Info: Redefining \nameref on input line 28.
+LaTeX Info: Redefining \ref on input line 32.
+LaTeX Info: Redefining \pageref on input line 32.
+LaTeX Info: Redefining \nameref on input line 32.
  (vip-methodology.out) (vip-methodology.out)
 \@outlinefile=\write3
 \openout3 = `vip-methodology.out'.
 
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 53.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 47.
 
 ("C:\Users\greenweb\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\omscmr.fd"
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 53.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 47.
 
-Overfull \hbox (7.30109pt too wide) in paragraph at lines 81--82
-[]\OT1/cmr/m/n/10 Nowadays, many su-per-vised learn-ing al-go-rithms can fit th
-e data au-to-mat-i-cally in seconds---
- []
+
+LaTeX Warning: Reference `CART Monograph' on page 1 undefined on input line 66.
+
 
 [1
 
 {C:/Users/greenweb/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
-Overfull \hbox (15.0pt too wide) detected at line 111
+Overfull \hbox (7.30109pt too wide) in paragraph at lines 101--102
+[]\OT1/cmr/m/n/10 Nowadays, many su-per-vised learn-ing al-go-rithms can fit th
+e data au-to-mat-i-cally in seconds---
+ []
+
+[2]
+Overfull \hbox (15.0pt too wide) detected at line 131
 [][] 
  []
 
 
-LaTeX Warning: Reference `sec:computational' on page 2 undefined on input line 
-112.
+LaTeX Warning: Reference `sec:computational' on page 3 undefined on input line 
+132.
 
 
-LaTeX Warning: Reference `fig:boston-rf-vip' on page 2 undefined on input line 
-114.
+LaTeX Warning: Reference `fig:boston-rf-vip' on page 3 undefined on input line 
+134.
 
-<boston-rf-vip.pdf, id=69, 578.16pt x 361.35pt>
+<boston-rf-vip.pdf, id=86, 578.16pt x 361.35pt>
 File: boston-rf-vip.pdf Graphic file (type pdf)
  <use boston-rf-vip.pdf>
-Package pdftex.def Info: boston-rf-vip.pdf used on input line 118.
+Package pdftex.def Info: boston-rf-vip.pdf used on input line 138.
 (pdftex.def)             Requested size: 398.33858pt x 248.96234pt.
 
-[2]
 
 LaTeX Warning: Reference `fig:boston-rf-pdps' on page 3 undefined on input line
- 122.
+ 142.
 
-<boston-rf-pdps.pdf, id=91, 867.24pt x 289.08pt>
+<boston-rf-pdps.pdf, id=87, 867.24pt x 289.08pt>
 File: boston-rf-pdps.pdf Graphic file (type pdf)
  <use boston-rf-pdps.pdf>
-Package pdftex.def Info: boston-rf-pdps.pdf used on input line 126.
+Package pdftex.def Info: boston-rf-pdps.pdf used on input line 146.
 (pdftex.def)             Requested size: 398.33858pt x 132.7799pt.
 
-[3 <./boston-rf-vip.pdf> <./boston-rf-pdps.pdf>]
 
-LaTeX Warning: Reference `fig:network' on page 4 undefined on input line 158.
+LaTeX Warning: Reference `fig:boston-rf-pdps' on page 3 undefined on input line
+ 156.
 
-<network.pdf, id=114, 867.24pt x 433.62pt>
+[3 <./boston-rf-vip.pdf>]
+
+LaTeX Warning: Reference `fig:network' on page 4 undefined on input line 187.
+
+<network.pdf, id=108, 867.24pt x 433.62pt>
 File: network.pdf Graphic file (type pdf)
  <use network.pdf>
-Package pdftex.def Info: network.pdf used on input line 162.
+Package pdftex.def Info: network.pdf used on input line 191.
 (pdftex.def)             Requested size: 398.33858pt x 199.16988pt.
 
 
-LaTeX Warning: Reference `fig:network-vip' on page 4 undefined on input line 16
-6.
+LaTeX Warning: Reference `fig:network-vip' on page 4 undefined on input line 19
+5.
 
-<network-vip.pdf, id=115, 867.24pt x 433.62pt>
+<network-vip.pdf, id=109, 867.24pt x 433.62pt>
 File: network-vip.pdf Graphic file (type pdf)
  <use network-vip.pdf>
-Package pdftex.def Info: network-vip.pdf used on input line 170.
+Package pdftex.def Info: network-vip.pdf used on input line 199.
 (pdftex.def)             Requested size: 398.33858pt x 199.16988pt.
 
 
-LaTeX Warning: Reference `fig:network' on page 4 undefined on input line 171.
+LaTeX Warning: Reference `fig:network' on page 4 undefined on input line 200.
 
 
-LaTeX Warning: Reference `fig:network' on page 4 undefined on input line 171.
+LaTeX Warning: Reference `fig:network' on page 4 undefined on input line 200.
 
 
-LaTeX Warning: Reference `fig:rf-vip' on page 4 undefined on input line 174.
+LaTeX Warning: Reference `fig:rf-vip' on page 4 undefined on input line 203.
 
-(vip-methodology.bbl [4 <./network.pdf> <./network-vip.pdf>])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 188.
- [5]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 188.
+<network-int.pdf, id=110, 578.16pt x 289.08pt>
+File: network-int.pdf Graphic file (type pdf)
+ <use network-int.pdf>
+Package pdftex.def Info: network-int.pdf used on input line 209.
+(pdftex.def)             Requested size: 398.33858pt x 199.16986pt.
 
-(vip-methodology.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 188.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 188.
+(vip-methodology.bbl [4 <./boston-rf-pdps.pdf>])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 224.
+ [5 <./network.pdf> <./network-vip.pdf>] [6 <./network-int.pdf>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 224.
+ (vip-methodology.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 224.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 224.
 Package rerunfilecheck Info: File `vip-methodology.out' has not changed.
-(rerunfilecheck)             Checksum: 54981DDA7702467E9B039FBC9B8B235C;562.
+(rerunfilecheck)             Checksum: 246AE994F9345B5A3F19F27931541492;641.
 
 
 LaTeX Warning: There were undefined references.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 188.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 224.
  ) 
 Here is how much of TeX's memory you used:
- 7625 strings out of 493323
- 113990 string characters out of 3128713
- 225034 words of memory out of 3000000
- 11034 multiletter control sequences out of 15000+200000
+ 7641 strings out of 493323
+ 114193 string characters out of 3128713
+ 225138 words of memory out of 3000000
+ 11045 multiletter control sequences out of 15000+200000
  12593 words of font info for 45 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 28i,10n,30p,928b,456s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 28i,10n,30p,1020b,456s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Users/greenweb/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfo
 nts/cm/cmbx10.pfb><C:/Users/greenweb/AppData/Local/Programs/MiKTeX 2.9/fonts/ty
 pe1/public/amsfonts/cm/cmbx12.pfb><C:/Users/greenweb/AppData/Local/Programs/MiK
@@ -606,9 +619,9 @@ web/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb
 ts/cm/cmsy7.pfb><C:/Users/greenweb/AppData/Local/Programs/MiKTeX 2.9/fonts/type
 1/public/amsfonts/cm/cmti10.pfb><C:/Users/greenweb/AppData/Local/Programs/MiKTe
 X 2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on vip-methodology.pdf (5 pages, 256717 bytes).
+Output written on vip-methodology.pdf (6 pages, 267921 bytes).
 PDF statistics:
- 205 PDF objects out of 1000 (max. 8388607)
- 34 named destinations out of 1000 (max. 500000)
- 85 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 224 PDF objects out of 1000 (max. 8388607)
+ 38 named destinations out of 1000 (max. 500000)
+ 98 words of extra memory for PDF output out of 10000 (max. 10000000)
 

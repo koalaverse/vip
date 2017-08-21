@@ -13,13 +13,23 @@
 #' dependence output in an attribute called \code{"partial"}. Default is
 #' \code{FALSE}.
 #'
+#' @param FUN Function used to measure the "flatness" of the partial dependence
+#' function. If \code{NULL}, the standard deviation is used (i.e.,
+#' \code{FUN = sd}).
+#'
 #' @param ... Additional optional arguments to be passed on to
 #' \code{\link[pdp]{partial}}.
 #'
 #' @export
-pdVarImp <- function(object, pred.var, return.partial = FALSE, ...) {
+pdVarImp <- function(object, pred.var, return.partial = FALSE, FUN = NULL, ...)
+{
+  FUN <- if (is.null(FUN)) {
+    sd
+  } else {
+    match.fun(FUN)
+  }
   pd <- pdp::partial(object, pred.var = pred.var, ...)
-  res <- diff(range(pd$yhat))
+  res <- FUN(pd$yhat)
   if (return.partial) {
     attr(res, "partial") <- pd
   }

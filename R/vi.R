@@ -11,6 +11,9 @@
 #' dependence functions to construct variable importance scores. Default is
 #' \code{FALSE}.
 #'
+#' @param FUN Function used to measure the "flatness" of the partial dependence
+#' function. If \code{NULL}, the variance is used (i.e., \code{FUN = var}).
+#'
 #' @param ... Additional optional arguments.
 #'
 #' @return A tidy data frame (i.e., a \code{"tibble"} object).
@@ -26,10 +29,10 @@ vi <- function(object, ...) {
 #' @rdname vi
 #'
 #' @export
-vi.default <- function(object, pred.var, ...) {
+vi.default <- function(object, pred.var, FUN = NULL, ...) {
   # pred.var <- all.vars(stats::formula(object)[[3L]])
   # imp <- sapply(pred.var, function(x) pdVarImp(object, pred.var = x, ...))
-  imp <- vi_all(object, pred.var = pred.var, ...)
+  imp <- vi_all(object, pred.var = pred.var, FUN = FUN, ...)
   pred.var <- pred.var[order(imp, decreasing = TRUE)]
   res <- tibble::tibble("Variable" = pred.var,
                         "Importance" = sort(imp, decreasing = TRUE))
@@ -42,10 +45,12 @@ vi.default <- function(object, pred.var, ...) {
 #' @rdname vi
 #'
 #' @export
-vi.lm <- function(object, use.partial = FALSE, ...) {
+vi.lm <- function(object, use.partial = FALSE, FUN = NULL, ...) {
   if (use.partial) {
     pred.var <- all.vars(stats::formula(object)[[3L]])
-    imp <- sapply(pred.var, function(x) pdVarImp(object, pred.var = x, ...))
+    imp <- sapply(pred.var, function(x) {
+      pdVarImp(object, pred.var = x, FUN = FUN, ...)
+    })
     pred.var <- pred.var[order(imp, decreasing = TRUE)]
     tibble::tibble("Variable" = pred.var,
                    "Importance" = sort(imp, decreasing = TRUE))

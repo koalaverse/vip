@@ -8,9 +8,9 @@
 \usage{
 vi(object, ...)
 
-\method{vi}{default}(object, pred.var, ...)
+\method{vi}{default}(object, pred.var, FUN = NULL, ...)
 
-\method{vi}{lm}(object, use.partial = FALSE, ...)
+\method{vi}{lm}(object, use.partial = FALSE, FUN = NULL, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
@@ -19,6 +19,9 @@ vi(object, ...)
 
 \item{pred.var}{Character string giving the names of the predictor variables
 of interest.}
+
+\item{FUN}{Function used to measure the "flatness" of the partial dependence
+function. If \code{NULL}, the variance is used (i.e., \code{FUN = var}).}
 
 \item{use.partial}{Logical indicating whether or not to use partial
 dependence functions to construct variable importance scores. Default is
