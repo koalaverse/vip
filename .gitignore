@@ -2,3 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+
+## Core latex/pdflatex auxiliary files:
+*.log
+*.synctex.gz
