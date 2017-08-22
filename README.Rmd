@@ -36,7 +36,7 @@ $$
 \mathcal{Y} = 10 \sin\left(\pi x_1 x_2\right) + 20 \left(x_3 - 0.5\right) ^ 2 + 10 x_4 + 5 x_5 + \epsilon,
 $$
 
-where $\epsilon \sim \mathcal{N}\left(0, \sigma\right)$. These data are available in the [mlbench](https://CRAN.R-project.org/package=mlbench) package. The code chunk below simulate 500 observations from the above model with $\simga = 1$.
+where $\epsilon \sim N\left(0, \sigma\right)$. These data are available in the [mlbench](https://CRAN.R-project.org/package=mlbench) package. The code chunk below simulates 500 observations from the above model with $\simga = 1$.
 ```{r}
 # Load required packages
 library(mlbench)
@@ -47,8 +47,8 @@ trn <- as.data.frame(mlbench.friedman1(500))  # ?mlbench.friedman1
 tibble::glimpse(trn)  # take a peek
 ```
 
-
-```{r example-rf}
+Next, we fit a random forest to the simulated data and construct variable importance plots using the two methods provided by the random forest algorithm (left and middle plots) and the partial dependence approach (right plot).
+```{r example-rf, message=FALSE, warning=FALSE, fig.width=10, fig.height=7}
 # Load required packages
 library(ggplot2)
 library(magrittr)

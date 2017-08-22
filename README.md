@@ -21,7 +21,7 @@ For illustration, we use one of the regression problems described in Friedman (1
 
 𝒴 = 10sin(*π**x*<sub>1</sub>*x*<sub>2</sub>) + 20(*x*<sub>3</sub>−0.5)<sup>2</sup> + 10*x*<sub>4</sub> + 5*x*<sub>5</sub> + *ϵ*,
 
-where *ϵ* ∼ 𝒩(0,*σ*). These data are available in the [mlbench](https://CRAN.R-project.org/package=mlbench) package. The code chunk below simulate 500 observations from the above model with $\\simga = 1$.
+where *ϵ* ∼ *N*(0,*σ*). These data are available in the [mlbench](https://CRAN.R-project.org/package=mlbench) package. The code chunk below simulates 500 observations from the above model with $\\simga = 1$.
 
 ``` r
 # Load required packages
@@ -46,24 +46,14 @@ tibble::glimpse(trn)  # take a peek
 #> $ y    <dbl> 14.871525, 15.265025, 15.058655, 10.734693, 17.599652, 18...
 ```
 
+Next, we fit a random forest to the simulated data and construct variable importance plots using the two methods provided by the random forest algorithm (left and middle plots) and the partial dependence approach (right plot).
+
 ``` r
 # Load required packages
 library(ggplot2)
 library(magrittr)
 library(randomForest)  
-#> randomForest 4.6-12
-#> Type rfNews() to see new features/changes/bug fixes.
-#> 
-#> Attaching package: 'randomForest'
-#> The following object is masked from 'package:ggplot2':
-#> 
-#>     margin
 library(vip)
-#> 
-#> Attaching package: 'vip'
-#> The following object is masked from 'package:utils':
-#> 
-#>     vi
 
 # Fit a random forest
 set.seed(102)
