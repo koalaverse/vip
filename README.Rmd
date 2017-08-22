@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# vip: Variable Importance Plots <img src="tools/vip-logo.png" align="right" width="120" height="139" />
+# vip: Variable Importance Plots <img src="tools/vip-logo.png" align="right" />
 
 Variable importance plots.
 
@@ -38,52 +38,52 @@ $$
 
 where $\epsilon \sim \mathcal{N}\left(0, \sigma\right)$. These data are available in the [mlbench](https://CRAN.R-project.org/package=mlbench) package. The code chunk below simulate 500 observations from the above model with $\simga = 1$.
 ```{r}
-if (!requireNamespace("mlbench")) install.packages("mlbench")
+# Load required packages
+library(mlbench)
+
+# Simulate training data
 set.seed(101)  # for reproducibility
-trn <- as.data.frame(mlbench::mlbench.friedman1(n = 500, sd = 1))
-tibble::glimpse(trn)
+trn <- as.data.frame(mlbench.friedman1(500))  # ?mlbench.friedman1
+tibble::glimpse(trn)  # take a peek
 ```
 
-
-### Linear model
-
-```{r example-lm, fig.width=8, fig.height=4, message=FALSE}
-library(vip)
-trn.lm <- lm(y ~ ., data = trn)
-p1 <- vip(trn.lm)
-p2 <- vip(trn.lm, use.partial = TRUE)
-grid.arrange(p1, p2, ncol = 2)  # display plots side-by-side
-```
-
-
-### Random forest
 
 ```{r example-rf}
-library(randomForest)  # install.packages("randomForest")
+# Load required packages
+library(ggplot2)
+library(magrittr)
+library(randomForest)  
+library(vip)
+
+# Fit a random forest
 set.seed(102)
 trn.rf <- randomForest(y ~ ., data = trn, importance = TRUE)
-importance(trn.rf)  # for comparison
-vip(trn.rf, use.partial = TRUE, pred.var = paste0("x.", 1:10))
-```
 
+# Importance: mean decrease in accuracy
+imp1 <- importance(trn.rf, type = 1) %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("Variable")
+p1 <- ggplot(imp1, aes(x = reorder(Variable, `%IncMSE`), y = `%IncMSE`)) +
+  geom_col() +
+  coord_flip() +
+  xlab("") +
+  theme_light()
 
-### Neural network
+# Importance: mean decrease node impurity
+imp2 <- importance(trn.rf, type = 2) %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("Variable")
+p2 <- ggplot(imp2, aes(x = reorder(Variable, IncNodePurity), y = IncNodePurity)) +
+  geom_col() +
+  coord_flip() +
+  xlab("") +
+  theme_light()
 
-```{r example-nn}
-library(ggplot2)
-library(nnet)  # install.packages("nnet")
-set.seed(103)
-trn.nn <- nnet(y ~ ., data = trn, size = 10, linout = TRUE, decay = 0.001,
-               maxit = 1000, trace = FALSE)
-vip(trn.nn, use.partial = TRUE, pred.var = paste0("x.", 1:10), alpha = 0.5) +
-  theme_light() +
-  ylab("Partial dependence-based variable importance") +
-  ggtitle("Neural network variable importance scores")
-```
+# Importance: partial dependence
+p3 <- vip(trn.rf, use.partial = TRUE, pred.var = paste0("x.", 1:10)) +
+  ylab("pdVarImp") +
+  theme_light()
 
-You can also request the partial dependence data be returned in an attribute called `"partial"`. For example, we can see that the fitted neural network did indeed pick up the quadratic relationship between $x_3$ and $\mathcal{Y}$:
-```{r, exampe-nn-2}
-pdVarImp(trn.nn, pred.var = "x.3")  # same value displayed in above plot
-imp <- pdVarImp(trn.nn, pred.var = "x.3", return.partial = TRUE)
-ggplot2::autoplot(attr(imp, "partial"))
+# Display all three plots together
+grid.arrange(p1, p2, p3, ncol = 3)
 ```

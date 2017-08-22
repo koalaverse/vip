@@ -7,8 +7,8 @@
 \usage{
 vip(object, ...)
 
-\method{vip}{default}(object, alpha = 1, color = "#444444",
-  fill = "#444444", ...)
+\method{vip}{default}(object, alpha = 1, color = "grey35",
+  fill = "grey35", ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
@@ -20,10 +20,11 @@ bars.}
 
 \item{color}{Character string specifying the color to use for the borders of
 the bars. Could also be a function, such as
-\code{\link[grDevices]{heat.colors}}.}
+\code{\link[grDevices]{heat.colors}}. Default is \code{"grey35"}.}
 
 \item{fill}{Character string specifying the color to use to fill the bars.
-Could also be a function, such as \code{\link[grDevices]{heat.colors}}.}
+Could also be a function, such as \code{\link[grDevices]{heat.colors}}.
+Default is \code{"grey35"}.}
 }
 \description{
 Plot variable importance scores for the predictors in a model.

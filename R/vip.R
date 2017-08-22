@@ -9,10 +9,11 @@
 #'
 #' @param color Character string specifying the color to use for the borders of
 #' the bars. Could also be a function, such as
-#' \code{\link[grDevices]{heat.colors}}.
+#' \code{\link[grDevices]{heat.colors}}. Default is \code{"grey35"}.
 #'
 #' @param fill Character string specifying the color to use to fill the bars.
 #' Could also be a function, such as \code{\link[grDevices]{heat.colors}}.
+#' Default is \code{"grey35"}.
 #'
 #' @param ... Additional optional arguments to be passed onto \code{\link{vi}}.
 #'
@@ -33,7 +34,7 @@ vip <- function(object, ...) {
 #' @rdname vip
 #'
 #' @export
-vip.default <- function(object, alpha = 1, color = "#444444", fill = "#444444",
+vip.default <- function(object, alpha = 1, color = "grey35", fill = "grey35",
                         ...) {
   imp <- vi(object, ...)  # variable importance scores
   x.string <- "reorder(Variable, Importance)"

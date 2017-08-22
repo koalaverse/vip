@@ -18,7 +18,8 @@ dependence output in an attribute called \code{"partial"}. Default is
 \code{FALSE}.}
 
 \item{FUN}{Function used to measure the "flatness" of the partial dependence
-function. If \code{NULL}, the variance is used (i.e., \code{FUN = var}).}
+function. If \code{NULL}, the standard deviation is used (i.e.,
+\code{FUN = sd}).}
 
 \item{...}{Additional optional arguments to be passed on to
 \code{\link[pdp]{partial}}.}

@@ -57,6 +57,20 @@ Features of this approach:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
+% Determining predictor importance is a crucial task in any supervised learning problem. Certain models (e.g., random forests, recursive partitioning, and multivariate adaptive regression splines) can use information collected during model building to define intrinsic measures of variable importance. For example, decision trees can use the sum of the individual contributions each predictor makes in reducing impurity as importance scores. In random forests and boosting, these can be aggreagated across all the trees in the ensemble \textbf{(REF ElemStatLearn)}. Random forests provide an additional measure of predictor importance based on the use of \textit{out-of-bag} (OOB) data \textbf{(REF Leo Breiman)}. (Technically, any bagged model can use this approach.) However, other black box models, like support vector machines (SVMs), have no natural way to define variable importance.
+% 
+% For regression problems, a popular non-model-specific approach to defining variable importance is based on a pseudo $R^2$ from an adaptive nonparametric fit between each predictor and the response \textbf{(REF Max Kuhn's Book)}. For example, an importance score for predictor $x$ can be obtained as follows: 
+% \begin{enumerate}
+%   \item Fit an adaptive smooth to $x_i$ and $y_i$, $i = 1, 2, \dotsc, n$;
+%   \item Obtain the fitted values $\widehat{y}_i$;
+%   \item Compute the squared sample correlation between the fitted values and observed response:
+%   \begin{equation*}
+%     R_{pseudo}^2 = cor^2\left(\widehat{y}_i, y_i\right) = \frac{\left[\sum_{i = 1}^n\left(\widehat{y}_i - \bar{\widehat{y}}\right)\left(y_i - \bar{y}\right)\right]^2}{\sum_{i = 1}^n\left(\widehat{y}_i - \bar{\widehat{y}}\right) ^ 2\sum_{i = 1}^n\left(y_i - \bar{y}\right) ^ 2},
+%   \end{equation*}
+%   where $\bar{\widehat{y}} = n^{-1}\sum_{i = 1}^n\widehat{y}_i$.
+% \end{enumerate}
+% The drawback of this approach is that it does make use of the fitted model of interest. For this reason, we propose a similar $pseudo-R^2$ variable importance metric based on the model trained to the data---similar in spirit to the \textit{partial} $R^2$ used in multiple linear regression.
+
 In the age of "big data", we are often confronted with the task of extracting knowledge from large databases. For this task we turn to various statistical learning algorithms which, when tuned correctly, have state-of-the-art predictive performance. However, having a model that predicts well is only solving part of the problem. It is still necessary to extract information about the relationships uncovered by the learning algorithm. For instance, we often want to know which predictors, if any, are important by assigning some type of variable importance score to each feature. Once a set of "important" features has been identified, the next step would be to summarize the functional relationship between each feature, or subset thereof, and the outcome of interest. However, since most statistical learning algorithms are "black box" models, extracting this information is not always straightforward. Fortunately, some learning algorithms have a natural way of defining variable importance.
 
 In a binary decision tree, at each node $t$, a single predictor is used to partition the data into two homogenous groups. The chosen predictor is the one that maximizes some measure of improvement $\widehat{i}_t$. The relative importance of predictor $x$ is just the sum of the squared improvements over all internal nodes of the tree for which $x$ was chosen as the partitioning variable:
