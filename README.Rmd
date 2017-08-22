@@ -48,7 +48,7 @@ tibble::glimpse(trn)  # take a peek
 ```
 
 Next, we fit a random forest to the simulated data and construct variable importance plots using the two methods provided by the random forest algorithm (left and middle plots) and the partial dependence approach (right plot).
-```{r example-rf, message=FALSE, warning=FALSE, fig.width=10, fig.height=7}
+```{r example-rf, message=FALSE, warning=FALSE, fig.width=8, fig.height=5}
 # Load required packages
 library(ggplot2)
 library(magrittr)
