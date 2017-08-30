@@ -1,0 +1,33 @@
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Breiman, Friedman, and Charles
+  J.~Stone}{Breiman et~al.}{1984}]{classification-breiman-1984}
+Breiman, L., J.~Friedman, and R.~A.~O. Charles J.~Stone (1984).
+\newblock {\em Classification and Regression Trees}.
+\newblock The Wadsworth and Brooks-Cole statistics-probability series. Taylor
+  \& Francis.
+
+\bibitem[\protect\citeauthoryear{Friedman}{Friedman}{1991}]{friedman-1991-mars}
+Friedman, J.~H. (1991).
+\newblock Multivariate adaptive regression splines.
+\newblock {\em The Annals of Statistics\/}~{\em 19\/}(1), 1--67.
+
+\bibitem[\protect\citeauthoryear{Garson}{Garson}{1991}]{interpreting-garson-1991}
+Garson, D.~G. (1991).
+\newblock Interpreting neural-network connection weights.
+\newblock {\em Artificial Intelligence Expert\/}~{\em 6\/}(4), 46--51.
+
+\bibitem[\protect\citeauthoryear{Goh}{Goh}{1995}]{back-goh-1995}
+Goh, A. (1995).
+\newblock Back-propagation neural networks for modeling complex systems.
+\newblock {\em Artificial Intelligence in Engineering\/}~{\em 9\/}(3),
+  143--151.
+
+\bibitem[\protect\citeauthoryear{Olden, Joy, and Death}{Olden
+  et~al.}{2004}]{accurate-olden-2004}
+Olden, J.~D., M.~K. Joy, and R.~G. Death (2004).
+\newblock An accurate comparison of methods for quantifying variable importance
+  in artificial neural networks using simulated data.
+\newblock {\em Ecological Modelling\/}~{\em 178\/}(3), 389--397.
+
+\end{thebibliography}
