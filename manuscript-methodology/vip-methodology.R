@@ -92,7 +92,8 @@ dev.off()
 boston.rf.vi <- vi(boston.rf, pred.var = names(subset(boston, select = -cmedv)))
 p <- ggplot(boston.rf.vi, aes(x = reorder(Variable, -Importance), y = Importance)) +
   geom_col() +
-  xlab("")
+  xlab("") +
+  theme_light()
 
 # Variable importance plots
 p1 <- vip(boston.rf, pred.var = names(subset(boston, select = -cmedv)), FUN = sd)
@@ -185,12 +186,11 @@ vip(trn.nn, pred.var = paste0("x.", 1:10), FUN = mad)
 
 # Figure ?
 pdf(file = "manuscript-methodology\\network.pdf", width = 12, height = 6)
-plotnet(trn.nn)
+plotnet(trn.nn, circle_col = "lightgrey")
 dev.off()
 
 # VIP: partial dependence algorithm
-p1 <- vip(trn.nn, use.partial = TRUE, pred.var = paste0("x.", 1:10),
-          color = "black", fill = set1[2L]) +
+p1 <- vip(trn.nn, use.partial = TRUE, pred.var = paste0("x.", 1:10)) +
   theme_light() +
   ylab("Importance (partial dependence)")
 
@@ -199,7 +199,7 @@ trn.nn.garson <- garson(trn.nn, bar_plot = FALSE) %>%
   tibble::rownames_to_column("Variable") %>%
   select(Variable, Importance = rel_imp)
 p2 <- ggplot(trn.nn.garson, aes(x = reorder(Variable, Importance), y = Importance)) +
-  geom_col(color = "black", fill = set1[1L]) +
+  geom_col() +
   xlab("") +
   ylab("Importance (Garson's algorithm)") +
   coord_flip() +
@@ -210,7 +210,7 @@ trn.nn.olden <- olden(trn.nn, bar_plot = FALSE) %>%
   tibble::rownames_to_column("Variable") %>%
   select(Variable, Importance = importance)
 p3 <- ggplot(trn.nn.olden, aes(x = reorder(Variable, Importance), y = Importance)) +
-  geom_col(color = "black", fill = set1[1L]) +
+  geom_col() +
   xlab("") +
   ylab("Importance (Olden's algorithm)") +
   coord_flip() +

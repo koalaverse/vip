@@ -206,6 +206,15 @@ To illustrate, we apply the partial dependence algorithm \ref{alg:pdp} to all of
 
 The same idea can be applied to finding interactions. Essentially a strong interaction effect of $x_1$ and $x_2$ on $\mathcal{Y}$ would suggest that $\imp\left(x_1, x_2\right)$ is roughly constant when either $x_1$ or $x_2$ is held constant while the other varies. More coming soon!
 
+\subsection{Examples: a simple function of ten variables}
+
+To further illustrate, we will use one of the regression problems described in Friedman (1991) and Breiman (1996). Inputs are 10 independent variables uniformly distributed on the interval $\left[0, 1\right]$; only 5 out of these 10 are actually used. Outputs are created according to the formula
+\begin{equation}
+\mathcal{Y} = 10 \sin\left(\pi x_1 x_2\right) + 20 \left(x_3 - 0.5\right) ^ 2 + 10 x_4 + 5 x_5 + \epsilon,
+\end{equation}
+where $\epsilon \sim \mathcal{N}\left(0, \sigma\right)$.
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
@@ -227,7 +236,7 @@ The same idea can be applied to finding interactions. Essentially a strong inter
 
 \item[Title:] Brief description. (file type)
 
-\item[R-package for  MYNEW routine:] R-package ?MYNEW? containing code to perform the diagnostic methods described in the article. The package also contains all data sets used as examples in the article. (GNU zipped tar file)
+\item[R-package for  MYNEW routine:] R-package \pkg{vip} containing code to perform the diagnostic methods described in the article. The package also contains all data sets used as examples in the article. (GNU zipped tar file)
 
 \item[HIV data set:] Data set used in the illustration of MYNEW method in Section~ 3.2. (.txt file)
 
