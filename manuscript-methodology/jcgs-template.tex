@@ -13,6 +13,13 @@
 % NOTE: To produce blinded version, replace "0" with "1" below.
 \newcommand{\blind}{0}
 
+%
+\def\code#1{\texttt{#1}}
+\def\pkg#1{\textbf{\texttt{#1}}}
+\def\ref#1{\textbf{(#1)}}
+\DeclareMathOperator{\flatness}{flatness}
+\DeclareMathOperator{\imp}{imp}
+
 % DON'T change margins - should be 1 inch all around.
 \addtolength{\oddsidemargin}{-.5in}%
 \addtolength{\evensidemargin}{-.5in}%
@@ -125,7 +132,7 @@ Let $\boldsymbol{x} = \left\{x_1, x_2, \dots, x_p\right\}$ represent the predict
   f_s\left(\boldsymbol{z}_s\right) = E_{\boldsymbol{z}_c}\left[\widehat{f}\left(\boldsymbol{z}_s, \boldsymbol{z}_c\right)\right] = \int \widehat{f}\left(\boldsymbol{z}_s, \boldsymbol{z}_c\right)p_{c}\left(\boldsymbol{z}_c\right)d\boldsymbol{z}_c,
 \end{equation}
 where $p_{c}\left(\boldsymbol{z}_c\right)$ is the marginal probability density of $\boldsymbol{z}_c$: $p_{c}\left(\boldsymbol{z}_c\right) = \int p\left(\boldsymbol{x}\right)d\boldsymbol{z}_s$.
-Equation~\eqref{eqn:avg_fun} can be estimated from a set of training data by
+Equation (?) can be estimated from a set of training data by
 \begin{equation}
 \label{eqn:pdf}
 \bar{f}_s\left(\boldsymbol{z}_s\right) = \frac{1}{n}\sum_{i = 1}^n\widehat{f}\left(\boldsymbol{z}_s,\boldsymbol{z}_{i, c}\right),
@@ -147,6 +154,57 @@ Constructing a PDP \eqref{eqn:pdf} in practice is rather straightforward. To sim
 \caption{A simple algorithm for constructing the partial dependence of the response on a single predictor $x_1$. \label{alg:pdp}}
 \end{algorithm}
 Algorithm~\ref{alg:pdp} can be quite computationally intensive since it involves $k$ passes over the training records. Fortunately, the algorithm can be performed in parallel quite easily (more on this in Section~\ref{sec:computational}). It can also be easily extended to larger subsets of two or more features as well.
+
+
+\subsection{Boston housing data}
+
+For illustration, we will use a corrected version of the Boston housing data analyzed in \citet{harrison-1978-hedonic}; the data are available from Statlib at \url{http://lib.stat.cmu.edu/datasets/boston_corrected.txt}. Using the R package \pkg{randomForest} \citep{randomForest-pkg}, we fit a random forest with tuning parameter $m_{try} = 6$ (chosen using 5-fold cross-validation) and 1000 trees. The model fit is reasonable, with an \textit{out-of-bag} (pseudo) $R^2$ of 0.89. The variable importance scores are displayed in Figure~\ref{fig:boston-rf-vip}. Both plots indicate that the percentage of lower status of the population (\code{lstat}) and the average number of rooms per dwelling (\code{rm}) are highly associated with the median value of owner-occupied homes (\code{cmedv}). They also indicate that the proportion of residential land zoned for lots over 25,000 sq.ft (\code{zn}) has little association with \code{cmedv}.
+\begin{figure}[!htb]
+  \label{boston-rf-vip}
+  \centering
+  \includegraphics[width=1.0\textwidth]{boston-rf-vip}
+  \caption{Variable importance scores from a random forest fit to the (corrected) Boston housing data. \textit{Left}: OOB-based variable importance scores. \textit{Right}: Impurity-based variable importance scores.}
+\end{figure}
+
+The partial dependence functions for these three variables are displayed in Figure~\ref{fig:boston-rf-pdps}. Notice how the PDP for \code{zn} is essentially flat. It is this notion of "flatness" which we will use to define our variable importance measure.
+\begin{figure}[!htb]
+  \label{boston-rf-pdps}
+  \centering
+  \includegraphics[width=1.0\textwidth]{boston-rf-pdps}
+  \caption{TBD.}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{A new model-based variable importance measure}
+\label{sec:new}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The PDP for \code{zn} in Figure~\ref{fig:boston-rf-pdps} is relatively flat indicating that \code{zn} does not have much influence on the predicted median home value. In other words, the values $ \bar{f}\left(x_{i}\right)$ display little variablility. One might conclude that any variable for which the PDP is "flat" is likely to be less important than those predictors whose PDP varies across a wider range of the response.
+
+Our notion of variable importance is based on any measure of the "flatness" of the partial dependence function. In general, we define
+\begin{equation}
+  \imp\left(x\right) = \flatness\left(\bar{f}_s\left(\boldsymbol{z}_s\right)\right),
+\end{equation}
+where $\flatness$ is any measure of "flatness" of the curve. A simple and effective measure to use is the sample standard deviation. Based on Algorithm~\ref{alg:pdp}, our importance metric for predictor $x_1$ is simply
+\begin{equation}
+\label{eqn:vi}
+  \imp\left(x_1\right) = \sqrt{\frac{1}{k}\sum_{i = 1}^k\left[\bar{f}_1\left(x_{1i}\right) - \frac{1}{k}\sum_{j = 1}^k\bar{f}_1\left(x_{1i}\right)\right] ^ 2}.
+\end{equation}
+
+To illustrate, we apply the partial dependence algorithm \ref{alg:pdp} to all of the predicors in the random forest for the Boston housing example and compute \eqref{eqn:vi}. The results are displayed in Figure~\ref{fig:boston-rf-vip-pd}.
+
+\begin{figure}[!htb]
+  \label{boston-rf-vip-pd}
+  \centering
+  \includegraphics[width=1.0\textwidth]{boston-rf-vip-pd}
+  \caption{Partial-dependence-based variable importance scores from a random forest fit to the (corrected) Boston housing data.}
+\end{figure}
+
+
+\subsection{Detecting interaction effects}
+
+The same idea can be applied to finding interactions. Essentially a strong interaction effect of $x_1$ and $x_2$ on $\mathcal{Y}$ would suggest that $\imp\left(x_1, x_2\right)$ is roughly constant when either $x_1$ or $x_2$ is held constant while the other varies. More coming soon!
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

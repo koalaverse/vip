@@ -90,16 +90,17 @@ dev.off()
 
 # Variable importance scores (partial dependence)
 boston.rf.vi <- vi(boston.rf, pred.var = names(subset(boston, select = -cmedv)))
+p <- ggplot(boston.rf.vi, aes(x = reorder(Variable, -Importance), y = Importance)) +
+  geom_col() +
+  xlab("")
 
 # Variable importance plots
 p1 <- vip(boston.rf, pred.var = names(subset(boston, select = -cmedv)), FUN = sd)
 p2 <- vip(boston.rf, pred.var = names(subset(boston, select = -cmedv)), FUN = mad)
 
 # Figure ?
-pdf(file = "manuscript-methodology\\boston-rf-vip-pd.pdf", width = 8, height = 5)
-grid.arrange(p1 + ggtitle("Standard deviation"),
-             p2 + ggtitle("Median absolute deviation"),
-             ncol = 2)
+pdf(file = "manuscript-methodology\\boston-rf-vip-pd.pdf", width = 7, height = 4)
+print(p)
 dev.off()
 
 

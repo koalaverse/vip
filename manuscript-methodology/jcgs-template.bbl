@@ -47,6 +47,12 @@ Kuhn, M. and K.~Johnson (2013).
 \newblock {\em Applied Predictive Modeling}.
 \newblock SpringerLink : B{\"u}cher. Springer New York.
 
+\bibitem[\protect\citeauthoryear{Liaw and Wiener}{Liaw and
+  Wiener}{2002}]{randomForest-pkg}
+Liaw, A. and M.~Wiener (2002).
+\newblock Classification and regression by randomforest.
+\newblock {\em R News\/}~{\em 2\/}(3), 18--22.
+
 \bibitem[\protect\citeauthoryear{Olden, Joy, and Death}{Olden
   et~al.}{2004}]{accurate-olden-2004}
 Olden, J.~D., M.~K. Joy, and R.~G. Death (2004).
