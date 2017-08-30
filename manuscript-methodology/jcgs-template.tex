@@ -6,6 +6,9 @@
 \usepackage{natbib}
 \usepackage{url} % not crucial - just used below for the URL
 
+%
+\usepackage{algorithm2e}
+
 %\pdfminorversion=4
 % NOTE: To produce blinded version, replace "0" with "1" below.
 \newcommand{\blind}{0}
@@ -80,11 +83,70 @@ While PDPs can be constructed for any predictor in a fitted model, variable impo
 
 In the age of "big data", we are often confronted with the task of extracting knowledge from large databases. For this task we turn to various statistical learning algorithms which, when tuned correctly, can have state-of-the-art predictive performance. However, having a model that predicts well is only solving part of the problem. It is still necessary to extract information about the relationships uncovered by the learning algorithm. For instance, we often want to know which predictors, if any, are important by assigning some type of variable importance score to each feature. Once a set of "important" features has been identified, the next step would be to summarize the functional relationship between each feature, or subset thereof, and the outcome of interest. However, since most statistical learning algorithms are "black box" models, extracting this information is not always straightforward. Fortunately, some learning algorithms have a natural way of defining variable importance.
 
+
+\subsection{Model-based approaches to variable importance}
+
 In a binary decision tree, at each node $t$, a single predictor is used to partition the data into two homogeneous groups. The chosen predictor is the one that maximizes some measure of improvement $\widehat{i}_t$. The relative importance of predictor $x$ is just the sum of the squared improvements over all internal nodes of the tree for which $x$ was chosen as the partitioning variable; see \citet{classification-breiman-1984} for details. This idea also extends to ensembles of decision trees like boosting and random forest. In ensembles the the improvement score for each predictor is averaged across all the trees in the ensemble. Fortunately, due to the stabilizing effect of averaging, the improvement-based variable importance metric is often more reliable in large ensembles. Random forests offer an additional way to compute variable importance scores. The idea is to use the left over out-of-bag (OOB) data to construct validation-set errors for each tree. Then each predictor is randomly shuffled in the OOB data and the error is computed again. The idea is that if variable $X$ is important, then the validation error will go up when $X$ is perturbed in the OOB data. The difference in the two errors is recorded for the OOB data for each predictor then averaged across all trees in the forest.
 
 In multiple linear regression, the absolute value of the $t$ statistic is commonly used as a measure of variable importance. The same idea also extends to generalized linear models and nonlinear least squares. Multivariate adaptive regression splines (MARS), which were introduced in \citet{friedman-1991-mars}, is an automatic and adaptive regression technique which can be seen as a generalization of multiple linear regression and generalized linear models. In the MARS algorithm, the contribution (or variable importance score) for each predictor is determined using a generalized cross-validation (GCV) statistic.
 
 For neural networks, two popular methods for constructing variable importance scores are the Garson algorithm \citep{interpreting-garson-1991}, later modified by \citet{back-goh-1995}, and the Olden algorithm \citep{accurate-olden-2004}. Both algorithms use the network's connection weights to form the basis of the variable importance scores. The Garson algorithm determines variable importance by identifying all weighted connections between the nodes of interest. Olden's algorithm, on the other hand, uses the product of the raw input-hidden and hidden-output connection weights between each input and output neuron and sums the product across all hidden neurons. This has been shown to outperform the Garson method in various simulations.
+
+
+\subsection{Filter-based appraoches to variable importance}
+
+Filter-based approaches, which are described in \citet[chap. 18]{applied-kuhn-2013}, do not make use of a fitted model to measure variable importance. They also do not take into account the other variables in the model.
+
+For regression problems, a popular approach is to measuring the variable importance of a numeric predictor $X$ is to first fit a flexible nonparametric model between $X$ and the target $\mathcal{Y}$; for example, the locally-weighted polynomial regression (LOWESS) method of \citet{robust-cleveland-1979}. From this fit, a pseudo-$R^2$ measure can be obtained from the resulting residuals and used as a measure of variable importance. For categorical predictors, a different method based on standatd statistical tests (e.g., $t$-tests and ANOVAs) are employed; \citet[chap. 18]{applied-kuhn-2013} for details.
+
+For classification problems, an area under the ROC curve (AUC) statistic can be used to quantify predictor importance. The AUC statistic is derived by using the predictor $X$ as input to the ROC curve. If $X$ can perfectly separate the classes of $\mathcal{Y}$, then that is a good indicator that $X$ is important and this is captured in the corresponding AUC statistic. For problems with more than two classes, extensions of the ROC curve or a one-vs-all approach can be used.
+
+
+\subsection{Partial dependence plots}
+
+\citet{harrison-1978-hedonic} were among the first to analyze the well-known Boston housing data. One of their goals was to find a housing value equation using data on median home values from $n = 506$ census tracts in the suburbs of Boston from the 1970 census; see \citet[Table IV]{harrison-1978-hedonic} for a description of each variable. The data violate many classical assumptions like linearity, normality, and constant variance. Nonetheless, \citeauthor{harrison-1978-hedonic}---using a combination of transformations, significance testing, and grid searches---were able to find a reasonable fitting model ($R^2 = 0.81$). Part of the payoff for there time and efforts was an interpretable prediction equation which is reproduced in Equation~\eqref{eqn:boston}.
+\begin{equation}
+\label{eqn:boston}
+\begin{aligned}
+\widehat{\log\left(MV\right)} &= 9.76 + 0.0063 RM^2 + 8.98\times10^{-5} AGE - 0.19\log\left(DIS\right) + 0.096\log\left(RAD\right) \\
+  & \quad - 4.20\times10^{-4} TAX - 0.031 PTRATIO + 0.36\left(B - 0.63\right)^2 - 0.37\log\left(LSTAT\right) \\
+  & \quad - 0.012 CRIM + 8.03\times10^{-5} ZN + 2.41\times10^{-4} INDUS + 0.088 CHAS \\
+  & \quad - 0.0064 NOX^2.
+\end{aligned}
+\end{equation}
+
+Nowadays, many supervised learning algorithms can fit the data automatically in seconds---typically with higher accuracy. The downfall, however, is some loss of interpretation since these algorithms typically do not produce simple prediction formulas like Equation~\eqref{eqn:boston}. These models can still provide insight into the data, but it is not in the form of simple equations. For example, quantifying predictor importance has become an essential task in the analysis of "big data", and many supervised learning algorithms, like tree-based methods, can naturally assign variable importance scores to all of the predictors in the training data.
+
+While determining predictor importance is a crucial task in any supervised learning problem, ranking variables is only part of the story and once a subset of "important" features is identified it is often necessary to assess the relationship between them (or subset thereof) and the response. This can be done in many ways, but in machine learning it is often accomplished by constructing \textit{partial dependence plots} (PDPs); see \citet{friedman-2001-greedy} for details. PDPs help visualize the relationship between a subset of the features (typically 1-3) and the response while accounting for the average effect of the other predictors in the model. They are particularly effective with black box models like random forests and support vector machines.
+
+Let $\boldsymbol{x} = \left\{x_1, x_2, \dots, x_p\right\}$ represent the predictors in a model whose prediction function is $\widehat{f}\left(\boldsymbol{x}\right)$. If we partition $\boldsymbol{x}$ into an interest set, $\boldsymbol{z}_s$, and its compliment, $\boldsymbol{z}_c = \boldsymbol{x} \setminus \boldsymbol{z}_s$, then the "partial dependence" of the response on $\boldsymbol{z}_s$ is defined as
+\begin{equation}
+\label{eqn:avg_fun}
+  f_s\left(\boldsymbol{z}_s\right) = E_{\boldsymbol{z}_c}\left[\widehat{f}\left(\boldsymbol{z}_s, \boldsymbol{z}_c\right)\right] = \int \widehat{f}\left(\boldsymbol{z}_s, \boldsymbol{z}_c\right)p_{c}\left(\boldsymbol{z}_c\right)d\boldsymbol{z}_c,
+\end{equation}
+where $p_{c}\left(\boldsymbol{z}_c\right)$ is the marginal probability density of $\boldsymbol{z}_c$: $p_{c}\left(\boldsymbol{z}_c\right) = \int p\left(\boldsymbol{x}\right)d\boldsymbol{z}_s$.
+Equation~\eqref{eqn:avg_fun} can be estimated from a set of training data by
+\begin{equation}
+\label{eqn:pdf}
+\bar{f}_s\left(\boldsymbol{z}_s\right) = \frac{1}{n}\sum_{i = 1}^n\widehat{f}\left(\boldsymbol{z}_s,\boldsymbol{z}_{i, c}\right),
+\end{equation}
+where $\boldsymbol{z}_{i, c}$ $\left(i = 1, 2, \dots, n\right)$ are the values of $\boldsymbol{z}_c$ that occur in the training sample; that is, we average out the effects of all the other predictors in the model.
+
+Constructing a PDP \eqref{eqn:pdf} in practice is rather straightforward. To simplify, let $\boldsymbol{z}_s = x_1$ be the predictor variable of interest with unique values $\left\{x_{11}, x_{12}, \dots, x_{1k}\right\}$. The partial dependence of the response on $x_1$ can be constructed as follows:
+
+\begin{algorithm}
+\begin{enumerate}
+  \item For $i \in \left\{1, 2, \dots, k\right\}$:
+  \begin{enumerate}
+    \item Copy the training data and replace the original values of $x_1$ with the constant $x_{1i}$.
+    \item Compute the vector of predicted values from the modified copy of the training data.
+    \item Compute the average prediction to obtain $\bar{f}_1\left(x_{1i}\right)$.
+  \end{enumerate}
+  \item Plot the pairs $\left\{x_{1i}, \bar{f}_1\left(x_{1i}\right)\right\}$ for $i = 1, 2, \dotsc, k$.
+\end{enumerate}
+\caption{A simple algorithm for constructing the partial dependence of the response on a single predictor $x_1$. \label{alg:pdp}}
+\end{algorithm}
+Algorithm~\ref{alg:pdp} can be quite computationally intensive since it involves $k$ passes over the training records. Fortunately, the algorithm can be performed in parallel quite easily (more on this in Section~\ref{sec:computational}). It can also be easily extended to larger subsets of two or more features as well.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

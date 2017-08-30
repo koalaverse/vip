@@ -7,10 +7,21 @@ Breiman, L., J.~Friedman, and R.~A.~O. Charles J.~Stone (1984).
 \newblock The Wadsworth and Brooks-Cole statistics-probability series. Taylor
   \& Francis.
 
+\bibitem[\protect\citeauthoryear{Cleveland}{Cleveland}{1979}]{robust-cleveland-1979}
+Cleveland, W.~S. (1979).
+\newblock Robust locally weighted regression and smoothing scatterplots.
+\newblock {\em Journal of the American Statistical Association\/}~{\em
+  74\/}(368), 829--836.
+
 \bibitem[\protect\citeauthoryear{Friedman}{Friedman}{1991}]{friedman-1991-mars}
 Friedman, J.~H. (1991).
 \newblock Multivariate adaptive regression splines.
 \newblock {\em The Annals of Statistics\/}~{\em 19\/}(1), 1--67.
+
+\bibitem[\protect\citeauthoryear{Friedman}{Friedman}{2001}]{friedman-2001-greedy}
+Friedman, J.~H. (2001).
+\newblock Greedy function approximation: A gradient boosting machine.
+\newblock {\em The Annals of Statistics\/}~{\em 29}, 1189--1232.
 
 \bibitem[\protect\citeauthoryear{Garson}{Garson}{1991}]{interpreting-garson-1991}
 Garson, D.~G. (1991).
@@ -22,6 +33,19 @@ Goh, A. (1995).
 \newblock Back-propagation neural networks for modeling complex systems.
 \newblock {\em Artificial Intelligence in Engineering\/}~{\em 9\/}(3),
   143--151.
+
+\bibitem[\protect\citeauthoryear{Harrison and Rubinfeld}{Harrison and
+  Rubinfeld}{1978}]{harrison-1978-hedonic}
+Harrison, D. and D.~L. Rubinfeld (1978).
+\newblock Hedonic housing prices and the demand for clean air.
+\newblock {\em Journal of Environmental Economics and Management\/}~{\em
+  5\/}(1), 81--102.
+
+\bibitem[\protect\citeauthoryear{Kuhn and Johnson}{Kuhn and
+  Johnson}{2013}]{applied-kuhn-2013}
+Kuhn, M. and K.~Johnson (2013).
+\newblock {\em Applied Predictive Modeling}.
+\newblock SpringerLink : B{\"u}cher. Springer New York.
 
 \bibitem[\protect\citeauthoryear{Olden, Joy, and Death}{Olden
   et~al.}{2004}]{accurate-olden-2004}
