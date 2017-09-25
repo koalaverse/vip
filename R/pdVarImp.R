@@ -24,7 +24,7 @@
 pdVarImp <- function(object, pred.var, return.partial = FALSE, FUN = NULL, ...)
 {
   FUN <- if (is.null(FUN)) {
-    sd
+    stats::sd
   } else {
     match.fun(FUN)
   }

@@ -7,13 +7,22 @@
 \usage{
 vip(object, ...)
 
-\method{vip}{default}(object, alpha = 1, color = "grey35",
-  fill = "grey35", ...)
+\method{vip}{default}(object, bar = TRUE, width = 0.75, horizontal = TRUE,
+  alpha = 1, color = "grey35", fill = "grey35", ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
 
 \item{...}{Additional optional arguments to be passed onto \code{\link{vi}}.}
+
+\item{bar}{Logical indicating whether or not to produce a barplot. Default
+is \code{TRUE}. If \code{bar = FALSE}, then a dotchart is displayed instead.}
+
+\item{width}{Numeric value specifying the width of the bars when
+\code{bar = TRUE}. Default is \code{0.75}.}
+
+\item{horizontal}{Logical indicating whether or not to plot the importance
+scores on the x-axis (\code{TRUE}). Default is \code{TRUE}.}
 
 \item{alpha}{Numeric value between 0 and 1 giving the trasparency of the
 bars.}
