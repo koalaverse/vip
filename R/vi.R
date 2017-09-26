@@ -11,8 +11,10 @@
 #' dependence functions to construct variable importance scores. Default is
 #' \code{FALSE}.
 #'
-#' @param FUN Function used to measure the "flatness" of the partial dependence
-#' function. If \code{NULL}, the variance is used (i.e., \code{FUN = var}).
+#' @param FUN Function used to measure the variability of the partial dependence
+#' values for continuous predictors. If \code{NULL}, the standard deviation is
+#' used (i.e., \code{FUN = sd}). For factors, the range statistic is used (i.e.,
+#' (max - min) / 4).
 #'
 #' @param ... Additional optional arguments.
 #'

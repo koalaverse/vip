@@ -20,8 +20,10 @@ vi(object, ...)
 \item{pred.var}{Character string giving the names of the predictor variables
 of interest.}
 
-\item{FUN}{Function used to measure the "flatness" of the partial dependence
-function. If \code{NULL}, the variance is used (i.e., \code{FUN = var}).}
+\item{FUN}{Function used to measure the variability of the partial dependence
+values for continuous predictors. If \code{NULL}, the standard deviation is
+used (i.e., \code{FUN = sd}). For factors, the range statistic is used (i.e.,
+(max - min) / 4).}
 
 \item{use.partial}{Logical indicating whether or not to use partial
 dependence functions to construct variable importance scores. Default is

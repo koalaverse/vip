@@ -13,9 +13,10 @@
 #' dependence output in an attribute called \code{"partial"}. Default is
 #' \code{FALSE}.
 #'
-#' @param FUN Function used to measure the "flatness" of the partial dependence
-#' function. If \code{NULL}, the standard deviation is used (i.e.,
-#' \code{FUN = sd}).
+#' @param FUN Function used to measure the variability of the partial dependence
+#' values for continuous predictors. If \code{NULL}, the standard deviation is
+#' used (i.e., \code{FUN = sd}). For factors, the range statistic is used (i.e.,
+#' (max - min) / 4).
 #'
 #' @param ... Additional optional arguments to be passed on to
 #' \code{\link[pdp]{partial}}.
@@ -23,13 +24,17 @@
 #' @export
 pdVarImp <- function(object, pred.var, return.partial = FALSE, FUN = NULL, ...)
 {
-  FUN <- if (is.null(FUN)) {
+  FUN <- if (is.null(FUN)) {  # function to use for continuous predictors
     stats::sd
   } else {
     match.fun(FUN)
   }
   pd <- pdp::partial(object, pred.var = pred.var, ...)
-  res <- FUN(pd$yhat)
+  res <- if (is.factor(pd[[pred.var]])) {
+    diff(range(pd[["yhat"]])) / 4
+  } else {
+    FUN(pd[["yhat"]])
+  }
   if (return.partial) {
     attr(res, "partial") <- pd
   }
