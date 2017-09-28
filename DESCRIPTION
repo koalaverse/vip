@@ -19,6 +19,8 @@ Imports:
     gridExtra,
     magrittr,
     pdp,
+    plyr,
     tibble,
-    tidyr
+    tidyr,
+    utils
 RoxygenNote: 6.0.1
