@@ -1,6 +1,6 @@
-#' Variable Importance
+#' Interaction Effects
 #'
-#' Compute variable importance scores for the predictors in a model.
+#' Compute the strength of interaction effects.
 #'
 #' @param object A fitted model object (e.g., a \code{"randomForest"} object).
 #'
@@ -22,6 +22,13 @@
 #' @param ... Additional optional arguments to be passed onto
 #' \code{\link[pdp]{partial}}.
 #'
+#' @details
+#' Coming soon!
+#'
+#' @note
+#' Coming soon!
+#'
+#' @export
 vint <- function(object, pred.var, progress = "none", parallel = FALSE,
                  paropts = NULL, ...) {
   if (!is.character(pred.var) || (length(pred.var) < 2)) {

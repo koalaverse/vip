@@ -2,7 +2,7 @@
 % Please edit documentation in R/vint.R
 \name{vint}
 \alias{vint}
-\title{Variable Importance}
+\title{Interaction Effects}
 \usage{
 vint(object, pred.var, progress = "none", parallel = FALSE,
   paropts = NULL, ...)
@@ -29,5 +29,11 @@ parallel using a backend provided by the \code{foreach} package. Default is
 \code{\link[pdp]{partial}}.}
 }
 \description{
-Compute variable importance scores for the predictors in a model.
+Compute the strength of interaction effects.
+}
+\details{
+Coming soon!
+}
+\note{
+Coming soon!
 }
