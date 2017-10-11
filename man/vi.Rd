@@ -4,6 +4,7 @@
 \alias{vi}
 \alias{vi.default}
 \alias{vi.lm}
+\alias{vi.randomForest}
 \title{Variable Importance}
 \usage{
 vi(object, ...)
@@ -11,6 +12,9 @@ vi(object, ...)
 \method{vi}{default}(object, pred.var, FUN = NULL, ...)
 
 \method{vi}{lm}(object, use.partial = FALSE, FUN = NULL, ...)
+
+\method{vi}{randomForest}(object, type = 1, use.partial = FALSE,
+  FUN = NULL, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}

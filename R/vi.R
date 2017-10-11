@@ -48,7 +48,8 @@ vi.default <- function(object, pred.var, FUN = NULL, ...) {
 #'
 #' @export
 vi.lm <- function(object, use.partial = FALSE, FUN = NULL, ...) {
-  if (use.partial) {
+  tib <- if (use.partial) {
+    vi.type <- "partial"
     pred.var <- all.vars(stats::formula(object)[[3L]])
     imp <- sapply(pred.var, function(x) {
       pdVarImp(object, pred.var = x, FUN = FUN, ...)
@@ -57,6 +58,7 @@ vi.lm <- function(object, use.partial = FALSE, FUN = NULL, ...) {
     tibble::tibble("Variable" = pred.var,
                    "Importance" = sort(imp, decreasing = TRUE))
   } else {
+    vi.type <- "tstat"
     coefs <- summary(object)$coefficients
     if (attr(object$terms, "intercept") == 1) {
       coefs <- coefs[-1, ]
@@ -67,7 +69,30 @@ vi.lm <- function(object, use.partial = FALSE, FUN = NULL, ...) {
     tibble::tibble("Variable" = pred.var,
                    "Importance" = sort(imp, decreasing = TRUE))
   }
+  attr(tib, "vi.type") <- vi.type
+  tib
+}
 
+
+#' @rdname vi
+#'
+#' @export
+vi.randomForest <- function(object, type = 1, use.partial = FALSE, FUN = NULL,
+                            ...) {
+  tib <- if (use.partial) {
+    vi.type <- "partial"
+    vi.default(object, FUN = NULL, ...)
+  } else {
+    imp <- importance(object, type = type, ...)
+    vi.type <- colnames(imp)[1L]
+    pred.var <- rownames(imp)
+    imp <- imp[, 1L]
+    pred.var <- pred.var[order(imp, decreasing = TRUE)]
+    tibble::tibble("Variable" = pred.var,
+                   "Importance" = sort(imp, decreasing = TRUE))
+  }
+  attr(tib, "vi.type") <- vi.type
+  tib
 }
 
 

@@ -2,6 +2,7 @@
 
 S3method(vi,default)
 S3method(vi,lm)
+S3method(vi,randomForest)
 S3method(vip,default)
 export(grid.arrange)
 export(pdVarImp)
