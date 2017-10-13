@@ -20,7 +20,13 @@ Imports:
     magrittr,
     pdp,
     plyr,
+    stats,
     tibble,
     tidyr,
     utils
+Suggests:
+    gbm,
+    randomForest,
+    knitr,
+    rmarkdown
 RoxygenNote: 6.0.1

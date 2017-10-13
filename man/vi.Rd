@@ -3,18 +3,24 @@
 \name{vi}
 \alias{vi}
 \alias{vi.default}
+\alias{vi.gbm}
 \alias{vi.lm}
 \alias{vi.randomForest}
 \title{Variable Importance}
 \usage{
 vi(object, ...)
 
-\method{vi}{default}(object, pred.var, FUN = NULL, ...)
+\method{vi}{default}(object, pred.var, FUN = NULL, keep.partial = FALSE,
+  ...)
 
-\method{vi}{lm}(object, use.partial = FALSE, FUN = NULL, ...)
+\method{vi}{gbm}(object, pred.var, partial = FALSE, FUN = NULL,
+  keep.partial = FALSE, ...)
 
-\method{vi}{randomForest}(object, type = 1, use.partial = FALSE,
-  FUN = NULL, ...)
+\method{vi}{lm}(object, pred.var, partial = FALSE, FUN = NULL,
+  keep.partial = FALSE, ...)
+
+\method{vi}{randomForest}(object, pred.var, type = 1, partial = FALSE,
+  FUN = NULL, keep.partial = FALSE, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
@@ -29,13 +35,35 @@ values for continuous predictors. If \code{NULL}, the standard deviation is
 used (i.e., \code{FUN = sd}). For factors, the range statistic is used (i.e.,
 (max - min) / 4).}
 
-\item{use.partial}{Logical indicating whether or not to use partial
-dependence functions to construct variable importance scores. Default is
-\code{FALSE}.}
+\item{keep.partial}{Logical indicating whether or not to return the computed
+partial dependence values for each predictor listed in \code{pred.var} in a
+separate attribute called \code{"partial"}. Default is \code{FALSE}.}
+
+\item{partial}{Logical indicating whether or not to use partial dependence
+functions to construct variable importance scores. Default is \code{FALSE}.}
+
+\item{type}{Integer specifying the type of variable importance measure to
+return for \code{\link[randomForest]{randomForest}} objects. Should be
+\code{0} or \code{1}; see \code{\link[randomForest]{importance}} for details.}
 }
 \value{
-A tidy data frame (i.e., a \code{"tibble"} object).
+A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
+\code{Variable} and \code{Importance}.
 }
 \description{
 Compute variable importance scores for the predictors in a model.
+}
+\examples{
+#
+# A projection pursuit regression example
+#
+
+# Load the sample data
+data(mtcars)
+
+# Fit a projection pursuit regression model
+mtcars.ppr <- ppr(mpg ~ ., data = mtcars, nterms = 1)
+
+# Compute variable importance scores
+vi(mtcars.ppr, pred.var = names(subset(mtcars, select = -mpg)))
 }

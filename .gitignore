@@ -6,3 +6,4 @@
 ## Core latex/pdflatex auxiliary files:
 *.log
 *.synctex.gz
+inst/doc

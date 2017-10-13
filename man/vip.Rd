@@ -39,8 +39,16 @@ Default is \code{"grey35"}.}
 Plot variable importance scores for the predictors in a model.
 }
 \examples{
-\dontrun{
-mtcars.lm <- lm(mpg ~ ., data = mtcars)
-vip(mtcars.lm) + theme_light()
-}
+#
+# A projection pursuit regression example
+#
+
+# Load the sample data
+data(mtcars)
+
+# Fit a projection pursuit regression model
+mtcars.ppr <- ppr(mpg ~ ., data = mtcars, nterms = 1)
+
+# Construct variable importance plot
+vip(mtcars.ppr, pred.var = names(subset(mtcars, select = -mpg)))
 }
