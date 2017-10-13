@@ -25,6 +25,7 @@ Imports:
     tidyr,
     utils
 Suggests:
+    earth,
     gbm,
     randomForest,
     knitr,

@@ -5,6 +5,7 @@
 \alias{vi.default}
 \alias{vi.gbm}
 \alias{vi.lm}
+\alias{vi.earth}
 \alias{vi.randomForest}
 \title{Variable Importance}
 \usage{
@@ -17,6 +18,9 @@ vi(object, ...)
   keep.partial = FALSE, ...)
 
 \method{vi}{lm}(object, pred.var, partial = FALSE, FUN = NULL,
+  keep.partial = FALSE, ...)
+
+\method{vi}{earth}(object, pred.var, partial = FALSE, FUN = NULL,
   keep.partial = FALSE, ...)
 
 \method{vi}{randomForest}(object, pred.var, type = 1, partial = FALSE,

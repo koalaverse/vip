@@ -120,33 +120,29 @@ vi.lm <- function(object, pred.var, partial = FALSE, FUN = NULL,
 }
 
 
-#' #' @rdname vi
-#' #'
-#' #' @export
-#' vi.earth <- function(object, pred.var, partial = FALSE, FUN = NULL,
-#'                      keep.partial = FALSE, ...) {
-#'   if(missing(pred.var)) {
-#'     pred.var <- all.vars(stats::formula(object)[[3L]])
-#'   }
-#'   tib <- if (partial) {
-#'     vi.type <- "partial"
-#'     vi.default(object, pred.var = pred.var, FUN = NULL,
-#'                keep.partial = keep.partial, ...)
-#'   } else {
-#'     vi.type <- "tstat"
-#'     coefs <- summary(object)$coefficients
-#'     if (attr(object$terms, "intercept") == 1) {
-#'       coefs <- coefs[-1, ]
-#'     }
-#'     pred.var <- rownames(coefs)
-#'     imp <- abs(coefs[, "t value"])
-#'     pred.var <- pred.var[order(imp, decreasing = TRUE)]
-#'     tibble::tibble("Variable" = pred.var,
-#'                    "Importance" = sort(imp, decreasing = TRUE))
-#'   }
-#'   attr(tib, "vi.type") <- vi.type
-#'   tib
-#' }
+#' @rdname vi
+#'
+#' @export
+vi.earth <- function(object, pred.var, partial = FALSE, FUN = NULL,
+                     keep.partial = FALSE, ...) {
+  if(missing(pred.var)) {
+    pred.var <- object$namesx
+  }
+  tib <- if (partial) {
+    vi.type <- "partial"
+    vi.default(object, pred.var = pred.var, FUN = NULL,
+               keep.partial = keep.partial, ...)
+  } else {
+    vi.type <- "earth"
+    imp <- earth::evimp(object, trim = FALSE, ...)  # return all importance scores
+    imp <- unclass(imp)[, c("nsubsets", "gcv", "rss")]
+    imp <- cbind("Variable" = rownames(imp), as.data.frame(as.matrix(imp)))
+    rownames(imp) <- NULL
+    tibble::as.tibble(imp)
+  }
+  attr(tib, "vi.type") <- vi.type
+  tib
+}
 
 
 #' @rdname vi
