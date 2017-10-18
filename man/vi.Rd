@@ -3,10 +3,11 @@
 \name{vi}
 \alias{vi}
 \alias{vi.default}
+\alias{vi.earth}
 \alias{vi.gbm}
 \alias{vi.lm}
-\alias{vi.earth}
 \alias{vi.randomForest}
+\alias{vi.train}
 \title{Variable Importance}
 \usage{
 vi(object, ...)
@@ -14,17 +15,20 @@ vi(object, ...)
 \method{vi}{default}(object, pred.var, FUN = NULL, keep.partial = FALSE,
   ...)
 
+\method{vi}{earth}(object, pred.var, partial = FALSE, FUN = NULL,
+  keep.partial = FALSE, ...)
+
 \method{vi}{gbm}(object, pred.var, partial = FALSE, FUN = NULL,
   keep.partial = FALSE, ...)
 
 \method{vi}{lm}(object, pred.var, partial = FALSE, FUN = NULL,
   keep.partial = FALSE, ...)
 
-\method{vi}{earth}(object, pred.var, partial = FALSE, FUN = NULL,
-  keep.partial = FALSE, ...)
-
 \method{vi}{randomForest}(object, pred.var, type = 1, partial = FALSE,
   FUN = NULL, keep.partial = FALSE, ...)
+
+\method{vi}{train}(object, pred.var, partial = FALSE, FUN = NULL,
+  keep.partial = FALSE, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}

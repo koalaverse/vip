@@ -69,6 +69,31 @@ vi.default <- function(object, pred.var, FUN = NULL, keep.partial = FALSE, ...)
 #' @rdname vi
 #'
 #' @export
+vi.earth <- function(object, pred.var, partial = FALSE, FUN = NULL,
+                     keep.partial = FALSE, ...) {
+  if(missing(pred.var)) {
+    pred.var <- object$namesx
+  }
+  tib <- if (partial) {
+    vi.type <- "partial"
+    vi.default(object, pred.var = pred.var, FUN = NULL,
+               keep.partial = keep.partial, ...)
+  } else {
+    vi.type <- "earth"
+    imp <- earth::evimp(object, trim = FALSE, ...)  # return all importance scores
+    imp <- unclass(imp)[, c("nsubsets", "gcv", "rss")]
+    imp <- cbind("Variable" = rownames(imp), as.data.frame(as.matrix(imp)))
+    rownames(imp) <- NULL
+    tibble::as.tibble(imp)
+  }
+  attr(tib, "vi.type") <- vi.type
+  tib
+}
+
+
+#' @rdname vi
+#'
+#' @export
 vi.gbm <- function(object, pred.var, partial = FALSE, FUN = NULL,
                    keep.partial = FALSE, ...) {
   if(missing(pred.var)) {
@@ -123,31 +148,6 @@ vi.lm <- function(object, pred.var, partial = FALSE, FUN = NULL,
 #' @rdname vi
 #'
 #' @export
-vi.earth <- function(object, pred.var, partial = FALSE, FUN = NULL,
-                     keep.partial = FALSE, ...) {
-  if(missing(pred.var)) {
-    pred.var <- object$namesx
-  }
-  tib <- if (partial) {
-    vi.type <- "partial"
-    vi.default(object, pred.var = pred.var, FUN = NULL,
-               keep.partial = keep.partial, ...)
-  } else {
-    vi.type <- "earth"
-    imp <- earth::evimp(object, trim = FALSE, ...)  # return all importance scores
-    imp <- unclass(imp)[, c("nsubsets", "gcv", "rss")]
-    imp <- cbind("Variable" = rownames(imp), as.data.frame(as.matrix(imp)))
-    rownames(imp) <- NULL
-    tibble::as.tibble(imp)
-  }
-  attr(tib, "vi.type") <- vi.type
-  tib
-}
-
-
-#' @rdname vi
-#'
-#' @export
 vi.randomForest <- function(object, pred.var, type = 1, partial = FALSE,
                             FUN = NULL, keep.partial = FALSE, ...) {
   if(missing(pred.var)) {
@@ -169,6 +169,33 @@ vi.randomForest <- function(object, pred.var, type = 1, partial = FALSE,
     out <- tibble::tibble("Variable" = all.pred.var,
                           "Importance" = sort(imp, decreasing = TRUE))
     out[out$Variable %in% pred.var, ]
+  }
+  attr(tib, "vi.type") <- vi.type
+  tib
+}
+
+
+#' @rdname vi
+#'
+#' @export
+vi.train <- function(object, pred.var, partial = FALSE, FUN = NULL,
+                     keep.partial = FALSE, ...) {
+  # if(missing(pred.var)) {
+  #   pred.var <- rownames(object$importance)
+  # }
+  tib <- if (partial) {
+    vi.type <- "partial"
+    vi.default(object, pred.var = pred.var, FUN = NULL,
+               keep.partial = keep.partial, ...)
+  } else {
+    vi.type <- "caret"
+    imp <- caret::varImp(object, ...)
+    if (inherits(imp, "varImp.train")) {
+      imp <- imp$importance
+    }
+    ord <- order(imp$Overall, decreasing = TRUE)
+    tibble::tibble("Variable" = rownames(imp)[ord],
+                   "Importance" = imp$Overall[ord])
   }
   attr(tib, "vi.type") <- vi.type
   tib
