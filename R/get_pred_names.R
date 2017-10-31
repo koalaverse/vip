@@ -48,3 +48,14 @@ get_pred_names.nls <- function(object, ...) {
 get_pred_names.randomForest <- function(object, ...) {
   rownames(object$importance)
 }
+
+
+#' @keywords internal
+get_pred_names.train <- function(object, ...) {
+  if (!is.null(object$trainingData)) {
+    xn <- names(object$trainingData)
+    xn[xn != ".outcome"]
+  } else {
+    get_pred_names.default(object)
+  }
+}
