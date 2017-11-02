@@ -72,7 +72,7 @@ vi.default <- function(object, pred.var, FUN = NULL, keep.partial = FALSE, ...)
 vi.earth <- function(object, pred.var, partial = FALSE, FUN = NULL,
                      keep.partial = FALSE, ...) {
   if(missing(pred.var)) {
-    pred.var <- object$namesx
+    pred.var <- get_pred_names(object)
   }
   tib <- if (partial) {
     vi.type <- "partial"
@@ -97,7 +97,7 @@ vi.earth <- function(object, pred.var, partial = FALSE, FUN = NULL,
 vi.gbm <- function(object, pred.var, partial = FALSE, FUN = NULL,
                    keep.partial = FALSE, ...) {
   if(missing(pred.var)) {
-    pred.var <- object$var.names
+    pred.var <- get_pred_names(object)
   }
   tib <- if (partial) {
     vi.type <- "partial"
@@ -122,7 +122,7 @@ vi.gbm <- function(object, pred.var, partial = FALSE, FUN = NULL,
 vi.lm <- function(object, pred.var, partial = FALSE, FUN = NULL,
                   keep.partial = FALSE, ...) {
   if(missing(pred.var)) {
-    pred.var <- all.vars(stats::formula(object)[[3L]])
+    pred.var <- get_pred_names(object)
   }
   tib <- if (partial) {
     vi.type <- "partial"
@@ -151,7 +151,7 @@ vi.lm <- function(object, pred.var, partial = FALSE, FUN = NULL,
 vi.randomForest <- function(object, pred.var, type = 1, partial = FALSE,
                             FUN = NULL, keep.partial = FALSE, ...) {
   if(missing(pred.var)) {
-    pred.var <- rownames(object$importance)
+    pred.var <- get_pred_names(object)
   }
   tib <- if (partial) {
     vi.type <- "partial"
@@ -180,9 +180,9 @@ vi.randomForest <- function(object, pred.var, type = 1, partial = FALSE,
 #' @export
 vi.train <- function(object, pred.var, partial = FALSE, FUN = NULL,
                      keep.partial = FALSE, ...) {
-  # if(missing(pred.var)) {
-  #   pred.var <- rownames(object$importance)
-  # }
+  if(missing(pred.var)) {
+    pred.var <- get_pred_names(object)
+  }
   tib <- if (partial) {
     vi.type <- "partial"
     vi.default(object, pred.var = pred.var, FUN = NULL,
