@@ -34,13 +34,13 @@ get_pred_names.gbm <- function(object, ...) {
 
 #' @keywords internal
 get_pred_names.lm <- function(object, ...) {
-  all.vars(formula(object)[[3L]])
+  all.vars(stats::formula(object)[[3L]])
 }
 
 
 #' @keywords internal
 get_pred_names.nls <- function(object, ...) {
-  all.vars(formula(object)[[3L]])
+  all.vars(stats::formula(object)[[3L]])
 }
 
 
