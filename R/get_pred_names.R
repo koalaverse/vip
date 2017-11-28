@@ -33,6 +33,12 @@ get_pred_names.gbm <- function(object, ...) {
 
 
 #' @keywords internal
+get_pred_names.H2ORegressionModel <- function(object, ...) {
+  object@parameters$x
+}
+
+
+#' @keywords internal
 get_pred_names.lm <- function(object, ...) {
   all.vars(stats::formula(object)[[3L]])
 }

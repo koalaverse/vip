@@ -28,6 +28,7 @@ Suggests:
     caret,
     earth,
     gbm,
+    h2o,
     randomForest,
     knitr,
     rmarkdown

@@ -71,7 +71,7 @@ vi.default <- function(object, pred.var, FUN = NULL, keep.partial = FALSE, ...)
 #' @export
 vi.earth <- function(object, pred.var, partial = FALSE, FUN = NULL,
                      keep.partial = FALSE, ...) {
-  if(missing(pred.var)) {
+  if (missing(pred.var)) {
     pred.var <- get_pred_names(object)
   }
   tib <- if (partial) {
@@ -96,7 +96,7 @@ vi.earth <- function(object, pred.var, partial = FALSE, FUN = NULL,
 #' @export
 vi.gbm <- function(object, pred.var, partial = FALSE, FUN = NULL,
                    keep.partial = FALSE, ...) {
-  if(missing(pred.var)) {
+  if (missing(pred.var)) {
     pred.var <- get_pred_names(object)
   }
   tib <- if (partial) {
@@ -119,9 +119,31 @@ vi.gbm <- function(object, pred.var, partial = FALSE, FUN = NULL,
 #' @rdname vi
 #'
 #' @export
+vi.H2ORegressionModel <- function(object, pred.var, partial = FALSE, FUN = NULL,
+                                  keep.partial = FALSE, ...) {
+  if (missing(pred.var)) {
+    pred.var <- get_pred_names(object)
+  }
+  tib <- if (partial) {
+    stop("`method = \"partial\" is currently not supported.")
+  } else {
+    vi.type <- "rel.inf"
+    imp <- tibble::as.tibble(h2o::h2o.varimp(object))
+    imp[3L:4L] <- NULL
+    names(imp) <- c("Variable", "Importance")
+    imp[imp$Variable %in% pred.var, ]
+  }
+  attr(tib, "vi.type") <- vi.type
+  tib
+}
+
+
+#' @rdname vi
+#'
+#' @export
 vi.lm <- function(object, pred.var, partial = FALSE, FUN = NULL,
                   keep.partial = FALSE, ...) {
-  if(missing(pred.var)) {
+  if (missing(pred.var)) {
     pred.var <- get_pred_names(object)
   }
   tib <- if (partial) {
@@ -150,7 +172,7 @@ vi.lm <- function(object, pred.var, partial = FALSE, FUN = NULL,
 #' @export
 vi.randomForest <- function(object, pred.var, type = 1, partial = FALSE,
                             FUN = NULL, keep.partial = FALSE, ...) {
-  if(missing(pred.var)) {
+  if (missing(pred.var)) {
     pred.var <- get_pred_names(object)
   }
   tib <- if (partial) {
@@ -180,7 +202,7 @@ vi.randomForest <- function(object, pred.var, type = 1, partial = FALSE,
 #' @export
 vi.train <- function(object, pred.var, partial = FALSE, FUN = NULL,
                      keep.partial = FALSE, ...) {
-  if(missing(pred.var)) {
+  if (missing(pred.var)) {
     pred.var <- get_pred_names(object)
   }
   tib <- if (partial) {

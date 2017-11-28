@@ -5,6 +5,7 @@
 \alias{vi.default}
 \alias{vi.earth}
 \alias{vi.gbm}
+\alias{vi.H2ORegressionModel}
 \alias{vi.lm}
 \alias{vi.randomForest}
 \alias{vi.train}
@@ -20,6 +21,9 @@ vi(object, ...)
 
 \method{vi}{gbm}(object, pred.var, partial = FALSE, FUN = NULL,
   keep.partial = FALSE, ...)
+
+\method{vi}{H2ORegressionModel}(object, pred.var, partial = FALSE,
+  FUN = NULL, keep.partial = FALSE, ...)
 
 \method{vi}{lm}(object, pred.var, partial = FALSE, FUN = NULL,
   keep.partial = FALSE, ...)
