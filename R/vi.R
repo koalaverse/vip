@@ -125,7 +125,19 @@ vi.H2ORegressionModel <- function(object, pred.var, partial = FALSE, FUN = NULL,
     pred.var <- get_pred_names(object)
   }
   tib <- if (partial) {
-    stop("`method = \"partial\" is currently not supported.")
+    # stop("`method = \"partial\" is currently not supported.")
+    vi.type <- "partial"
+    pd_list <- h2o::h2o.partialPlot(object, cols = pred.var, plot = FALSE,
+                                    plot_stddev = FALSE, ...)
+    if (is.null(FUN)) {
+      FUN <- stats::sd
+    }
+    imp <- unlist(lapply(pd_list, FUN = function(x) {
+      FUN(x[["mean_response"]])
+    }))
+    names(imp) <- pred.var
+    imp <- sort(imp, decreasing = TRUE)
+    tibble::tibble("Variable" = names(imp), "Importance" = imp)
   } else {
     vi.type <- "rel.inf"
     imp <- tibble::as.tibble(h2o::h2o.varimp(object))
@@ -134,6 +146,9 @@ vi.H2ORegressionModel <- function(object, pred.var, partial = FALSE, FUN = NULL,
     imp[imp$Variable %in% pred.var, ]
   }
   attr(tib, "vi.type") <- vi.type
+  if (partial && keep.partial) {
+    attr(tib, "partial") <- pd_list
+  }
   tib
 }
 
