@@ -57,6 +57,18 @@ get_pred_names.randomForest <- function(object, ...) {
 
 
 #' @keywords internal
+get_pred_names.RandomForest <- function(object, ...) {
+  all.vars(object@formula$input)
+}
+
+
+#' @keywords internal
+get_pred_names.ranger <- function(object, ...) {
+  names(object$variable.importance)
+}
+
+
+#' @keywords internal
 get_pred_names.train <- function(object, ...) {
   if (!is.null(object$trainingData)) {
     xn <- names(object$trainingData)

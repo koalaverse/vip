@@ -1,7 +1,7 @@
 Package: vip
 Type: Package
 Title: Variable importance plots using ggplot2-based graphics
-Version: 0.0.1
+Version: 0.0.1.9000
 Authors@R: person("Brandon", "Greenwell", email = "greenwell.brandon@gmail.com",
   role = c("aut", "cre"))
 Description: Construct and/or plot variable importance scores for various 

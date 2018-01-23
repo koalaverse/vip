@@ -129,12 +129,19 @@ vi.H2ORegressionModel <- function(object, pred.var, partial = FALSE, FUN = NULL,
     vi.type <- "partial"
     pd_list <- h2o::h2o.partialPlot(object, cols = pred.var, plot = FALSE,
                                     plot_stddev = FALSE, ...)
-    if (is.null(FUN)) {
-      FUN <- stats::sd
+    imp <- if (is.null(FUN)) {
+      unlist(lapply(pd_list, FUN = function(x) {
+        if (is.numeric(x[[1L]])) {
+          sd(x[["mean_response"]])
+        } else {
+          diff(range(x[["mean_response"]])) / 4
+        }
+      }))
+    } else {
+      unlist(lapply(pd_list, FUN = function(x) {
+        FUN(x[["mean_response"]])
+      }))
     }
-    imp <- unlist(lapply(pd_list, FUN = function(x) {
-      FUN(x[["mean_response"]])
-    }))
     names(imp) <- pred.var
     imp <- sort(imp, decreasing = TRUE)
     tibble::tibble("Variable" = names(imp), "Importance" = imp)
@@ -215,6 +222,32 @@ vi.randomForest <- function(object, pred.var, type = 1, partial = FALSE,
 #' @rdname vi
 #'
 #' @export
+vi.ranger <- function(object, pred.var, type = 1, partial = FALSE,
+                      FUN = NULL, keep.partial = FALSE, ...) {
+  if (missing(pred.var)) {
+    pred.var <- get_pred_names(object)
+  }
+  tib <- if (partial) {
+    vi.type <- "partial"
+    vi.default(object, pred.var = pred.var, FUN = NULL,
+               keep.partial = keep.partial, ...)
+  } else {
+    imp <- ranger::importance(object)
+    vi.type <- object$importance.mode
+    all.pred.var <- names(imp)
+    all.pred.var <- all.pred.var[order(imp, decreasing = TRUE)]
+    out <- tibble::tibble("Variable" = all.pred.var,
+                          "Importance" = sort(imp, decreasing = TRUE))
+    out[out$Variable %in% pred.var, ]
+  }
+  attr(tib, "vi.type") <- vi.type
+  tib
+}
+
+
+#' @rdname vi
+#'
+#' @export
 vi.train <- function(object, pred.var, partial = FALSE, FUN = NULL,
                      keep.partial = FALSE, ...) {
   if (missing(pred.var)) {
@@ -233,6 +266,37 @@ vi.train <- function(object, pred.var, partial = FALSE, FUN = NULL,
     ord <- order(imp$Overall, decreasing = TRUE)
     tibble::tibble("Variable" = rownames(imp)[ord],
                    "Importance" = imp$Overall[ord])
+  }
+  attr(tib, "vi.type") <- vi.type
+  tib
+}
+
+
+#' @rdname vi
+#'
+#' @export
+vi.xgb.Booster <- function(object, pred.var,
+                           type = c("Gain", "Cover", "Frequency"),
+                           partial = FALSE, FUN = NULL, keep.partial = FALSE,
+                           ...) {
+  if (missing(pred.var)) {
+    pred.var <- get_pred_names(object)
+  }
+  tib <- if (partial) {
+    vi.type <- "partial"
+    vi.default(object, pred.var = pred.var, FUN = NULL,
+               keep.partial = keep.partial, ...)
+  } else {
+    type <- match.arg(type)
+    imp <- xgboost::xgb.importance(feature_names = pred.var, model = object)
+    imp <- tibble::as.tibble(imp)
+    imp <- imp[, c("Feature", type)]
+    vi.type <- type
+    all.pred.var <-imp$Feature
+    all.pred.var <- all.pred.var[order(imp[[2L]], decreasing = TRUE)]
+    out <- tibble::tibble("Variable" = all.pred.var,
+                          "Importance" = sort(imp[[2L]], decreasing = TRUE))
+    out[out$Variable %in% pred.var, ]
   }
   attr(tib, "vi.type") <- vi.type
   tib
