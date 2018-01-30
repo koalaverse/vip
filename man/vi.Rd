@@ -8,7 +8,10 @@
 \alias{vi.H2ORegressionModel}
 \alias{vi.lm}
 \alias{vi.randomForest}
+\alias{vi.RandomForest}
+\alias{vi.ranger}
 \alias{vi.train}
+\alias{vi.xgb.Booster}
 \title{Variable Importance}
 \usage{
 vi(object, ...)
@@ -31,8 +34,17 @@ vi(object, ...)
 \method{vi}{randomForest}(object, pred.var, type = 1, partial = FALSE,
   FUN = NULL, keep.partial = FALSE, ...)
 
+\method{vi}{RandomForest}(object, pred.var, auc = FALSE, partial = FALSE,
+  FUN = NULL, keep.partial = FALSE, ...)
+
+\method{vi}{ranger}(object, pred.var, type = 1, partial = FALSE,
+  FUN = NULL, keep.partial = FALSE, ...)
+
 \method{vi}{train}(object, pred.var, partial = FALSE, FUN = NULL,
   keep.partial = FALSE, ...)
+
+\method{vi}{xgb.Booster}(object, pred.var, type = c("Gain", "Cover",
+  "Frequency"), partial = FALSE, FUN = NULL, keep.partial = FALSE, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
@@ -57,6 +69,11 @@ functions to construct variable importance scores. Default is \code{FALSE}.}
 \item{type}{Integer specifying the type of variable importance measure to
 return for \code{\link[randomForest]{randomForest}} objects. Should be
 \code{0} or \code{1}; see \code{\link[randomForest]{importance}} for details.}
+
+\item{auc}{Logical indicating whether or not to compute the AUC-based
+variable scores described in Janitza et al. (2012). Only available for
+\code{\link[cforest]{party}} objects. See
+\code{\link[varimpAUC]{party}} for details. Default is \code{FALSE}.}
 }
 \value{
 A tidy data frame (i.e., a \code{"tibble"} object) with two columns:

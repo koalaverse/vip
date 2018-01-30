@@ -58,7 +58,7 @@ get_pred_names.randomForest <- function(object, ...) {
 
 #' @keywords internal
 get_pred_names.RandomForest <- function(object, ...) {
-  all.vars(object@formula$input)
+  all.vars(object@data@formula$input)
 }
 
 

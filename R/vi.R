@@ -11,6 +11,11 @@
 #' return for \code{\link[randomForest]{randomForest}} objects. Should be
 #' \code{0} or \code{1}; see \code{\link[randomForest]{importance}} for details.
 #'
+#' @param auc Logical indicating whether or not to compute the AUC-based
+#' variable scores described in Janitza et al. (2012). Only available for
+#' \code{\link[cforest]{party}} objects. See
+#' \code{\link[varimpAUC]{party}} for details. Default is \code{FALSE}.
+#'
 #' @param partial Logical indicating whether or not to use partial dependence
 #' functions to construct variable importance scores. Default is \code{FALSE}.
 #'
@@ -209,6 +214,40 @@ vi.randomForest <- function(object, pred.var, type = 1, partial = FALSE,
     vi.type <- colnames(imp)[1L]
     all.pred.var <- rownames(imp)
     imp <- imp[, 1L]
+    all.pred.var <- all.pred.var[order(imp, decreasing = TRUE)]
+    out <- tibble::tibble("Variable" = all.pred.var,
+                          "Importance" = sort(imp, decreasing = TRUE))
+    out[out$Variable %in% pred.var, ]
+  }
+  attr(tib, "vi.type") <- vi.type
+  tib
+}
+
+
+#' @rdname vi
+#'
+#' @export
+vi.RandomForest <- function(object, pred.var, auc = FALSE, partial = FALSE,
+                            FUN = NULL, keep.partial = FALSE, ...) {
+  if (missing(pred.var)) {
+    pred.var <- get_pred_names(object)
+  }
+  tib <- if (partial) {
+    vi.type <- "partial"
+    vi.default(object, pred.var = pred.var, FUN = NULL,
+               keep.partial = keep.partial, ...)
+  } else {
+    imp <- if (auc) {
+      party::varimpAUC(object, ...)
+    } else {
+      party::varimp(object, ...)
+    }
+    vi.type <- if (auc) {
+      "AUC"
+    } else {
+      "Permutation"
+    }
+    all.pred.var <- names(imp)
     all.pred.var <- all.pred.var[order(imp, decreasing = TRUE)]
     out <- tibble::tibble("Variable" = all.pred.var,
                           "Importance" = sort(imp, decreasing = TRUE))

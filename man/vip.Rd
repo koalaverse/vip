@@ -7,13 +7,16 @@
 \usage{
 vip(object, ...)
 
-\method{vip}{default}(object, bar = TRUE, width = 0.75, horizontal = TRUE,
-  alpha = 1, color = "grey35", fill = "grey35", ...)
+\method{vip}{default}(object, top_n = 10L, bar = TRUE, width = 0.75,
+  horizontal = TRUE, alpha = 1, color = "grey35", fill = "grey35", ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
 
 \item{...}{Additional optional arguments to be passed onto \code{\link{vi}}.}
+
+\item{top_n}{Integer specifying the number of variable importance scores to
+plot. Default is \code{10}.}
 
 \item{bar}{Logical indicating whether or not to produce a barplot. Default
 is \code{TRUE}. If \code{bar = FALSE}, then a dotchart is displayed instead.}
