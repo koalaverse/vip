@@ -69,6 +69,12 @@ get_pred_names.ranger <- function(object, ...) {
 
 
 #' @keywords internal
+get_pred_names.rpart <- function(object, ...) {
+  names(object$variable.importance)
+}
+
+
+#' @keywords internal
 get_pred_names.train <- function(object, ...) {
   if (!is.null(object$trainingData)) {
     xn <- names(object$trainingData)

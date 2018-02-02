@@ -10,6 +10,7 @@
 \alias{vi.randomForest}
 \alias{vi.RandomForest}
 \alias{vi.ranger}
+\alias{vi.rpart}
 \alias{vi.train}
 \alias{vi.xgb.Booster}
 \title{Variable Importance}
@@ -39,6 +40,9 @@ vi(object, ...)
 
 \method{vi}{ranger}(object, pred.var, type = 1, partial = FALSE,
   FUN = NULL, keep.partial = FALSE, ...)
+
+\method{vi}{rpart}(object, pred.var, partial = FALSE, FUN = NULL,
+  keep.partial = FALSE, ...)
 
 \method{vi}{train}(object, pred.var, partial = FALSE, FUN = NULL,
   keep.partial = FALSE, ...)

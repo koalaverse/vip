@@ -287,6 +287,36 @@ vi.ranger <- function(object, pred.var, type = 1, partial = FALSE,
 #' @rdname vi
 #'
 #' @export
+vi.rpart <- function(object, pred.var, partial = FALSE,FUN = NULL,
+                            keep.partial = FALSE, ...) {
+  if (missing(pred.var)) {
+    pred.var <- get_pred_names(object)
+  }
+  tib <- if (partial) {
+    vi.type <- "partial"
+    vi.default(object, pred.var = pred.var, FUN = NULL,
+               keep.partial = keep.partial, ...)
+  } else {
+    imp <- object$variable.importance
+    if (is.null(imp)) {
+      stop("Cannot extract variable importance scores ",
+           "from a tree with no splits.", call. = FALSE)
+    }
+    vi.type <- "GoodnessOfSplit"
+    all.pred.var <- names(imp)
+    all.pred.var <- all.pred.var[order(imp, decreasing = TRUE)]
+    out <- tibble::tibble("Variable" = all.pred.var,
+                          "Importance" = sort(imp, decreasing = TRUE))
+    out[out$Variable %in% pred.var, ]
+  }
+  attr(tib, "vi.type") <- vi.type
+  tib
+}
+
+
+#' @rdname vi
+#'
+#' @export
 vi.train <- function(object, pred.var, partial = FALSE, FUN = NULL,
                      keep.partial = FALSE, ...) {
   if (missing(pred.var)) {
