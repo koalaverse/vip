@@ -18,10 +18,11 @@
 vi(object, ...)
 
 \method{vi}{default}(object, feature_names, truncate_feature_names = NULL,
-  FUN = NULL, keep.partial = FALSE, ...)
+  sort = TRUE, decreasing = TRUE, FUN = NULL, keep.partial = FALSE, ...)
 
 \method{vi}{earth}(object, feature_names, truncate_feature_names = NULL,
-  partial = FALSE, FUN = NULL, keep.partial = FALSE, ...)
+  sort = TRUE, decreasing = TRUE, partial = FALSE, FUN = NULL,
+  keep.partial = FALSE, ...)
 
 \method{vi}{gbm}(object, feature_names, truncate_feature_names = NULL,
   partial = FALSE, FUN = NULL, keep.partial = FALSE, ...)
@@ -65,6 +66,13 @@ variables (i.e., features) of interest.}
 \item{truncate_feature_names}{Integer specifying the length at which to
 truncate feature names. Default is \code{NULL} which results in no truncation
 (i.e., the full name of each feature will be printed).}
+
+\item{sort}{Logical indicating whether or not to order the sort the variable
+importance scores. Default is \code{TRUE}.}
+
+\item{decreasing}{Logical indicating whether or not the variable importance
+scores should be sorted in descending (\code{TRUE}) or ascending
+(\code{FALSE}) order of importance. Default is \code{TRUE}.}
 
 \item{FUN}{Function used to measure the variability of the partial dependence
 values for continuous predictors. If \code{NULL}, the standard deviation is

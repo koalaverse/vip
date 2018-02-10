@@ -13,5 +13,12 @@ NULL
 
 #' @keywords internal
 truncate_feature_names <- function(x, length) {
-  substr(x, start = 1L, stop = length)
+  x$Variable <- substr(x$Variable, start = 1L, stop = length)
+  x
+}
+
+
+#' @keywords internal
+sort_importance_scores <- function(x, decreasing) {
+  x[order(x$Importance, decreasing = decreasing), ]
 }

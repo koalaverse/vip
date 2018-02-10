@@ -8,6 +8,7 @@ output:
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
+  cache = TRUE,
   collapse = TRUE,
   comment = "#>",
   fig.path = "tools/README-"
@@ -42,52 +43,27 @@ $$
 
 where $\epsilon \sim N\left(0, \sigma\right)$. These data are available in the [mlbench](https://CRAN.R-project.org/package=mlbench) package. The code chunk below simulates 500 observations from the above model with $\simga = 1$.
 ```{r}
-# Load required packages
-library(mlbench)
-
 # Simulate training data
 set.seed(101)  # for reproducibility
-trn <- as.data.frame(mlbench.friedman1(500))  # ?mlbench.friedman1
-tibble::glimpse(trn)  # take a peek
+trn <- as.data.frame(mlbench::mlbench.friedman1(500))  # ?mlbench.friedman1
 ```
 
-Next, we fit a random forest to the simulated data and construct variable importance plots using the two methods provided by the random forest algorithm (left and middle plots) and the partial dependence approach (right plot).
+Next, we fit a random forest to the simulated data and construct variable importance plots using the two methods provided by the random forest algorithm (left and middle plots) and the (**experimental**) partial dependence-based approach (right plot).
 ```{r example-rf, message=FALSE, warning=FALSE}
 # Load required packages
-library(ggplot2)
-library(magrittr)
 library(randomForest)  
 library(vip)
 
 # Fit a random forest
 set.seed(102)
-trn.rf <- randomForest(y ~ ., data = trn, importance = TRUE)
+rf <- randomForest(y ~ ., data = trn, importance = TRUE)
 
-# Importance: mean decrease in accuracy
-imp1 <- importance(trn.rf, type = 1) %>%
-  as.data.frame() %>%
-  tibble::rownames_to_column("Variable")
-p1 <- ggplot(imp1, aes(x = reorder(Variable, `%IncMSE`), y = `%IncMSE`)) +
-  geom_col() +
-  coord_flip() +
-  xlab("") +
-  theme_light()
+# Use `vi()` to return a tibble of variable importance scores
+vi(rf, type = 1)
 
-# Importance: mean decrease node impurity
-imp2 <- importance(trn.rf, type = 2) %>%
-  as.data.frame() %>%
-  tibble::rownames_to_column("Variable")
-p2 <- ggplot(imp2, aes(x = reorder(Variable, IncNodePurity), y = IncNodePurity)) +
-  geom_col() +
-  coord_flip() +
-  xlab("") +
-  theme_light()
-
-# Importance: partial dependence
-p3 <- vip(trn.rf, use.partial = TRUE, pred.var = paste0("x.", 1:10)) +
-  ylab("pdVarImp") +
-  theme_light()
-
-# Display all three plots together
+# Use `vip()` to construct ggplot2-based variable importance plots
+p1 <- vip(rf, type = 1)
+p2 <- vip(rf, type = 1)
+p3 <- vip(rf, partial = TRUE)
 grid.arrange(p1, p2, p3, ncol = 3)
 ```
