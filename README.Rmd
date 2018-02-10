@@ -6,9 +6,9 @@ output:
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, echo = FALSE}
+```{r setup, echo = FALSE}
 knitr::opts_chunk$set(
-  cache = TRUE,
+  cache = FALSE,
   collapse = TRUE,
   comment = "#>",
   fig.path = "tools/README-"
@@ -37,10 +37,7 @@ devtools::install_github("AFIT-R/vip")
 
 For illustration, we use one of the regression problems described in Friedman (1991) and Breiman (1996). Inputs are 10 independent variables uniformly distributed on the interval $\left[0, 1\right]$; only 5 out of these 10 are actually used. Outputs are created according to the formula
 
-$$
-\mathcal{Y} = 10 \sin\left(\pi x_1 x_2\right) + 20 \left(x_3 - 0.5\right) ^ 2 + 10 x_4 + 5 x_5 + \epsilon,
-$$
-
+$$Y = 10 \sin\left(\pi x_1 x_2\right) + 20 \left(x_3 - 0.5\right) ^ 2 + 10 x_4 + 5 x_5 + \epsilon,$$
 where $\epsilon \sim N\left(0, \sigma\right)$. These data are available in the [mlbench](https://CRAN.R-project.org/package=mlbench) package. The code chunk below simulates 500 observations from the above model with $\simga = 1$.
 ```{r}
 # Simulate training data
