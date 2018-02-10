@@ -9,3 +9,9 @@
 #' @importFrom gridExtra grid.arrange
 #' @usage grid.arrange(..., newpage = TRUE)
 NULL
+
+
+#' @keywords internal
+truncate_feature_names <- function(x, length) {
+  substr(x, start = 1L, stop = length)
+}

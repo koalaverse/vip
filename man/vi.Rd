@@ -17,46 +17,54 @@
 \usage{
 vi(object, ...)
 
-\method{vi}{default}(object, pred.var, FUN = NULL, keep.partial = FALSE,
-  ...)
-
-\method{vi}{earth}(object, pred.var, partial = FALSE, FUN = NULL,
-  keep.partial = FALSE, ...)
-
-\method{vi}{gbm}(object, pred.var, partial = FALSE, FUN = NULL,
-  keep.partial = FALSE, ...)
-
-\method{vi}{H2ORegressionModel}(object, pred.var, partial = FALSE,
+\method{vi}{default}(object, feature_names, truncate_feature_names = NULL,
   FUN = NULL, keep.partial = FALSE, ...)
 
-\method{vi}{lm}(object, pred.var, partial = FALSE, FUN = NULL,
+\method{vi}{earth}(object, feature_names, truncate_feature_names = NULL,
+  partial = FALSE, FUN = NULL, keep.partial = FALSE, ...)
+
+\method{vi}{gbm}(object, feature_names, truncate_feature_names = NULL,
+  partial = FALSE, FUN = NULL, keep.partial = FALSE, ...)
+
+\method{vi}{H2ORegressionModel}(object, feature_names,
+  truncate_feature_names = NULL, partial = FALSE, FUN = NULL,
   keep.partial = FALSE, ...)
 
-\method{vi}{randomForest}(object, pred.var, type = 1, partial = FALSE,
-  FUN = NULL, keep.partial = FALSE, ...)
+\method{vi}{lm}(object, feature_names, truncate_feature_names = NULL,
+  partial = FALSE, FUN = NULL, keep.partial = FALSE, ...)
 
-\method{vi}{RandomForest}(object, pred.var, auc = FALSE, partial = FALSE,
-  FUN = NULL, keep.partial = FALSE, ...)
-
-\method{vi}{ranger}(object, pred.var, type = 1, partial = FALSE,
-  FUN = NULL, keep.partial = FALSE, ...)
-
-\method{vi}{rpart}(object, pred.var, partial = FALSE, FUN = NULL,
+\method{vi}{randomForest}(object, feature_names,
+  truncate_feature_names = NULL, type = 1, partial = FALSE, FUN = NULL,
   keep.partial = FALSE, ...)
 
-\method{vi}{train}(object, pred.var, partial = FALSE, FUN = NULL,
-  keep.partial = FALSE, ...)
+\method{vi}{RandomForest}(object, feature_names,
+  truncate_feature_names = NULL, auc = FALSE, partial = FALSE,
+  FUN = NULL, keep.partial = FALSE, ...)
 
-\method{vi}{xgb.Booster}(object, pred.var, type = c("Gain", "Cover",
-  "Frequency"), partial = FALSE, FUN = NULL, keep.partial = FALSE, ...)
+\method{vi}{ranger}(object, feature_names, truncate_feature_names = NULL,
+  partial = FALSE, FUN = NULL, keep.partial = FALSE, ...)
+
+\method{vi}{rpart}(object, feature_names, truncate_feature_names = NULL,
+  partial = FALSE, FUN = NULL, keep.partial = FALSE, ...)
+
+\method{vi}{train}(object, feature_names, truncate_feature_names = NULL,
+  partial = FALSE, FUN = NULL, keep.partial = FALSE, ...)
+
+\method{vi}{xgb.Booster}(object, feature_names, truncate_feature_names = NULL,
+  type = c("Gain", "Cover", "Frequency"), partial = FALSE, FUN = NULL,
+  keep.partial = FALSE, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
 
 \item{...}{Additional optional arguments.}
 
-\item{pred.var}{Character string giving the names of the predictor variables
-of interest.}
+\item{feature_names}{Character string giving the names of the predictor
+variables (i.e., features) of interest.}
+
+\item{truncate_feature_names}{Integer specifying the length at which to
+truncate feature names. Default is \code{NULL} which results in no truncation
+(i.e., the full name of each feature will be printed).}
 
 \item{FUN}{Function used to measure the variability of the partial dependence
 values for continuous predictors. If \code{NULL}, the standard deviation is
@@ -64,8 +72,8 @@ used (i.e., \code{FUN = sd}). For factors, the range statistic is used (i.e.,
 (max - min) / 4).}
 
 \item{keep.partial}{Logical indicating whether or not to return the computed
-partial dependence values for each predictor listed in \code{pred.var} in a
-separate attribute called \code{"partial"}. Default is \code{FALSE}.}
+partial dependence values for each predictor listed in \code{feature_names}
+in a separate attribute called \code{"partial"}. Default is \code{FALSE}.}
 
 \item{partial}{Logical indicating whether or not to use partial dependence
 functions to construct variable importance scores. Default is \code{FALSE}.}
@@ -98,5 +106,5 @@ data(mtcars)
 mtcars.ppr <- ppr(mpg ~ ., data = mtcars, nterms = 1)
 
 # Compute variable importance scores
-vi(mtcars.ppr, pred.var = names(subset(mtcars, select = -mpg)))
+vi(mtcars.ppr, feature_names = names(subset(mtcars, select = -mpg)))
 }

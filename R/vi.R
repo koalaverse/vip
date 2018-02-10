@@ -4,8 +4,12 @@
 #'
 #' @param object A fitted model object (e.g., a \code{"randomForest"} object).
 #'
-#' @param pred.var Character string giving the names of the predictor variables
-#' of interest.
+#' @param feature_names Character string giving the names of the predictor
+#' variables (i.e., features) of interest.
+#'
+#' @param truncate_feature_names Integer specifying the length at which to
+#' truncate feature names. Default is \code{NULL} which results in no truncation
+#' (i.e., the full name of each feature will be printed).
 #'
 #' @param type Integer specifying the type of variable importance measure to
 #' return for \code{\link[randomForest]{randomForest}} objects. Should be
@@ -25,8 +29,8 @@
 #' (max - min) / 4).
 #'
 #' @param keep.partial Logical indicating whether or not to return the computed
-#' partial dependence values for each predictor listed in \code{pred.var} in a
-#' separate attribute called \code{"partial"}. Default is \code{FALSE}.
+#' partial dependence values for each predictor listed in \code{feature_names}
+#' in a separate attribute called \code{"partial"}. Default is \code{FALSE}.
 #'
 #' @param ... Additional optional arguments.
 #'
@@ -49,7 +53,7 @@
 #' mtcars.ppr <- ppr(mpg ~ ., data = mtcars, nterms = 1)
 #'
 #' # Compute variable importance scores
-#' vi(mtcars.ppr, pred.var = names(subset(mtcars, select = -mpg)))
+#' vi(mtcars.ppr, feature_names = names(subset(mtcars, select = -mpg)))
 vi <- function(object, ...) {
   UseMethod("vi")
 }
@@ -58,14 +62,17 @@ vi <- function(object, ...) {
 #' @rdname vi
 #'
 #' @export
-vi.default <- function(object, pred.var, FUN = NULL, keep.partial = FALSE, ...)
-{
-  imp <- get_pd_vi_scores(object, pred.var = pred.var, FUN = FUN,
+vi.default <- function(object, feature_names, truncate_feature_names = NULL,
+                       FUN = NULL, keep.partial = FALSE, ...) {
+  imp <- get_pd_vi_scores(object, feature_names = feature_names, FUN = FUN,
                           keep.partial = keep.partial, ...)
-  pred.var <- pred.var[order(imp, decreasing = TRUE)]
-  res <- tibble::tibble("Variable" = pred.var,
+  feature_names <- feature_names[order(imp, decreasing = TRUE)]
+  res <- tibble::tibble("Variable" = feature_names,
                         "Importance" = sort(imp, decreasing = TRUE))
-  class(res) <- c("vi", class(res))
+  if (!is.null(truncate_feature_names)) {
+    res$Variable <- truncate_feature_names(res$Variable,
+                                           length = truncate_feature_names)
+  }
   attr(res, "partial") <- attr(imp, "partial")
   res
 }
@@ -74,14 +81,14 @@ vi.default <- function(object, pred.var, FUN = NULL, keep.partial = FALSE, ...)
 #' @rdname vi
 #'
 #' @export
-vi.earth <- function(object, pred.var, partial = FALSE, FUN = NULL,
-                     keep.partial = FALSE, ...) {
-  if (missing(pred.var)) {
-    pred.var <- get_pred_names(object)
+vi.earth <- function(object, feature_names, truncate_feature_names = NULL,
+                     partial = FALSE, FUN = NULL, keep.partial = FALSE, ...) {
+  if (missing(feature_names)) {
+    feature_names <- get_pred_names(object)
   }
   tib <- if (partial) {
     vi.type <- "partial"
-    vi.default(object, pred.var = pred.var, FUN = NULL,
+    vi.default(object, feature_names = feature_names, FUN = NULL,
                keep.partial = keep.partial, ...)
   } else {
     vi.type <- "earth"
@@ -91,6 +98,11 @@ vi.earth <- function(object, pred.var, partial = FALSE, FUN = NULL,
     rownames(imp) <- NULL
     tibble::as.tibble(imp)
   }
+  if (!is.null(truncate_feature_names)) {
+    tib$Variable <- truncate_feature_names(
+      tib$Variable, length = truncate_feature_names
+    )
+  }
   attr(tib, "vi.type") <- vi.type
   tib
 }
@@ -99,14 +111,14 @@ vi.earth <- function(object, pred.var, partial = FALSE, FUN = NULL,
 #' @rdname vi
 #'
 #' @export
-vi.gbm <- function(object, pred.var, partial = FALSE, FUN = NULL,
-                   keep.partial = FALSE, ...) {
-  if (missing(pred.var)) {
-    pred.var <- get_pred_names(object)
+vi.gbm <- function(object, feature_names, truncate_feature_names = NULL,
+                   partial = FALSE, FUN = NULL, keep.partial = FALSE, ...) {
+  if (missing(feature_names)) {
+    feature_names <- get_pred_names(object)
   }
   tib <- if (partial) {
     vi.type <- "partial"
-    vi.default(object, pred.var = pred.var, FUN = NULL,
+    vi.default(object, feature_names = feature_names, FUN = NULL,
                keep.partial = keep.partial, ...)
   } else {
     vi.type <- "rel.inf"
@@ -114,7 +126,12 @@ vi.gbm <- function(object, pred.var, partial = FALSE, FUN = NULL,
     rownames(imp) <- NULL
     names(imp) <- c("Variable", "Importance")
     out <- tibble::as.tibble(imp)
-    out[out$Variable %in% pred.var, ]
+    out[out$Variable %in% feature_names, ]
+  }
+  if (!is.null(truncate_feature_names)) {
+    tib$Variable <- truncate_feature_names(
+      tib$Variable, length = truncate_feature_names
+    )
   }
   attr(tib, "vi.type") <- vi.type
   tib
@@ -124,15 +141,17 @@ vi.gbm <- function(object, pred.var, partial = FALSE, FUN = NULL,
 #' @rdname vi
 #'
 #' @export
-vi.H2ORegressionModel <- function(object, pred.var, partial = FALSE, FUN = NULL,
+vi.H2ORegressionModel <- function(object, feature_names,
+                                  truncate_feature_names = NULL,
+                                  partial = FALSE, FUN = NULL,
                                   keep.partial = FALSE, ...) {
-  if (missing(pred.var)) {
-    pred.var <- get_pred_names(object)
+  if (missing(feature_names)) {
+    feature_names <- get_pred_names(object)
   }
   tib <- if (partial) {
     # stop("`method = \"partial\" is currently not supported.")
     vi.type <- "partial"
-    pd_list <- h2o::h2o.partialPlot(object, cols = pred.var, plot = FALSE,
+    pd_list <- h2o::h2o.partialPlot(object, cols = feature_names, plot = FALSE,
                                     plot_stddev = FALSE, ...)
     imp <- if (is.null(FUN)) {
       unlist(lapply(pd_list, FUN = function(x) {
@@ -147,7 +166,7 @@ vi.H2ORegressionModel <- function(object, pred.var, partial = FALSE, FUN = NULL,
         FUN(x[["mean_response"]])
       }))
     }
-    names(imp) <- pred.var
+    names(imp) <- feature_names
     imp <- sort(imp, decreasing = TRUE)
     tibble::tibble("Variable" = names(imp), "Importance" = imp)
   } else {
@@ -155,7 +174,12 @@ vi.H2ORegressionModel <- function(object, pred.var, partial = FALSE, FUN = NULL,
     imp <- tibble::as.tibble(h2o::h2o.varimp(object))
     imp[3L:4L] <- NULL
     names(imp) <- c("Variable", "Importance")
-    imp[imp$Variable %in% pred.var, ]
+    imp[imp$Variable %in% feature_names, ]
+  }
+  if (!is.null(truncate_feature_names)) {
+    tib$Variable <- truncate_feature_names(
+      tib$Variable, length = truncate_feature_names
+    )
   }
   attr(tib, "vi.type") <- vi.type
   if (partial && keep.partial) {
@@ -168,14 +192,14 @@ vi.H2ORegressionModel <- function(object, pred.var, partial = FALSE, FUN = NULL,
 #' @rdname vi
 #'
 #' @export
-vi.lm <- function(object, pred.var, partial = FALSE, FUN = NULL,
-                  keep.partial = FALSE, ...) {
-  if (missing(pred.var)) {
-    pred.var <- get_pred_names(object)
+vi.lm <- function(object, feature_names, truncate_feature_names = NULL,
+                  partial = FALSE, FUN = NULL, keep.partial = FALSE, ...) {
+  if (missing(feature_names)) {
+    feature_names <- get_pred_names(object)
   }
   tib <- if (partial) {
     vi.type <- "partial"
-    vi.default(object, pred.var = pred.var, FUN = NULL,
+    vi.default(object, feature_names = feature_names, FUN = NULL,
                keep.partial = keep.partial, ...)
   } else {
     vi.type <- "tstat"
@@ -183,11 +207,16 @@ vi.lm <- function(object, pred.var, partial = FALSE, FUN = NULL,
     if (attr(object$terms, "intercept") == 1) {
       coefs <- coefs[-1, ]
     }
-    pred.var <- rownames(coefs)
+    feature_names <- rownames(coefs)
     imp <- abs(coefs[, "t value"])
-    pred.var <- pred.var[order(imp, decreasing = TRUE)]
-    tibble::tibble("Variable" = pred.var,
+    feature_names <- feature_names[order(imp, decreasing = TRUE)]
+    tibble::tibble("Variable" = feature_names,
                    "Importance" = sort(imp, decreasing = TRUE))
+  }
+  if (!is.null(truncate_feature_names)) {
+    tib$Variable <- truncate_feature_names(
+      tib$Variable, length = truncate_feature_names
+    )
   }
   attr(tib, "vi.type") <- vi.type
   tib
@@ -197,14 +226,16 @@ vi.lm <- function(object, pred.var, partial = FALSE, FUN = NULL,
 #' @rdname vi
 #'
 #' @export
-vi.randomForest <- function(object, pred.var, type = 1, partial = FALSE,
-                            FUN = NULL, keep.partial = FALSE, ...) {
-  if (missing(pred.var)) {
-    pred.var <- get_pred_names(object)
+vi.randomForest <- function(object, feature_names,
+                            truncate_feature_names = NULL, type = 1,
+                            partial = FALSE, FUN = NULL, keep.partial = FALSE,
+                            ...) {
+  if (missing(feature_names)) {
+    feature_names <- get_pred_names(object)
   }
   tib <- if (partial) {
     vi.type <- "partial"
-    vi.default(object, pred.var = pred.var, FUN = NULL,
+    vi.default(object, feature_names = feature_names, FUN = NULL,
                keep.partial = keep.partial, ...)
   } else {
     imp <- randomForest::importance(object, type = type, ...)
@@ -212,12 +243,17 @@ vi.randomForest <- function(object, pred.var, type = 1, partial = FALSE,
       imp <- object$importance
     }
     vi.type <- colnames(imp)[1L]
-    all.pred.var <- rownames(imp)
+    all.feature_names <- rownames(imp)
     imp <- imp[, 1L]
-    all.pred.var <- all.pred.var[order(imp, decreasing = TRUE)]
-    out <- tibble::tibble("Variable" = all.pred.var,
+    all.feature_names <- all.feature_names[order(imp, decreasing = TRUE)]
+    out <- tibble::tibble("Variable" = all.feature_names,
                           "Importance" = sort(imp, decreasing = TRUE))
-    out[out$Variable %in% pred.var, ]
+    out[out$Variable %in% feature_names, ]
+  }
+  if (!is.null(truncate_feature_names)) {
+    tib$Variable <- truncate_feature_names(
+      tib$Variable, length = truncate_feature_names
+    )
   }
   attr(tib, "vi.type") <- vi.type
   tib
@@ -227,14 +263,16 @@ vi.randomForest <- function(object, pred.var, type = 1, partial = FALSE,
 #' @rdname vi
 #'
 #' @export
-vi.RandomForest <- function(object, pred.var, auc = FALSE, partial = FALSE,
-                            FUN = NULL, keep.partial = FALSE, ...) {
-  if (missing(pred.var)) {
-    pred.var <- get_pred_names(object)
+vi.RandomForest <- function(object, feature_names,
+                            truncate_feature_names = NULL, auc = FALSE,
+                            partial = FALSE, FUN = NULL, keep.partial = FALSE,
+                            ...) {
+  if (missing(feature_names)) {
+    feature_names <- get_pred_names(object)
   }
   tib <- if (partial) {
     vi.type <- "partial"
-    vi.default(object, pred.var = pred.var, FUN = NULL,
+    vi.default(object, feature_names = feature_names, FUN = NULL,
                keep.partial = keep.partial, ...)
   } else {
     imp <- if (auc) {
@@ -247,11 +285,16 @@ vi.RandomForest <- function(object, pred.var, auc = FALSE, partial = FALSE,
     } else {
       "Permutation"
     }
-    all.pred.var <- names(imp)
-    all.pred.var <- all.pred.var[order(imp, decreasing = TRUE)]
-    out <- tibble::tibble("Variable" = all.pred.var,
+    all.feature_names <- names(imp)
+    all.feature_names <- all.feature_names[order(imp, decreasing = TRUE)]
+    out <- tibble::tibble("Variable" = all.feature_names,
                           "Importance" = sort(imp, decreasing = TRUE))
-    out[out$Variable %in% pred.var, ]
+    out[out$Variable %in% feature_names, ]
+  }
+  if (!is.null(truncate_feature_names)) {
+    tib$Variable <- truncate_feature_names(
+      tib$Variable, length = truncate_feature_names
+    )
   }
   attr(tib, "vi.type") <- vi.type
   tib
@@ -261,23 +304,28 @@ vi.RandomForest <- function(object, pred.var, auc = FALSE, partial = FALSE,
 #' @rdname vi
 #'
 #' @export
-vi.ranger <- function(object, pred.var, partial = FALSE, FUN = NULL,
-                      keep.partial = FALSE, ...) {
-  if (missing(pred.var)) {
-    pred.var <- get_pred_names(object)
+vi.ranger <- function(object, feature_names, truncate_feature_names = NULL,
+                      partial = FALSE, FUN = NULL, keep.partial = FALSE, ...) {
+  if (missing(feature_names)) {
+    feature_names <- get_pred_names(object)
   }
   tib <- if (partial) {
     vi.type <- "partial"
-    vi.default(object, pred.var = pred.var, FUN = NULL,
+    vi.default(object, feature_names = feature_names, FUN = NULL,
                keep.partial = keep.partial, ...)
   } else {
     imp <- ranger::importance(object)
     vi.type <- object$importance.mode
-    all.pred.var <- names(imp)
-    all.pred.var <- all.pred.var[order(imp, decreasing = TRUE)]
-    out <- tibble::tibble("Variable" = all.pred.var,
+    all.feature_names <- names(imp)
+    all.feature_names <- all.feature_names[order(imp, decreasing = TRUE)]
+    out <- tibble::tibble("Variable" = all.feature_names,
                           "Importance" = sort(imp, decreasing = TRUE))
-    out[out$Variable %in% pred.var, ]
+    out[out$Variable %in% feature_names, ]
+  }
+  if (!is.null(truncate_feature_names)) {
+    tib$Variable <- truncate_feature_names(
+      tib$Variable, length = truncate_feature_names
+    )
   }
   attr(tib, "vi.type") <- vi.type
   tib
@@ -287,14 +335,14 @@ vi.ranger <- function(object, pred.var, partial = FALSE, FUN = NULL,
 #' @rdname vi
 #'
 #' @export
-vi.rpart <- function(object, pred.var, partial = FALSE,FUN = NULL,
-                            keep.partial = FALSE, ...) {
-  if (missing(pred.var)) {
-    pred.var <- get_pred_names(object)
+vi.rpart <- function(object, feature_names, truncate_feature_names = NULL,
+                     partial = FALSE,FUN = NULL, keep.partial = FALSE, ...) {
+  if (missing(feature_names)) {
+    feature_names <- get_pred_names(object)
   }
   tib <- if (partial) {
     vi.type <- "partial"
-    vi.default(object, pred.var = pred.var, FUN = NULL,
+    vi.default(object, feature_names = feature_names, FUN = NULL,
                keep.partial = keep.partial, ...)
   } else {
     imp <- object$variable.importance
@@ -303,11 +351,16 @@ vi.rpart <- function(object, pred.var, partial = FALSE,FUN = NULL,
            "from a tree with no splits.", call. = FALSE)
     }
     vi.type <- "GoodnessOfSplit"
-    all.pred.var <- names(imp)
-    all.pred.var <- all.pred.var[order(imp, decreasing = TRUE)]
-    out <- tibble::tibble("Variable" = all.pred.var,
+    all.feature_names <- names(imp)
+    all.feature_names <- all.feature_names[order(imp, decreasing = TRUE)]
+    out <- tibble::tibble("Variable" = all.feature_names,
                           "Importance" = sort(imp, decreasing = TRUE))
-    out[out$Variable %in% pred.var, ]
+    out[out$Variable %in% feature_names, ]
+  }
+  if (!is.null(truncate_feature_names)) {
+    tib$Variable <- truncate_feature_names(
+      tib$Variable, length = truncate_feature_names
+    )
   }
   attr(tib, "vi.type") <- vi.type
   tib
@@ -317,14 +370,14 @@ vi.rpart <- function(object, pred.var, partial = FALSE,FUN = NULL,
 #' @rdname vi
 #'
 #' @export
-vi.train <- function(object, pred.var, partial = FALSE, FUN = NULL,
-                     keep.partial = FALSE, ...) {
-  if (missing(pred.var)) {
-    pred.var <- get_pred_names(object)
+vi.train <- function(object, feature_names, truncate_feature_names = NULL,
+                     partial = FALSE, FUN = NULL, keep.partial = FALSE, ...) {
+  if (missing(feature_names)) {
+    feature_names <- get_pred_names(object)
   }
   tib <- if (partial) {
     vi.type <- "partial"
-    vi.default(object, pred.var = pred.var, FUN = NULL,
+    vi.default(object, feature_names = feature_names, FUN = NULL,
                keep.partial = keep.partial, ...)
   } else {
     vi.type <- "caret"
@@ -336,6 +389,11 @@ vi.train <- function(object, pred.var, partial = FALSE, FUN = NULL,
     tibble::tibble("Variable" = rownames(imp)[ord],
                    "Importance" = imp$Overall[ord])
   }
+  if (!is.null(truncate_feature_names)) {
+    tib$Variable <- truncate_feature_names(
+      tib$Variable, length = truncate_feature_names
+    )
+  }
   attr(tib, "vi.type") <- vi.type
   tib
 }
@@ -344,37 +402,35 @@ vi.train <- function(object, pred.var, partial = FALSE, FUN = NULL,
 #' @rdname vi
 #'
 #' @export
-vi.xgb.Booster <- function(object, pred.var,
+vi.xgb.Booster <- function(object, feature_names, truncate_feature_names = NULL,
                            type = c("Gain", "Cover", "Frequency"),
                            partial = FALSE, FUN = NULL, keep.partial = FALSE,
                            ...) {
-  if (missing(pred.var)) {
-    pred.var <- get_pred_names(object)
+  if (missing(feature_names)) {
+    feature_names <- get_pred_names(object)
   }
   tib <- if (partial) {
     vi.type <- "partial"
-    vi.default(object, pred.var = pred.var, FUN = NULL,
+    vi.default(object, feature_names = feature_names, FUN = NULL,
                keep.partial = keep.partial, ...)
   } else {
     type <- match.arg(type)
-    imp <- xgboost::xgb.importance(feature_names = pred.var, model = object)
+    imp <- xgboost::xgb.importance(feature_names = feature_names,
+                                   model = object)
     imp <- tibble::as.tibble(imp)
     imp <- imp[, c("Feature", type)]
     vi.type <- type
-    all.pred.var <-imp$Feature
-    all.pred.var <- all.pred.var[order(imp[[2L]], decreasing = TRUE)]
-    out <- tibble::tibble("Variable" = all.pred.var,
+    all.feature_names <-imp$Feature
+    all.feature_names <- all.feature_names[order(imp[[2L]], decreasing = TRUE)]
+    out <- tibble::tibble("Variable" = all.feature_names,
                           "Importance" = sort(imp[[2L]], decreasing = TRUE))
-    out[out$Variable %in% pred.var, ]
+    out[out$Variable %in% feature_names, ]
+  }
+  if (!is.null(truncate_feature_names)) {
+    tib$Variable <- truncate_feature_names(
+      tib$Variable, length = truncate_feature_names
+    )
   }
   attr(tib, "vi.type") <- vi.type
   tib
 }
-
-
-# #' @keywords internal
-# #' @export
-# print.vi <- function(x, ...) {
-#   attributes(x) <- NULL
-#   print(x, ...)
-# }

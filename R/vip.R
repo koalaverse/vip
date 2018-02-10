@@ -4,8 +4,8 @@
 #'
 #' @param object A fitted model object (e.g., a \code{"randomForest"} object).
 #'
-#' @param top_n Integer specifying the number of variable importance scores to
-#' plot. Default is \code{10}.
+#' @param num_features Integer specifying the number of variable importance
+#' scores to plot. Default is \code{10}.
 #'
 #' @param bar Logical indicating whether or not to produce a barplot. Default
 #' is \code{TRUE}. If \code{bar = FALSE}, then a dotchart is displayed instead.
@@ -54,16 +54,16 @@ vip <- function(object, ...) {
 #' @rdname vip
 #'
 #' @export
-vip.default <- function(object, top_n = 10L, bar = TRUE, width = 0.75,
+vip.default <- function(object, num_features = 10L, bar = TRUE, width = 0.75,
                         horizontal = TRUE, alpha = 1, color = "grey35",
                         fill = "grey35", ...) {
   imp <- vi(object, ...)  # variable importance scores
   vi.type <- attr(imp, which = "vi.type")  # subsetting removes this attribute!
-  top_n <- as.integer(top_n)[1L]  # make sure top_n is a single integer
-  if (top_n > nrow(imp) || top_n < 1L) {
-    top_n <- nrow(imp)
+  num_features <- as.integer(num_features)[1L]  # make sure num_features is a single integer
+  if (num_features > nrow(imp) || num_features < 1L) {
+    num_features <- nrow(imp)
   }
-  imp <- imp[seq_len(top_n), ]  # only retain top_n variable importance scores
+  imp <- imp[seq_len(num_features), ]  # only retain num_features variable importance scores
   attr(imp, which = "vi.type") <- vi.type
   x.string <- "reorder(Variable, Importance)"
   p <- ggplot2::ggplot(imp, ggplot2::aes_string(x = x.string, y = "Importance"))
