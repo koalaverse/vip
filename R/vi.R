@@ -99,7 +99,7 @@ vi.default <- function(object, feature_names, truncate_feature_names = NULL,
   }
 
   # Add variable importance type attribute
-  attr(tib, "vi.type") <- "partial"
+  attr(tib, "type") <- "partial"
 
   # Return results
   tib
