@@ -405,6 +405,7 @@ vi.randomForest <- function(object, feature_names,
 
     # Extract object-based variable importance scores and feature names
     importance_scores <- randomForest::importance(object, type = type, ...)
+    type <- colnames(importance_scores)[1L]
     if (dim(importance_scores)[2L] == 0) {  # possible when importance = FALSE in RF call
       importance_scores <- object$importance
     }
@@ -431,7 +432,7 @@ vi.randomForest <- function(object, feature_names,
     }
 
     # Add variable importance type attribute
-    attr(tib, "type") <- colnames(importance_scores)[1L]
+    attr(tib, "type") <- type
 
     # Return results
     tib

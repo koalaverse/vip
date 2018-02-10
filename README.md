@@ -63,7 +63,7 @@ vi(rf, type = 1)
 
 # Use `vip()` to construct ggplot2-based variable importance plots
 p1 <- vip(rf, type = 1)
-p2 <- vip(rf, type = 1)
+p2 <- vip(rf, type = 2)
 p3 <- vip(rf, partial = TRUE)
 grid.arrange(p1, p2, p3, ncol = 3)
 ```
