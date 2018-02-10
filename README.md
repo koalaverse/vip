@@ -27,7 +27,7 @@ set.seed(101)  # for reproducibility
 trn <- as.data.frame(mlbench::mlbench.friedman1(500))  # ?mlbench.friedman1
 ```
 
-Next, we fit a random forest to the simulated data and construct variable importance plots using the two methods provided by the random forest algorithm (left and middle plots) and the (**experimental**) partial dependence-based approach (right plot).
+Next, we fit a random forest to the simulated data and construct variable importance plots using the two methods provided by the random forest algorithm (left and middle plots) and the (**experimental**) partial dependence-based approach (right plot). In this case, all three methods do a fantastic job at highlighting the five variables used in the true model.
 
 ``` r
 # Load required packages
@@ -58,7 +58,8 @@ vi(rf, type = 1)
 p1 <- vip(rf, type = 1)
 p2 <- vip(rf, type = 2)
 p3 <- vip(rf, partial = TRUE)
+#> Warning: Using `partial = TRUE` is experimental, use at your own risk!
 grid.arrange(p1, p2, p3, ncol = 3)
 ```
 
-![](tools/README-example-rf-1.png)
+<img src="tools/README-example-rf-1.png" style="display: block; margin: auto;" />
