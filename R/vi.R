@@ -261,8 +261,8 @@ vi.RandomForest <- function(object, pred.var, auc = FALSE, partial = FALSE,
 #' @rdname vi
 #'
 #' @export
-vi.ranger <- function(object, pred.var, type = 1, partial = FALSE,
-                      FUN = NULL, keep.partial = FALSE, ...) {
+vi.ranger <- function(object, pred.var, partial = FALSE, FUN = NULL,
+                      keep.partial = FALSE, ...) {
   if (missing(pred.var)) {
     pred.var <- get_pred_names(object)
   }

@@ -5,7 +5,7 @@ library(grid)
 library(png)
 
 # Load vip image
-img <- rasterGrob(readPNG("/home/bgreenwell/Desktop/earth.png"),
+img <- rasterGrob(readPNG("/home/bgreenwell/Desktop/vip-img.png"),
                   interpolate = TRUE, width = 1)
 
 # Hexagon data
@@ -22,7 +22,7 @@ g <- ggplot() +
   annotation_custom(img, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
   # annotation_custom(img, xmin = -1.25, xmax = 1.25, ymin = -1.25, ymax = 1.25) +
   annotate(geom = "text", x = 0, y = 0, color = "white", size = 8,
-           label = "Statistical Modeling\nfor\nEnvironmental Data",
+           label = "vip",
            family = "Open Sans Light") +
   coord_equal(xlim = range(hex$x), ylim = range(hex$y)) +
   scale_x_continuous(expand = c(0.04, 0)) +
