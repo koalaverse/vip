@@ -2,10 +2,7 @@
 vip: Variable Importance Plots <img src="tools/vip-logo.png" align="right" />
 =============================================================================
 
-Overview
---------
-
-Complex nonparametric models (like neural networks, random forests, and support vector machines) are more common than ever in predictive analytics, especially when dealing with large observational databases that don't adhere to the strict assumptions imposed by traditional statistical techniques (e.g., multiple linear regression which assumes linearity, homoscedasticity, and normality). Unfortunately, it can be challenging to understand the results of such models and explain them to management. Variable importance plots and partial dependence plots (PDPs) offer a simple solution. PDPs are low-dimensional graphical renderings of the prediction function $\\widehat{f}\\left(\\boldsymbol{x}\\right)$ so that the relationship between the outcome and predictors of interest can be more easily understood. These plots are especially useful in explaining the output from black box models. The [`pdp`](https://github.com/bgreenwell/pdp) package offers a general framework for constructing PDPs for various types of fitted models in R.
+Complex nonparametric models (like neural networks, random forests, and support vector machines) are more common than ever in predictive analytics, especially when dealing with large observational databases that don't adhere to the strict assumptions imposed by traditional statistical techniques (e.g., multiple linear regression which assumes linearity, homoscedasticity, and normality). Unfortunately, it can be challenging to understand the results of such models and explain them to management. Variable importance plots and partial dependence plots (PDPs) offer a simple solution. PDPs are low-dimensional graphical renderings of the prediction function so that the relationship between the outcome and predictors of interest can be more easily understood. These plots are especially useful in explaining the output from black box models. The [`pdp`](https://github.com/bgreenwell/pdp) package offers a general framework for constructing PDPs for various types of fitted models in R.
 
 While PDPs can be constructed for any predictor in a fitted model, variable importance scores are more difficult to define. Some methods (like random forests and other tree-based methods) have a natural way of defining variable importance. Unfortunately, this is not the case for other popular supervised learning algorithms like support vector machines. The `vip` package offers a solution by providing a partial dependence-based variable importance metric that can be used with any supervised learning algorithm.
 
@@ -22,10 +19,7 @@ devtools::install_github("AFIT-R/vip")
 Example usage
 -------------
 
-For illustration, we use one of the regression problems described in Friedman (1991) and Breiman (1996). Inputs are 10 independent variables uniformly distributed on the interval \[0,1\]; only 5 out of these 10 are actually used. Outputs are created according to the formula
-
-*Y* = 10sin(*π**x*<sub>1</sub>*x*<sub>2</sub>) + 20(*x*<sub>3</sub>−0.5)<sup>2</sup> + 10*x*<sub>4</sub> + 5*x*<sub>5</sub> + *ϵ*,
- where *ϵ* ∼ *N*(0,*σ*). These data are available in the [mlbench](https://CRAN.R-project.org/package=mlbench) package. The code chunk below simulates 500 observations from the above model with $\\simga = 1$.
+For illustration, we use one of the regression problems described in Friedman (1991) and Breiman (1996). These data are available in the [mlbench](https://CRAN.R-project.org/package=mlbench) package. The inputs consist of 10 independent variables uniformly distributed on the interval \[0,1\]; however, only 5 out of these 10 are actually used in the true model. Outputs are created according to the formula described in `?mlbench::mlbench.friedman1`. The code chunk below simulates 500 observations from the model default standard deviation.
 
 ``` r
 # Simulate training data
