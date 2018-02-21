@@ -25,11 +25,17 @@ Imports:
     tidyr,
     utils
 Suggests:
+    C50,
     caret,
     earth,
     gbm,
     h2o,
-    randomForest,
     knitr,
-    rmarkdown
+    party,
+    partykit,
+    ranger,
+    rpart,
+    randomForest,
+    rmarkdown,
+    xgboost
 RoxygenNote: 6.0.1
