@@ -58,7 +58,7 @@ vi(rf, type = 1)
 p1 <- vip(rf, type = 1)
 p2 <- vip(rf, type = 2)
 p3 <- vip(rf, partial = TRUE)
-#> Warning: Using `partial = TRUE` is experimental, use at your own risk!
+#> Warning: Setting `partial = TRUE` is experimental, use at your own risk!
 grid.arrange(p1, p2, p3, ncol = 3)
 ```
 
