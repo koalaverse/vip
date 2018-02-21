@@ -3,6 +3,8 @@
 \name{vi}
 \alias{vi}
 \alias{vi.default}
+\alias{vi.C5.0}
+\alias{vi.constparty}
 \alias{vi.earth}
 \alias{vi.gbm}
 \alias{vi.H2ORegressionModel}
@@ -18,42 +20,55 @@
 vi(object, ...)
 
 \method{vi}{default}(object, feature_names, truncate_feature_names = NULL,
-  sort = TRUE, decreasing = TRUE, FUN = NULL, keep.partial = FALSE, ...)
+  sort = TRUE, decreasing = TRUE, FUN = NULL, keep_partial = FALSE, ...)
+
+\method{vi}{C5.0}(object, feature_names, truncate_feature_names = NULL,
+  sort = TRUE, decreasing = TRUE, partial = FALSE, FUN = NULL,
+  keep_partial = FALSE, ...)
+
+\method{vi}{constparty}(object, feature_names, truncate_feature_names = NULL,
+  sort = TRUE, decreasing = TRUE, partial = FALSE, FUN = NULL,
+  keep_partial = FALSE, ...)
 
 \method{vi}{earth}(object, feature_names, truncate_feature_names = NULL,
   sort = TRUE, decreasing = TRUE, partial = FALSE, FUN = NULL,
-  keep.partial = FALSE, ...)
+  keep_partial = FALSE, ...)
 
 \method{vi}{gbm}(object, feature_names, truncate_feature_names = NULL,
-  partial = FALSE, FUN = NULL, keep.partial = FALSE, ...)
+  sort = TRUE, decreasing = TRUE, partial = FALSE, FUN = NULL,
+  keep_partial = FALSE, ...)
 
 \method{vi}{H2ORegressionModel}(object, feature_names,
-  truncate_feature_names = NULL, partial = FALSE, FUN = NULL,
-  keep.partial = FALSE, ...)
+  truncate_feature_names = NULL, sort = TRUE, decreasing = TRUE,
+  partial = FALSE, FUN = NULL, keep_partial = FALSE, ...)
 
 \method{vi}{lm}(object, feature_names, truncate_feature_names = NULL,
-  partial = FALSE, FUN = NULL, keep.partial = FALSE, ...)
+  sort = TRUE, decreasing = TRUE, partial = FALSE, FUN = NULL,
+  keep_partial = FALSE, ...)
 
 \method{vi}{randomForest}(object, feature_names,
-  truncate_feature_names = NULL, type = 1, partial = FALSE, FUN = NULL,
-  keep.partial = FALSE, ...)
+  truncate_feature_names = NULL, sort = TRUE, decreasing = TRUE,
+  type = 1, partial = FALSE, FUN = NULL, keep_partial = FALSE, ...)
 
 \method{vi}{RandomForest}(object, feature_names,
-  truncate_feature_names = NULL, auc = FALSE, partial = FALSE,
-  FUN = NULL, keep.partial = FALSE, ...)
+  truncate_feature_names = NULL, sort = TRUE, decreasing = TRUE,
+  auc = FALSE, partial = FALSE, FUN = NULL, keep_partial = FALSE, ...)
 
 \method{vi}{ranger}(object, feature_names, truncate_feature_names = NULL,
-  partial = FALSE, FUN = NULL, keep.partial = FALSE, ...)
+  sort = TRUE, decreasing = TRUE, partial = FALSE, FUN = NULL,
+  keep_partial = FALSE, ...)
 
 \method{vi}{rpart}(object, feature_names, truncate_feature_names = NULL,
-  partial = FALSE, FUN = NULL, keep.partial = FALSE, ...)
+  sort = TRUE, decreasing = TRUE, partial = FALSE, FUN = NULL,
+  keep_partial = FALSE, ...)
 
 \method{vi}{train}(object, feature_names, truncate_feature_names = NULL,
-  partial = FALSE, FUN = NULL, keep.partial = FALSE, ...)
+  sort = TRUE, decreasing = TRUE, partial = FALSE, FUN = NULL,
+  keep_partial = FALSE, ...)
 
 \method{vi}{xgb.Booster}(object, feature_names, truncate_feature_names = NULL,
-  type = c("Gain", "Cover", "Frequency"), partial = FALSE, FUN = NULL,
-  keep.partial = FALSE, ...)
+  sort = TRUE, decreasing = TRUE, type = c("Gain", "Cover", "Frequency"),
+  partial = FALSE, FUN = NULL, keep_partial = FALSE, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
@@ -79,9 +94,10 @@ values for continuous predictors. If \code{NULL}, the standard deviation is
 used (i.e., \code{FUN = sd}). For factors, the range statistic is used (i.e.,
 (max - min) / 4).}
 
-\item{keep.partial}{Logical indicating whether or not to return the computed
+\item{keep_partial}{Logical indicating whether or not to return the computed
 partial dependence values for each predictor listed in \code{feature_names}
-in a separate attribute called \code{"partial"}. Default is \code{FALSE}.}
+in a separate attribute called \code{"partial"}. Default is \code{FALSE}.
+Only used when \code{partial = TRUE}.}
 
 \item{partial}{Logical indicating whether or not to use partial dependence
 functions to construct variable importance scores. Default is \code{FALSE}.}

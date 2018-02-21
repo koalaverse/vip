@@ -110,6 +110,127 @@ vi.default <- function(object, feature_names, truncate_feature_names = NULL,
 #' @rdname vi
 #'
 #' @export
+vi.C5.0 <- function(object, feature_names, truncate_feature_names = NULL,
+                    sort = TRUE, decreasing = TRUE, partial = FALSE, FUN = NULL,
+                    keep_partial = FALSE, ...) {
+
+  # Requested feature names
+  if (missing(feature_names)) {
+    feature_names <- get_feature_names(object)
+  }
+
+  # Extract variable importance scores
+  if (partial) {
+
+    # Construct partial dependence-based variable importance scores
+    vi.default(
+      object, feature_names = feature_names,
+      truncate_feature_names = truncate_feature_names, sort = sort,
+      decreasing = decreasing, FUN = NULL, keep_partial = keep_partial, ...
+    )
+
+  } else {
+
+    # Extract object-based variable importance scores and feature names
+    importance_scores <- C50::C5imp(object, ...)
+
+    # Place variable importance scores in a tibble (the first and second columns
+    # should always be labelled "Variable" and "Importance", respectively)
+    tib <- tibble::tibble(
+      "Variable" = rownames(importance_scores),
+      "Importance" = importance_scores$Overall
+    )
+
+    # FIXME: What's the best way to subset by the requested feature names?
+
+    # Sort variable importance scores (if requested)
+    if (sort) {
+      tib <- sort_importance_scores(tib, decreasing = decreasing)
+    }
+
+    # Truncate feature names (if requested)
+    if (!is.null(truncate_feature_names)) {
+      tib <- truncate_feature_names(tib, length = truncate_feature_names)
+    }
+
+    # Add variable importance type attribute
+    dots <- list(...)
+    attr(tib, "type") <- if ("metric" %in% names(dots)) {
+      dots[["metric"]]
+    } else {
+      "usage"
+    }
+
+    # Return results
+    tib
+
+  }
+
+}
+
+
+#' @rdname vi
+#'
+#' @export
+vi.constparty <- function(object, feature_names,
+                          truncate_feature_names = NULL, sort = TRUE,
+                          decreasing = TRUE, partial = FALSE, FUN = NULL,
+                          keep_partial = FALSE, ...) {
+
+  # Requested feature names
+  if (missing(feature_names)) {
+    feature_names <- get_feature_names(object)
+  }
+
+  # Extract variable importance scores
+  if (partial) {
+
+    # Construct partial dependence-based variable importance scores
+    vi.default(
+      object, feature_names = feature_names,
+      truncate_feature_names = truncate_feature_names, sort = sort,
+      decreasing = decreasing, FUN = NULL, keep_partial = keep_partial, ...
+    )
+
+  } else {
+
+    # Extract object-based variable importance scores and feature names
+    importance_scores <- partykit::varimp(object, ...)
+    feature_names <- names(importance_scores)
+
+    # Place variable importance scores in a tibble (the first and second columns
+    # should always be labelled "Variable" and "Importance", respectively)
+    tib <- tibble::tibble(
+      "Variable" = feature_names,
+      "Importance" = importance_scores
+    )
+
+    # FIXME: What's the best way to subset by the requested feature names?
+
+    # Sort variable importance scores (if requested)
+    if (sort) {
+      tib <- sort_importance_scores(tib, decreasing = decreasing)
+    }
+
+    # Truncate feature names (if requested)
+    if (!is.null(truncate_feature_names)) {
+      tib <- truncate_feature_names(tib, length = truncate_feature_names)
+    }
+
+    # Add variable importance type attribute
+    attr(tib, "type") <- "permutation"
+
+    # Return results
+    tib
+
+  }
+
+}
+
+
+#' @rdname vi
+#'
+#' @export
 vi.earth <- function(object, feature_names, truncate_feature_names = NULL,
                      sort = TRUE, decreasing = TRUE, partial = FALSE,
                      FUN = NULL, keep_partial = FALSE, ...) {

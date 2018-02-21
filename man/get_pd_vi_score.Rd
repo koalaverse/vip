@@ -4,23 +4,24 @@
 \alias{get_pd_vi_score}
 \title{Partial Dependence-based Variable Importance}
 \usage{
-get_pd_vi_score(object, pred.var, FUN = NULL, keep.partial = FALSE, ...)
+get_pd_vi_score(object, feature_names, FUN = NULL, keep_partial = FALSE,
+  ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
 
-\item{pred.var}{Character string giving the names of the predictor variables
-of interest. For reasons of computation/interpretation, this should include
-no more than three variables.}
+\item{feature_names}{Character string giving the names of the predictor
+variables of interest. For reasons of computation/interpretation, this should
+include no more than three variables.}
 
 \item{FUN}{Function used to measure the variability of the partial dependence
 values for continuous predictors. If \code{NULL}, the standard deviation is
 used (i.e., \code{FUN = sd}). For factors, the range statistic is used (i.e.,
 (max - min) / 4).}
 
-\item{keep.partial}{Logical indicating whether or not to return the computed
-partial dependence value for the predictor listed in \code{pred.var} in a
-separate attribute called \code{"partial"}. Default is \code{FALSE}.}
+\item{keep_partial}{Logical indicating whether or not to return the computed
+partial dependence value for the predictor listed in \code{feature_names} in
+a separate attribute called \code{"partial"}. Default is \code{FALSE}.}
 
 \item{...}{Additional optional arguments to be passed on to
 \code{\link[pdp]{partial}}.}
