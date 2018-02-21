@@ -43,16 +43,16 @@ vi(rf, type = 1)
 #> # A tibble: 10 x 2
 #>    Variable Importance
 #>    <chr>         <dbl>
-#>  1 x.4          80.9  
-#>  2 x.2          62.5  
-#>  3 x.1          58.1  
+#>  1 x.4          81.1  
+#>  2 x.2          62.3  
+#>  3 x.1          58.0  
 #>  4 x.5          37.7  
 #>  5 x.3          23.8  
-#>  6 x.8           2.03 
-#>  7 x.6           0.249
-#>  8 x.9           0.107
-#>  9 x.7         - 0.412
-#> 10 x.10        - 1.93
+#>  6 x.8           2.02 
+#>  7 x.9           0.159
+#>  8 x.6           0.150
+#>  9 x.7         - 0.374
+#> 10 x.10        - 1.92
 
 # Use `vip()` to construct ggplot2-based variable importance plots
 p1 <- vip(rf, type = 1)

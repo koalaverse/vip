@@ -25,7 +25,7 @@ get_pd_vi_scores <- function(object, feature_names, FUN = NULL,
                              keep_partial = FALSE, ...) {
 
   # Print warning message
-  warning("Using `partial = TRUE` is experimental, use at your own risk!",
+  warning("Setting `partial = TRUE` is experimental, use at your own risk!",
           call. = FALSE)
 
   # Compute partial dependence-based variable importance scores
