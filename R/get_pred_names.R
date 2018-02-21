@@ -27,7 +27,8 @@ get_feature_names.C5.0 <- function(object, ...) {
 
 #' @keywords internal
 get_feature_names.constparty <- function(object, ...) {
-  all.vars(formula(attr(terms(object), which = "Formula_without_dot"))[[3L]])
+  all.vars(stats::formula(attr(stats::terms(object),
+                               which = "Formula_without_dot"))[[3L]])
 }
 
 

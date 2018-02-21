@@ -108,8 +108,8 @@ return for \code{\link[randomForest]{randomForest}} objects. Should be
 
 \item{auc}{Logical indicating whether or not to compute the AUC-based
 variable scores described in Janitza et al. (2012). Only available for
-\code{\link[cforest]{party}} objects. See
-\code{\link[varimpAUC]{party}} for details. Default is \code{FALSE}.}
+\code{\link[party]{cforest}} objects. See
+\code{\link[party]{varimpAUC}} for details. Default is \code{FALSE}.}
 }
 \value{
 A tidy data frame (i.e., a \code{"tibble"} object) with two columns:

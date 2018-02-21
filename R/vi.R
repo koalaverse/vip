@@ -24,8 +24,8 @@
 #'
 #' @param auc Logical indicating whether or not to compute the AUC-based
 #' variable scores described in Janitza et al. (2012). Only available for
-#' \code{\link[cforest]{party}} objects. See
-#' \code{\link[varimpAUC]{party}} for details. Default is \code{FALSE}.
+#' \code{\link[party]{cforest}} objects. See
+#' \code{\link[party]{varimpAUC}} for details. Default is \code{FALSE}.
 #'
 #' @param partial Logical indicating whether or not to use partial dependence
 #' functions to construct variable importance scores. Default is \code{FALSE}.
@@ -371,7 +371,7 @@ vi.H2ORegressionModel <- function(object, feature_names,
     importance_scores <- if (is.null(FUN)) {
       unlist(lapply(pd_list, FUN = function(x) {
         if (is.numeric(x[[1L]])) {
-          sd(x[["mean_response"]])
+          stats::sd(x[["mean_response"]])
         } else {
           diff(range(x[["mean_response"]])) / 4
         }

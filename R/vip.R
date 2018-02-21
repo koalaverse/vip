@@ -45,7 +45,7 @@
 #' mtcars.ppr <- ppr(mpg ~ ., data = mtcars, nterms = 1)
 #'
 #' # Construct variable importance plot
-#' vip(mtcars.ppr, pred.var = names(subset(mtcars, select = -mpg)))
+#' vip(mtcars.ppr, feature_names = names(subset(mtcars, select = -mpg)))
 vip <- function(object, ...) {
   UseMethod("vip")
 }
