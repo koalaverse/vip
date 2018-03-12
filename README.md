@@ -13,7 +13,7 @@ The `vip` package is currently only available from GitHub, but can easily be ins
 
 ``` r
 if (!requireNamespace("devtools")) install.packages("devtools")
-devtools::install_github("AFIT-R/vip")
+devtools::install_github("koalaverse/vip")
 ```
 
 Example usage
@@ -51,8 +51,8 @@ vi(rf, type = 1)
 #>  6 x.8           2.02 
 #>  7 x.9           0.159
 #>  8 x.6           0.150
-#>  9 x.7         - 0.374
-#> 10 x.10        - 1.92
+#>  9 x.7          -0.374
+#> 10 x.10         -1.92
 
 # Use `vip()` to construct ggplot2-based variable importance plots
 p1 <- vip(rf, type = 1)
