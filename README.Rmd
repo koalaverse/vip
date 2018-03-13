@@ -30,7 +30,7 @@ While PDPs can be constructed for any predictor in a fitted model, variable impo
 The `vip` package is currently only available from GitHub, but can easily be installed using the [devtools](https://CRAN.R-project.org/package=devtools) package:
 ```{r, eval=FALSE}
 if (!requireNamespace("devtools")) install.packages("devtools")
-devtools::install_github("AFIT-R/vip")
+devtools::install_github("koalaverse/vip")
 ```
 
 
