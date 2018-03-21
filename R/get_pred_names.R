@@ -95,3 +95,8 @@ get_feature_names.train <- function(object, ...) {
     get_feature_names.default(object)
   }
 }
+
+#' @keywords internal
+get_feature_names.glmnet <- function(object, ...) {
+  object$beta@Dimnames[[1]]
+}
