@@ -2,6 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+.temp
 
 ## Core latex/pdflatex auxiliary files:
 *.log

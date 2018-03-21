@@ -1,0 +1,19 @@
+ Connection successful!
+
+R is connected to the H2O cluster: 
+    H2O cluster uptime:         8 minutes 25 seconds 
+    H2O cluster version:        3.18.0.4 
+    H2O cluster version age:    12 days  
+    H2O cluster name:           b294776 
+    H2O cluster total nodes:    1 
+    H2O cluster total memory:   1.76 GB 
+    H2O cluster total cores:    4 
+    H2O cluster allowed cores:  4 
+    H2O cluster healthy:        TRUE 
+    H2O Connection ip:          localhost 
+    H2O Connection port:        54321 
+    H2O Connection proxy:       NA 
+    H2O Internal Security:      FALSE 
+    H2O API Extensions:         XGBoost, Algos, AutoML, Core V3, Core V4 
+    R Version:                  R version 3.4.3 (2017-11-30) 
+
