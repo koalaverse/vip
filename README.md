@@ -1,4 +1,5 @@
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+[![Travis-CI Build Status](https://travis-ci.org/koalaverse/vip.svg?branch=master)](https://travis-ci.org/koalaverse/vip) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/koalaverse/vip?branch=master&svg=true)](https://ci.appveyor.com/project/koalaverse/vip)
+
 vip: Variable Importance Plots <img src="tools/vip-logo.png" align="right" />
 =============================================================================
 

@@ -4,3 +4,5 @@
 ^README\.html$
 ^manuscript-methodology$
 ^manuscript-software$
+^appveyor\.yml$
+^\.travis\.yml$
