@@ -9,8 +9,8 @@ Description: Construct and/or plot variable importance scores for various
     metric based on Friedman's partial dependence functions is also made
     available.
 License: GPL (>= 2)
-URL: https://github.com/AFIT-R/vip
-BugReports: https://github.com/AFIT-R/vip/issues
+URL: https://github.com/koalaverse/vip
+BugReports: https://github.com/koalaverse/vip/issues
 Encoding: UTF-8
 LazyData: true
 Imports:
