@@ -5,8 +5,11 @@ library(grid)
 library(png)
 
 # Load vip image
-img <- rasterGrob(readPNG("/home/bgreenwell/Desktop/vip-img.png"),
+img <- rasterGrob(readPNG("tools/vip-img.png"),
                   interpolate = TRUE, width = 1)
+
+koala <- rasterGrob(readPNG("/home/w108bmg/Desktop/suit-and-tie.png"),
+                    interpolate = TRUE, width = 1)
 
 # Hexagon data
 hex <- data.frame(x = 1.35 * 1 * c(-sqrt(3) / 2, 0, rep(sqrt(3) / 2, 2), 0,
@@ -14,12 +17,13 @@ hex <- data.frame(x = 1.35 * 1 * c(-sqrt(3) / 2, 0, rep(sqrt(3) / 2, 2), 0,
                   y = 1.35 * 1 * c(0.5, 1, 0.5, -0.5, -1, -0.5, 0.5))
 
 # Color palettes
-greens <- RColorBrewer::brewer.pal(9, "Greens")
+reds <- RColorBrewer::brewer.pal(9, "Reds")
 
 # Hexagon logo
 g <- ggplot() +
-  geom_polygon(data = hex, aes(x, y), color = greens[5L], fill = greys[1L], size = 4) +
-  annotation_custom(img, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
+  geom_polygon(data = hex, aes(x, y), color = reds[5L], fill = "white", size = 4) +
+  # annotation_custom(img, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
+  annotation_custom(koala, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
   # annotation_custom(img, xmin = -1.25, xmax = 1.25, ymin = -1.25, ymax = 1.25) +
   annotate(geom = "text", x = 0, y = 0, color = "white", size = 8,
            label = "vip",

@@ -45,6 +45,12 @@ get_feature_names.gbm <- function(object, ...) {
 
 
 #' @keywords internal
+get_feature_names.glmnet <- function(object, ...) {
+  object$beta@Dimnames[[1]]
+}
+
+
+#' @keywords internal
 get_feature_names.H2ORegressionModel <- function(object, ...) {
   object@parameters$x
 }
@@ -94,9 +100,4 @@ get_feature_names.train <- function(object, ...) {
   } else {
     get_feature_names.default(object)
   }
-}
-
-#' @keywords internal
-get_feature_names.glmnet <- function(object, ...) {
-  object$beta@Dimnames[[1]]
 }
