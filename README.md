@@ -1,12 +1,15 @@
+vip: Variable Importance Plots <img src="tools/vip-logo.png" align="right" width="130" height="150" />
+======================================================================================================
+
 [![Travis-CI Build
 Status](https://travis-ci.org/koalaverse/vip.svg?branch=master)](https://travis-ci.org/koalaverse/vip)
 [![AppVeyor Build
 Status](https://ci.appveyor.com/api/projects/status/github/koalaverse/vip?branch=master&svg=true)](https://ci.appveyor.com/project/koalaverse/vip)
 
-vip: Variable Importance Plots <img src="tools/vip-logo.png" align="right" width="130" height="150" />
-======================================================================================================
-
 #### ⚠️ Warning: This awesome package is under construction! 🚧 🚧 🚧 🚧
+
+Overview
+--------
 
 Complex nonparametric models (like neural networks, random forests, and
 support vector machines) are more common than ever in predictive

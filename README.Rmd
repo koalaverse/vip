@@ -4,9 +4,6 @@ output:
     variant: markdown_github
 ---
 
-[![Travis-CI Build Status](https://travis-ci.org/koalaverse/vip.svg?branch=master)](https://travis-ci.org/koalaverse/vip)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/koalaverse/vip?branch=master&svg=true)](https://ci.appveyor.com/project/koalaverse/vip)
-
 ```{r setup, echo = FALSE}
 knitr::opts_chunk$set(
   cache = FALSE,
@@ -21,7 +18,12 @@ knitr::opts_chunk$set(
 
 # vip: Variable Importance Plots <img src="tools/vip-logo.png" align="right" width="130" height="150" />
 
+[![Travis-CI Build Status](https://travis-ci.org/koalaverse/vip.svg?branch=master)](https://travis-ci.org/koalaverse/vip)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/koalaverse/vip?branch=master&svg=true)](https://ci.appveyor.com/project/koalaverse/vip)
+
 #### `r emo::ji("warning")` Warning: This awesome package is under construction! `r emo::ji("construction")` `r emo::ji("construction")` `r emo::ji("construction")` `r emo::ji("construction")`  
+
+## Overview
 
 Complex nonparametric models (like neural networks, random forests, and support vector machines) are more common than ever in predictive analytics, especially when dealing with large observational databases that don't adhere to the strict assumptions imposed by traditional statistical techniques (e.g., multiple linear regression which assumes linearity, homoscedasticity, and normality). Unfortunately, it can be challenging to understand the results of such models and explain them to management. Variable importance plots and partial dependence plots (PDPs) offer a simple solution. PDPs are low-dimensional graphical renderings of the prediction function so that the relationship between the outcome and predictors of interest can be more easily understood. These plots are especially useful in explaining the output from black box models. The [`pdp`](https://github.com/bgreenwell/pdp) package offers a general framework for constructing PDPs for various types of fitted models in R. 
 
