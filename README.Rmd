@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# vip: Variable Importance Plots <img src="tools/vip-logo.png" align="right" />
+# vip: Variable Importance Plots <img src="tools/vip-logo.png" align="right" width="130" height="150" />
 
 #### `r emo::ji("warning")` Warning: This awesome package is under construction! `r emo::ji("construction")` `r emo::ji("construction")` `r emo::ji("construction")` `r emo::ji("construction")`  
 
