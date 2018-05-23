@@ -6,10 +6,7 @@ library(png)
 
 # Load vip image
 img <- rasterGrob(readPNG("tools/vip-img.png"),
-                  interpolate = TRUE, width = 1)
-
-koala <- rasterGrob(readPNG("/home/w108bmg/Desktop/suit-and-tie.png"),
-                    interpolate = TRUE, width = 1)
+                  interpolate = TRUE, width = 0.85)
 
 # Hexagon data
 hex <- data.frame(x = 1.35 * 1 * c(-sqrt(3) / 2, 0, rep(sqrt(3) / 2, 2), 0,
@@ -18,28 +15,38 @@ hex <- data.frame(x = 1.35 * 1 * c(-sqrt(3) / 2, 0, rep(sqrt(3) / 2, 2), 0,
 
 # Color palettes
 reds <- RColorBrewer::brewer.pal(9, "Reds")
+greys <- RColorBrewer::brewer.pal(9, "Greys")
 
 # Hexagon logo
 g <- ggplot() +
-  geom_polygon(data = hex, aes(x, y), color = reds[5L], fill = "white", size = 4) +
-  # annotation_custom(img, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
-  annotation_custom(koala, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
-  # annotation_custom(img, xmin = -1.25, xmax = 1.25, ymin = -1.25, ymax = 1.25) +
-  annotate(geom = "text", x = 0, y = 0, color = "white", size = 8,
-           label = "vip",
-           family = "Open Sans Light") +
+  geom_polygon(data = hex, aes(x, y), color = reds[6L], fill = greys[1L],
+               size = 3) +
+  annotation_custom(img, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
+  annotate(geom = "text", label = "vip", x = 0, y = -0.05,
+           family = "Open Sans Light", color = greys[7L], size = 7) +
   coord_equal(xlim = range(hex$x), ylim = range(hex$y)) +
   scale_x_continuous(expand = c(0.04, 0)) +
   scale_y_reverse(expand = c(0.04, 0)) +
-  theme_void() +
-  theme_transparent() +
-  theme(axis.ticks.length = unit(0, "mm"))
+  theme(axis.line = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        legend.position = "none",
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
 print(g)
 
-# png("tools\\vip-logo.png", width = 181, height = 209, bg = "transparent", type = "cairo-png")
-# print(g)
-# dev.off()
-#
-# svg("tools\\vip-logo.svg", width = 181 / 72, height = 209 / 72, bg = "transparent")
-# print(g)
-# dev.off()
+png("tools/vip-logo.png", width = 181, height = 209,
+    bg = "transparent", type = "cairo-png")
+print(g)
+dev.off()
+
+svg("tools/vip-logo.svg", width = 181 / 72, height = 209 / 72,
+    bg = "transparent")
+print(g)
+dev.off()
