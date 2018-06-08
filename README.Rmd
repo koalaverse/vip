@@ -30,6 +30,18 @@ Complex nonparametric models (like neural networks, random forests, and support 
 While PDPs can be constructed for any predictor in a fitted model, variable importance scores are more difficult to define. Some methods (like random forests and other tree-based methods) have a natural way of defining variable importance. Unfortunately, this is not the case for other popular supervised learning algorithms like support vector machines. The `vip` package offers a solution by providing a partial dependence-based variable importance metric that can be used with any supervised learning algorithm.
 
 
+`r emo::ji("memo")` **TODO:**
+
+  1. Modularize code:
+  
+    * Make generic for `vi_model()` (model-based VI scores)
+    * Make generic for `vi_partial()` (PDP/ICE-based VI scores)
+    * Make generic for `vi_permute()` (permutation-based VI scores)
+    * Make generic for `vi_shapely()` (shapely-based VI scores)
+  
+  (The will be called by `vi()` and not by the uder directly.)
+  
+  
 ## Installation
 
 The `vip` package is currently only available from GitHub, but can easily be installed using the [devtools](https://CRAN.R-project.org/package=devtools) package:

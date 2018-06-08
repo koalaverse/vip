@@ -315,13 +315,12 @@ vi.gbm <- function(object, feature_names, truncate_feature_names = NULL,
 
     # Extract object-based variable importance scores and feature names
     imp_scores <- summary(object, plotit = FALSE, order = TRUE, ...)
-    feature_names <- names(imp_scores)
 
     # Place variable importance scores in a tibble (the first and second columns
     # should always be labelled "Variable" and "Importance", respectively)
     tib <- tibble::tibble(
-      "Variable" = feature_names,
-      "Importance" = imp_scores
+      "Variable" = imp_scores$var,
+      "Importance" = imp_scores$rel.inf
     )
 
     # FIXME: What's the best way to subset by the requested feature names?

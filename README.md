@@ -36,6 +36,19 @@ machines. The `vip` package offers a solution by providing a partial
 dependence-based variable importance metric that can be used with any
 supervised learning algorithm.
 
+📝 **TODO:**
+
+1.  Modularize code:
+
+<!-- -->
+
+    * Make generic for `vi_model()` (model-based VI scores)
+    * Make generic for `vi_partial()` (PDP/ICE-based VI scores)
+    * Make generic for `vi_permute()` (permutation-based VI scores)
+    * Make generic for `vi_shapely()` (shapely-based VI scores)
+
+(The will be called by `vi()` and not by the uder directly.)
+
 Installation
 ------------
 
