@@ -28,22 +28,25 @@ following approaches:
 
 1.  Model-based VI scores (when available). For example, in a random
     forest, variable importance can be computed using the permutation
-    approach described in Breiman (2001). Other supervised learning
-    algorithms (like MARS and GBMs) have their own ways of constructing
-    VI scores.
+    approach described in
+    [Breiman (2001)](https://doi.org/10.1023/A:1010933404324). Other
+    supervised learning algorithms (like MARS and GBMs) have their own
+    ways of constructing VI scores.
 
-2.  PDP-based VI scores. This is a new idea described in Greenwell, et.
-    al. (2018). The idea is to measure the “flatness” of Friedman’s
-    **partial dependence plot** (PDP) for each feature. A feature whose
-    PDP is flat, relative to the other features, implies that the
-    feature has less of an influence on the estimated prediction surface
-    as it changes while taking into account the average effect of the
-    other features in the model.
+2.  PDP-based VI scores. This is a new idea described in [Greenwell, et.
+    al. (2018)](https://arxiv.org/abs/1805.04755). The idea is to
+    measure the “flatness” of [Friedman’s *partial dependence
+    plot*](https://doi.org/10.1214/aos/1013203451) (PDP) for each
+    feature. A feature whose PDP is flat, relative to the other
+    features, implies that the feature has less of an influence on the
+    estimated prediction surface as it changes while taking into account
+    the average effect of the other features in the model.
 
 3.  ICE-based VI scores. This method is similar to the PDP-based VI
     scores above, but are based on measuring the “flatness” of the
-    **individual conditional expectation** (ICE) curves presented by
-    Goldstein, et. al. (2014).
+    *individual conditional expectation* (ICE) curves presented by
+    [Goldstein, et.
+    al. (2014)](https://doi.org/10.1080/10618600.2014.907095).
 
 Since PDPs and ICE curves can be constructed for any supervised learning
 algorithm, this means we can use methods 2) and 3) to construct VI
@@ -127,11 +130,11 @@ grid.arrange(p1, p2, p3, ncol = 3)
 References
 ----------
 
-Breiman, L. “Random Forests”. **Machine Learning**. *45*(1): 5-32, 2001.
+Breiman, L. “Random Forests”. *Machine Learning*. **45**(1): 5-32, 2001.
 URL <https://doi.org/10.1023/A:1010933404324>.
 
 Friedman, J. H. “Greedy function approximation: A gradient boosting
-machine”. **The Annals of Statistics**, *29*: 1189–1232, 2001. URL
+machine”. *The Annals of Statistics*, **29**: 1189–1232, 2001. URL
 <https://doi.org/10.1214/aos/1013203451>
 
 Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J. “A Simple and
@@ -140,6 +143,6 @@ Effective Model-Based Variable Importance Measure”. arXiv preprint,
 
 Goldstein, A., Kapelner, A., Bleich, J., and Pitkin, E. (2015) “Peeking
 inside the black box: Visualizing statistical learning with plots of
-individual conditional expectation”. **Journal of Computational and
-Graphical Statistics**, *24*(1): 44-65, 2015. URL
+individual conditional expectation”. *Journal of Computational and
+Graphical Statistics*, **24**\*(1): 44-65, 2015. URL
 <https://doi.org/10.1080/10618600.2014.907095>.
