@@ -304,7 +304,7 @@ vi_model.xgb.Booster <- function(object, ...) {
 
   # Construct model-based variable importance scores
   vis <- tibble::as.tibble(xgboost::xgb.importance(
-    feature_names = feature_names, model = object
+    model = object, ...
   ))[, c("Feature", "Gain")]  # FIXME: What about "Cover" and "Frequency"?
   tib <- tibble::tibble(
     "Variable" = vis$Feature,

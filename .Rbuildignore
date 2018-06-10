@@ -2,7 +2,6 @@
 ^\.Rproj\.user$
 ^README\.Rmd$
 ^README\.html$
-^manuscript-methodology$
-^manuscript-software$
 ^appveyor\.yml$
 ^\.travis\.yml$
+^slowtests

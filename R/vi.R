@@ -63,7 +63,7 @@
 #' # Plot variable importance scores
 #' vip(mtcars.ppr, method = "ice")
 vi <- function(
-  object, method = c("model", "pdp", "ice", "perm"), feature_names,
+  object, method = c("model", "pdp", "ice", "perm"), feature_names, FUN = NULL,
   truncate_feature_names = NULL, sort = TRUE, decreasing = TRUE, ...
 ) {
 
@@ -77,9 +77,9 @@ vi <- function(
   tib <- if (method == "model") {
     vi_model(object, ...)
   } else if (method == "pdp") {
-    vi_pdp(object, feature_names = feature_names, ...)
+    vi_pdp(object, feature_names = feature_names, FUN = FUN, ...)
   } else if (method == "ice") {
-    vi_ice(object, feature_names = feature_names, ...)
+    vi_ice(object, feature_names = feature_names, FUN = FUN, ...)
   } else {
     stop("Permutation-based variable importance scores not yet implemented.",
          call. = FALSE)

@@ -4,11 +4,14 @@
 \alias{vint}
 \title{Interaction Effects}
 \usage{
-vint(object, pred.var, progress = "none", parallel = FALSE,
+vint(object, feature_names, progress = "none", parallel = FALSE,
   paropts = NULL, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
+
+\item{feature_names}{Character string giving the names of the two features of
+interest.}
 
 \item{progress}{Character string giving the name of the progress bar to use
 while constructing the interaction statistics. See
@@ -24,9 +27,6 @@ parallel using a backend provided by the \code{foreach} package. Default is
 
 \item{...}{Additional optional arguments to be passed onto
 \code{\link[pdp]{partial}}.}
-
-\item{feature_names}{Character string giving the names of the two features of
-interest.}
 }
 \description{
 Compute the strength of two-way interaction effects. For details, see the

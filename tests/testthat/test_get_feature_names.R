@@ -22,21 +22,21 @@ test_that("get_feature_names extracts gbm object names", {
 
 })
 
-test_that("get_feature_names extracts h2o object names", {
-
-  skip_on_cran()
-  skip_on_travis()
-  skip_on_appveyor()
-
-  y <- "mpg"
-  x <- setdiff(names(mtcars), y)
-  sink("temp"); h2o::h2o.init(); sink(NULL)
-  df <- h2o::as.h2o(mtcars)
-  h2o_model <- h2o::h2o.glm(x = x, y = y, training_frame = df)
-  expect_setequal(get_feature_names(h2o_model), x)
-  h2o::h2o.shutdown(prompt = FALSE)
-
-})
+# test_that("get_feature_names extracts h2o object names", {
+#
+#   skip_on_cran()
+#   skip_on_travis()
+#   skip_on_appveyor()
+#
+#   y <- "mpg"
+#   x <- setdiff(names(mtcars), y)
+#   sink("temp"); h2o::h2o.init(); sink(NULL)
+#   df <- h2o::as.h2o(mtcars)
+#   h2o_model <- h2o::h2o.glm(x = x, y = y, training_frame = df)
+#   expect_setequal(get_feature_names(h2o_model), x)
+#   h2o::h2o.shutdown(prompt = FALSE)
+#
+# })
 
 test_that("get_feature_names extracts lm object names", {
 

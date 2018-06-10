@@ -1,13 +1,15 @@
 Package: vip
 Type: Package
-Title: Variable importance plots using ggplot2-based graphics
+Title: Variable Importance Plots
 Version: 0.0.1.9000
 Authors@R: person("Brandon", "Greenwell", email = "greenwell.brandon@gmail.com",
   role = c("aut", "cre"))
-Description: Construct and/or plot variable importance scores for various 
-    classes of fitted machine learning models in R. A new variable importance
-    metric based on Friedman's partial dependence functions is also made
-    available.
+Description: A general framework for constructing variable importance plots from 
+  various types machine learning models in R. Aside from some standard model-
+  based variable importance measures, this package also provides newer novel 
+  metrics based on partial dependence plots (PDPs) and individual conditional 
+  expectation (ICE) curves described in Greenwell et al. (2018) 
+  <arXiv:1805.04755>.
 License: GPL (>= 2)
 URL: https://github.com/koalaverse/vip
 BugReports: https://github.com/koalaverse/vip/issues

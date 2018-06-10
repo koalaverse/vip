@@ -33,7 +33,7 @@ following approaches:
     supervised learning algorithms (like MARS and GBMs) have their own
     ways of constructing VI scores.
 
-2.  PDP-based VI scores. This is a new idea described in [Greenwell, et.
+2.  PDP-based VI scores. This is a new idea described in [Greenwell et
     al. (2018)](https://arxiv.org/abs/1805.04755). The idea is to
     measure the “flatness” of [Friedman’s *partial dependence
     plot*](https://doi.org/10.1214/aos/1013203451) (PDP) for each
@@ -45,7 +45,7 @@ following approaches:
 3.  ICE-based VI scores. This method is similar to the PDP-based VI
     scores above, but are based on measuring the “flatness” of the
     *individual conditional expectation* (ICE) curves presented by
-    [Goldstein, et.
+    [Goldstein et
     al. (2014)](https://doi.org/10.1080/10618600.2014.907095).
 
 Since PDPs and ICE curves can be constructed for any supervised learning

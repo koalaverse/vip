@@ -5,7 +5,8 @@
 \title{Variable Importance}
 \usage{
 vi(object, method = c("model", "pdp", "ice", "perm"), feature_names,
-  truncate_feature_names = NULL, sort = TRUE, decreasing = TRUE, ...)
+  FUN = NULL, truncate_feature_names = NULL, sort = TRUE,
+  decreasing = TRUE, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
@@ -21,6 +22,12 @@ available in a future release.}
 \item{feature_names}{Character string giving the names of the predictor
 variables (i.e., features) of interest.}
 
+\item{FUN}{List with two componenets, \code{"cat"} and \code{"con"},
+containing the functions to use for categorical and continuous features,
+respectively. If \code{NULL}, the standard deviation is used for continuous
+features. For categorical features, the range statistic is used (i.e.,
+(max - min) / 4).}
+
 \item{truncate_feature_names}{Integer specifying the length at which to
 truncate feature names. Default is \code{NULL} which results in no truncation
 (i.e., the full name of each feature will be printed).}
@@ -33,12 +40,6 @@ scores should be sorted in descending (\code{TRUE}) or ascending
 (\code{FALSE}) order of importance. Default is \code{TRUE}.}
 
 \item{...}{Additional optional arguments.}
-
-\item{FUN}{List with two componenets, \code{"cat"} and \code{"con"},
-containing the functions to use for categorical and continuous features,
-respectively. If \code{NULL}, the standard deviation is used for continuous
-features. For categorical features, the range statistic is used (i.e.,
-(max - min) / 4).}
 }
 \value{
 A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
@@ -65,7 +66,7 @@ vi(mtcars.ppr, method = "ice")
 vip(mtcars.ppr, method = "ice")
 }
 \references{
-Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J.: A Simple
+Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J. A Simple
 and Effective Model-Based Variable Importance Measure. arXiv preprint
 arXiv:1805.04755 (2018).
 }

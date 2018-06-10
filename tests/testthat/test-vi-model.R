@@ -1,11 +1,9 @@
-context("Variable importance")
+context("Variable importance scores")
 
 # Load required packages
 data(boston, package = "pdp")
 
-
-
-test_that("vi_model() works for \"ranger\" objects", {
+test_that("vi() works for \"ranger\" objects", {
 
   # Skips
   skip_on_cran()
@@ -14,9 +12,9 @@ test_that("vi_model() works for \"ranger\" objects", {
   # Fitted model
   set.seed(101)
   fit <- ranger::ranger(cmedv ~ ., data = boston, importance = "impurity")
-  vis <- vi:::vi_model.ranger(fit)
+  vis <- vi(fit)
 
   # Expectations
-
+  expect_is(vis, class = "tbl_df")
 
 })
