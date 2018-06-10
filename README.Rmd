@@ -27,9 +27,9 @@ knitr::opts_chunk$set(
 
 In the era of "big data", it is becoming more of a challenge to not only build state-of-the-art predictive models, but also gain an understanding of what's really going on in the data. For example, it is often of interest to know which, if any, of the predictors in a fitted model are relatively influential on the predicted outcome. Some modern algorithms---like random forests and gradient boosted decision trees---have a natural way of quantifying the importance or relative influence of each feature. Other algorithms---like naive Bayes classifiers and support vector machines---are not capable of doing so and model-free approaches are generally used to measure each predictor's importance. 
 
-Enter `vip`, an R package for constructing variable importance (VI) plots for many types of supervised learning algorithms using (currently) three approaches:
+Enter `vip`, an R package for constructing variable importance (VI) plots for many types of supervised learning algorithms using one of the following approaches:
 
-  1. Model-based VI scores (when available). For example, in a random forest, variable importance can be computed using the permutation approach described in Breiman (2001). Other supervised learning algothims (like MARS and GBMs) have their own ways of constructing VI scores.
+  1. Model-based VI scores (when available). For example, in a random forest, variable importance can be computed using the permutation approach described in Breiman (2001). Other supervised learning algorithms (like MARS and GBMs) have their own ways of constructing VI scores.
   
   2. PDP-based VI scores. This is a new idea described in Greenwell, et. al. (2018). The idea is to measure the "flatness" of Friedman's **partial dependence plot** (PDP) for each feature. A feature whose PDP is flat, relative to the other features, implies that the feature has less of an influence on the estimated prediction surface as it changes while taking into account the average effect of the other features in the model.
   
