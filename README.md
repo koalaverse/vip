@@ -1,4 +1,4 @@
-vip: Variable Importance Plots <img src="tools/vip-logo.png" align="right" width="130" height="150" />
+vip: Variable Importance Plots <img src="tools/logo-vip.png" align="right" width="130" height="150" />
 ======================================================================================================
 
 [![Travis-CI Build
@@ -128,15 +128,15 @@ References
 ----------
 
 Breiman, L. “Random Forests”. **Machine Learning**. *45*(1): 5-32, 2001.
-<doi:10.1023/A:1010933404324>.
+URL <https://doi.org/10.1023/A:1010933404324>.
 
 Friedman, J. H. “Greedy function approximation: A gradient boosting
 machine”. **The Annals of Statistics**, *29*: 1189–1232, 2001. URL
 <https://doi.org/10.1214/aos/1013203451>
 
 Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J. “A Simple and
-Effective Model-Based Variable Importance Measure”. arXiv preprint
-arXiv:1805.04755 (2018).
+Effective Model-Based Variable Importance Measure”. arXiv preprint,
+2018. URL <https://arxiv.org/abs/1805.04755>.
 
 Goldstein, A., Kapelner, A., Bleich, J., and Pitkin, E. (2015) “Peeking
 inside the black box: Visualizing statistical learning with plots of

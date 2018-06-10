@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# vip: Variable Importance Plots <img src="tools/vip-logo.png" align="right" width="130" height="150" />
+# vip: Variable Importance Plots <img src="tools/logo-vip.png" align="right" width="130" height="150" />
 
 [![Travis-CI Build Status](https://travis-ci.org/koalaverse/vip.svg?branch=master)](https://travis-ci.org/koalaverse/vip)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/koalaverse/vip?branch=master&svg=true)](https://ci.appveyor.com/project/koalaverse/vip)
@@ -80,10 +80,10 @@ grid.arrange(p1, p2, p3, ncol = 3)
 
 ## References
 
-Breiman, L. "Random Forests". **Machine Learning**. *45*(1): 5-32, 2001. doi:10.1023/A:1010933404324.
+Breiman, L. "Random Forests". **Machine Learning**. *45*(1): 5-32, 2001. URL https://doi.org/10.1023/A:1010933404324.
 
 Friedman, J. H. "Greedy function approximation: A gradient boosting machine". **The Annals of Statistics**, *29*: 1189–1232, 2001. URL https://doi.org/10.1214/aos/1013203451
 
-Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J. "A Simple and Effective Model-Based Variable Importance Measure". arXiv preprint arXiv:1805.04755 (2018).
+Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J. "A Simple and Effective Model-Based Variable Importance Measure". arXiv preprint, 2018. URL https://arxiv.org/abs/1805.04755.
 
 Goldstein, A., Kapelner, A., Bleich, J., and Pitkin, E. (2015) "Peeking inside the black box: Visualizing statistical learning with plots of individual conditional expectation". **Journal of Computational and Graphical Statistics**, *24*(1): 44-65, 2015. URL https://doi.org/10.1080/10618600.2014.907095.
