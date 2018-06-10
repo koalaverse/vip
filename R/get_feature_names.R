@@ -69,6 +69,12 @@ get_feature_names.nls <- function(object, ...) {
 
 
 #' @keywords internal
+get_feature_names.ppr <- function(object, ...) {
+  object$xnames
+}
+
+
+#' @keywords internal
 get_feature_names.randomForest <- function(object, ...) {
   rownames(object$importance)
 }

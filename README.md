@@ -11,43 +11,44 @@ Status](https://ci.appveyor.com/api/projects/status/github/koalaverse/vip?branch
 Overview
 --------
 
-Complex nonparametric models (like neural networks, random forests, and
-support vector machines) are more common than ever in predictive
-analytics, especially when dealing with large observational databases
-that don’t adhere to the strict assumptions imposed by traditional
-statistical techniques (e.g., multiple linear regression which assumes
-linearity, homoscedasticity, and normality). Unfortunately, it can be
-challenging to understand the results of such models and explain them to
-management. Variable importance plots and partial dependence plots
-(PDPs) offer a simple solution. PDPs are low-dimensional graphical
-renderings of the prediction function so that the relationship between
-the outcome and predictors of interest can be more easily understood.
-These plots are especially useful in explaining the output from black
-box models. The [`pdp`](https://github.com/bgreenwell/pdp) package
-offers a general framework for constructing PDPs for various types of
-fitted models in R.
+In the era of “big data”, it is becoming more of a challenge to not only
+build state-of-the-art predictive models, but also gain an understanding
+of what’s really going on in the data. For example, it is often of
+interest to know which, if any, of the predictors in a fitted model are
+relatively influential on the predicted outcome. Some modern
+algorithms—like random forests and gradient boosted decision trees—have
+a natural way of quantifying the importance or relative influence of
+each feature. Other algorithms—like naive Bayes classifiers and support
+vector machines—are not capable of doing so and model-free approaches
+are generally used to measure each predictor’s importance.
 
-While PDPs can be constructed for any predictor in a fitted model,
-variable importance scores are more difficult to define. Some methods
-(like random forests and other tree-based methods) have a natural way of
-defining variable importance. Unfortunately, this is not the case for
-other popular supervised learning algorithms like support vector
-machines. The `vip` package offers a solution by providing a partial
-dependence-based variable importance metric that can be used with any
-supervised learning algorithm.
+Enter `vip`, an R package for constructing variable importance (VI)
+plots for many types of supervised learning algorithms using (currently)
+three approaches:
 
-📝 **TODO:**
+1.  Model-based VI scores (when available). For example, in a random
+    forest, variable importance can be computed using the permutation
+    approach described in Breiman (2001). Other supervised learning
+    algothims (like MARS and GBMs) have their own ways of constructing
+    VI scores.
 
-1.  Modularize code:
+2.  PDP-based VI scores. This is a new idea described in Greenwell, et.
+    al. (2018). The idea is to measure the “flatness” of Friedman’s
+    **partial dependence plot** (PDP) for each feature. A feature whose
+    PDP is flat, relative to the other features, implies that the
+    feature has less of an influence on the estimated prediction surface
+    as it changes while taking into account the average effect of the
+    other features in the model.
 
-<!-- -->
+3.  ICE-based VI scores. This method is similar to the PDP-based VI
+    scores above, but are based on measuring the “flatness” of the
+    **individual conditional expectation** (ICE) curves presented by
+    Goldstein, et. al. (2014).
 
-    * Make generic for `vi_model()` (model-based VI scores)
-    * Make generic for `vi_partial()` (PDP/ICE-based VI scores)
-    * Make generic for `vi_permute()` (permutation-based VI scores)
-    * Make generic for `vi_shapely()` (shapely-based VI scores)
-
-(The will be called by `vi()` and not by the uder directly.)
+Since PDPs and ICE curves can be constructed for any supervised learning
+algorithm, this means we can use methods 2) and 3) to construct VI
+scores for any supervised learning algorithm while taking into account
+the model and all of the features.
 
 Installation
 ------------
@@ -57,7 +58,9 @@ easily be installed using the
 [devtools](https://CRAN.R-project.org/package=devtools) package:
 
 ``` r
-if (!requireNamespace("devtools")) install.packages("devtools")
+if (!requireNamespace("devtools")) {
+  install.packages("devtools")
+}
 devtools::install_github("koalaverse/vip")
 ```
 
@@ -114,9 +117,29 @@ vi(rf, type = 1)
 # Use `vip()` to construct ggplot2-based variable importance plots
 p1 <- vip(rf, type = 1)
 p2 <- vip(rf, type = 2)
-p3 <- vip(rf, partial = TRUE)
-#> Warning: Setting `partial = TRUE` is experimental, use at your own risk!
+p3 <- vip(rf, method = "ice")
+#> Warning: Setting `method = "ice"` is experimental, use at your own risk!
 grid.arrange(p1, p2, p3, ncol = 3)
 ```
 
 <img src="tools/README-example-rf-1.png" style="display: block; margin: auto;" />
+
+References
+----------
+
+Breiman, L. “Random Forests”. **Machine Learning**. *45*(1): 5-32, 2001.
+<doi:10.1023/A:1010933404324>.
+
+Friedman, J. H. “Greedy function approximation: A gradient boosting
+machine”. **The Annals of Statistics**, *29*: 1189–1232, 2001. URL
+<https://doi.org/10.1214/aos/1013203451>
+
+Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J. “A Simple and
+Effective Model-Based Variable Importance Measure”. arXiv preprint
+arXiv:1805.04755 (2018).
+
+Goldstein, A., Kapelner, A., Bleich, J., and Pitkin, E. (2015) “Peeking
+inside the black box: Visualizing statistical learning with plots of
+individual conditional expectation”. **Journal of Computational and
+Graphical Statistics**, *24*(1): 44-65, 2015. URL
+<https://doi.org/10.1080/10618600.2014.907095>.

@@ -2,78 +2,21 @@
 % Please edit documentation in R/vi.R
 \name{vi}
 \alias{vi}
-\alias{vi.default}
-\alias{vi.C5.0}
-\alias{vi.constparty}
-\alias{vi.earth}
-\alias{vi.gbm}
-\alias{vi.H2ORegressionModel}
-\alias{vi.lm}
-\alias{vi.randomForest}
-\alias{vi.RandomForest}
-\alias{vi.ranger}
-\alias{vi.rpart}
-\alias{vi.train}
-\alias{vi.xgb.Booster}
 \title{Variable Importance}
 \usage{
-vi(object, ...)
-
-\method{vi}{default}(object, feature_names, truncate_feature_names = NULL,
-  sort = TRUE, decreasing = TRUE, FUN = NULL, keep_partial = FALSE, ...)
-
-\method{vi}{C5.0}(object, feature_names, truncate_feature_names = NULL,
-  sort = TRUE, decreasing = TRUE, partial = FALSE, FUN = NULL,
-  keep_partial = FALSE, ...)
-
-\method{vi}{constparty}(object, feature_names, truncate_feature_names = NULL,
-  sort = TRUE, decreasing = TRUE, partial = FALSE, FUN = NULL,
-  keep_partial = FALSE, ...)
-
-\method{vi}{earth}(object, feature_names, truncate_feature_names = NULL,
-  sort = TRUE, decreasing = TRUE, partial = FALSE, FUN = NULL,
-  keep_partial = FALSE, ...)
-
-\method{vi}{gbm}(object, feature_names, truncate_feature_names = NULL,
-  sort = TRUE, decreasing = TRUE, partial = FALSE, FUN = NULL,
-  keep_partial = FALSE, ...)
-
-\method{vi}{H2ORegressionModel}(object, feature_names,
-  truncate_feature_names = NULL, sort = TRUE, decreasing = TRUE,
-  partial = FALSE, FUN = NULL, keep_partial = FALSE, ...)
-
-\method{vi}{lm}(object, feature_names, truncate_feature_names = NULL,
-  sort = TRUE, decreasing = TRUE, partial = FALSE, FUN = NULL,
-  keep_partial = FALSE, ...)
-
-\method{vi}{randomForest}(object, feature_names,
-  truncate_feature_names = NULL, sort = TRUE, decreasing = TRUE,
-  type = 1, partial = FALSE, FUN = NULL, keep_partial = FALSE, ...)
-
-\method{vi}{RandomForest}(object, feature_names,
-  truncate_feature_names = NULL, sort = TRUE, decreasing = TRUE,
-  auc = FALSE, partial = FALSE, FUN = NULL, keep_partial = FALSE, ...)
-
-\method{vi}{ranger}(object, feature_names, truncate_feature_names = NULL,
-  sort = TRUE, decreasing = TRUE, partial = FALSE, FUN = NULL,
-  keep_partial = FALSE, ...)
-
-\method{vi}{rpart}(object, feature_names, truncate_feature_names = NULL,
-  sort = TRUE, decreasing = TRUE, partial = FALSE, FUN = NULL,
-  keep_partial = FALSE, ...)
-
-\method{vi}{train}(object, feature_names, truncate_feature_names = NULL,
-  sort = TRUE, decreasing = TRUE, partial = FALSE, FUN = NULL,
-  keep_partial = FALSE, ...)
-
-\method{vi}{xgb.Booster}(object, feature_names, truncate_feature_names = NULL,
-  sort = TRUE, decreasing = TRUE, type = c("Gain", "Cover", "Frequency"),
-  partial = FALSE, FUN = NULL, keep_partial = FALSE, ...)
+vi(object, method = c("model", "pdp", "ice", "perm"), feature_names,
+  truncate_feature_names = NULL, sort = TRUE, decreasing = TRUE, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
 
-\item{...}{Additional optional arguments.}
+\item{method}{Character string specifying the type of variable importance
+(VI) to compute. Current options are \code{"model"} (for model-based VI
+scores), \code{"pdp"} (for PDP-based VI scores), \code{"ice"} (for ICE-based
+VI scores), and \code{"perm"} (for permutation-based VI scores). The default
+is \code{"model"}. For details on the PDP/ICE-based method, see the reference
+below. Also, \code{method = "perm"} is currently ignored, but will be
+available in a future release.}
 
 \item{feature_names}{Character string giving the names of the predictor
 variables (i.e., features) of interest.}
@@ -89,27 +32,13 @@ importance scores. Default is \code{TRUE}.}
 scores should be sorted in descending (\code{TRUE}) or ascending
 (\code{FALSE}) order of importance. Default is \code{TRUE}.}
 
-\item{FUN}{Function used to measure the variability of the partial dependence
-values for continuous predictors. If \code{NULL}, the standard deviation is
-used (i.e., \code{FUN = sd}). For factors, the range statistic is used (i.e.,
+\item{...}{Additional optional arguments.}
+
+\item{FUN}{List with two componenets, \code{"cat"} and \code{"con"},
+containing the functions to use for categorical and continuous features,
+respectively. If \code{NULL}, the standard deviation is used for continuous
+features. For categorical features, the range statistic is used (i.e.,
 (max - min) / 4).}
-
-\item{keep_partial}{Logical indicating whether or not to return the computed
-partial dependence values for each predictor listed in \code{feature_names}
-in a separate attribute called \code{"partial"}. Default is \code{FALSE}.
-Only used when \code{partial = TRUE}.}
-
-\item{partial}{Logical indicating whether or not to use partial dependence
-functions to construct variable importance scores. Default is \code{FALSE}.}
-
-\item{type}{Integer specifying the type of variable importance measure to
-return for \code{\link[randomForest]{randomForest}} objects. Should be
-\code{0} or \code{1}; see \code{\link[randomForest]{importance}} for details.}
-
-\item{auc}{Logical indicating whether or not to compute the AUC-based
-variable scores described in Janitza et al. (2012). Only available for
-\code{\link[party]{cforest}} objects. See
-\code{\link[party]{varimpAUC}} for details. Default is \code{FALSE}.}
 }
 \value{
 A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
@@ -130,5 +59,13 @@ data(mtcars)
 mtcars.ppr <- ppr(mpg ~ ., data = mtcars, nterms = 1)
 
 # Compute variable importance scores
-vi(mtcars.ppr, feature_names = names(subset(mtcars, select = -mpg)))
+vi(mtcars.ppr, method = "ice")
+
+# Plot variable importance scores
+vip(mtcars.ppr, method = "ice")
+}
+\references{
+Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J.: A Simple
+and Effective Model-Based Variable Importance Measure. arXiv preprint
+arXiv:1805.04755 (2018).
 }

@@ -10,9 +10,6 @@ vint(object, pred.var, progress = "none", parallel = FALSE,
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
 
-\item{pred.var}{Character string giving the names of the predictor variables
-of interest. Should be of length two.}
-
 \item{progress}{Character string giving the name of the progress bar to use
 while constructing the interaction statistics. See
 \code{\link[plyr]{create_progress_bar}} for details. Default is
@@ -27,13 +24,19 @@ parallel using a backend provided by the \code{foreach} package. Default is
 
 \item{...}{Additional optional arguments to be passed onto
 \code{\link[pdp]{partial}}.}
+
+\item{feature_names}{Character string giving the names of the two features of
+interest.}
 }
 \description{
-Compute the strength of interaction effects.
+Compute the strength of two-way interaction effects. For details, see the
+reference below.
 }
 \details{
 Coming soon!
 }
-\note{
-Coming soon!
+\references{
+Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J.: A Simple
+and Effective Model-Based Variable Importance Measure. arXiv preprint
+arXiv:1805.04755 (2018).
 }

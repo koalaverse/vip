@@ -77,5 +77,6 @@ vip.default <- function(object, num_features = 10L, bar = TRUE, width = 0.75,
   if (horizontal) {
     p <- p + ggplot2::coord_flip()
   }
-  p + ggplot2::ylab(paste0("Importance (", attr(imp, "type"), ")"))
+  # p + ggplot2::ylab(paste0("Importance (", attr(imp, "type"), ")"))
+  p
 }

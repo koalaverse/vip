@@ -1,11 +1,12 @@
 #' Interaction Effects
 #'
-#' Compute the strength of interaction effects.
+#' Compute the strength of two-way interaction effects. For details, see the
+#' reference below.
 #'
 #' @param object A fitted model object (e.g., a \code{"randomForest"} object).
 #'
-#' @param pred.var Character string giving the names of the predictor variables
-#' of interest. Should be of length two.
+#' @param feature_names Character string giving the names of the two features of
+#' interest.
 #'
 #' @param progress Character string giving the name of the progress bar to use
 #' while constructing the interaction statistics. See
@@ -25,27 +26,33 @@
 #' @details
 #' Coming soon!
 #'
-#' @note
-#' Coming soon!
+#' @references
+#' Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J.: A Simple
+#' and Effective Model-Based Variable Importance Measure. arXiv preprint
+#' arXiv:1805.04755 (2018).
 #'
 #' @export
 vint <- function(object, pred.var, progress = "none", parallel = FALSE,
                  paropts = NULL, ...) {
-  if (!is.character(pred.var) || (length(pred.var) < 2)) {
-    stop("'pred.var' with length >= 2.")
+  warning("This function is experimental, use at your own risk!", call. = FALSE)
+  if (!is.character(pred.var) || (length(pred.var) != 2)) {
+    stop("`feature_names` should be a character vector of length 2.")
   }
   all.pairs <- utils::combn(pred.var, m = 2)
-  ints <- plyr::aaply(all.pairs, .margins = 2, .progress = progress,
-                      .parallel = parallel, .paropts = paropts,
-                      .fun = function(x) {
-                        pd <- pdp::partial(object, pred.var = x, ...)
-                        mean(c(stats::sd(tapply(pd$yhat, INDEX = pd[[x[1L]]],
-                                                FUN = stats::sd)),
-                               stats::sd(tapply(pd$yhat, INDEX = pd[[x[2L]]],
-                                                FUN = stats::sd))))
-                      })
-  ints <- data.frame("Variables" = paste0(all.pairs[1L, ], "*", all.pairs[2L, ]),
-                     "Interaction" = ints)
+  ints <- plyr::aaply(
+    all.pairs, .margins = 2, .progress = progress, .parallel = parallel,
+    .paropts = paropts,
+    .fun = function(x) {
+      pd <- pdp::partial(object, pred.var = x, ...)
+      mean(c(
+        stats::sd(tapply(pd$yhat, INDEX = pd[[x[1L]]], FUN = stats::sd)),
+        stats::sd(tapply(pd$yhat, INDEX = pd[[x[2L]]], FUN = stats::sd))
+      ))
+  })
+  ints <- data.frame(
+    "Variables" = paste0(all.pairs[1L, ], "*", all.pairs[2L, ]),
+    "Interaction" = ints
+  )
   ints <- ints[order(ints["Interaction"], decreasing = TRUE), ]
   tibble::as.tibble(ints)
 }
