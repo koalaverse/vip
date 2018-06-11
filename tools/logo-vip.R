@@ -21,7 +21,8 @@ g <- ggplot() +
                size = 3) +
   annotation_custom(img, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
   annotate(geom = "text", label = "vip", x = 0, y = -0.05,
-           family = "Open Sans Light", color = "black", size = 7) +
+           # family = "Open Sans Light",
+           color = "black", size = 7) +
   coord_equal(xlim = range(hex$x), ylim = range(hex$y)) +
   scale_x_continuous(expand = c(0.04, 0)) +
   scale_y_reverse(expand = c(0.04, 0)) +
