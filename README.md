@@ -5,6 +5,7 @@ vip: Variable Importance Plots <img src="tools/logo-vip.png" align="right" width
 Status](https://travis-ci.org/koalaverse/vip.svg?branch=master)](https://travis-ci.org/koalaverse/vip)
 [![AppVeyor Build
 Status](https://ci.appveyor.com/api/projects/status/github/koalaverse/vip?branch=master&svg=true)](https://ci.appveyor.com/project/koalaverse/vip)
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
 
 #### ⚠️ Warning: This awesome package is under construction! 🚧 🚧 🚧 🚧
 
