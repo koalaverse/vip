@@ -24,8 +24,8 @@ vector machines—are not capable of doing so and model-free approaches
 are generally used to measure each predictor’s importance.
 
 Enter `vip`, an R package for constructing variable importance (VI)
-plots for many types of supervised learning algorithms using one of the
-following approaches:
+scores/plots for many types of supervised learning algorithms using one
+of the following approaches:
 
 1.  Model-based VI scores (when available). For example, in a random
     forest, variable importance can be computed using the permutation

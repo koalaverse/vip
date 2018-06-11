@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 
 In the era of "big data", it is becoming more of a challenge to not only build state-of-the-art predictive models, but also gain an understanding of what's really going on in the data. For example, it is often of interest to know which, if any, of the predictors in a fitted model are relatively influential on the predicted outcome. Some modern algorithms---like random forests and gradient boosted decision trees---have a natural way of quantifying the importance or relative influence of each feature. Other algorithms---like naive Bayes classifiers and support vector machines---are not capable of doing so and model-free approaches are generally used to measure each predictor's importance. 
 
-Enter `vip`, an R package for constructing variable importance (VI) plots for many types of supervised learning algorithms using one of the following approaches:
+Enter `vip`, an R package for constructing variable importance (VI) scores/plots for many types of supervised learning algorithms using one of the following approaches:
 
   1) Model-based VI scores (when available). For example, in a random forest, variable importance can be computed using the permutation approach described in [Breiman (2001)](https://doi.org/10.1023/A:1010933404324). Other supervised learning algorithms (like MARS and GBMs) have their own ways of constructing VI scores.
   
