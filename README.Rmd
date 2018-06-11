@@ -6,7 +6,7 @@ output:
 
 ```{r setup, echo = FALSE}
 knitr::opts_chunk$set(
-  cache = FALSE,
+  cache = TRUE,
   collapse = TRUE,
   message = FALSE, 
   # warning = FALSE,
