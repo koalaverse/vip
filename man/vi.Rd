@@ -6,7 +6,7 @@
 \usage{
 vi(object, method = c("model", "pdp", "ice", "perm"), feature_names,
   FUN = NULL, truncate_feature_names = NULL, sort = TRUE,
-  decreasing = TRUE, ...)
+  decreasing = TRUE, scale = FALSE, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
@@ -38,6 +38,9 @@ importance scores. Default is \code{TRUE}.}
 \item{decreasing}{Logical indicating whether or not the variable importance
 scores should be sorted in descending (\code{TRUE}) or ascending
 (\code{FALSE}) order of importance. Default is \code{TRUE}.}
+
+\item{scale}{Logical indicating whether or not to scale the variable
+importance scores so that the largest is 100. Default is \code{FALSE}.}
 
 \item{...}{Additional optional arguments.}
 }

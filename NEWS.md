@@ -1,6 +1,6 @@
 # NEWS for vip package
 
-### Changes for version 0.0.2
+### Changes for version 0.1.0
 
 * Added support for XGBoost models (i.e., objects of class `"xgb.booster"`).
 
@@ -13,6 +13,11 @@
 * `.` was changed to `_` in all argument names.
 
 * `vi()` gained three new arguments: `truncate_feature_names` (for truncating feature names in the returned tibble), `sort` (a logical argument specifying whether or not the resulting variable importance scores should be sorted), and `decreasing` (a logical argument specifying whether or not the variable importance scores should be sorted in decreasing order).
+
+* `vi_model.lm()`, and hence `vi()`, contains an additional column called `Sign` that contains the sign of the oroginal coefficients [(#27)](https://github.com/koalaverse/vip/issues/27).
+
+* `vi()` gained a new argument, `scale`, for scaling the variable importance scores so that the largest is 100. Default is `FALSE` [(#24)](https://github.com/koalaverse/vip/issues/24). 
+
 
 ### Changes for version 0.0.1
 

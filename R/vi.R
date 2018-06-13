@@ -15,6 +15,12 @@
 #' @param feature_names Character string giving the names of the predictor
 #' variables (i.e., features) of interest.
 #'
+#' @param FUN List with two componenets, \code{"cat"} and \code{"con"},
+#' containing the functions to use for categorical and continuous features,
+#' respectively. If \code{NULL}, the standard deviation is used for continuous
+#' features. For categorical features, the range statistic is used (i.e.,
+#' (max - min) / 4).
+#'
 #' @param truncate_feature_names Integer specifying the length at which to
 #' truncate feature names. Default is \code{NULL} which results in no truncation
 #' (i.e., the full name of each feature will be printed).
@@ -26,11 +32,8 @@
 #' scores should be sorted in descending (\code{TRUE}) or ascending
 #' (\code{FALSE}) order of importance. Default is \code{TRUE}.
 #'
-#' @param FUN List with two componenets, \code{"cat"} and \code{"con"},
-#' containing the functions to use for categorical and continuous features,
-#' respectively. If \code{NULL}, the standard deviation is used for continuous
-#' features. For categorical features, the range statistic is used (i.e.,
-#' (max - min) / 4).
+#' @param scale Logical indicating whether or not to scale the variable
+#' importance scores so that the largest is 100. Default is \code{FALSE}.
 #'
 #' @param ... Additional optional arguments.
 #'
@@ -66,10 +69,11 @@
 #' vip(mtcars.ppr, method = "ice")
 vi <- function(
   object, method = c("model", "pdp", "ice", "perm"), feature_names, FUN = NULL,
-  truncate_feature_names = NULL, sort = TRUE, decreasing = TRUE, ...
+  truncate_feature_names = NULL, sort = TRUE, decreasing = TRUE, scale = FALSE,
+  ...
 ) {
 
-  # Construct variable importance scores
+  # Construct VI scores
   method <- match.arg(method)
   if (method %in% c("pdp", "ice")) {
     if (missing(feature_names)) {
@@ -87,7 +91,7 @@ vi <- function(
          call. = FALSE)
   }
 
-  # Sort variable importance scores (if requested)
+  # Sort VI scores (if requested)
   if (sort) {
     tib <- sort_importance_scores(tib, decreasing = decreasing)
   }
@@ -95,6 +99,11 @@ vi <- function(
   # Truncate feature names (if requested)
   if (!is.null(truncate_feature_names)) {
     tib <- truncate_feature_names(tib, length = truncate_feature_names)
+  }
+
+  # Scale VI scores so that largest is 100
+  if (scale) {
+    tib$Importance <- tib$Importance / max(tib$Importance) * 100
   }
 
   # Return results
