@@ -56,9 +56,10 @@ variable scores described in Janitza et al. (2012). Only available for
 \code{\link[party]{varimpAUC}} for details. Default is \code{FALSE}.}
 }
 \value{
-A tidy data frame (i.e., a \code{"tibble"} object) with two columns,
-\code{Variable} and \code{Importance}, containing the variable name and its
-associated importance score, respectively.
+A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
+\code{Variable} and \code{Importance}. For \code{"glm"}-like object, an
+additional column, called \code{Sign}, is also included which includes the
+sign (i.e., +/-1) of the original coefficient.
 }
 \description{
 Compute model-based variable importance scores for the predictors in a model.

@@ -64,7 +64,7 @@ vip.default <- function(object, num_features = 10L, bar = TRUE, width = 0.75,
     num_features <- nrow(imp)
   }
   imp <- imp[seq_len(num_features), ]  # only retain num_features variable importance scores
-  attr(imp, which = "type") <- type
+  # attr(imp, which = "type") <- type  # FIXME: Comment out, for now!
   x.string <- "reorder(Variable, Importance)"
   p <- ggplot2::ggplot(imp, ggplot2::aes_string(x = x.string, y = "Importance"))
   p <- if (bar) {
@@ -73,6 +73,7 @@ vip.default <- function(object, num_features = 10L, bar = TRUE, width = 0.75,
   } else {
     p + ggplot2::geom_point(color = color, alpha = alpha)
   }
+  p <- p + ggplot2::theme(legend.position = "none")
   p <- p + ggplot2::xlab("")  # no need for x-axis label
   if (horizontal) {
     p <- p + ggplot2::coord_flip()

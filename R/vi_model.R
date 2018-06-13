@@ -12,9 +12,10 @@
 #'
 #' @param ... Additional optional arguments.
 #'
-#' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns,
-#' \code{Variable} and \code{Importance}, containing the variable name and its
-#' associated importance score, respectively.
+#' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
+#' \code{Variable} and \code{Importance}. For \code{"glm"}-like object, an
+#' additional column, called \code{Sign}, is also included which includes the
+#' sign (i.e., +/-1) of the original coefficient.
 #'
 #' @details Coming soon!
 #'
@@ -152,11 +153,12 @@ vi_model.lm <- function(object, ...) {
   # Construct model-based variable importance scores
   coefs <- summary(object)$coefficients
   if (attr(object$terms, "intercept") == 1) {
-    coefs <- coefs[-1L, ]
+    coefs <- coefs[-1L, , drop = FALSE]
   }
   tib <- tibble::tibble(
     "Variable" = rownames(coefs),
-    "Importance" = abs(coefs[, "t value"])
+    "Importance" = abs(coefs[, "t value"]),
+    "Sign" = sign(coefs[, "Estimate"])
   )
 
   # Add variable importance type attribute
