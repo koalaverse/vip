@@ -9,7 +9,7 @@ vip(object, ...)
 
 \method{vip}{default}(object, num_features = 10L, bar = TRUE,
   width = 0.75, horizontal = TRUE, alpha = 1, color = "grey35",
-  fill = "grey35", ...)
+  fill = "grey35", size = 1, shape = 19, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
@@ -38,6 +38,12 @@ the bars. Could also be a function, such as
 \item{fill}{Character string specifying the color to use to fill the bars.
 Could also be a function, such as \code{\link[grDevices]{heat.colors}}.
 Default is \code{"grey35"}.}
+
+\item{size}{Numeric value indicating the size to use for the points whenever
+\code{bar = FALSE}. Default is \code{1}.}
+
+\item{shape}{Numeric value indicating the shape to use for the points
+whenever \code{bar = FALSE}. Default is \code{1}.}
 }
 \description{
 Plot variable importance scores for the predictors in a model.

@@ -27,6 +27,12 @@
 #' Could also be a function, such as \code{\link[grDevices]{heat.colors}}.
 #' Default is \code{"grey35"}.
 #'
+#' @param size Numeric value indicating the size to use for the points whenever
+#' \code{bar = FALSE}. Default is \code{1}.
+#'
+#' @param shape Numeric value indicating the shape to use for the points
+#' whenever \code{bar = FALSE}. Default is \code{1}.
+#'
 #' @param ... Additional optional arguments to be passed onto \code{\link{vi}}.
 #'
 #' @rdname vip
@@ -54,9 +60,10 @@ vip <- function(object, ...) {
 #' @rdname vip
 #'
 #' @export
-vip.default <- function(object, num_features = 10L, bar = TRUE, width = 0.75,
-                        horizontal = TRUE, alpha = 1, color = "grey35",
-                        fill = "grey35", ...) {
+vip.default <- function(
+  object, num_features = 10L, bar = TRUE, width = 0.75, horizontal = TRUE,
+  alpha = 1, color = "grey35", fill = "grey35", size = 1, shape = 19, ...
+) {
   imp <- vi(object, ...)  # variable importance scores
   type <- attr(imp, which = "type")  # subsetting removes this attribute!
   num_features <- as.integer(num_features)[1L]  # make sure num_features is a single integer
@@ -68,10 +75,13 @@ vip.default <- function(object, num_features = 10L, bar = TRUE, width = 0.75,
   x.string <- "reorder(Variable, Importance)"
   p <- ggplot2::ggplot(imp, ggplot2::aes_string(x = x.string, y = "Importance"))
   p <- if (bar) {
-    p + ggplot2::geom_col(width = width, color = color,
-                          fill = fill, alpha = alpha)
+    p + ggplot2::geom_col(
+      width = width, color = color, fill = fill, alpha = alpha
+    )
   } else {
-    p + ggplot2::geom_point(color = color, alpha = alpha)
+    p + ggplot2::geom_point(
+      color = color, alpha = alpha, size = size, shape = shape
+    )
   }
   p <- p + ggplot2::theme(legend.position = "none")
   p <- p + ggplot2::xlab("")  # no need for x-axis label
