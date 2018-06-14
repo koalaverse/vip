@@ -2,6 +2,8 @@
 
 S3method(vi_ice,default)
 S3method(vi_model,C5.0)
+S3method(vi_model,H2OBinomialModel)
+S3method(vi_model,H2OMultinomialModel)
 S3method(vi_model,H2ORegressionModel)
 S3method(vi_model,RandomForest)
 S3method(vi_model,constparty)

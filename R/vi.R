@@ -40,7 +40,7 @@
 #' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
 #' \code{Variable} and \code{Importance}. For \code{"glm"}-like object, an
 #' additional column, called \code{Sign}, is also included which includes the
-#' sign (i.e., +/-1) of the original coefficient.
+#' sign (i.e., POS/NEG) of the original coefficient.
 #'
 #' @references
 #' Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J. A Simple
@@ -90,6 +90,9 @@ vi <- function(
     stop("Permutation-based variable importance scores not yet implemented.",
          call. = FALSE)
   }
+
+  # Remove rows with NA
+  tib <- stats::na.omit(tib)
 
   # Sort VI scores (if requested)
   if (sort) {

@@ -7,6 +7,8 @@
 \alias{vi_model.constparty}
 \alias{vi_model.earth}
 \alias{vi_model.gbm}
+\alias{vi_model.H2OBinomialModel}
+\alias{vi_model.H2OMultinomialModel}
 \alias{vi_model.H2ORegressionModel}
 \alias{vi_model.lm}
 \alias{vi_model.randomForest}
@@ -28,6 +30,10 @@ vi_model(object, ...)
 \method{vi_model}{earth}(object, ...)
 
 \method{vi_model}{gbm}(object, ...)
+
+\method{vi_model}{H2OBinomialModel}(object, ...)
+
+\method{vi_model}{H2OMultinomialModel}(object, ...)
 
 \method{vi_model}{H2ORegressionModel}(object, ...)
 
@@ -59,7 +65,7 @@ variable scores described in Janitza et al. (2012). Only available for
 A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
 \code{Variable} and \code{Importance}. For \code{"glm"}-like object, an
 additional column, called \code{Sign}, is also included which includes the
-sign (i.e., +/-1) of the original coefficient.
+sign (i.e., POS/NEG) of the original coefficient.
 }
 \description{
 Compute model-based variable importance scores for the predictors in a model.

@@ -48,7 +48,7 @@ importance scores so that the largest is 100. Default is \code{FALSE}.}
 A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
 \code{Variable} and \code{Importance}. For \code{"glm"}-like object, an
 additional column, called \code{Sign}, is also included which includes the
-sign (i.e., +/-1) of the original coefficient.
+sign (i.e., POS/NEG) of the original coefficient.
 }
 \description{
 Compute variable importance scores for the predictors in a model.

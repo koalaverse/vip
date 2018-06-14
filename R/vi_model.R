@@ -15,7 +15,7 @@
 #' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
 #' \code{Variable} and \code{Importance}. For \code{"glm"}-like object, an
 #' additional column, called \code{Sign}, is also included which includes the
-#' sign (i.e., +/-1) of the original coefficient.
+#' sign (i.e., POS/NEG) of the original coefficient.
 #'
 #' @details Coming soon!
 #'
@@ -129,15 +129,68 @@ vi_model.gbm <- function(object, ...) {
 #' @rdname vi_model
 #'
 #' @export
+vi_model.H2OBinomialModel <- function(object, ...) {
+
+  # Construct model-based variable importance scores
+  tib <- tibble::as.tibble(h2o::h2o.varimp(object))
+  if (object@algorithm == "glm") {
+    names(tib) <- c("Variable", "Importance", "Sign")
+    # FIXME: Extra row at the bottom?
+  } else {
+    tib <- tib[1L:2L]
+    names(tib) <- c("Variable", "Importance")
+  }
+
+  # Add variable importance type attribute
+  attr(tib, "type") <- "h2o"
+
+  # Return results
+  tib
+
+}
+
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.H2OMultinomialModel <- function(object, ...) {
+
+  # Construct model-based variable importance scores
+  tib <- tibble::as.tibble(h2o::h2o.varimp(object))
+  if (object@algorithm == "glm") {
+    names(tib) <- c("Variable", "Importance", "Sign")
+    # FIXME: Extra row at the bottom?
+  } else {
+    tib <- tib[1L:2L]
+    names(tib) <- c("Variable", "Importance")
+  }
+
+  # Add variable importance type attribute
+  attr(tib, "type") <- "h2o"
+
+  # Return results
+  tib
+
+}
+
+
+#' @rdname vi_model
+#'
+#' @export
 vi_model.H2ORegressionModel <- function(object, ...) {
 
   # Construct model-based variable importance scores
   tib <- tibble::as.tibble(h2o::h2o.varimp(object))
-  tib[3L:4L] <- NULL
-  names(tib) <- c("Variable", "Importance")
+  if (object@algorithm == "glm") {
+    names(tib) <- c("Variable", "Importance", "Sign")
+    # FIXME: Extra row at the bottom?
+  } else {
+    tib <- tib[1L:2L]
+    names(tib) <- c("Variable", "Importance")
+  }
 
   # Add variable importance type attribute
-  attr(tib, "type") <- "rel.inf"
+  attr(tib, "type") <- "h2o"
 
   # Return results
   tib
@@ -158,7 +211,7 @@ vi_model.lm <- function(object, ...) {
   tib <- tibble::tibble(
     "Variable" = rownames(coefs),
     "Importance" = abs(coefs[, "t value"]),
-    "Sign" = sign(coefs[, "Estimate"])
+    "Sign" = ifelse(sign(coefs[, "Estimate"]) == 1, yes = "POS", no = "NEG")
   )
 
   # Add variable importance type attribute
