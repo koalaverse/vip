@@ -1,6 +1,7 @@
 vip: Variable Importance Plots <img src="tools/logo-vip.png" align="right" width="130" height="150" />
 ======================================================================================================
 
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vip)](https://cran.r-project.org/package=vip)
 [![Travis-CI Build
 Status](https://travis-ci.org/koalaverse/vip.svg?branch=master)](https://travis-ci.org/koalaverse/vip)
 [![AppVeyor Build
@@ -95,6 +96,7 @@ the true model.
 
 ``` r
 # Load required packages
+library(ggplot2)  # for ggtitle() 
 library(randomForest)  
 library(vip)
 
@@ -119,9 +121,9 @@ vi(rf, type = 1)
 #> 10 x.6         -1.65
 
 # Use `vip()` to construct ggplot2-based variable importance plots
-p1 <- vip(rf, type = 1)
-p2 <- vip(rf, type = 2)
-p3 <- vip(rf, method = "ice")
+p1 <- vip(rf, type = 1) + ggtitle("Accuracy")
+p2 <- vip(rf, type = 2) + ggtitle("Impurity")
+p3 <- vip(rf, method = "ice") + ggtitle("ICE")
 #> Warning: Setting `method = "ice"` is experimental, use at your own risk!
 grid.arrange(p1, p2, p3, ncol = 3)
 ```
