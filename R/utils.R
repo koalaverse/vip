@@ -12,8 +12,9 @@ NULL
 
 
 #' @keywords internal
-truncate_feature_names <- function(x, length) {
-  x$Variable <- substr(x$Variable, start = 1L, stop = length)
+
+abbreviate_names <- function(x, minlength) {
+  x$Variable <- abbreviate(x$Variable, minlength = minlength)
   x
 }
 

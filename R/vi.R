@@ -21,8 +21,8 @@
 #' features. For categorical features, the range statistic is used (i.e.,
 #' (max - min) / 4).
 #'
-#' @param truncate_feature_names Integer specifying the length at which to
-#' truncate feature names. Default is \code{NULL} which results in no truncation
+#' @param abbreviate_feature_names Integer specifying the length at which to
+#' abbreviate feature names. Default is \code{NULL} which results in no abbreviation
 #' (i.e., the full name of each feature will be printed).
 #'
 #' @param sort Logical indicating whether or not to order the sort the variable
@@ -69,7 +69,7 @@
 #' vip(mtcars.ppr, method = "ice")
 vi <- function(
   object, method = c("model", "pdp", "ice", "perm"), feature_names, FUN = NULL,
-  truncate_feature_names = NULL, sort = TRUE, decreasing = TRUE, scale = FALSE,
+  abbreviate_feature_names = NULL, sort = TRUE, decreasing = TRUE, scale = FALSE,
   ...
 ) {
 
@@ -99,9 +99,9 @@ vi <- function(
     tib <- sort_importance_scores(tib, decreasing = decreasing)
   }
 
-  # Truncate feature names (if requested)
-  if (!is.null(truncate_feature_names)) {
-    tib <- truncate_feature_names(tib, length = truncate_feature_names)
+  # Abbreviate feature names (if requested)
+  if (!is.null(abbreviate_feature_names)) {
+    tib <- abbreviate_names(tib, minlength = abbreviate_feature_names)
   }
 
   # Scale VI scores so that largest is 100
