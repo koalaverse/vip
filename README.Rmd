@@ -62,6 +62,7 @@ trn <- as.data.frame(mlbench::mlbench.friedman1(500))  # ?mlbench.friedman1
 Next, we fit a random forest to the simulated data and construct variable importance plots using the two methods provided by the random forest algorithm (left and middle plots) and the (**experimental**) partial dependence-based approach (right plot). In this case, all three methods do a fantastic job at highlighting the five variables used in the true model.
 ```{r example-rf}
 # Load required packages
+library(ggplot2)  # for ggtitle() 
 library(randomForest)  
 library(vip)
 
@@ -73,9 +74,9 @@ rf <- randomForest(y ~ ., data = trn, importance = TRUE)
 vi(rf, type = 1)
 
 # Use `vip()` to construct ggplot2-based variable importance plots
-p1 <- vip(rf, type = 1)
-p2 <- vip(rf, type = 2)
-p3 <- vip(rf, method = "ice")
+p1 <- vip(rf, type = 1) + ggtitle("Accuracy")
+p2 <- vip(rf, type = 2) + ggtitle("Impurity")
+p3 <- vip(rf, method = "ice") + ggtitle("ICE")
 grid.arrange(p1, p2, p3, ncol = 3)
 ```
 
