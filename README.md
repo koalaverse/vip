@@ -121,8 +121,8 @@ vi(rf, type = 1)
 #> 10 x.6         -1.65
 
 # Use `vip()` to construct ggplot2-based variable importance plots
-p1 <- vip(rf, type = 1) + ggtitle("Accuracy")
-p2 <- vip(rf, type = 2) + ggtitle("Impurity")
+p1 <- vip(rf, type = 1) + ggtitle("RF: accuracy")
+p2 <- vip(rf, type = 2) + ggtitle("RF: impurity")
 p3 <- vip(rf, method = "ice") + ggtitle("ICE")
 #> Warning: Setting `method = "ice"` is experimental, use at your own risk!
 grid.arrange(p1, p2, p3, ncol = 3)
