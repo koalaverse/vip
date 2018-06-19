@@ -1,6 +1,8 @@
 # vip 0.1.1
 
-* Changed `truncate_feature_names` argument of `vi()` to `abbreviate_feature_names` which abbreviates all feature names to at least the length `abbreviate_feature_names`.
+* Added `pkgdown` site: https://github.com/koalaverse/vip.
+
+* Changed `truncate_feature_names` argument of `vi()` to `abbreviate_feature_names` which abbreviates all feature names, rather than just truncating them.
 
 * Added CRAN badge [(#32)](https://github.com/koalaverse/vip/issues/32).
 
