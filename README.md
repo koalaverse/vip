@@ -1,5 +1,5 @@
-vip: Variable Importance Plots <img src="tools/logo-vip.png" align="right" width="130" height="150" />
-======================================================================================================
+
+# vip: Variable Importance Plots <img src="man/figures/logo-vip.png" align="right" width="130" height="150" />
 
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vip)](https://cran.r-project.org/package=vip)
 [![Travis-CI Build
@@ -8,34 +8,31 @@ Status](https://travis-ci.org/koalaverse/vip.svg?branch=master)](https://travis-
 Status](https://ci.appveyor.com/api/projects/status/github/koalaverse/vip?branch=master&svg=true)](https://ci.appveyor.com/project/koalaverse/vip)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
 
-#### ⚠️ Warning: This awesome package is under construction! 🚧 🚧 🚧 🚧
-
-Overview
---------
+## Overview
 
 In the era of “big data”, it is becoming more of a challenge to not only
 build state-of-the-art predictive models, but also gain an understanding
 of what’s really going on in the data. For example, it is often of
 interest to know which, if any, of the predictors in a fitted model are
 relatively influential on the predicted outcome. Some modern
-algorithms—like random forests and gradient boosted decision trees—have
-a natural way of quantifying the importance or relative influence of
-each feature. Other algorithms—like naive Bayes classifiers and support
-vector machines—are not capable of doing so and model-free approaches
-are generally used to measure each predictor’s importance.
+algorithms—like random forests and gradient boosted decision
+trees—have a natural way of quantifying the importance or relative
+influence of each feature. Other algorithms—like naive Bayes classifiers
+and support vector machines—are not capable of doing so and model-free
+approaches are generally used to measure each predictor’s importance.
 
 Enter `vip`, an R package for constructing variable importance (VI)
 scores/plots for many types of supervised learning algorithms using one
 of the following approaches:
 
-1.  Model-based VI scores (when available). For example, in a random
+1)  Model-based VI scores (when available). For example, in a random
     forest, variable importance can be computed using the permutation
-    approach described in
-    [Breiman (2001)](https://doi.org/10.1023/A:1010933404324). Other
-    supervised learning algorithms (like MARS and GBMs) have their own
-    ways of constructing VI scores.
+    approach described in [Breiman
+    (2001)](https://doi.org/10.1023/A:1010933404324). Other supervised
+    learning algorithms (like MARS and GBMs) have their own ways of
+    constructing VI scores.
 
-2.  PDP-based VI scores. This is a new idea described in [Greenwell et
+2)  PDP-based VI scores. This is a new idea described in [Greenwell et
     al. (2018)](https://arxiv.org/abs/1805.04755). The idea is to
     measure the “flatness” of [Friedman’s *partial dependence
     plot*](https://doi.org/10.1214/aos/1013203451) (PDP) for each
@@ -44,19 +41,18 @@ of the following approaches:
     estimated prediction surface as it changes while taking into account
     the average effect of the other features in the model.
 
-3.  ICE-based VI scores. This method is similar to the PDP-based VI
+3)  ICE-based VI scores. This method is similar to the PDP-based VI
     scores above, but are based on measuring the “flatness” of the
     *individual conditional expectation* (ICE) curves presented by
-    [Goldstein et
-    al. (2014)](https://doi.org/10.1080/10618600.2014.907095).
+    [Goldstein et al.
+    (2014)](https://doi.org/10.1080/10618600.2014.907095).
 
 Since PDPs and ICE curves can be constructed for any supervised learning
 algorithm, this means we can use methods 2) and 3) to construct VI
 scores for any supervised learning algorithm while taking into account
 the model and all of the features.
 
-Installation
-------------
+## Installation
 
 The `vip` package is currently only available from GitHub, but can
 easily be installed using the
@@ -69,17 +65,16 @@ if (!requireNamespace("devtools")) {
 devtools::install_github("koalaverse/vip")
 ```
 
-Example usage
--------------
+## Example usage
 
 For illustration, we use one of the regression problems described in
 Friedman (1991) and Breiman (1996). These data are available in the
 [mlbench](https://CRAN.R-project.org/package=mlbench) package. The
 inputs consist of 10 independent variables uniformly distributed on the
-interval \[0,1\]; however, only 5 out of these 10 are actually used in
-the true model. Outputs are created according to the formula described
-in `?mlbench::mlbench.friedman1`. The code chunk below simulates 500
-observations from the model default standard deviation.
+interval \(\left[0, 1\right]\); however, only 5 out of these 10 are
+actually used in the true model. Outputs are created according to the
+formula described in `?mlbench::mlbench.friedman1`. The code chunk below
+simulates 500 observations from the model default standard deviation.
 
 ``` r
 # Simulate training data
@@ -128,10 +123,9 @@ p3 <- vip(rf, method = "ice") + ggtitle("ICE")
 grid.arrange(p1, p2, p3, ncol = 3)
 ```
 
-<img src="tools/README-example-rf-1.png" style="display: block; margin: auto;" />
+<img src="man/figures/README-example-rf-1.png" style="display: block; margin: auto;" />
 
-References
-----------
+## References
 
 Breiman, L. “Random Forests”. *Machine Learning*. **45**(1): 5-32, 2001.
 URL <https://doi.org/10.1023/A:1010933404324>.

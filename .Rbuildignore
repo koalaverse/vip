@@ -6,3 +6,5 @@
 ^appveyor\.yml$
 ^\.travis\.yml$
 ^slowtests
+^_pkgdown\.yml$
+^docs$
