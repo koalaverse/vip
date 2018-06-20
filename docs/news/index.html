@@ -71,6 +71,9 @@
   </a>
 </li>
 <li>
+  <a href="../articles/vip.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -79,12 +82,7 @@
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a href="https://github.com/koalaverse/vip">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
+        
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -98,7 +96,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
       <h1>Changelog <small></small></h1>
-      <small>Source: <a href='https://github.com/koalaverse/vip/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
+      
     </div>
 
     <div id="vip-0-1-1" class="section level1">
@@ -106,8 +104,9 @@
 <a href="#vip-0-1-1" class="anchor"></a>vip 0.1.1<small> Unreleased </small>
 </h1>
 <ul>
-<li><p>Changed <code>truncate_feature_names</code> argument of <code><a href="../reference/vi.html">vi()</a></code> to <code>abbreviate_feature_names</code> which abbreviates all feature names to at least the length <code>abbreviate_feature_names</code>.</p></li>
-<li><p>Added CRAN badge <a href="https://github.com/koalaverse/vip/issues/32">(<a href='https://github.com/koalaverse/vip/issues/32'>#32</a>)</a>.</p></li>
+<li><p>Added <code>pkgdown</code> site: <a href="https://github.com/koalaverse/vip" class="uri">https://github.com/koalaverse/vip</a>.</p></li>
+<li><p>Changed <code>truncate_feature_names</code> argument of <code><a href="../reference/vi.html">vi()</a></code> to <code>abbreviate_feature_names</code> which abbreviates all feature names, rather than just truncating them.</p></li>
+<li><p>Added CRAN badge <a href="https://github.com/koalaverse/vip/issues/32">(#32)</a>.</p></li>
 </ul>
 </div>
     <div id="vip-0-1-0" class="section level1">
@@ -121,10 +120,10 @@
 <li><p><code><a href="../reference/vip.html">vip()</a></code> gained a new argument, <code>num_features</code>, for specifying how many variable importance scores to plot. The default is set to <code>10</code>.</p></li>
 <li><p><code>.</code> was changed to <code>_</code> in all argument names.</p></li>
 <li><p><code><a href="../reference/vi.html">vi()</a></code> gained three new arguments: <code>truncate_feature_names</code> (for truncating feature names in the returned tibble), <code>sort</code> (a logical argument specifying whether or not the resulting variable importance scores should be sorted), and <code>decreasing</code> (a logical argument specifying whether or not the variable importance scores should be sorted in decreasing order).</p></li>
-<li><p><code><a href="../reference/vi_model.html">vi_model.lm()</a></code>, and hence <code><a href="../reference/vi.html">vi()</a></code>, contains an additional column called <code>Sign</code> that contains the sign of the original coefficients <a href="https://github.com/koalaverse/vip/issues/27">(<a href='https://github.com/koalaverse/vip/issues/27'>#27</a>)</a>.</p></li>
-<li><p><code><a href="../reference/vi.html">vi()</a></code> gained a new argument, <code>scale</code>, for scaling the variable importance scores so that the largest is 100. Default is <code>FALSE</code> <a href="https://github.com/koalaverse/vip/issues/24">(<a href='https://github.com/koalaverse/vip/issues/24'>#24</a>)</a>.</p></li>
-<li><p><code><a href="../reference/vip.html">vip()</a></code> gained two new arguments, <code>size</code> and <code>shape</code>, for controlling the size and shape of the points whenever <code>bar = FALSE</code> <a href="https://github.com/koalaverse/vip/issues/9">(<a href='https://github.com/koalaverse/vip/issues/9'>#9</a>)</a>.</p></li>
-<li><p>Added support for <code>"H2OBinomialModel"</code>, <code>"H2OMultinomialModel"</code>, and, <code>"H2ORegressionModel"</code> objects <a href="https://github.com/koalaverse/vip/issues/8">(<a href='https://github.com/koalaverse/vip/issues/8'>#8</a>)</a>.</p></li>
+<li><p><code><a href="../reference/vi_model.html">vi_model.lm()</a></code>, and hence <code><a href="../reference/vi.html">vi()</a></code>, contains an additional column called <code>Sign</code> that contains the sign of the original coefficients <a href="https://github.com/koalaverse/vip/issues/27">(#27)</a>.</p></li>
+<li><p><code><a href="../reference/vi.html">vi()</a></code> gained a new argument, <code>scale</code>, for scaling the variable importance scores so that the largest is 100. Default is <code>FALSE</code> <a href="https://github.com/koalaverse/vip/issues/24">(#24)</a>.</p></li>
+<li><p><code><a href="../reference/vip.html">vip()</a></code> gained two new arguments, <code>size</code> and <code>shape</code>, for controlling the size and shape of the points whenever <code>bar = FALSE</code> <a href="https://github.com/koalaverse/vip/issues/9">(#9)</a>.</p></li>
+<li><p>Added support for <code>"H2OBinomialModel"</code>, <code>"H2OMultinomialModel"</code>, and, <code>"H2ORegressionModel"</code> objects <a href="https://github.com/koalaverse/vip/issues/8">(#8)</a>.</p></li>
 </ul>
 </div>
     <div id="vip-0-0-1" class="section level1">
