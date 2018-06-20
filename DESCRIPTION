@@ -41,6 +41,7 @@ Suggests:
     gbm,
     h2o,
     knitr,
+    mlbench,
     party,
     partykit,
     ranger,
@@ -51,3 +52,4 @@ Suggests:
     glmnet,
     testthat
 RoxygenNote: 6.0.1
+VignetteBuilder: knitr

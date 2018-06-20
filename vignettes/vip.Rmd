@@ -1,0 +1,191 @@
+---
+title: "Variable importance plots: an introduction to vip"
+author: "Brandon M. Greenwell and Bradley C. Boehmke"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: vip.bib
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.align = "center"
+)
+```
+
+## `r emo::ji("warning")` Warning: This vignette is under construction! `r emo::ji("construction")` `r emo::ji("construction")` `r emo::ji("construction")` `r emo::ji("construction")` `r emo::ji("construction")` `r emo::ji("construction")` `r emo::ji("construction")` `r emo::ji("construction")`
+
+In the era of "big data", it is becoming more of a challenge to not only build state-of-the-art predictive models, but also gain an understanding of what's really going on in the data. For example, it is often of interest to know which, if any, of the predictors in a fitted model are relatively influential on the predicted outcome. Some modern algorithms---like random forests and gradient boosted decision trees---have a natural way of quantifying the importance or relative influence of each feature. Other algorithms---like naive Bayes classifiers and support vector machines---are not capable of doing so and model-agnostic approaches are generally used to measure each predictor's importance. Enter [`vip`](https://koalaverse.github.io/vip/index.html), an R package for constructing variable importance (VI) scores/plots for many types of supervised learning algorithms using model-based and novel model-agnostic approaches.
+
+<!-- 1) **Model-based VI scores (when available)**. For example, in a random forest, variable importance can be computed using the permutation approach described in [@random-breiman-2001]. Other supervised learning algorithms (like MARS and GBMs) have their own ways of constructing VI scores. -->
+
+<!-- 2) **Model-agnostic VI scores**. `vip` currently implements two approaches to computing model-agnostiv VI scores:  -->
+
+<!--    - **PDP method**. This is a new idea described in @greenwell-simple-2018. The idea is to measure the "flatness" of Friedman's *partial dependence plot* (PDP) [@friedman-2001-greedy] for each feature. A feature whose PDP is flat, relative to the other features, implies that the feature has less of an influence on the estimated prediction surface as it changes while taking into account the average effect of the other features in the model. -->
+
+<!--    - **ICE curve method**. This method is similar to the PDP-based VI scores above, but are based on measuring the "flatness" of the *individual conditional expectation* (ICE) curves presented by @goldstein-peeking-2015. -->
+
+<!-- Since PDPs and ICE curves can be constructed for any supervised learning algorithm, we can use the PDP anbd ICE curve methods to construct VI scores for any supervised learning algorithm (while simultaneously taking into account the fitted model and all of the features). -->
+
+
+## Installation
+
+```{r install, eval=FALSE}
+# The easiest way to get vip is to install from CRAN:
+install.packages("vip")
+
+# Or install the the development version from GitHub:
+if (!requireNamespace("devtools")) {
+  install.packages("devtools")
+}
+devtools::install_github("koalaverse/vip")
+```
+
+
+## Example usage
+
+For illustration, we use one of the regression problems described in Friedman (1991) and @breiman-bagging-1996. These data are available in the [mlbench](https://CRAN.R-project.org/package=mlbench) package. The inputs consist of 10 independent variables uniformly distributed on the interval $\left[0, 1\right]$; however, only 5 out of these 10 are actually used in the true model. Outputs are created according to the formula described in `?mlbench::mlbench.friedman1`. The code chunk below simulates 500 observations from the model default standard deviation.
+```{r simulate-data, fig.width=7, fig.height=7, out.width="100%"}
+# Simulate training data
+set.seed(101)  # for reproducibility
+trn <- as.data.frame(mlbench::mlbench.friedman1(500))  # ?mlbench.friedman1
+
+# Inspect data
+tibble::as.tibble(trn)
+```
+
+
+### Model-based VI scores
+
+Coming soon.
+
+
+#### Trees and tree ensembles
+
+Decision trees probably offer the most natural model-based approach to quantifying the importance of each feature. In a binary decision tree, at each node $t$, a single predictor is used to partition the data into two homogeneous groups. The chosen predictor is the one that maximizes some measure of improvement $\widehat{i}_t$. The relative importance of predictor $x$ is the sum of the squared improvements over all internal nodes of the tree for which $x$ was chosen as the partitioning variable; see @classification-breiman-1984 for details. This idea also extends to ensembles of decision trees, such as RFs and GBMs. In ensembles, the improvement score for each predictor is averaged across all the trees in the ensemble. Fortunately, due to the stabilizing effect of averaging, the improvement-based variable importance metric is often more reliable in large ensembles [see @hastie-elements-2009, pg. 368]. RFs offer an additional method for computing variable importance scores. The idea is to use the leftover out-of-bag (OOB) data to construct validation-set errors for each tree. Then, each predictor is randomly shuffled in the OOB data and the error is computed again. The idea is that if variable $x$ is important, then the validation error will go up when $x$ is perturbed in the OOB data. The difference in the two errors is recorded for the OOB data then averaged across all trees in the forest.
+
+To illustrate, we fit a CART-like regression tree, RF, and GBM to the simulated training data. (**Note:** there are a number of different packages available for fitting these types of models, we just picked popular and efficient implementations for illustration.)
+```{r trees}
+# Load required packages
+library(xgboost)  # for fitting GBMs
+library(ranger)   # for fitting random forests
+library(rpart)    # for fitting CART-like decision trees
+
+# Fit a single regression tree
+tree <- rpart(y ~ ., data = trn)
+
+# Fit a random forest
+set.seed(101)
+rfo <- ranger(y ~ ., data = trn, importance = "impurity")
+
+# Fit a GBM
+set.seed(102)
+bst <- xgboost(
+  data = data.matrix(subset(trn, select = -y)),
+  label = trn$y, 
+  objective = "reg:linear",
+  nrounds = 100, 
+  max_depth = 5, 
+  eta = 0.3,
+  verbose = 0  # suppress printing
+)
+```
+
+Each of the above packages include the ability to compute VI scores for all the features in the model; however, the implementation is rather package specific, as shown in the code chunk below.
+```{r trees-manual}
+# VI plot for single regression tree
+(vi_tree <- tree$variable.importance)
+barplot(vi_tree, horiz = TRUE, las = 1)
+
+# VI plot for RF
+(vi_rfo <- rfo$variable.importance)
+barplot(vi_rfo, horiz = TRUE, las = 1)
+
+# VI plot for GMB
+(vi_bst <- xgb.importance(model = bst))
+xgb.ggplot.importance(vi_bst)
+
+```
+
+As we would expect, all three methods rank the variables `x.1`--`x.5` as more important than the others. While this is good news, it is unfortunate that we have to remember the different functions and ways of extracting and plotting VI scores from various model fitting functions. This is where `vip` can help...one function to rule them all! Once `vip` is loaded, we can use `vi()` to extract a [tibble](http://tibble.tidyverse.org/) of variable importance scores.
+
+```{r trees-vi-vi}
+# Load required packages
+library(vip)
+
+# Eaxtract (tibble of) variable importance scores
+vi(tree)  # CART-like decision tree
+vi(rfo)  # RF
+vi(bst)  # GBM
+```
+
+Notice how the `vi()` function always returns a tibble with two columns: `Variable` and `Importance`^[The exception is GLM-like models (e.g., LMs and GLMs), described in the next section, which include an additional column called `Sign` containing the sign of the original coefficients.]. Also, by default, `vi()` always orders the VI scores from highest to lowest; this, among other options, can be controlled by the user (see `?vip::vi` for details). Plotting VI scores with `vip` is just as straightforward.
+
+```{r trees-vi-vip, fig.width=7}
+# Load required packages
+library(vip)
+
+# Eaxtract (tibble of) variable importance scores
+(p1 <- vip(tree))  # CART-like decision tree
+(p2 <- vip(rfo, width = 0.5, fill = "green3"))   # RF
+(p3 <- vip(bst, col = "purple2"))   # GBM
+
+# Display all three plots side by side
+grid.arrange(p1, p2, p3, ncol = 3)
+```
+
+Notice how the `vip()` function always returns a `"ggplot"` object (a bar plot, by default). For large models with many features, a dot plot is more effective (in fact, a number of useful plotting options can be fiddles with).
+
+```{r trees-vi-vip-dot, fig.width=5}
+library(ggplot2)  # for theme_light()
+vip(bst, num_features = 5, bar = FALSE, color, horizontal = FALSE, 
+    color = "red", shape = 17, size = 4) +
+  theme_light()
+```
+
+
+#### Linear models
+
+In multiple linear regression (LMs), the absolute value of the $t$-statistic is commonly used as a measure of variable importance. The same idea also extends to generalized linear models (GLMs). Multivariate adaptive regression splines (MARS), which were introduced in @friedman-1991-mars, is an automatic regression technique which can be seen as a generalization of multiple linear regression and generalized linear models. In the MARS algorithm, the contribution (or variable importance score) for each predictor is determined using a generalized cross-validation (GCV) statistic. In the code chunk below, we fit an LM to the simulated `trn` data set allowing for all main and two-way interaction effects.
+
+```{r lms, fig.height=5, fig.height=7}
+# Fit a LM
+linmod <- lm(y ~ .^2, data = trn)
+
+# Extract VI scores
+vi(linmod)
+
+# Plot VI scores
+vip(linmod, num_features = 25, bar = FALSE)
+```
+
+One issue with the model-based approach to computing VI scores for LMs is that a score is assigned to each term in the model, rather than to just each feature! We can solve this problem using one of the model-agnostic approaches discussed later.
+
+
+#### Neural networks
+
+For NNs, two popular methods for constructing variable importance scores are the Garson algorithm [@interpreting-garson-1991], later modified by @back-goh-1995, and the Olden algorithm [@accurate-olden-2004]. For both algorithms, the basis of these importance scores is the network's connection weights. The Garson algorithm determines variable importance by identifying all weighted connections between the nodes of interest. Olden's algorithm, on the other hand, uses the product of the raw connection weights between each input and output neuron and sums the product across all hidden neurons. This has been shown to outperform the Garson method in various simulations. For DNNs, a similar method due to @data-gedeon-1997 considers the weights connecting the input features to the first two hidden layers (for simplicity and speed); but this method can be slow for large networks.
+
+**These methods will be implemented soon!**
+
+
+### Model-agnostic VI scores
+
+Coming soon.
+
+
+#### PDP method
+
+Coming soon.
+
+
+#### ICE curve method
+
+Coming soon.
+
+## References
