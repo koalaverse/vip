@@ -4,7 +4,7 @@
 \alias{vi}
 \title{Variable Importance}
 \usage{
-vi(object, method = c("model", "pdp", "ice", "perm"), feature_names,
+vi(object, method = c("model", "pdp", "ice", "permute"), feature_names,
   FUN = NULL, abbreviate_feature_names = NULL, sort = TRUE,
   decreasing = TRUE, scale = FALSE, ...)
 }
@@ -14,10 +14,9 @@ vi(object, method = c("model", "pdp", "ice", "perm"), feature_names,
 \item{method}{Character string specifying the type of variable importance
 (VI) to compute. Current options are \code{"model"} (for model-based VI
 scores), \code{"pdp"} (for PDP-based VI scores), \code{"ice"} (for ICE-based
-VI scores), and \code{"perm"} (for permutation-based VI scores). The default
-is \code{"model"}. For details on the PDP/ICE-based method, see the reference
-below. Also, \code{method = "perm"} is currently ignored, but will be
-available in a future release.}
+VI scores), and \code{"permute"} (for permutation-based VI scores). The
+default is \code{"model"}. For details on the PDP/ICE-based method, see the
+reference below.}
 
 \item{feature_names}{Character string giving the names of the predictor
 variables (i.e., features) of interest.}
