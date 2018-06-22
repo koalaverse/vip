@@ -8,9 +8,9 @@
 #' @param feature_names Character string giving the names of the predictor
 #' variables (i.e., features) of interest.
 #'
-#' @param train Non-optional data frame containing the original training data.
+#' @param train Optional data frame containing the original training data.
 #'
-#' @param pfun Non-optional prediction function that requires two arguments:
+#' @param pfun Optional prediction function that requires two arguments,
 #' \code{object} and \code{newdata}. If specified, then the function must return
 #' a vector of predictions (i.e., not a matrix or data frame). (In the future,
 #' this argument may become optional.)
@@ -23,13 +23,27 @@
 #' requires two arguments, \code{pred} (for predicted values) and \code{obs}
 #' (for observed values), and should return a single, numeric value.
 #'
-#' @param Non-optional character string specifying whether this is supervized
-#' regression (\code{"regression"}) or classification (\code{"classification"}).
+#' @param smaller_is_better Logical indicating whether or not a smaller value of
+#' \code{metric} is better or worse. Default is \code{TRUE}. For example, if
+#' \code{metric = "R2"} (i.e.,. R-squared), the \code{smaller_is_better} should
+#' be set to \code{FALSE}.
 #'
 #' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
 #' \code{Variable} and \code{Importance}. For \code{"glm"}-like object, an
 #' additional column, called \code{Sign}, is also included which gives the sign
 #' (i.e., POS/NEG) of the original coefficient.
+#'
+#' @param progress Character string giving the name of the progress bar to use.
+#' See \code{\link[plyr]{create_progress_bar}} for details. Default is
+#' \code{"none"}.
+#'
+#' @param parallel Logical indicating whether or not to run \code{vi_permute()}
+#' in parallel (using a backend provided by the \code{foreach} package). Default
+#' is \code{FALSE}. If \code{TRUE}, an appropriate backend must be provided by
+#' \code{foreach}.
+#'
+#' @param paropts List containing additional options to be passed onto
+#' \code{foreach} when \code{parallel = TRUE}.
 #'
 #' @param ... Additional optional arguments. (Currently ignored.)
 #'
@@ -43,38 +57,44 @@ vi_permute <- function(object, ...) {
 }
 
 
-#' @rdname vi_model
+#' @rdname vi_permute
 #'
 #' @export
 vi_permute.default <- function(
-  object,         # fitted model object
-  feature_names,  # feature names of interest
-  train,          # data used to train the model          --> will get automated
-  pfun,           # function(object, newdata) {}          --> will get automated
-  obs,            # observed response values              --> will get automated
-  metric,         # function(pred, obs) {}
-  type,           # "classification" or "regression"      --> will get automated
+  object,
+  feature_names,
+  train,
+  pfun,
+  obs,
+  metric = c("RMSE", "R2"),  # for now, just regression
+  smaller_is_better = TRUE,
+  progress = "none",
+  parallel = FALSE,
+  paropts = NULL,
   ...
 ) {
 
   # Issue warning until this function is complete!
-  warning("This function is experimental and not yet recommended for use.")
+  warning("Setting `method = \"permute\"` is experimental, use at your own ",
+          "risk!", call. = FALSE)
 
-  # if (missing(train)) {
-  #   train <- get_training_data(object)
-  # }
+  # Get training data, if not supplied
+  if (missing(train)) {
+    train <- get_training_data(object)
+  }
 
-  # if (missing(feature_names)) {
-  #   feature_names <- get_feature_names()
-  # }
+  # Get prediction function, if not supplied
+  if (missing(pfun)) {
+    pfun <- get_predictions(object)
+  }
 
-  # if (missing(type)) {
-  #   type <- get_supervized_type(object)
-  # }
-
-  # if (missing(metric)) {
-  #   metric <- get_default_metric(type)
-  # }
+  # Accuracy metric
+  metric <- switch(
+    match.arg(metric),
+    "R2"   = rsquared,
+    "RMSE" = rmse,
+    print("Metric not supported.")
+  )
 
   # Compute baseline metric for comparison
   baseline <- metric(pred = pfun(object, newdata = train), obs = obs)
@@ -87,12 +107,19 @@ vi_permute.default <- function(
   #   2. permute the values of the original feature;
   #   3. get new predictions based on permuted data set;
   #   4. record difference in accuracy.
-  vis <- unlist(lapply(feature_names, FUN = function(x) {
-    ptrain <- train  # make copy
-    ptrain[[x]] <- sample(ptrain[[x]])  # permute values
-    acc <- metric(pred = pfun(object, newdata = ptrain), obs = obs)
-    baseline - acc  # FIXME: order matters here (e.g., R2 vs RMSE)!
-  }))
+  vis <- unlist(plyr::llply(feature_names, .progress = progress,
+    .parallel = parallel, .paropts = paropts,
+    .fun = function(x) {
+      copy <- train  # make copy
+      copy[[x]] <- sample(copy[[x]])  # permute values
+      acc <- metric(pred = pfun(object, newdata = copy), obs = obs)
+      if (smaller_is_better) {
+        acc - baseline
+      } else {
+        baseline - acc
+      }
+    })
+  )
   tib <- tibble::tibble(
     "Variable" = feature_names,
     "Importance" = vis

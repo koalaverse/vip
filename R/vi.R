@@ -74,7 +74,7 @@ vi <- function(
 
   # Construct VI scores
   method <- match.arg(method)
-  if (method %in% c("pdp", "ice")) {
+  if (method %in% c("pdp", "ice", "permute")) {
     if (missing(feature_names)) {
       feature_names <- get_feature_names(object)
     }

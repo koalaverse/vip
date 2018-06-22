@@ -2,9 +2,14 @@
 % Please edit documentation in R/vi_permute.R
 \name{vi_permute}
 \alias{vi_permute}
+\alias{vi_permute.default}
 \title{Permutation-Based Variable Importance}
 \usage{
 vi_permute(object, ...)
+
+\method{vi_permute}{default}(object, feature_names, train, pfun, obs,
+  metric = c("RMSE", "R2"), smaller_is_better = TRUE, progress = "none",
+  parallel = FALSE, paropts = NULL, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
@@ -14,9 +19,9 @@ vi_permute(object, ...)
 \item{feature_names}{Character string giving the names of the predictor
 variables (i.e., features) of interest.}
 
-\item{train}{Non-optional data frame containing the original training data.}
+\item{train}{Optional data frame containing the original training data.}
 
-\item{pfun}{Non-optional prediction function that requires two arguments:
+\item{pfun}{Optional prediction function that requires two arguments,
 \code{object} and \code{newdata}. If specified, then the function must return
 a vector of predictions (i.e., not a matrix or data frame). (In the future,
 this argument may become optional.)}
@@ -29,8 +34,22 @@ RMSE for regression or accuracy for binary classification). This function
 requires two arguments, \code{pred} (for predicted values) and \code{obs}
 (for observed values), and should return a single, numeric value.}
 
-\item{Non-optional}{character string specifying whether this is supervized
-regression (\code{"regression"}) or classification (\code{"classification"}).}
+\item{smaller_is_better}{Logical indicating whether or not a smaller value of
+\code{metric} is better or worse. Default is \code{TRUE}. For example, if
+\code{metric = "R2"} (i.e.,. R-squared), the \code{smaller_is_better} should
+be set to \code{FALSE}.}
+
+\item{progress}{Character string giving the name of the progress bar to use.
+See \code{\link[plyr]{create_progress_bar}} for details. Default is
+\code{"none"}.}
+
+\item{parallel}{Logical indicating whether or not to run \code{vi_permute()}
+in parallel (using a backend provided by the \code{foreach} package). Default
+is \code{FALSE}. If \code{TRUE}, an appropriate backend must be provided by
+\code{foreach}.}
+
+\item{paropts}{List containing additional options to be passed onto
+\code{foreach} when \code{parallel = TRUE}.}
 }
 \value{
 A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
