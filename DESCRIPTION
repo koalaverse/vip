@@ -38,6 +38,7 @@ Imports:
 Suggests:
     C50,
     caret,
+    Ckmeans.1d.dp,
     earth,
     gbm,
     h2o,
