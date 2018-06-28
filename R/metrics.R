@@ -1,12 +1,21 @@
-# Regression -------------------------------------------------------------------
+#' @keywords internal
+rsquared <- function(actual, predicted) stats::cor(actual, predicted)^2
 
 #' @keywords internal
-rsquared <- function(pred, obs) {
-  stats::cor(obs, pred)^2
+get_default_metric <- function(object) {
+  UseMethod("get_default_metric")
 }
 
 
 #' @keywords internal
-rmse <- function(pred, obs) {
-  sqrt(mean((pred - obs)^2))
+get_default_metric.ranger <- function(object) {
+  if (object$treetype == "Regression") {
+    "RMSE"
+  } else if (object$treetype == "Classification") {
+    "error"
+  } else if (object$treetype == "Probability estimation") {
+    "auc"
+  } else {
+    stop("No support for \"ranger\" objects of type \"", object$treetype, "\".")
+  }
 }

@@ -23,11 +23,6 @@
 #' requires two arguments, \code{pred} (for predicted values) and \code{obs}
 #' (for observed values), and should return a single, numeric value.
 #'
-#' @param smaller_is_better Logical indicating whether or not a smaller value of
-#' \code{metric} is better or worse. Default is \code{TRUE}. For example, if
-#' \code{metric = "R2"} (i.e.,. R-squared), the \code{smaller_is_better} should
-#' be set to \code{FALSE}.
-#'
 #' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
 #' \code{Variable} and \code{Importance}. For \code{"glm"}-like object, an
 #' additional column, called \code{Sign}, is also included which gives the sign
@@ -66,8 +61,7 @@ vi_permute.default <- function(
   train,
   pfun,
   obs,
-  metric = c("RMSE", "R2"),  # for now, just regression
-  smaller_is_better = TRUE,
+  metric = "auto",  # add log loss, auc, mae, mape, etc.
   progress = "none",
   parallel = FALSE,
   paropts = NULL,
@@ -88,16 +82,45 @@ vi_permute.default <- function(
     pfun <- get_predictions(object)
   }
 
-  # Accuracy metric
-  metric <- switch(
-    match.arg(metric),
-    "R2"   = rsquared,
-    "RMSE" = rmse,
+  # Performance metric
+  if (metric == "auto") {
+    metric <- get_default_metric(object)
+  }
+
+  mfun <- switch(
+    metric,
+    # Classification
+    "auc" = ModelMetrics::auc,  # requires predicted class probabilities
+    "error" = ModelMetrics::ce,  # requires predicted class labels
+    "logloss" = ModelMetrics::logLoss,  # requires predicted class probabilities
+    # "mauc" = ModelMetrics::mauc,
+    # "mlogloss" = ModelMetrics::mlogLoss,
+    # Regression
+    "MSE" = ModelMetrics::mse,
+    "R2" = function(actual, predicted) stats::cor(actual, predicted)^2,
+    "RMSE" = ModelMetrics::rmse,
+    print("Metric not supported.")
+  )
+
+  # Is smaller better?
+  smaller_is_better <- switch(
+    metric,
+    "auto" = TRUE,
+    # Classification
+    "auc" = FALSE,
+    "error" = TRUE,
+    "logloss" = TRUE,
+    # "mauc" = FALSE,
+    # "mlogloss" = TRUE,
+    # Regression
+    "MSE" = TRUE,
+    "R2" = FALSE,
+    "RMSE" = TRUE,
     print("Metric not supported.")
   )
 
   # Compute baseline metric for comparison
-  baseline <- metric(pred = pfun(object, newdata = train), obs = obs)
+  baseline <- mfun(actual = obs, predicted = pfun(object, newdata = train))
 
   # Construct VI scores
   #
@@ -112,11 +135,11 @@ vi_permute.default <- function(
     .fun = function(x) {
       copy <- train  # make copy
       copy[[x]] <- sample(copy[[x]])  # permute values
-      acc <- metric(pred = pfun(object, newdata = copy), obs = obs)
+      permuted <- mfun(actual = obs, predicted = pfun(object, newdata = copy))
       if (smaller_is_better) {
-        acc - baseline
+        permuted - baseline
       } else {
-        baseline - acc
+        baseline - permuted
       }
     })
   )
@@ -126,7 +149,7 @@ vi_permute.default <- function(
   )
 
   # Add variable importance type attribute
-  attr(tib, "type") <- "permutation"
+  attr(tib, which = "type") <- "permutation"
 
   # Return results
   tib

@@ -8,8 +8,8 @@
 vi_permute(object, ...)
 
 \method{vi_permute}{default}(object, feature_names, train, pfun, obs,
-  metric = c("RMSE", "R2"), smaller_is_better = TRUE, progress = "none",
-  parallel = FALSE, paropts = NULL, ...)
+  metric = "auto", progress = "none", parallel = FALSE, paropts = NULL,
+  ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
@@ -33,11 +33,6 @@ response values.}
 RMSE for regression or accuracy for binary classification). This function
 requires two arguments, \code{pred} (for predicted values) and \code{obs}
 (for observed values), and should return a single, numeric value.}
-
-\item{smaller_is_better}{Logical indicating whether or not a smaller value of
-\code{metric} is better or worse. Default is \code{TRUE}. For example, if
-\code{metric = "R2"} (i.e.,. R-squared), the \code{smaller_is_better} should
-be set to \code{FALSE}.}
 
 \item{progress}{Character string giving the name of the progress bar to use.
 See \code{\link[plyr]{create_progress_bar}} for details. Default is

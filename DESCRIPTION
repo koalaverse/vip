@@ -28,6 +28,7 @@ Imports:
     ggplot2 (>= 0.9.0),
     gridExtra,
     magrittr,
+    ModelMetrics,
     pdp,
     plyr,
     stats,

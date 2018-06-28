@@ -65,13 +65,12 @@ vip.default <- function(
   alpha = 1, color = "grey35", fill = "grey35", size = 1, shape = 19, ...
 ) {
   imp <- vi(object, ...)  # variable importance scores
-  type <- attr(imp, which = "type")  # subsetting removes this attribute!
+  vi_type <- attr(imp, which = "type")  # subsetting removes this attribute!
   num_features <- as.integer(num_features)[1L]  # make sure num_features is a single integer
   if (num_features > nrow(imp) || num_features < 1L) {
     num_features <- nrow(imp)
   }
   imp <- imp[seq_len(num_features), ]  # only retain num_features variable importance scores
-  # attr(imp, which = "type") <- type  # FIXME: Comment out, for now!
   x.string <- "reorder(Variable, Importance)"
   p <- ggplot2::ggplot(imp, ggplot2::aes_string(x = x.string, y = "Importance"))
   p <- if (bar) {
@@ -88,6 +87,5 @@ vip.default <- function(
   if (horizontal) {
     p <- p + ggplot2::coord_flip()
   }
-  # p + ggplot2::ylab(paste0("Importance (", attr(imp, "type"), ")"))
-  p
+  p + ggplot2::ylab(paste0("Importance (", vi_type, ")"))
 }

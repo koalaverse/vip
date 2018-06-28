@@ -6,11 +6,15 @@ get_predictions <- function(object) {
 
 #' @keywords internal
 get_predictions.ranger <- function(object) {
-  if (object$treetype == "Regression") {
+  if (object$treetype %in% c("Classification", "Regression")) {
     function(object, newdata) {
       stats::predict(object, data = newdata)$predictions
     }
+  } else if (object$treetype == "Probability estimation") {
+    function(object, newdata) {
+      stats::predict(object, data = newdata)$predictions[, 1L]
+    }
   } else {
-    stop("Only regression is currently supported for ranger objects.")
+    stop("Only classification and regression are currently supported.")
   }
 }

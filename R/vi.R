@@ -89,6 +89,9 @@ vi <- function(
     vi_permute(object, feature_names = feature_names, ...)
   }
 
+  # Save attribute
+  vi_type <- attr(tib, which = "type")
+
   # Remove rows with NA
   tib <- stats::na.omit(tib)
 
@@ -106,6 +109,9 @@ vi <- function(
   if (scale) {
     tib$Importance <- tib$Importance / max(tib$Importance) * 100
   }
+
+  # Restore attribute
+  attr(tib, which = "type") <- vi_type
 
   # Return results
   tib
