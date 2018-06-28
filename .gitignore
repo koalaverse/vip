@@ -4,3 +4,4 @@
 .Ruserdata
 README.Rmd
 inst/doc
+.DS_Store
