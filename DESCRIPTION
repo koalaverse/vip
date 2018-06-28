@@ -39,6 +39,7 @@ Suggests:
     C50,
     caret,
     earth,
+    emo,
     gbm,
     h2o,
     knitr,
