@@ -10,7 +10,7 @@
 #'
 #' @param train Optional data frame containing the original training data.
 #'
-#' @param pfun Optional prediction function that requires two arguments,
+#' @param pred_fun Optional prediction function that requires two arguments,
 #' \code{object} and \code{newdata}. If specified, then the function must return
 #' a vector of predictions (i.e., not a matrix or data frame). (In the future,
 #' this argument may become optional.)
@@ -59,7 +59,8 @@ vi_permute.default <- function(
   object,
   feature_names,
   train,
-  pfun,
+  # performance_fun,
+  pred_fun,
   obs,
   metric = "auto",  # add log loss, auc, mae, mape, etc.
   progress = "none",
@@ -77,29 +78,27 @@ vi_permute.default <- function(
     train <- get_training_data(object)
   }
 
-  # Get prediction function, if not supplied
-  if (missing(pfun)) {
-    pfun <- get_predictions(object)
-  }
-
   # Performance metric
   if (metric == "auto") {
     metric <- get_default_metric(object)
+  } else {
+    metric <- tolower(metric)
   }
 
-  mfun <- switch(
+  perf_fun <- switch(
     metric,
     # Classification
-    "auc" = ModelMetrics::auc,  # requires predicted class probabilities
-    "error" = ModelMetrics::ce,  # requires predicted class labels
-    "logloss" = ModelMetrics::logLoss,  # requires predicted class probabilities
-    # "mauc" = ModelMetrics::mauc,
-    # "mlogloss" = ModelMetrics::mlogLoss,
+    "auc" = perf_auc,  # requires predicted class probabilities
+    "error" = perf_ce,  # requires predicted class labels
+    "logloss" = perf_logLoss,  # requires predicted class probabilities
+    "mauc" = perf_mauc,  # requires predicted class probabilities
+    "mlogloss" = perf_mlogLoss,  # requires predicted class probabilities
     # Regression
-    "MSE" = ModelMetrics::mse,
-    "R2" = function(actual, predicted) stats::cor(actual, predicted)^2,
-    "RMSE" = ModelMetrics::rmse,
-    print("Metric not supported.")
+    "mse" = perf_mse,
+    "r2" = perf_rsquared,
+    "rsquared" = perf_rsquared,
+    "rmse" = perf_rmse,
+    stop("Metric \"", metric, "\" is not supported.")
   )
 
   # Is smaller better?
@@ -110,17 +109,31 @@ vi_permute.default <- function(
     "auc" = FALSE,
     "error" = TRUE,
     "logloss" = TRUE,
-    # "mauc" = FALSE,
-    # "mlogloss" = TRUE,
+    "mauc" = FALSE,
+    "mlogloss" = TRUE,
     # Regression
-    "MSE" = TRUE,
-    "R2" = FALSE,
-    "RMSE" = TRUE,
-    print("Metric not supported.")
+    "mse" = TRUE,
+    "r2" = FALSE,
+    "rsquared" = FALSE,
+    "rmse" = TRUE,
+    stop("Metric \"", metric, "\" is not supported.")
   )
 
+  # Get prediction function, if not supplied
+  if (missing(pred_fun)) {
+    type <- if (metric %in% c("auc", "mauc", "logloss", "mlogloss")) {
+      "prob"
+    } else {
+      "raw"
+    }
+    pred_fun <- get_predictions(object, type = type)
+  }
+
   # Compute baseline metric for comparison
-  baseline <- mfun(actual = obs, predicted = pfun(object, newdata = train))
+  baseline <- perf_fun(
+    actual = obs,
+    predicted = pred_fun(object, newdata = train)
+  )
 
   # Construct VI scores
   #
@@ -135,7 +148,10 @@ vi_permute.default <- function(
     .fun = function(x) {
       copy <- train  # make copy
       copy[[x]] <- sample(copy[[x]])  # permute values
-      permuted <- mfun(actual = obs, predicted = pfun(object, newdata = copy))
+      permuted <- perf_fun(
+        actual = obs,
+        predicted = pred_fun(object, newdata = copy)
+      )
       if (smaller_is_better) {
         permuted - baseline
       } else {

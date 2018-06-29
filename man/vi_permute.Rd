@@ -7,7 +7,7 @@
 \usage{
 vi_permute(object, ...)
 
-\method{vi_permute}{default}(object, feature_names, train, pfun, obs,
+\method{vi_permute}{default}(object, feature_names, train, pred_fun, obs,
   metric = "auto", progress = "none", parallel = FALSE, paropts = NULL,
   ...)
 }
@@ -21,7 +21,7 @@ variables (i.e., features) of interest.}
 
 \item{train}{Optional data frame containing the original training data.}
 
-\item{pfun}{Optional prediction function that requires two arguments,
+\item{pred_fun}{Optional prediction function that requires two arguments,
 \code{object} and \code{newdata}. If specified, then the function must return
 a vector of predictions (i.e., not a matrix or data frame). (In the future,
 this argument may become optional.)}
