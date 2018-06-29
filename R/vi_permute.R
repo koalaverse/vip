@@ -23,6 +23,11 @@
 #' requires two arguments, \code{pred} (for predicted values) and \code{obs}
 #' (for observed values), and should return a single, numeric value.
 #'
+#' @param pos_class Character string specifying which category in `obs`
+#' represents the "positive" class (i.e., that class for which the predicted
+#' class probabilties correspond to). Only needed for binary classification
+#' problems.
+#'
 #' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
 #' \code{Variable} and \code{Importance}. For \code{"glm"}-like object, an
 #' additional column, called \code{Sign}, is also included which gives the sign
@@ -63,6 +68,7 @@ vi_permute.default <- function(
   pred_fun,
   obs,
   metric = "auto",  # add log loss, auc, mae, mape, etc.
+  pos_class = NULL,
   progress = "none",
   parallel = FALSE,
   paropts = NULL,
@@ -120,13 +126,19 @@ vi_permute.default <- function(
   )
 
   # Get prediction function, if not supplied
+  prob_based_metrics <- c("auc", "mauc", "logloss", "mlogloss")
   if (missing(pred_fun)) {
-    type <- if (metric %in% c("auc", "mauc", "logloss", "mlogloss")) {
+    type <- if (metric %in% prob_based_metrics) {
       "prob"
     } else {
       "raw"
     }
     pred_fun <- get_predictions(object, type = type)
+  }
+
+  # Determine reference class
+  if (!is.null(pos_class) && metric %in% prob_based_metrics) {
+    obs <- ifelse(obs == pos_class, yes = 1, no = 0)
   }
 
   # Compute baseline metric for comparison
