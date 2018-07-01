@@ -36,7 +36,8 @@ requires two arguments, \code{pred} (for predicted values) and \code{obs}
 
 \item{pos_class}{Character string specifying which category in `obs`
 represents the "positive" class (i.e., that class for which the predicted
-class probabilties correspond to).}
+class probabilties correspond to). Only needed for binary classification
+problems.}
 
 \item{progress}{Character string giving the name of the progress bar to use.
 See \code{\link[plyr]{create_progress_bar}} for details. Default is

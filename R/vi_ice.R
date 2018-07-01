@@ -61,7 +61,8 @@ vi_ice.default <- function(object, feature_names, FUN = NULL, ...) {
   )
   ice <- lapply(vis, FUN = function(x) attr(x, "ice"))
   names(ice) <- feature_names
-  attr(tib, "ice") <- ice
+  attr(tib, which = "ice") <- ice
+  attr(tib, which = "type") <- "ice"
 
   # Return results
   tib
@@ -89,7 +90,7 @@ ice_vi_score <- function(object, feature_name, FUN, ...) {
   res <- mean(tapply(ice$yhat, INDEX = ice$yhat.id, FUN = FUN))
 
   # Include ICE curves as an attribute
-  attr(res, "ice") <- ice
+  attr(res, which = "ice") <- ice
 
   # Return result
   res

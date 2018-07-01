@@ -61,7 +61,8 @@ vi_pdp.default <- function(object, feature_names, FUN = NULL, ...) {
   )
   pd <- lapply(vis, FUN = function(x) attr(x, "pdp"))
   names(pd) <- feature_names
-  attr(tib, "pdp") <- pd
+  attr(tib, which = "pdp") <- pd
+  attr(tib, which = "type") <- "pdp"
 
   # Return results
   tib
@@ -89,7 +90,8 @@ pdp_vi_score <- function(object, feature_name, FUN, ...) {
   res <- FUN(pd$yhat)
 
   # Include PDP as an attribute
-  attr(res, "pdp") <- pd
+  attr(res, which = "pdp") <- pd
+  attr(tib, which = "type") <- "pdp"
 
   # Return result
   res
