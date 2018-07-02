@@ -66,7 +66,7 @@
       <h1>Variable importance plots: an introduction to vip</h1>
                         <h4 class="author">Brandon M. Greenwell and Bradley C. Boehmke</h4>
             
-            <h4 class="date">2018-06-20</h4>
+            <h4 class="date">2018-07-01</h4>
       
       
       <div class="hidden name"><code>vip.Rmd</code></div>
@@ -77,9 +77,9 @@
     
 <div id="warning-this-vignette-is-under-construction" class="section level2">
 <h2 class="hasAnchor">
-<a href="#warning-this-vignette-is-under-construction" class="anchor"></a>⚠️ Warning: This vignette is under construction! 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧</h2>
+<a href="#warning-this-vignette-is-under-construction" class="anchor"></a>⚠️ Warning: This vignette is under construction! 🚧 🚧 🚧 🚧</h2>
 <p>In the era of “big data”, it is becoming more of a challenge to not only build state-of-the-art predictive models, but also gain an understanding of what’s really going on in the data. For example, it is often of interest to know which, if any, of the predictors in a fitted model are relatively influential on the predicted outcome. Some modern algorithms—like random forests and gradient boosted decision trees—have a natural way of quantifying the importance or relative influence of each feature. Other algorithms—like naive Bayes classifiers and support vector machines—are not capable of doing so and model-agnostic approaches are generally used to measure each predictor’s importance. Enter <a href="https://koalaverse.github.io/vip/index.html"><code>vip</code></a>, an R package for constructing variable importance (VI) scores/plots for many types of supervised learning algorithms using model-based and novel model-agnostic approaches.</p>
-<!-- 1) **Model-based VI scores (when available)**. For example, in a random forest, variable importance can be computed using the permutation approach described in [@random-breiman-2001]. Other supervised learning algorithms (like MARS and GBMs) have their own ways of constructing VI scores. -->
+<!-- 1) **Model-based VI scores (when available)**. For example, in a random forest, VI can be computed using the permutation approach described in [@random-breiman-2001]. Other supervised learning algorithms (like MARS and GBMs) have their own ways of constructing VI scores. -->
 <!-- 2) **Model-agnostic VI scores**. `vip` currently implements two approaches to computing model-agnostiv VI scores:  -->
 <!--    - **PDP method**. This is a new idea described in @greenwell-simple-2018. The idea is to measure the "flatness" of Friedman's *partial dependence plot* (PDP) [@friedman-2001-greedy] for each feature. A feature whose PDP is flat, relative to the other features, implies that the feature has less of an influence on the estimated prediction surface as it changes while taking into account the average effect of the other features in the model. -->
 <!--    - **ICE curve method**. This method is similar to the PDP-based VI scores above, but are based on measuring the "flatness" of the *individual conditional expectation* (ICE) curves presented by @goldstein-peeking-2015. -->
@@ -128,7 +128,7 @@
 <div id="trees-and-tree-ensembles" class="section level4">
 <h4 class="hasAnchor">
 <a href="#trees-and-tree-ensembles" class="anchor"></a>Trees and tree ensembles</h4>
-<p>Decision trees probably offer the most natural model-based approach to quantifying the importance of each feature. In a binary decision tree, at each node <span class="math inline">\(t\)</span>, a single predictor is used to partition the data into two homogeneous groups. The chosen predictor is the one that maximizes some measure of improvement <span class="math inline">\(\widehat{i}_t\)</span>. The relative importance of predictor <span class="math inline">\(x\)</span> is the sum of the squared improvements over all internal nodes of the tree for which <span class="math inline">\(x\)</span> was chosen as the partitioning variable; see <span class="citation">Breiman, Friedman, and Charles J. Stone (1984)</span> for details. This idea also extends to ensembles of decision trees, such as RFs and GBMs. In ensembles, the improvement score for each predictor is averaged across all the trees in the ensemble. Fortunately, due to the stabilizing effect of averaging, the improvement-based variable importance metric is often more reliable in large ensembles <span class="citation">(see Hastie, Tibshirani, and Friedman 2009, pg. 368)</span>. RFs offer an additional method for computing variable importance scores. The idea is to use the leftover out-of-bag (OOB) data to construct validation-set errors for each tree. Then, each predictor is randomly shuffled in the OOB data and the error is computed again. The idea is that if variable <span class="math inline">\(x\)</span> is important, then the validation error will go up when <span class="math inline">\(x\)</span> is perturbed in the OOB data. The difference in the two errors is recorded for the OOB data then averaged across all trees in the forest.</p>
+<p>Decision trees probably offer the most natural model-based approach to quantifying the importance of each feature. In a binary decision tree, at each node <span class="math inline">\(t\)</span>, a single predictor is used to partition the data into two homogeneous groups. The chosen predictor is the one that maximizes some measure of improvement <span class="math inline">\(\widehat{i}_t\)</span>. The relative importance of predictor <span class="math inline">\(x\)</span> is the sum of the squared improvements over all internal nodes of the tree for which <span class="math inline">\(x\)</span> was chosen as the partitioning variable; see <span class="citation">Breiman, Friedman, and Charles J. Stone (1984)</span> for details. This idea also extends to ensembles of decision trees, such as RFs and GBMs. In ensembles, the improvement score for each predictor is averaged across all the trees in the ensemble. Fortunately, due to the stabilizing effect of averaging, the improvement-based VI metric is often more reliable in large ensembles <span class="citation">(see Hastie, Tibshirani, and Friedman 2009, pg. 368)</span>. RFs offer an additional method for computing VI scores. The idea is to use the leftover out-of-bag (OOB) data to construct validation-set errors for each tree. Then, each predictor is randomly shuffled in the OOB data and the error is computed again. The idea is that if variable <span class="math inline">\(x\)</span> is important, then the validation error will go up when <span class="math inline">\(x\)</span> is perturbed in the OOB data. The difference in the two errors is recorded for the OOB data then averaged across all trees in the forest.</p>
 <p>To illustrate, we fit a CART-like regression tree, RF, and GBM to the simulated training data. (<strong>Note:</strong> there are a number of different packages available for fitting these types of models, we just picked popular and efficient implementations for illustration.)</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># Load required packages</span></a>
 <a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw">library</span>(xgboost)  <span class="co"># for fitting GBMs</span></a>
@@ -187,7 +187,7 @@
 <a class="sourceLine" id="cb6-14" data-line-number="14"><span class="co">#&gt; 10:     x.8 0.002617178 0.07408544 0.07062675</span></a>
 <a class="sourceLine" id="cb6-15" data-line-number="15"><span class="kw"><a href="http://www.rdocumentation.org/packages/xgboost/topics/xgb.plot.importance">xgb.ggplot.importance</a></span>(vi_bst)</a></code></pre></div>
 <p><img src="vip_files/figure-html/trees-manual-3.png" width="700" style="display: block; margin: auto;"></p>
-<p>As we would expect, all three methods rank the variables <code>x.1</code>–<code>x.5</code> as more important than the others. While this is good news, it is unfortunate that we have to remember the different functions and ways of extracting and plotting VI scores from various model fitting functions. This is where <code>vip</code> can help…one function to rule them all! Once <code>vip</code> is loaded, we can use <code><a href="../reference/vi.html">vi()</a></code> to extract a <a href="http://tibble.tidyverse.org/">tibble</a> of variable importance scores.</p>
+<p>As we would expect, all three methods rank the variables <code>x.1</code>–<code>x.5</code> as more important than the others. While this is good news, it is unfortunate that we have to remember the different functions and ways of extracting and plotting VI scores from various model fitting functions. This is where <code>vip</code> can help…one function to rule them all! Once <code>vip</code> is loaded, we can use <code><a href="../reference/vi.html">vi()</a></code> to extract a <a href="http://tibble.tidyverse.org/">tibble</a> of VI scores.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co"># Load required packages</span></a>
 <a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw">library</span>(vip)</a>
 <a class="sourceLine" id="cb7-3" data-line-number="3"><span class="co">#&gt; </span></a>
@@ -196,7 +196,7 @@
 <a class="sourceLine" id="cb7-6" data-line-number="6"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb7-7" data-line-number="7"><span class="co">#&gt;     vi</span></a>
 <a class="sourceLine" id="cb7-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb7-9" data-line-number="9"><span class="co"># Eaxtract (tibble of) variable importance scores</span></a>
+<a class="sourceLine" id="cb7-9" data-line-number="9"><span class="co"># Extract (tibble of) VI scores</span></a>
 <a class="sourceLine" id="cb7-10" data-line-number="10"><span class="kw"><a href="../reference/vi.html">vi</a></span>(tree)  <span class="co"># CART-like decision tree</span></a>
 <a class="sourceLine" id="cb7-11" data-line-number="11"><span class="co">#&gt; # A tibble: 10 x 2</span></a>
 <a class="sourceLine" id="cb7-12" data-line-number="12"><span class="co">#&gt;    Variable Importance</span></a>
@@ -211,7 +211,7 @@
 <a class="sourceLine" id="cb7-21" data-line-number="21"><span class="co">#&gt;  8 x.9            331.</span></a>
 <a class="sourceLine" id="cb7-22" data-line-number="22"><span class="co">#&gt;  9 x.8            276.</span></a>
 <a class="sourceLine" id="cb7-23" data-line-number="23"><span class="co">#&gt; 10 x.10           275.</span></a>
-<a class="sourceLine" id="cb7-24" data-line-number="24"><span class="kw"><a href="../reference/vi.html">vi</a></span>(rfo)  <span class="co"># RF</span></a>
+<a class="sourceLine" id="cb7-24" data-line-number="24"><span class="kw"><a href="../reference/vi.html">vi</a></span>(rfo)   <span class="co"># RF</span></a>
 <a class="sourceLine" id="cb7-25" data-line-number="25"><span class="co">#&gt; # A tibble: 10 x 2</span></a>
 <a class="sourceLine" id="cb7-26" data-line-number="26"><span class="co">#&gt;    Variable Importance</span></a>
 <a class="sourceLine" id="cb7-27" data-line-number="27"><span class="co">#&gt;    &lt;chr&gt;         &lt;dbl&gt;</span></a>
@@ -225,7 +225,7 @@
 <a class="sourceLine" id="cb7-35" data-line-number="35"><span class="co">#&gt;  8 x.7            365.</span></a>
 <a class="sourceLine" id="cb7-36" data-line-number="36"><span class="co">#&gt;  9 x.6            365.</span></a>
 <a class="sourceLine" id="cb7-37" data-line-number="37"><span class="co">#&gt; 10 x.9            338.</span></a>
-<a class="sourceLine" id="cb7-38" data-line-number="38"><span class="kw"><a href="../reference/vi.html">vi</a></span>(bst)  <span class="co"># GBM</span></a>
+<a class="sourceLine" id="cb7-38" data-line-number="38"><span class="kw"><a href="../reference/vi.html">vi</a></span>(bst)   <span class="co"># GBM</span></a>
 <a class="sourceLine" id="cb7-39" data-line-number="39"><span class="co">#&gt; # A tibble: 10 x 2</span></a>
 <a class="sourceLine" id="cb7-40" data-line-number="40"><span class="co">#&gt;    Variable Importance</span></a>
 <a class="sourceLine" id="cb7-41" data-line-number="41"><span class="co">#&gt;    &lt;chr&gt;         &lt;dbl&gt;</span></a>
@@ -243,7 +243,7 @@
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co"># Load required packages</span></a>
 <a class="sourceLine" id="cb8-2" data-line-number="2"><span class="kw">library</span>(vip)</a>
 <a class="sourceLine" id="cb8-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co"># Eaxtract (tibble of) variable importance scores</span></a>
+<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co"># Construct ggplot2-based VIPs</span></a>
 <a class="sourceLine" id="cb8-5" data-line-number="5">(p1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/vip.html">vip</a></span>(tree))  <span class="co"># CART-like decision tree</span></a></code></pre></div>
 <p><img src="vip_files/figure-html/trees-vi-vip-1.png" width="672" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">(p2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/vip.html">vip</a></span>(rfo, <span class="dt">width =</span> <span class="fl">0.5</span>, <span class="dt">fill =</span> <span class="st">"green3"</span>))   <span class="co"># RF</span></a></code></pre></div>
@@ -254,8 +254,8 @@
 <a class="sourceLine" id="cb11-2" data-line-number="2"><span class="co"># Display all three plots side by side</span></a>
 <a class="sourceLine" id="cb11-3" data-line-number="3"><span class="kw"><a href="../reference/grid.arrange.html">grid.arrange</a></span>(p1, p2, p3, <span class="dt">ncol =</span> <span class="dv">3</span>)</a></code></pre></div>
 <p><img src="vip_files/figure-html/trees-vi-vip-4.png" width="672" style="display: block; margin: auto;"></p>
-<p>Notice how the <code><a href="../reference/vip.html">vip()</a></code> function always returns a <code>"ggplot"</code> object (a bar plot, by default). For large models with many features, a dot plot is more effective (in fact, a number of useful plotting options can be fiddles with).</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw">library</span>(ggplot2)  <span class="co"># for theme_light()</span></a>
+<p>Notice how the <code><a href="../reference/vip.html">vip()</a></code> function always returns a <code>"ggplot"</code> object (by default, this will be a bar plot). For large models with many features, a dot plot is more effective (in fact, a number of useful plotting options can be fiddles with).</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw">library</span>(ggplot2)  <span class="co"># for theme_light() function</span></a>
 <a class="sourceLine" id="cb12-2" data-line-number="2"><span class="kw"><a href="../reference/vip.html">vip</a></span>(bst, <span class="dt">num_features =</span> <span class="dv">5</span>, <span class="dt">bar =</span> <span class="ot">FALSE</span>, color, <span class="dt">horizontal =</span> <span class="ot">FALSE</span>, </a>
 <a class="sourceLine" id="cb12-3" data-line-number="3">    <span class="dt">color =</span> <span class="st">"red"</span>, <span class="dt">shape =</span> <span class="dv">17</span>, <span class="dt">size =</span> <span class="dv">4</span>) <span class="op">+</span></a>
 <a class="sourceLine" id="cb12-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_light</a></span>()</a></code></pre></div>
@@ -264,36 +264,67 @@
 <div id="linear-models" class="section level4">
 <h4 class="hasAnchor">
 <a href="#linear-models" class="anchor"></a>Linear models</h4>
-<p>In multiple linear regression (LMs), the absolute value of the <span class="math inline">\(t\)</span>-statistic is commonly used as a measure of variable importance. The same idea also extends to generalized linear models (GLMs). Multivariate adaptive regression splines (MARS), which were introduced in <span class="citation">Friedman (1991)</span>, is an automatic regression technique which can be seen as a generalization of multiple linear regression and generalized linear models. In the MARS algorithm, the contribution (or variable importance score) for each predictor is determined using a generalized cross-validation (GCV) statistic. In the code chunk below, we fit an LM to the simulated <code>trn</code> data set allowing for all main and two-way interaction effects.</p>
+<p>In multiple linear regression, or linear models (LMs), the absolute value of the <span class="math inline">\(t\)</span>-statistic is commonly used as a measure of VI. The same idea also extends to generalized linear models (GLMs). In the code chunk below, we fit an LM to the simulated <code>trn</code> data set allowing for all main and two-way interaction effects, then use the <code>step()</code> function to perform <a href="https://en.wikipedia.org/wiki/Stepwise_regression">backward elimination</a>.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="co"># Fit a LM</span></a>
 <a class="sourceLine" id="cb13-2" data-line-number="2">linmod &lt;-<span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>.<span class="op">^</span><span class="dv">2</span>, <span class="dt">data =</span> trn)</a>
-<a class="sourceLine" id="cb13-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb13-4" data-line-number="4"><span class="co"># Extract VI scores</span></a>
-<a class="sourceLine" id="cb13-5" data-line-number="5"><span class="kw"><a href="../reference/vi.html">vi</a></span>(linmod)</a>
-<a class="sourceLine" id="cb13-6" data-line-number="6"><span class="co">#&gt; # A tibble: 55 x 3</span></a>
-<a class="sourceLine" id="cb13-7" data-line-number="7"><span class="co">#&gt;    Variable Importance  Sign</span></a>
-<a class="sourceLine" id="cb13-8" data-line-number="8"><span class="co">#&gt;    &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb13-9" data-line-number="9"><span class="co">#&gt;  1 x.4            5.43     1</span></a>
-<a class="sourceLine" id="cb13-10" data-line-number="10"><span class="co">#&gt;  2 x.1            4.12     1</span></a>
-<a class="sourceLine" id="cb13-11" data-line-number="11"><span class="co">#&gt;  3 x.2            3.77     1</span></a>
-<a class="sourceLine" id="cb13-12" data-line-number="12"><span class="co">#&gt;  4 x.5            3.42     1</span></a>
-<a class="sourceLine" id="cb13-13" data-line-number="13"><span class="co">#&gt;  5 x.1:x.5        2.55    -1</span></a>
-<a class="sourceLine" id="cb13-14" data-line-number="14"><span class="co">#&gt;  6 x.3:x.5        2.43     1</span></a>
-<a class="sourceLine" id="cb13-15" data-line-number="15"><span class="co">#&gt;  7 x.2:x.6        2.36    -1</span></a>
-<a class="sourceLine" id="cb13-16" data-line-number="16"><span class="co">#&gt;  8 x.1:x.10       2.11    -1</span></a>
-<a class="sourceLine" id="cb13-17" data-line-number="17"><span class="co">#&gt;  9 x.2:x.8        1.89     1</span></a>
-<a class="sourceLine" id="cb13-18" data-line-number="18"><span class="co">#&gt; 10 x.3:x.4        1.84    -1</span></a>
-<a class="sourceLine" id="cb13-19" data-line-number="19"><span class="co">#&gt; # ... with 45 more rows</span></a>
-<a class="sourceLine" id="cb13-20" data-line-number="20"></a>
-<a class="sourceLine" id="cb13-21" data-line-number="21"><span class="co"># Plot VI scores</span></a>
-<a class="sourceLine" id="cb13-22" data-line-number="22"><span class="kw"><a href="../reference/vip.html">vip</a></span>(linmod, <span class="dt">num_features =</span> <span class="dv">25</span>, <span class="dt">bar =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
-<p><img src="vip_files/figure-html/lms-1.png" width="700" style="display: block; margin: auto;"></p>
-<p>One issue with the model-based approach to computing VI scores for LMs is that a score is assigned to each term in the model, rather than to just each feature! We can solve this problem using one of the model-agnostic approaches discussed later.</p>
+<a class="sourceLine" id="cb13-3" data-line-number="3">backward &lt;-<span class="st"> </span><span class="kw">step</span>(linmod, <span class="dt">direction =</span> <span class="st">"backward"</span>, <span class="dt">trace =</span> <span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb13-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb13-5" data-line-number="5"><span class="co"># Extract VI scores</span></a>
+<a class="sourceLine" id="cb13-6" data-line-number="6"><span class="kw"><a href="../reference/vi.html">vi</a></span>(backward)</a>
+<a class="sourceLine" id="cb13-7" data-line-number="7"><span class="co">#&gt; # A tibble: 21 x 3</span></a>
+<a class="sourceLine" id="cb13-8" data-line-number="8"><span class="co">#&gt;    Variable Importance Sign </span></a>
+<a class="sourceLine" id="cb13-9" data-line-number="9"><span class="co">#&gt;    &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt;</span></a>
+<a class="sourceLine" id="cb13-10" data-line-number="10"><span class="co">#&gt;  1 x.4           14.2  POS  </span></a>
+<a class="sourceLine" id="cb13-11" data-line-number="11"><span class="co">#&gt;  2 x.2            7.31 POS  </span></a>
+<a class="sourceLine" id="cb13-12" data-line-number="12"><span class="co">#&gt;  3 x.1            5.63 POS  </span></a>
+<a class="sourceLine" id="cb13-13" data-line-number="13"><span class="co">#&gt;  4 x.5            5.21 POS  </span></a>
+<a class="sourceLine" id="cb13-14" data-line-number="14"><span class="co">#&gt;  5 x.3:x.5        2.46 POS  </span></a>
+<a class="sourceLine" id="cb13-15" data-line-number="15"><span class="co">#&gt;  6 x.1:x.10       2.41 NEG  </span></a>
+<a class="sourceLine" id="cb13-16" data-line-number="16"><span class="co">#&gt;  7 x.2:x.6        2.41 NEG  </span></a>
+<a class="sourceLine" id="cb13-17" data-line-number="17"><span class="co">#&gt;  8 x.1:x.5        2.37 NEG  </span></a>
+<a class="sourceLine" id="cb13-18" data-line-number="18"><span class="co">#&gt;  9 x.10           2.21 POS  </span></a>
+<a class="sourceLine" id="cb13-19" data-line-number="19"><span class="co">#&gt; 10 x.3:x.4        2.01 NEG  </span></a>
+<a class="sourceLine" id="cb13-20" data-line-number="20"><span class="co">#&gt; # ... with 11 more rows</span></a>
+<a class="sourceLine" id="cb13-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb13-22" data-line-number="22"><span class="co"># Plot VI scores</span></a>
+<a class="sourceLine" id="cb13-23" data-line-number="23"><span class="kw"><a href="../reference/vip.html">vip</a></span>(backward, <span class="dt">num_features =</span> <span class="kw">length</span>(<span class="kw">coef</span>(backward)), </a>
+<a class="sourceLine" id="cb13-24" data-line-number="24">    <span class="dt">bar =</span> <span class="ot">FALSE</span>, <span class="dt">horizontal =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<p><img src="vip_files/figure-html/lms-1.png" width="672" style="display: block; margin: auto;"></p>
+<p>One issue with computing VI scores for LMs using the <span class="math inline">\(t\)</span>-statistic approach is that a score is assigned to each term in the model, rather than to just each feature! We can solve this problem using one of the model-agnostic approaches discussed later.</p>
+<p>Multivariate adaptive regression splines (MARS), which were introduced in <span class="citation">Friedman (1991)</span>, is an automatic regression technique which can be seen as a generalization of multiple linear regression and generalized linear models. In the MARS algorithm, the contribution (or VI score) for each predictor is determined using a generalized cross-validation (GCV) statistic. An example using the <code>earth</code> package is given below:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="co"># Load required packages</span></a>
+<a class="sourceLine" id="cb14-2" data-line-number="2"><span class="kw">library</span>(earth)</a>
+<a class="sourceLine" id="cb14-3" data-line-number="3"><span class="co">#&gt; Loading required package: plotmo</span></a>
+<a class="sourceLine" id="cb14-4" data-line-number="4"><span class="co">#&gt; Loading required package: plotrix</span></a>
+<a class="sourceLine" id="cb14-5" data-line-number="5"><span class="co">#&gt; Loading required package: TeachingDemos</span></a>
+<a class="sourceLine" id="cb14-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb14-7" data-line-number="7"><span class="co"># Fit a MARS model</span></a>
+<a class="sourceLine" id="cb14-8" data-line-number="8">mars &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/earth/topics/earth">earth</a></span>(y <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> trn, <span class="dt">degree =</span> <span class="dv">2</span>, <span class="dt">pmethod =</span> <span class="st">"exhaustive"</span>)</a>
+<a class="sourceLine" id="cb14-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb14-10" data-line-number="10"><span class="co"># Extract VI scores</span></a>
+<a class="sourceLine" id="cb14-11" data-line-number="11"><span class="kw"><a href="../reference/vi.html">vi</a></span>(mars)</a>
+<a class="sourceLine" id="cb14-12" data-line-number="12"><span class="co">#&gt; # A tibble: 10 x 2</span></a>
+<a class="sourceLine" id="cb14-13" data-line-number="13"><span class="co">#&gt;    Variable Importance</span></a>
+<a class="sourceLine" id="cb14-14" data-line-number="14"><span class="co">#&gt;    &lt;chr&gt;         &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb14-15" data-line-number="15"><span class="co">#&gt;  1 x.4           100  </span></a>
+<a class="sourceLine" id="cb14-16" data-line-number="16"><span class="co">#&gt;  2 x.1            83.2</span></a>
+<a class="sourceLine" id="cb14-17" data-line-number="17"><span class="co">#&gt;  3 x.2            83.2</span></a>
+<a class="sourceLine" id="cb14-18" data-line-number="18"><span class="co">#&gt;  4 x.5            59.3</span></a>
+<a class="sourceLine" id="cb14-19" data-line-number="19"><span class="co">#&gt;  5 x.3            43.5</span></a>
+<a class="sourceLine" id="cb14-20" data-line-number="20"><span class="co">#&gt;  6 x.6             0  </span></a>
+<a class="sourceLine" id="cb14-21" data-line-number="21"><span class="co">#&gt;  7 x.7             0  </span></a>
+<a class="sourceLine" id="cb14-22" data-line-number="22"><span class="co">#&gt;  8 x.8             0  </span></a>
+<a class="sourceLine" id="cb14-23" data-line-number="23"><span class="co">#&gt;  9 x.9             0  </span></a>
+<a class="sourceLine" id="cb14-24" data-line-number="24"><span class="co">#&gt; 10 x.10            0</span></a>
+<a class="sourceLine" id="cb14-25" data-line-number="25"></a>
+<a class="sourceLine" id="cb14-26" data-line-number="26"><span class="co"># Plot VI scores</span></a>
+<a class="sourceLine" id="cb14-27" data-line-number="27"><span class="kw"><a href="../reference/vip.html">vip</a></span>(mars)</a></code></pre></div>
+<p><img src="vip_files/figure-html/earth-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="neural-networks" class="section level4">
 <h4 class="hasAnchor">
 <a href="#neural-networks" class="anchor"></a>Neural networks</h4>
-<p>For NNs, two popular methods for constructing variable importance scores are the Garson algorithm <span class="citation">(Garson 1991)</span>, later modified by <span class="citation">Goh (1995)</span>, and the Olden algorithm <span class="citation">(Olden, Joy, and Death 2004)</span>. For both algorithms, the basis of these importance scores is the network’s connection weights. The Garson algorithm determines variable importance by identifying all weighted connections between the nodes of interest. Olden’s algorithm, on the other hand, uses the product of the raw connection weights between each input and output neuron and sums the product across all hidden neurons. This has been shown to outperform the Garson method in various simulations. For DNNs, a similar method due to <span class="citation">Gedeon (1997)</span> considers the weights connecting the input features to the first two hidden layers (for simplicity and speed); but this method can be slow for large networks.</p>
+<p>For NNs, two popular methods for constructing VI scores are the Garson algorithm <span class="citation">(Garson 1991)</span>, later modified by <span class="citation">Goh (1995)</span>, and the Olden algorithm <span class="citation">(Olden, Joy, and Death 2004)</span>. For both algorithms, the basis of these importance scores is the network’s connection weights. The Garson algorithm determines VI by identifying all weighted connections between the nodes of interest. Olden’s algorithm, on the other hand, uses the product of the raw connection weights between each input and output neuron and sums the product across all hidden neurons. This has been shown to outperform the Garson method in various simulations. For DNNs, a similar method due to <span class="citation">Gedeon (1997)</span> considers the weights connecting the input features to the first two hidden layers (for simplicity and speed); but this method can be slow for large networks.</p>
 <p><strong>These methods will be implemented soon!</strong></p>
 </div>
 </div>
@@ -304,12 +335,33 @@
 <div id="pdp-method" class="section level4">
 <h4 class="hasAnchor">
 <a href="#pdp-method" class="anchor"></a>PDP method</h4>
-<p>Coming soon.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="co"># Fit a PPR model (nterms was chosen using the caret package with 5 repeats of </span></a>
+<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="co"># 5-fold cross-validation)</span></a>
+<a class="sourceLine" id="cb15-3" data-line-number="3">pp &lt;-<span class="st"> </span><span class="kw">ppr</span>(y <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> trn, <span class="dt">nterms =</span> <span class="dv">11</span>)  </a>
+<a class="sourceLine" id="cb15-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb15-5" data-line-number="5"><span class="co"># Plot VI scores</span></a>
+<a class="sourceLine" id="cb15-6" data-line-number="6"><span class="kw"><a href="../reference/vip.html">vip</a></span>(pp, <span class="dt">method =</span> <span class="st">"pdp"</span>)</a>
+<a class="sourceLine" id="cb15-7" data-line-number="7"><span class="co">#&gt; Warning: Setting `method = "pdp"` is experimental, use at your own risk!</span></a></code></pre></div>
+<p><img src="vip_files/figure-html/ppr-pdp-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="ice-curve-method" class="section level4">
 <h4 class="hasAnchor">
 <a href="#ice-curve-method" class="anchor"></a>ICE curve method</h4>
-<p>Coming soon.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="co"># Plot VI scores</span></a>
+<a class="sourceLine" id="cb16-2" data-line-number="2"><span class="kw"><a href="../reference/vip.html">vip</a></span>(pp, <span class="dt">method =</span> <span class="st">"ice"</span>)</a>
+<a class="sourceLine" id="cb16-3" data-line-number="3"><span class="co">#&gt; Warning: Setting `method = "ice"` is experimental, use at your own risk!</span></a></code></pre></div>
+<p><img src="vip_files/figure-html/ppr-ice-1.png" width="700" style="display: block; margin: auto;"></p>
+</div>
+<div id="permutation-method" class="section level4">
+<h4 class="hasAnchor">
+<a href="#permutation-method" class="anchor"></a>Permutation method</h4>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co"># Plot VI scores</span></a>
+<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">2021</span>)  <span class="co"># for reproducibility</span></a>
+<a class="sourceLine" id="cb17-3" data-line-number="3"><span class="kw"><a href="../reference/vip.html">vip</a></span>(pp, <span class="dt">method =</span> <span class="st">"permute"</span>, <span class="dt">obs =</span> trn<span class="op">$</span>y, <span class="dt">metric =</span> <span class="st">"rsquared"</span>,</a>
+<a class="sourceLine" id="cb17-4" data-line-number="4">    <span class="dt">pred_fun =</span> predict)</a>
+<a class="sourceLine" id="cb17-5" data-line-number="5"><span class="co">#&gt; Warning: Setting `method = "permute"` is experimental, use at your own</span></a>
+<a class="sourceLine" id="cb17-6" data-line-number="6"><span class="co">#&gt; risk!</span></a></code></pre></div>
+<p><img src="vip_files/figure-html/ppr-permute-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 </div>
 </div>
@@ -356,7 +408,7 @@
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#warning-this-vignette-is-under-construction">⚠️ Warning: This vignette is under construction! 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧</a></li>
+<li><a href="#warning-this-vignette-is-under-construction">⚠️ Warning: This vignette is under construction! 🚧 🚧 🚧 🚧</a></li>
       <li><a href="#installation">Installation</a></li>
       <li><a href="#example-usage">Example usage</a></li>
       <li><a href="#references">References</a></li>

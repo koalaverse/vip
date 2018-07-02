@@ -109,7 +109,7 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>vi</span>(<span class='no'>object</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"model"</span>, <span class='st'>"pdp"</span>, <span class='st'>"ice"</span>, <span class='st'>"perm"</span>), <span class='no'>feature_names</span>,
+    <pre class="usage"><span class='fu'>vi</span>(<span class='no'>object</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"model"</span>, <span class='st'>"pdp"</span>, <span class='st'>"ice"</span>, <span class='st'>"permute"</span>), <span class='no'>feature_names</span>,
   <span class='kw'>FUN</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>abbreviate_feature_names</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>decreasing</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
@@ -125,10 +125,9 @@
       <td><p>Character string specifying the type of variable importance
 (VI) to compute. Current options are <code>"model"</code> (for model-based VI
 scores), <code>"pdp"</code> (for PDP-based VI scores), <code>"ice"</code> (for ICE-based
-VI scores), and <code>"perm"</code> (for permutation-based VI scores). The default
-is <code>"model"</code>. For details on the PDP/ICE-based method, see the reference
-below. Also, <code>method = "perm"</code> is currently ignored, but will be
-available in a future release.</p></td>
+VI scores), and <code>"permute"</code> (for permutation-based VI scores). The
+default is <code>"model"</code>. For details on the PDP/ICE-based method, see the
+reference below.</p></td>
     </tr>
     <tr>
       <th>feature_names</th>
