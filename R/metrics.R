@@ -70,6 +70,12 @@ get_default_metric <- function(object) {
 
 #' @keywords internal
 get_default_metric.ranger <- function(object) {
+  "rmse"
+}
+
+
+#' @keywords internal
+get_default_metric.ranger <- function(object) {
   if (object$treetype == "Regression") {
     "rmse"
   } else if (object$treetype == "Classification") {

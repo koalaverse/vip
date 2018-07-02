@@ -69,6 +69,16 @@ get_feature_names.nls <- function(object, ...) {
 
 
 #' @keywords internal
+get_feature_names.nnet <- function(object, ...) {
+  if (!is.null(object$coefnames)) {
+    object$coefnames
+  } else {
+    get_feature_names.default(object)
+  }
+}
+
+
+#' @keywords internal
 get_feature_names.ppr <- function(object, ...) {
   object$xnames
 }

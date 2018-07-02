@@ -66,7 +66,7 @@
       <h1>Variable importance plots: an introduction to vip</h1>
                         <h4 class="author">Brandon M. Greenwell and Bradley C. Boehmke</h4>
             
-            <h4 class="date">2018-07-01</h4>
+            <h4 class="date">2018-07-02</h4>
       
       
       <div class="hidden name"><code>vip.Rmd</code></div>
@@ -75,16 +75,7 @@
 
     
     
-<div id="warning-this-vignette-is-under-construction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#warning-this-vignette-is-under-construction" class="anchor"></a>⚠️ Warning: This vignette is under construction! 🚧 🚧 🚧 🚧</h2>
 <p>In the era of “big data”, it is becoming more of a challenge to not only build state-of-the-art predictive models, but also gain an understanding of what’s really going on in the data. For example, it is often of interest to know which, if any, of the predictors in a fitted model are relatively influential on the predicted outcome. Some modern algorithms—like random forests and gradient boosted decision trees—have a natural way of quantifying the importance or relative influence of each feature. Other algorithms—like naive Bayes classifiers and support vector machines—are not capable of doing so and model-agnostic approaches are generally used to measure each predictor’s importance. Enter <a href="https://koalaverse.github.io/vip/index.html"><code>vip</code></a>, an R package for constructing variable importance (VI) scores/plots for many types of supervised learning algorithms using model-based and novel model-agnostic approaches.</p>
-<!-- 1) **Model-based VI scores (when available)**. For example, in a random forest, VI can be computed using the permutation approach described in [@random-breiman-2001]. Other supervised learning algorithms (like MARS and GBMs) have their own ways of constructing VI scores. -->
-<!-- 2) **Model-agnostic VI scores**. `vip` currently implements two approaches to computing model-agnostiv VI scores:  -->
-<!--    - **PDP method**. This is a new idea described in @greenwell-simple-2018. The idea is to measure the "flatness" of Friedman's *partial dependence plot* (PDP) [@friedman-2001-greedy] for each feature. A feature whose PDP is flat, relative to the other features, implies that the feature has less of an influence on the estimated prediction surface as it changes while taking into account the average effect of the other features in the model. -->
-<!--    - **ICE curve method**. This method is similar to the PDP-based VI scores above, but are based on measuring the "flatness" of the *individual conditional expectation* (ICE) curves presented by @goldstein-peeking-2015. -->
-<!-- Since PDPs and ICE curves can be constructed for any supervised learning algorithm, we can use the PDP anbd ICE curve methods to construct VI scores for any supervised learning algorithm (while simultaneously taking into account the fitted model and all of the features). -->
-</div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
@@ -124,7 +115,7 @@
 <div id="model-based-vi-scores" class="section level3">
 <h3 class="hasAnchor">
 <a href="#model-based-vi-scores" class="anchor"></a>Model-based VI scores</h3>
-<p>Coming soon.</p>
+<p>Some machine learning algorithms have their own way of quantifying variable Importance. We describe some of these in the subsection that follow. The issue with model-specific VI scores is that they are not necessarily comparable across different types of models. For example, directly computing the impurity-based VI scores from tree-based models to the <span class="math inline">\(t\)</span>-statistic from linear models.</p>
 <div id="trees-and-tree-ensembles" class="section level4">
 <h4 class="hasAnchor">
 <a href="#trees-and-tree-ensembles" class="anchor"></a>Trees and tree ensembles</h4>
@@ -325,44 +316,171 @@
 <h4 class="hasAnchor">
 <a href="#neural-networks" class="anchor"></a>Neural networks</h4>
 <p>For NNs, two popular methods for constructing VI scores are the Garson algorithm <span class="citation">(Garson 1991)</span>, later modified by <span class="citation">Goh (1995)</span>, and the Olden algorithm <span class="citation">(Olden, Joy, and Death 2004)</span>. For both algorithms, the basis of these importance scores is the network’s connection weights. The Garson algorithm determines VI by identifying all weighted connections between the nodes of interest. Olden’s algorithm, on the other hand, uses the product of the raw connection weights between each input and output neuron and sums the product across all hidden neurons. This has been shown to outperform the Garson method in various simulations. For DNNs, a similar method due to <span class="citation">Gedeon (1997)</span> considers the weights connecting the input features to the first two hidden layers (for simplicity and speed); but this method can be slow for large networks.</p>
-<p><strong>These methods will be implemented soon!</strong></p>
+<p><strong>These methods will be implemented in <code>vip</code> soon!</strong></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="co"># # Tune a neural network</span></a>
+<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="co"># library(caret)</span></a>
+<a class="sourceLine" id="cb15-3" data-line-number="3"><span class="co"># set.seed(0755)</span></a>
+<a class="sourceLine" id="cb15-4" data-line-number="4"><span class="co"># nn &lt;- train(</span></a>
+<a class="sourceLine" id="cb15-5" data-line-number="5"><span class="co">#   x = subset(trn, select = -y),</span></a>
+<a class="sourceLine" id="cb15-6" data-line-number="6"><span class="co">#   y = trn$y,</span></a>
+<a class="sourceLine" id="cb15-7" data-line-number="7"><span class="co">#   method = "nnet",</span></a>
+<a class="sourceLine" id="cb15-8" data-line-number="8"><span class="co">#   trace = FALSE,</span></a>
+<a class="sourceLine" id="cb15-9" data-line-number="9"><span class="co">#   linout = TRUE,</span></a>
+<a class="sourceLine" id="cb15-10" data-line-number="10"><span class="co">#   maxit = 1000,</span></a>
+<a class="sourceLine" id="cb15-11" data-line-number="11"><span class="co">#   trControl = trainControl(method = "repeatedcv", number = 5, repeats = 5),</span></a>
+<a class="sourceLine" id="cb15-12" data-line-number="12"><span class="co">#   tuneGrid = expand.grid(size = 1:20, decay = c(0, 0.0001, 0.001, 0.01, 0.1))</span></a>
+<a class="sourceLine" id="cb15-13" data-line-number="13"><span class="co"># )</span></a>
+<a class="sourceLine" id="cb15-14" data-line-number="14"><span class="co"># </span></a>
+<a class="sourceLine" id="cb15-15" data-line-number="15"><span class="co"># # Plot tuning results</span></a>
+<a class="sourceLine" id="cb15-16" data-line-number="16"><span class="co"># ggplot(nn)</span></a>
+<a class="sourceLine" id="cb15-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb15-18" data-line-number="18"><span class="co"># Load required packages</span></a>
+<a class="sourceLine" id="cb15-19" data-line-number="19"><span class="kw">library</span>(nnet)</a>
+<a class="sourceLine" id="cb15-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb15-21" data-line-number="21"><span class="co"># Fit a neural network</span></a>
+<a class="sourceLine" id="cb15-22" data-line-number="22"><span class="kw">set.seed</span>(<span class="dv">0803</span>)</a>
+<a class="sourceLine" id="cb15-23" data-line-number="23">nn &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/nnet/topics/nnet">nnet</a></span>(y <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> trn, <span class="dt">size =</span> <span class="dv">7</span>, <span class="dt">decay =</span> <span class="fl">0.1</span>, <span class="dt">linout =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb15-24" data-line-number="24"><span class="co">#&gt; # weights:  85</span></a>
+<a class="sourceLine" id="cb15-25" data-line-number="25"><span class="co">#&gt; initial  value 126298.176281 </span></a>
+<a class="sourceLine" id="cb15-26" data-line-number="26"><span class="co">#&gt; iter  10 value 5148.185025</span></a>
+<a class="sourceLine" id="cb15-27" data-line-number="27"><span class="co">#&gt; iter  20 value 3563.828062</span></a>
+<a class="sourceLine" id="cb15-28" data-line-number="28"><span class="co">#&gt; iter  30 value 3095.876922</span></a>
+<a class="sourceLine" id="cb15-29" data-line-number="29"><span class="co">#&gt; iter  40 value 2638.672528</span></a>
+<a class="sourceLine" id="cb15-30" data-line-number="30"><span class="co">#&gt; iter  50 value 1983.009001</span></a>
+<a class="sourceLine" id="cb15-31" data-line-number="31"><span class="co">#&gt; iter  60 value 1759.428911</span></a>
+<a class="sourceLine" id="cb15-32" data-line-number="32"><span class="co">#&gt; iter  70 value 1483.284575</span></a>
+<a class="sourceLine" id="cb15-33" data-line-number="33"><span class="co">#&gt; iter  80 value 1112.219052</span></a>
+<a class="sourceLine" id="cb15-34" data-line-number="34"><span class="co">#&gt; iter  90 value 835.941067</span></a>
+<a class="sourceLine" id="cb15-35" data-line-number="35"><span class="co">#&gt; iter 100 value 748.120719</span></a>
+<a class="sourceLine" id="cb15-36" data-line-number="36"><span class="co">#&gt; final  value 748.120719 </span></a>
+<a class="sourceLine" id="cb15-37" data-line-number="37"><span class="co">#&gt; stopped after 100 iterations</span></a></code></pre></div>
 </div>
 </div>
 <div id="model-agnostic-vi-scores" class="section level3">
 <h3 class="hasAnchor">
 <a href="#model-agnostic-vi-scores" class="anchor"></a>Model-agnostic VI scores</h3>
-<p>Coming soon.</p>
+<p><a href="https://arxiv.org/abs/1606.05386"><em>Model-agnostic interpredibility</em></a> separates interpretation from the model. Compared to model-specific approaches, model-agnostic VI methods are more flexible (since they can be applied to any supervised learning algorithm). In this section, we discuss model-agnostic methods for quantifying global feature importance using three different approaches: 1) PDPs, 2) ICE curves, and 3) permutation. For details on approaches 1)–2), see <span class="citation">Greenwell, Boehmke, and McCarthy (2018)</span> (<a href="https://arxiv.org/abs/1805.04755">or just click here</a>).</p>
 <div id="pdp-method" class="section level4">
 <h4 class="hasAnchor">
 <a href="#pdp-method" class="anchor"></a>PDP method</h4>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="co"># Fit a PPR model (nterms was chosen using the caret package with 5 repeats of </span></a>
-<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="co"># 5-fold cross-validation)</span></a>
-<a class="sourceLine" id="cb15-3" data-line-number="3">pp &lt;-<span class="st"> </span><span class="kw">ppr</span>(y <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> trn, <span class="dt">nterms =</span> <span class="dv">11</span>)  </a>
-<a class="sourceLine" id="cb15-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb15-5" data-line-number="5"><span class="co"># Plot VI scores</span></a>
-<a class="sourceLine" id="cb15-6" data-line-number="6"><span class="kw"><a href="../reference/vip.html">vip</a></span>(pp, <span class="dt">method =</span> <span class="st">"pdp"</span>)</a>
-<a class="sourceLine" id="cb15-7" data-line-number="7"><span class="co">#&gt; Warning: Setting `method = "pdp"` is experimental, use at your own risk!</span></a></code></pre></div>
-<p><img src="vip_files/figure-html/ppr-pdp-1.png" width="700" style="display: block; margin: auto;"></p>
+<p>Our first model-agnostic approach is based on quantifying the “flatness” of the PDPs of each feature. PDPs help visualize the effect of low cardinality subsets of the feature space on the estimated prediction surface (e.g., main effects and two/three-way interaction effects.). PDPs provide model-agnostic interpretations and can be constructed in the same way for any supervised learning algorithm. Below, we fit a projection pursuit regression (PPR) model and construct PDPs for each feature using the <a href="https://cran.r-project.org/package=pdp">pdp</a> package <span class="citation">(Greenwell 2017)</span>.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="co"># Load required packages</span></a>
+<a class="sourceLine" id="cb16-2" data-line-number="2"><span class="kw">library</span>(pdp)</a>
+<a class="sourceLine" id="cb16-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb16-4" data-line-number="4"><span class="co"># Fit a PPR model (nterms was chosen using the caret package with 5 repeats of </span></a>
+<a class="sourceLine" id="cb16-5" data-line-number="5"><span class="co"># 5-fold cross-validation)</span></a>
+<a class="sourceLine" id="cb16-6" data-line-number="6">pp &lt;-<span class="st"> </span><span class="kw">ppr</span>(y <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> trn, <span class="dt">nterms =</span> <span class="dv">11</span>)  </a>
+<a class="sourceLine" id="cb16-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb16-8" data-line-number="8"><span class="co"># PDPs for all 10 features</span></a>
+<a class="sourceLine" id="cb16-9" data-line-number="9">features &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">"x."</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb16-10" data-line-number="10">pdps &lt;-<span class="st"> </span><span class="kw">lapply</span>(features, <span class="dt">FUN =</span> <span class="cf">function</span>(feature) {</a>
+<a class="sourceLine" id="cb16-11" data-line-number="11">  pd &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/pdp/topics/partial">partial</a></span>(pp, <span class="dt">pred.var =</span> feature)</a>
+<a class="sourceLine" id="cb16-12" data-line-number="12">  <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/autoplot">autoplot</a></span>(pd) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb16-13" data-line-number="13"><span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/lims">ylim</a></span>(<span class="kw">range</span>(trn<span class="op">$</span>y)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb16-14" data-line-number="14"><span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_light</a></span>()</a>
+<a class="sourceLine" id="cb16-15" data-line-number="15">})</a>
+<a class="sourceLine" id="cb16-16" data-line-number="16"><span class="kw"><a href="../reference/grid.arrange.html">grid.arrange</a></span>(<span class="dt">grobs =</span> pdps, <span class="dt">ncol =</span> <span class="dv">5</span>)</a></code></pre></div>
+<p><img src="vip_files/figure-html/ppr-pdps-1.png" width="100%" style="display: block; margin: auto;"></p>
+<p>Next, we compute PDP-based VI scores for the PPR and NN models. The PDP method constructs VI scores that quantify the “flatness” of each PDP (by default, this is defined by computing the standard deviation of the <span class="math inline">\(y\)</span>-axis values for each PDP). To use the PDP method, specify <code>method = "pdp"</code> in the call to <code><a href="../reference/vi.html">vi()</a></code> or <code><a href="../reference/vip.html">vip()</a></code>.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co"># Fit a PPR model (nterms was chosen using the caret package with 5 repeats of </span></a>
+<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="co"># 5-fold cross-validation)</span></a>
+<a class="sourceLine" id="cb17-3" data-line-number="3">pp &lt;-<span class="st"> </span><span class="kw">ppr</span>(y <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> trn, <span class="dt">nterms =</span> <span class="dv">11</span>)  </a>
+<a class="sourceLine" id="cb17-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb17-5" data-line-number="5"><span class="co"># Plot VI scores</span></a>
+<a class="sourceLine" id="cb17-6" data-line-number="6">p1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/vip.html">vip</a></span>(pp, <span class="dt">method =</span> <span class="st">"pdp"</span>) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/labs">ggtitle</a></span>(<span class="st">"PPR"</span>)</a>
+<a class="sourceLine" id="cb17-7" data-line-number="7"><span class="co">#&gt; Warning: Setting `method = "pdp"` is experimental, use at your own risk!</span></a>
+<a class="sourceLine" id="cb17-8" data-line-number="8">p2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/vip.html">vip</a></span>(nn, <span class="dt">method =</span> <span class="st">"pdp"</span>) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/labs">ggtitle</a></span>(<span class="st">"NN"</span>)</a>
+<a class="sourceLine" id="cb17-9" data-line-number="9"><span class="co">#&gt; Warning: Setting `method = "pdp"` is experimental, use at your own risk!</span></a>
+<a class="sourceLine" id="cb17-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb17-11" data-line-number="11"><span class="co"># Display plots side by side</span></a>
+<a class="sourceLine" id="cb17-12" data-line-number="12"><span class="kw"><a href="../reference/grid.arrange.html">grid.arrange</a></span>(p1, p2, <span class="dt">ncol =</span> <span class="dv">2</span>)</a></code></pre></div>
+<p><img src="vip_files/figure-html/ppr-vip-pdp-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 <div id="ice-curve-method" class="section level4">
 <h4 class="hasAnchor">
 <a href="#ice-curve-method" class="anchor"></a>ICE curve method</h4>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="co"># Plot VI scores</span></a>
-<a class="sourceLine" id="cb16-2" data-line-number="2"><span class="kw"><a href="../reference/vip.html">vip</a></span>(pp, <span class="dt">method =</span> <span class="st">"ice"</span>)</a>
-<a class="sourceLine" id="cb16-3" data-line-number="3"><span class="co">#&gt; Warning: Setting `method = "ice"` is experimental, use at your own risk!</span></a></code></pre></div>
-<p><img src="vip_files/figure-html/ppr-ice-1.png" width="700" style="display: block; margin: auto;"></p>
+<p>The ICE curve method is similar to the PDP method. The only difference is that we measure the “flatness” of each ICE curve and then aggregate the results (e.g., by averaging)<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. If there are no (substantial) interaction effects, using <code>method = "ice"</code> will produce results similar to using <code>method = "pdp"</code>. However, if strong interaction effects are present, they can obfuscate the main effects and render the PDP-based approach less useful (since the PDPs for important features can be relatively flat when certain interactions are present; see <span class="citation">Goldstein et al. (2015)</span> for details). In fact, it is probably safest to always use <code>method = "ice"</code>.</p>
+<p>Below, we display the ICE curves for each feature using the same <span class="math inline">\(y\)</span>-axis scale. Again, there is a clear difference between the ICE curves for features <code>x.1</code>–<code>x.5</code> and <code>x.6</code>–<code>x.10</code>; the later being relatively flat by comparison. Also, notice how the ICE curves within each feature are relatively parallel (if the ICE curves within each feature were perfectly parallel, the standard deviation for each curve would be the same and the results will be identical to the PDP method). In this example, the interaction term between <code>x.1</code> and <code>x.2</code> does not obfuscate the PDPs for the main effects and the results are not much different. To use the ICE curve method, specify <code>method = "ice"</code> in the call to <code><a href="../reference/vi.html">vi()</a></code> or <code><a href="../reference/vip.html">vip()</a></code>.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="co"># PDPs for all 10 features</span></a>
+<a class="sourceLine" id="cb18-2" data-line-number="2">ice_curves &lt;-<span class="st"> </span><span class="kw">lapply</span>(features, <span class="dt">FUN =</span> <span class="cf">function</span>(feature) {</a>
+<a class="sourceLine" id="cb18-3" data-line-number="3">  ice &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/pdp/topics/partial">partial</a></span>(pp, <span class="dt">pred.var =</span> feature, <span class="dt">ice =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb18-4" data-line-number="4">  <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/autoplot">autoplot</a></span>(ice, <span class="dt">alpha =</span> <span class="fl">0.1</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb18-5" data-line-number="5"><span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/lims">ylim</a></span>(<span class="kw">range</span>(trn<span class="op">$</span>y)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb18-6" data-line-number="6"><span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_light</a></span>()</a>
+<a class="sourceLine" id="cb18-7" data-line-number="7">})</a>
+<a class="sourceLine" id="cb18-8" data-line-number="8"><span class="kw"><a href="../reference/grid.arrange.html">grid.arrange</a></span>(<span class="dt">grobs =</span> ice_curves, <span class="dt">ncol =</span> <span class="dv">5</span>)</a></code></pre></div>
+<p><img src="vip_files/figure-html/ppr-ice-curves-1.png" width="100%" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="co"># Plot VI scores</span></a>
+<a class="sourceLine" id="cb19-2" data-line-number="2">p1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/vip.html">vip</a></span>(pp, <span class="dt">method =</span> <span class="st">"ice"</span>) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/labs">ggtitle</a></span>(<span class="st">"PPR"</span>)</a>
+<a class="sourceLine" id="cb19-3" data-line-number="3"><span class="co">#&gt; Warning: Setting `method = "ice"` is experimental, use at your own risk!</span></a>
+<a class="sourceLine" id="cb19-4" data-line-number="4">p2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/vip.html">vip</a></span>(nn, <span class="dt">method =</span> <span class="st">"ice"</span>) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/labs">ggtitle</a></span>(<span class="st">"NN"</span>)</a>
+<a class="sourceLine" id="cb19-5" data-line-number="5"><span class="co">#&gt; Warning: Setting `method = "ice"` is experimental, use at your own risk!</span></a>
+<a class="sourceLine" id="cb19-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb19-7" data-line-number="7"><span class="co"># Display plots side by side</span></a>
+<a class="sourceLine" id="cb19-8" data-line-number="8"><span class="kw"><a href="../reference/grid.arrange.html">grid.arrange</a></span>(p1, p2, <span class="dt">ncol =</span> <span class="dv">2</span>)</a></code></pre></div>
+<p><img src="vip_files/figure-html/ppr-vip-ice-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 <div id="permutation-method" class="section level4">
 <h4 class="hasAnchor">
 <a href="#permutation-method" class="anchor"></a>Permutation method</h4>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co"># Plot VI scores</span></a>
-<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">2021</span>)  <span class="co"># for reproducibility</span></a>
-<a class="sourceLine" id="cb17-3" data-line-number="3"><span class="kw"><a href="../reference/vip.html">vip</a></span>(pp, <span class="dt">method =</span> <span class="st">"permute"</span>, <span class="dt">obs =</span> trn<span class="op">$</span>y, <span class="dt">metric =</span> <span class="st">"rsquared"</span>,</a>
-<a class="sourceLine" id="cb17-4" data-line-number="4">    <span class="dt">pred_fun =</span> predict)</a>
-<a class="sourceLine" id="cb17-5" data-line-number="5"><span class="co">#&gt; Warning: Setting `method = "permute"` is experimental, use at your own</span></a>
-<a class="sourceLine" id="cb17-6" data-line-number="6"><span class="co">#&gt; risk!</span></a></code></pre></div>
+<p>The permutation method exists in various forms and was made popular in <span class="citation">Breiman (2001)</span> for random forests. A more general approach to the permutation method is described in <a href="https://cran.r-project.org/web/packages/datarobot/vignettes/VariableImportance.html">Assessing Variable Importance for Predictive Models of Arbitrary Type</a>, an R package vignette by DataRobot. The permutation approach used in <code>vip</code> is quite simple. The idea is that if we randomly permute the values of an important feature in the training data, the training performance would degrade (since permuting the values of a feature effectively destroys any relationship between that feature and the target variable). This of course assumes that the model has been properly tuned (e.g., using cross-validation) and is not <a href="https://en.wikipedia.org/wiki/Overfitting">over fitting</a>. The permutation approach uses the difference between some baseline performance measure (e.g., training <span class="math inline">\(R^2\)</span> or RMSE) and the same performance measure obtained after permuting the values of a particular feature in the training data (<strong>Note</strong>: the model is NOT refit to the training data after randomly permuting the values of a feature). To use the permutation approach, specify <code>method = "permute"</code> in the call to <code><a href="../reference/vi.html">vi()</a></code> or <code><a href="../reference/vip.html">vip()</a></code>. <strong>Note</strong>: using <code>method = "permute"</code> requires specifying a few additional arguments (some of which will be automated in the future):</p>
+<ul>
+<li>
+<code>obs</code> a vector containing the response values from the training data;</li>
+<li>
+<code>metric</code> the performance metric to use (e.g., <code>"rmse"</code> for regression or <code>"logloss"</code> for binary classification);</li>
+<li>
+<code>pred_fun</code> a prediction function with two arguments, <code>object</code> and <code>newdata</code>, that returns a vector of predicted values or class labels (regression or classification), or a matrix of predicted probabilities (classification). The output of <code>pred_fun</code> depends upon which performance metric is used (for example, <code>metric = "mauc"</code> (for multiclass area under the curve requires that <code>pred_fun</code> return a matrix of predicted probabilities—one for each class).</li>
+<li>
+<code>pos_class</code> character string specifying which category in <code>obs</code> represents the “positive” class in binary classification problems (i.e., the class for which the predicted class probabilities correspond to)</li>
+</ul>
+<p>An example is given below for the previously fitted PPR and NN models.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="co"># Plot VI scores</span></a>
+<a class="sourceLine" id="cb20-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">2021</span>)  <span class="co"># for reproducibility</span></a>
+<a class="sourceLine" id="cb20-3" data-line-number="3">p1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/vip.html">vip</a></span>(pp, <span class="dt">method =</span> <span class="st">"permute"</span>, <span class="dt">obs =</span> trn<span class="op">$</span>y, <span class="dt">metric =</span> <span class="st">"rsquared"</span>,</a>
+<a class="sourceLine" id="cb20-4" data-line-number="4">          <span class="dt">pred_fun =</span> predict) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/labs">ggtitle</a></span>(<span class="st">"PPR"</span>)</a>
+<a class="sourceLine" id="cb20-5" data-line-number="5"><span class="co">#&gt; Warning: Setting `method = "permute"` is experimental, use at your own</span></a>
+<a class="sourceLine" id="cb20-6" data-line-number="6"><span class="co">#&gt; risk!</span></a>
+<a class="sourceLine" id="cb20-7" data-line-number="7">p2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/vip.html">vip</a></span>(nn, <span class="dt">method =</span> <span class="st">"permute"</span>, <span class="dt">obs =</span> trn<span class="op">$</span>y, <span class="dt">metric =</span> <span class="st">"rsquared"</span>,</a>
+<a class="sourceLine" id="cb20-8" data-line-number="8">          <span class="dt">pred_fun =</span> predict) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/labs">ggtitle</a></span>(<span class="st">"NN"</span>)</a>
+<a class="sourceLine" id="cb20-9" data-line-number="9"><span class="co">#&gt; Warning: Setting `method = "permute"` is experimental, use at your own</span></a>
+<a class="sourceLine" id="cb20-10" data-line-number="10"><span class="co">#&gt; risk!</span></a>
+<a class="sourceLine" id="cb20-11" data-line-number="11"><span class="kw"><a href="../reference/grid.arrange.html">grid.arrange</a></span>(p1, p2, <span class="dt">ncol =</span> <span class="dv">2</span>)</a></code></pre></div>
 <p><img src="vip_files/figure-html/ppr-permute-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
+</div>
+<div id="the-pima-indians-diabetes-data" class="section level3">
+<h3 class="hasAnchor">
+<a href="#the-pima-indians-diabetes-data" class="anchor"></a>The Pima indians diabetes data</h3>
+<p>As a final example, we’ll consider the well-known Pima Indians diabetes data; see <code><a href="http://www.rdocumentation.org/packages/pdp/topics/pima">?pdp::pima</a></code> for details. These data contain diabetes test results collected by the the US National Institute of Diabetes and Digestive and Kidney Diseases from a population of women who were at least 21 years old, of Pima Indian heritage, and living near Phoenix, Arizona. The target variable, <code>diabetes</code>, is a factor indicating the diabetes test result (<code>pos</code>/<code>neg</code>). In the code chunk below, we fit a random forest to the Pima Indians data using the fantastic <a href="https://github.com/imbs-hl/ranger">ranger</a> package. <strong>Note</strong>: we fit two different random forests: <code>rfo1</code> and <code>rfo2</code>. The only difference is that we would use <code>rfo1</code> if we wanted predicted class labels and we would use <code>rfo2</code> for predicted class probabilities. The distinction is important when using <code>method = "permute"</code> since the performance metric being used requires the predicted outcome to be either the class labels (e.g., <code>metric = "error"</code> for classification error) or predicted class labels (e.g., <code>"auc"</code> for area under the curve). We’ll illustrate both below. We should point out that there is more built-in support for <code>"ranger"</code> objects, so it is not necessary to supply <code>pred_fun</code> or specify a specific metric (the default is <code>metric = "auto"</code>), but for completeness, we explicitly specify all the options.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="co"># Load required packages</span></a>
+<a class="sourceLine" id="cb21-2" data-line-number="2"><span class="kw">library</span>(ranger)</a>
+<a class="sourceLine" id="cb21-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb21-4" data-line-number="4"><span class="co"># Load the Pima indians diabetes data</span></a>
+<a class="sourceLine" id="cb21-5" data-line-number="5"><span class="kw">data</span>(pima, <span class="dt">package =</span> <span class="st">"pdp"</span>)</a>
+<a class="sourceLine" id="cb21-6" data-line-number="6">pima &lt;-<span class="st"> </span><span class="kw">na.omit</span>(pima)  <span class="co"># remove records with missing values</span></a>
+<a class="sourceLine" id="cb21-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb21-8" data-line-number="8"><span class="co"># Fit a random forest</span></a>
+<a class="sourceLine" id="cb21-9" data-line-number="9"><span class="kw">set.seed</span>(<span class="dv">1322</span>)  <span class="co"># for reproducibility</span></a>
+<a class="sourceLine" id="cb21-10" data-line-number="10">rfo1 &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ranger/topics/ranger">ranger</a></span>(diabetes <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> pima, <span class="dt">importance =</span> <span class="st">"permutation"</span>)</a>
+<a class="sourceLine" id="cb21-11" data-line-number="11">rfo2 &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ranger/topics/ranger">ranger</a></span>(diabetes <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> pima, <span class="dt">importance =</span> <span class="st">"permutation"</span>,</a>
+<a class="sourceLine" id="cb21-12" data-line-number="12">               <span class="dt">probability =</span> <span class="ot">TRUE</span>)  <span class="co"># for predicted probabilities</span></a>
+<a class="sourceLine" id="cb21-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb21-14" data-line-number="14"><span class="co"># Plot VI scores</span></a>
+<a class="sourceLine" id="cb21-15" data-line-number="15">p1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/vip.html">vip</a></span>(rfo1)  <span class="co"># model-specific</span></a>
+<a class="sourceLine" id="cb21-16" data-line-number="16">p2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/vip.html">vip</a></span>(rfo2)  <span class="co"># model-specific</span></a>
+<a class="sourceLine" id="cb21-17" data-line-number="17"><span class="kw">set.seed</span>(<span class="dv">1329</span>)  <span class="co"># for reproducibility</span></a>
+<a class="sourceLine" id="cb21-18" data-line-number="18">pfun &lt;-<span class="st"> </span><span class="cf">function</span>(object, newdata) <span class="kw">predict</span>(object, <span class="dt">data =</span> newdata)<span class="op">$</span>predictions</a>
+<a class="sourceLine" id="cb21-19" data-line-number="19">p3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/vip.html">vip</a></span>(rfo1, <span class="dt">method =</span> <span class="st">"permute"</span>, <span class="dt">metric =</span> <span class="st">"error"</span>, <span class="dt">pred_fun =</span> pfun, </a>
+<a class="sourceLine" id="cb21-20" data-line-number="20">          <span class="dt">obs =</span> pima<span class="op">$</span>diabetes)</a>
+<a class="sourceLine" id="cb21-21" data-line-number="21"><span class="co">#&gt; Warning: Setting `method = "permute"` is experimental, use at your own</span></a>
+<a class="sourceLine" id="cb21-22" data-line-number="22"><span class="co">#&gt; risk!</span></a>
+<a class="sourceLine" id="cb21-23" data-line-number="23">p4 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/vip.html">vip</a></span>(rfo2, <span class="dt">method =</span> <span class="st">"permute"</span>, <span class="dt">metric =</span> <span class="st">"auc"</span>, <span class="dt">pred_fun =</span> pfun,</a>
+<a class="sourceLine" id="cb21-24" data-line-number="24">          <span class="dt">obs =</span> pima<span class="op">$</span>diabetes, <span class="dt">pos_class =</span> <span class="st">"neg"</span>)</a>
+<a class="sourceLine" id="cb21-25" data-line-number="25"><span class="co">#&gt; Warning: Setting `method = "permute"` is experimental, use at your own</span></a>
+<a class="sourceLine" id="cb21-26" data-line-number="26"><span class="co">#&gt; risk!</span></a>
+<a class="sourceLine" id="cb21-27" data-line-number="27"><span class="kw"><a href="../reference/grid.arrange.html">grid.arrange</a></span>(p1, p2, p3, p4, <span class="dt">ncol =</span> <span class="dv">2</span>)</a></code></pre></div>
+<p><img src="vip_files/figure-html/pima-ranger-1.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div id="references" class="section level2 unnumbered">
@@ -371,6 +489,9 @@
 <div id="refs" class="references">
 <div id="ref-breiman-bagging-1996">
 <p>Breiman, Leo. 1996. “Bagging Predictors.” <em>Machine Learning</em> 24 (2): 123–40. <a href="https://doi.org/10.1023/A:1018054314350" class="uri">https://doi.org/10.1023/A:1018054314350</a>.</p>
+</div>
+<div id="ref-random-breiman-2001">
+<p>———. 2001. “Random Forests.” <em>Machine Learning</em> 45 (1): 5–32. <a href="https://doi.org/10.1023/A:1010933404324" class="uri">https://doi.org/10.1023/A:1010933404324</a>.</p>
 </div>
 <div id="ref-classification-breiman-1984">
 <p>Breiman, Leo, Jerome Friedman, and Richard A. Olshen Charles J. Stone. 1984. <em>Classification and Regression Trees</em>. The Wadsworth and Brooks-Cole Statistics-Probability Series. Taylor &amp; Francis.</p>
@@ -387,6 +508,15 @@
 <div id="ref-back-goh-1995">
 <p>Goh, A.T.C. 1995. “Back-Propagation Neural Networks for Modeling Complex Systems.” <em>Artificial Intelligence in Engineering</em> 9 (3): 143–51. <a href="https://doi.org/http://dx.doi.org/10.1016/0954-1810(94)00011-S" class="uri">https://doi.org/http://dx.doi.org/10.1016/0954-1810(94)00011-S</a>.</p>
 </div>
+<div id="ref-goldstein-peeking-2015">
+<p>Goldstein, Alex, Adam Kapelner, Justin Bleich, and Emil Pitkin. 2015. “Peeking Inside the Black Box: Visualizing Statistical Learning with Plots of Individual Conditional Expectation.” <em>Journal of Computational and Graphical Statistics</em> 24 (1): 44–65. <a href="https://doi.org/10.1080/10618600.2014.907095" class="uri">https://doi.org/10.1080/10618600.2014.907095</a>.</p>
+</div>
+<div id="ref-pdp-pkg">
+<p>Greenwell, Brandon. 2017. <em>Pdp: Partial Dependence Plots</em>. <a href="https://CRAN.R-project.org/package=partial" class="uri">https://CRAN.R-project.org/package=partial</a>.</p>
+</div>
+<div id="ref-greenwell-simple-2018">
+<p>Greenwell, Brandon M., Bradley C. Boehmke, and Andrew J. McCarthy. 2018. “A Simple and Effective Model-Based Variable Importance Measure.” <em>arXiv Preprint arXiv:1805.04755</em>.</p>
+</div>
 <div id="ref-hastie-elements-2009">
 <p>Hastie, Trevor, Robert. Tibshirani, and Jerome Friedman. 2009. <em>The Elements of Statistical Learning: Data Mining, Inference, and Prediction, Second Edition</em>. Springer Series in Statistics. Springer-Verlag.</p>
 </div>
@@ -399,6 +529,7 @@
 <hr>
 <ol>
 <li id="fn1"><p>The exception is GLM-like models (e.g., LMs and GLMs), described in the next section, which include an additional column called <code>Sign</code> containing the sign of the original coefficients.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>There is also the potential to use the individual ICE curves to quantify feature importance at the observation level, thereby providing local VI scores.<a href="#fnref2" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
   </div>
@@ -408,8 +539,7 @@
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#warning-this-vignette-is-under-construction">⚠️ Warning: This vignette is under construction! 🚧 🚧 🚧 🚧</a></li>
-      <li><a href="#installation">Installation</a></li>
+<li><a href="#installation">Installation</a></li>
       <li><a href="#example-usage">Example usage</a></li>
       <li><a href="#references">References</a></li>
       </ul>

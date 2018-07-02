@@ -35,7 +35,7 @@ requires two arguments, \code{pred} (for predicted values) and \code{obs}
 (for observed values), and should return a single, numeric value.}
 
 \item{pos_class}{Character string specifying which category in `obs`
-represents the "positive" class (i.e., that class for which the predicted
+represents the "positive" class (i.e., the class for which the predicted
 class probabilties correspond to). Only needed for binary classification
 problems.}
 

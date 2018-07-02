@@ -18,19 +18,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-## `r emo::ji("warning")` Warning: This vignette is under construction! `r emo::ji("construction")` `r emo::ji("construction")` `r emo::ji("construction")` `r emo::ji("construction")`
-
 In the era of "big data", it is becoming more of a challenge to not only build state-of-the-art predictive models, but also gain an understanding of what's really going on in the data. For example, it is often of interest to know which, if any, of the predictors in a fitted model are relatively influential on the predicted outcome. Some modern algorithms---like random forests and gradient boosted decision trees---have a natural way of quantifying the importance or relative influence of each feature. Other algorithms---like naive Bayes classifiers and support vector machines---are not capable of doing so and model-agnostic approaches are generally used to measure each predictor's importance. Enter [`vip`](https://koalaverse.github.io/vip/index.html), an R package for constructing variable importance (VI) scores/plots for many types of supervised learning algorithms using model-based and novel model-agnostic approaches.
-
-<!-- 1) **Model-based VI scores (when available)**. For example, in a random forest, VI can be computed using the permutation approach described in [@random-breiman-2001]. Other supervised learning algorithms (like MARS and GBMs) have their own ways of constructing VI scores. -->
-
-<!-- 2) **Model-agnostic VI scores**. `vip` currently implements two approaches to computing model-agnostiv VI scores:  -->
-
-<!--    - **PDP method**. This is a new idea described in @greenwell-simple-2018. The idea is to measure the "flatness" of Friedman's *partial dependence plot* (PDP) [@friedman-2001-greedy] for each feature. A feature whose PDP is flat, relative to the other features, implies that the feature has less of an influence on the estimated prediction surface as it changes while taking into account the average effect of the other features in the model. -->
-
-<!--    - **ICE curve method**. This method is similar to the PDP-based VI scores above, but are based on measuring the "flatness" of the *individual conditional expectation* (ICE) curves presented by @goldstein-peeking-2015. -->
-
-<!-- Since PDPs and ICE curves can be constructed for any supervised learning algorithm, we can use the PDP anbd ICE curve methods to construct VI scores for any supervised learning algorithm (while simultaneously taking into account the fitted model and all of the features). -->
 
 
 ## Installation
@@ -50,6 +38,7 @@ devtools::install_github("koalaverse/vip")
 ## Example usage
 
 For illustration, we use one of the regression problems described in Friedman (1991) and @breiman-bagging-1996. These data are available in the [mlbench](https://CRAN.R-project.org/package=mlbench) package. The inputs consist of 10 independent variables uniformly distributed on the interval $\left[0, 1\right]$; however, only 5 out of these 10 are actually used in the true model. Outputs are created according to the formula described in `?mlbench::mlbench.friedman1`. The code chunk below simulates 500 observations from the model default standard deviation.
+
 ```{r simulate-data, fig.width=7, fig.height=7, out.width="100%"}
 # Simulate training data
 set.seed(101)  # for reproducibility
@@ -62,7 +51,7 @@ tibble::as.tibble(trn)
 
 ### Model-based VI scores
 
-Coming soon.
+Some machine learning algorithms have their own way of quantifying variable Importance. We describe some of these in the subsection that follow. The issue with model-specific VI scores is that they are not necessarily comparable across different types of models. For example, directly computing the impurity-based VI scores from tree-based models to the $t$-statistic from linear models.
 
 
 #### Trees and tree ensembles
@@ -188,42 +177,155 @@ vip(mars)
 
 For NNs, two popular methods for constructing VI scores are the Garson algorithm [@interpreting-garson-1991], later modified by @back-goh-1995, and the Olden algorithm [@accurate-olden-2004]. For both algorithms, the basis of these importance scores is the network's connection weights. The Garson algorithm determines VI by identifying all weighted connections between the nodes of interest. Olden's algorithm, on the other hand, uses the product of the raw connection weights between each input and output neuron and sums the product across all hidden neurons. This has been shown to outperform the Garson method in various simulations. For DNNs, a similar method due to @data-gedeon-1997 considers the weights connecting the input features to the first two hidden layers (for simplicity and speed); but this method can be slow for large networks.
 
-**These methods will be implemented soon!**
+**These methods will be implemented in `vip` soon!**
+
+```{r nn}
+# # Tune a neural network
+# library(caret)
+# set.seed(0755)
+# nn <- train(
+#   x = subset(trn, select = -y),
+#   y = trn$y,
+#   method = "nnet",
+#   trace = FALSE,
+#   linout = TRUE,
+#   maxit = 1000,
+#   trControl = trainControl(method = "repeatedcv", number = 5, repeats = 5),
+#   tuneGrid = expand.grid(size = 1:20, decay = c(0, 0.0001, 0.001, 0.01, 0.1))
+# )
+# 
+# # Plot tuning results
+# ggplot(nn)
+
+# Load required packages
+library(nnet)
+
+# Fit a neural network
+set.seed(0803)
+nn <- nnet(y ~ ., data = trn, size = 7, decay = 0.1, linout = TRUE)
+```
 
 
 ### Model-agnostic VI scores
 
-Coming soon.
+[*Model-agnostic interpredibility*](https://arxiv.org/abs/1606.05386) separates interpretation from the model. Compared to model-specific approaches, model-agnostic VI methods are more flexible (since they can be applied to any supervised learning algorithm). In this section, we discuss model-agnostic methods for quantifying global feature importance using three different approaches: 1) PDPs, 2) ICE curves, and 3) permutation. For details on approaches 1)--2), see @greenwell-simple-2018 ([or just click here](https://arxiv.org/abs/1805.04755)).
 
 
 #### PDP method
 
-```{r ppr-pdp}
+Our first model-agnostic approach is based on quantifying the "flatness" of the PDPs of each feature. PDPs help visualize the effect of low cardinality subsets of the feature space on the estimated prediction surface (e.g., main effects and two/three-way interaction effects.). PDPs provide model-agnostic interpretations and can be constructed in the same way for any supervised learning algorithm. Below, we fit a projection pursuit regression (PPR) model and construct PDPs for each feature using the [pdp](https://cran.r-project.org/package=pdp) package [@pdp-pkg].
+
+```{r ppr-pdps, fig.width=10, fig.height=4, , out.width="100%"}
+# Load required packages
+library(pdp)
+
+# Fit a PPR model (nterms was chosen using the caret package with 5 repeats of 
+# 5-fold cross-validation)
+pp <- ppr(y ~ ., data = trn, nterms = 11)  
+
+# PDPs for all 10 features
+features <- paste0("x.", 1:10)
+pdps <- lapply(features, FUN = function(feature) {
+  pd <- partial(pp, pred.var = feature)
+  autoplot(pd) + 
+    ylim(range(trn$y)) + 
+    theme_light()
+})
+grid.arrange(grobs = pdps, ncol = 5)
+```
+
+Next, we compute PDP-based VI scores for the PPR and NN models. The PDP method constructs VI scores that quantify the "flatness" of each PDP (by default, this is defined by computing the standard deviation of the $y$-axis values for each PDP). To use the PDP method, specify `method = "pdp"` in the call to `vi()` or `vip()`.
+
+```{r ppr-vip-pdp, fig.width=7}
 # Fit a PPR model (nterms was chosen using the caret package with 5 repeats of 
 # 5-fold cross-validation)
 pp <- ppr(y ~ ., data = trn, nterms = 11)  
 
 # Plot VI scores
-vip(pp, method = "pdp")
+p1 <- vip(pp, method = "pdp") + ggtitle("PPR")
+p2 <- vip(nn, method = "pdp") + ggtitle("NN")
+
+# Display plots side by side
+grid.arrange(p1, p2, ncol = 2)
 ```
 
 
 #### ICE curve method
 
-```{r ppr-ice}
+The ICE curve method is similar to the PDP method. The only difference is that we measure the "flatness" of each ICE curve and then aggregate the results (e.g., by averaging)^[There is also the potential to use the individual ICE curves to quantify feature importance at the observation level, thereby providing local VI scores.]. If there are no (substantial) interaction effects, using `method = "ice"` will produce results similar to using `method = "pdp"`. However, if strong interaction effects are present, they can obfuscate the main effects and render the PDP-based approach less useful (since the PDPs for important features can be relatively flat when certain interactions are present; see @goldstein-peeking-2015 for details). In fact, it is probably safest to always use `method = "ice"`. 
+
+Below, we display the ICE curves for each feature using the same $y$-axis scale. Again, there is a clear difference between the ICE curves for features `x.1`--`x.5` and `x.6`--`x.10`; the later being relatively flat by comparison. Also, notice how the ICE curves within each feature are relatively parallel (if the ICE curves within each feature were perfectly parallel, the standard deviation for each curve would be the same and the results will be identical to the PDP method). In this example, the interaction term between `x.1` and `x.2` does not obfuscate the PDPs for the main effects and the results are not much different. To use the ICE curve method, specify `method = "ice"` in the call to `vi()` or `vip()`.
+
+```{r ppr-ice-curves, fig.width=10, fig.height=4, out.width="100%", warning=FALSE}
+# PDPs for all 10 features
+ice_curves <- lapply(features, FUN = function(feature) {
+  ice <- partial(pp, pred.var = feature, ice = TRUE)
+  autoplot(ice, alpha = 0.1) + 
+    ylim(range(trn$y)) +
+    theme_light()
+})
+grid.arrange(grobs = ice_curves, ncol = 5)
+```
+
+```{r ppr-vip-ice, fig.width=7}
 # Plot VI scores
-vip(pp, method = "ice")
+p1 <- vip(pp, method = "ice") + ggtitle("PPR")
+p2 <- vip(nn, method = "ice") + ggtitle("NN")
+
+# Display plots side by side
+grid.arrange(p1, p2, ncol = 2)
 ```
 
 
 #### Permutation method
 
+The permutation method exists in various forms and was made popular in @random-breiman-2001 for random forests. A more general approach to the permutation method is described in [Assessing Variable Importance for Predictive Models of Arbitrary Type](https://cran.r-project.org/web/packages/datarobot/vignettes/VariableImportance.html), an R package vignette by DataRobot. The permutation approach used in `vip` is quite simple. The idea is that if we randomly permute the values of an important feature in the training data, the training performance would degrade (since permuting the values of a feature effectively destroys any relationship between that feature and the target variable). This of course assumes that the model has been properly tuned (e.g., using cross-validation) and is not [over fitting](https://en.wikipedia.org/wiki/Overfitting). The permutation approach uses the difference between some baseline performance measure (e.g., training $R^2$ or RMSE) and the same performance measure obtained after permuting the values of a particular feature in the training data (**Note**: the model is NOT refit to the training data after randomly permuting the values of a feature). To use the permutation approach, specify `method = "permute"` in the call to `vi()` or `vip()`. **Note**: using `method = "permute"` requires specifying a few additional arguments (some of which will be automated in the future):
+
+* `obs` a vector containing the response values from the training data;
+* `metric` the performance metric to use (e.g., `"rmse"` for regression or `"logloss"` for binary classification);
+* `pred_fun` a prediction function with two arguments, `object` and `newdata`, that returns a vector of predicted values or class labels (regression or classification), or a matrix of predicted probabilities (classification). The output of `pred_fun` depends upon which performance metric is used (for example, `metric = "mauc"` (for multiclass area under the curve requires that `pred_fun` return a matrix of predicted probabilities---one for each class).
+* `pos_class` character string specifying which category in `obs` represents the "positive" class in binary classification problems (i.e., the class for which the predicted class probabilities correspond to)
+
+An example is given below for the previously fitted PPR and NN models.
 ```{r ppr-permute}
 # Plot VI scores
 set.seed(2021)  # for reproducibility
-vip(pp, method = "permute", obs = trn$y, metric = "rsquared",
-    pred_fun = predict)
+p1 <- vip(pp, method = "permute", obs = trn$y, metric = "rsquared",
+          pred_fun = predict) + ggtitle("PPR")
+p2 <- vip(nn, method = "permute", obs = trn$y, metric = "rsquared",
+          pred_fun = predict) + ggtitle("NN")
+grid.arrange(p1, p2, ncol = 2)
 ```
 
+
+### The Pima indians diabetes data
+
+As a final example, we'll consider the well-known Pima Indians diabetes data; see `?pdp::pima` for details. These data contain diabetes test results collected by the the US National Institute of Diabetes and Digestive and Kidney Diseases from a population of women who were at least 21 years old, of Pima Indian heritage, and living near Phoenix, Arizona. The target variable, `diabetes`, is a factor indicating the diabetes test result (`pos`/`neg`). In the code chunk below, we fit a random forest to the Pima Indians data using the fantastic [ranger](https://github.com/imbs-hl/ranger) package. **Note**: we fit two different random forests: `rfo1` and `rfo2`. The only difference is that we would use `rfo1` if we wanted predicted class labels and we would use `rfo2` for predicted class probabilities. The distinction is important when using `method = "permute"` since the performance metric being used requires the predicted outcome to be either the class labels (e.g., `metric = "error"` for classification error) or predicted class labels (e.g., `"auc"` for area under the curve). We'll illustrate both below. We should point out that there is more built-in support for `"ranger"` objects, so it is not necessary to supply `pred_fun` or specify a specific metric (the default is `metric = "auto"`), but for completeness, we explicitly specify all the options.
+
+```{r pima-ranger, fig.width=7, fig.height=5, out.width="100%"}
+# Load required packages
+library(ranger)
+
+# Load the Pima indians diabetes data
+data(pima, package = "pdp")
+pima <- na.omit(pima)  # remove records with missing values
+
+# Fit a random forest
+set.seed(1322)  # for reproducibility
+rfo1 <- ranger(diabetes ~ ., data = pima, importance = "permutation")
+rfo2 <- ranger(diabetes ~ ., data = pima, importance = "permutation",
+               probability = TRUE)  # for predicted probabilities
+
+# Plot VI scores
+p1 <- vip(rfo1)  # model-specific
+p2 <- vip(rfo2)  # model-specific
+set.seed(1329)  # for reproducibility
+pfun <- function(object, newdata) predict(object, data = newdata)$predictions
+p3 <- vip(rfo1, method = "permute", metric = "error", pred_fun = pfun, 
+          obs = pima$diabetes)
+p4 <- vip(rfo2, method = "permute", metric = "auc", pred_fun = pfun,
+          obs = pima$diabetes, pos_class = "neg")
+grid.arrange(p1, p2, p3, p4, ncol = 2)
+```
 
 ## References
