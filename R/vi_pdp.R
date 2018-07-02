@@ -91,7 +91,7 @@ pdp_vi_score <- function(object, feature_name, FUN, ...) {
 
   # Include PDP as an attribute
   attr(res, which = "pdp") <- pd
-  attr(tib, which = "type") <- "pdp"
+  attr(res, which = "type") <- "pdp"
 
   # Return result
   res

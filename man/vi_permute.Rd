@@ -7,9 +7,9 @@
 \usage{
 vi_permute(object, ...)
 
-\method{vi_permute}{default}(object, feature_names, train, pred_fun, obs,
-  metric = "auto", pos_class = NULL, progress = "none",
-  parallel = FALSE, paropts = NULL, ...)
+\method{vi_permute}{default}(object, feature_names, train,
+  pred_fun = stats::predict, obs, metric = "auto", pos_class = NULL,
+  progress = "none", parallel = FALSE, paropts = NULL, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}

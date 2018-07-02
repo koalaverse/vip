@@ -5,6 +5,10 @@ get_predictions <- function(object, type = c("raw", "prob")) {
 
 
 #' @keywords internal
+get_predictions.default <- stats::predict
+
+
+#' @keywords internal
 get_predictions.ranger <- function(object, type = c("raw", "prob")) {
   type <- match.arg(type)
   if (object$treetype %in% c("Classification", "Regression")) {

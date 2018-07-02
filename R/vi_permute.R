@@ -65,7 +65,7 @@ vi_permute.default <- function(
   feature_names,
   train,
   # performance_fun,
-  pred_fun,
+  pred_fun = stats::predict,
   obs,
   metric = "auto",  # add log loss, auc, mae, mape, etc.
   pos_class = NULL,
