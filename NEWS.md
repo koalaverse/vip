@@ -6,6 +6,8 @@
 
 * Added CRAN badge [(#32)](https://github.com/koalaverse/vip/issues/32).
 
+* New generic `vi_permute()` for constructing permutation-based variable importance scores [(#19)](https://github.com/koalaverse/vip/issues/19).
+
 
 # vip 0.1.0
 
