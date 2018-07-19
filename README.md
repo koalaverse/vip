@@ -35,4 +35,4 @@ devtools::install_github("koalaverse/vip")
 
 For details and example usage, click the [Get
 started](https://koalaverse.github.io/vip/articles/vip.html) tab on the
-[`vip` website](https://koalaverse.github.io/vip/index.html)
+[`vip` package website](https://koalaverse.github.io/vip/index.html).
