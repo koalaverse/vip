@@ -1,0 +1,29 @@
+- id: by
+  translation: "von"
+
+- id: tags
+  translation: "Schlagwörter"
+
+- id: categories
+  translation: "Kategorien"
+
+- id: readMore
+  translation: "Mehr lesen →"
+
+- id: translations
+  translation: "Übersetzungen"
+
+- id: related
+  translation: "Das könnte Sie auch interessieren"
+
+- id: recentPosts
+  translation: "Neueste Artikel"
+
+- id: backToTop
+  translation: "Nach oben"
+
+- id: language
+  translation: "Sprache"
+
+- id: thanks
+  translation: "Hugo Vorlage entwickelt mit ❤ von {{.Xzya}}, inspiriert von {{.HugoThemeBootstrap4Blog}}"

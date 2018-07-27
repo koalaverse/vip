@@ -328,4 +328,5 @@ p4 <- vip(rfo2, method = "permute", metric = "auc", pred_fun = pfun,
 grid.arrange(p1, p2, p3, p4, ncol = 2)
 ```
 
+
 ## References

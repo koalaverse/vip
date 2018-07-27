@@ -1,0 +1,29 @@
+- id: by
+  translation: "par"
+
+- id: tags
+  translation: "Tags"
+
+- id: categories
+  translation: "Catégories"
+
+- id: readMore
+  translation: "Lire la suite →"
+
+- id: translations
+  translation: "Traductions"
+
+- id: related
+  translation: "Voir aussi"
+
+- id: recentPosts
+  translation: "Publications récentes"
+
+- id: backToTop
+  translation: "Retour en haut de la page"
+
+- id: language
+  translation: "Langue"
+
+- id: "thanks"
+  translation: "Gabarit Hugo fait avec ❤ par {{.Xzya}}, inspiré par {{.HugoThemeBootstrap4Blog}}"

@@ -1,0 +1,13 @@
+<article class="blog-post">
+    <header>
+        <h2 class="blog-post-title">
+            <a class="text-dark" href="{{ .RelPermalink }}">{{ .Title | markdownify }}</a>
+        </h2>
+        {{ partial "post-date" . }}
+        {{ partial "post-tags" . }}
+        {{ partial "post-categories" . }}
+    </header>
+    {{ .Summary }}
+    <p></p>
+    <a href="{{ .RelPermalink }}">{{ i18n "readMore" }}</a>
+</article>

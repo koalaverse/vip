@@ -1,0 +1,8 @@
+<aside class="col-12 col-lg-3 ml-auto blog-sidebar">
+    {{ if default true .Site.Params.sidebar.showRecent }}
+        {{ partial "recent" . }}
+    {{ end }}
+    {{ if default true .Site.Params.sidebar.showTaxonomy }}
+        {{ partial "taxonomies" . }}
+    {{ end }}
+</aside>

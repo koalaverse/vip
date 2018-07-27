@@ -1,0 +1,97 @@
+baseurl = "https://example.com/"
+title = "Bootstrap demo"
+languageCode = "en-us"
+defaultContentLanguage = "en"
+
+# Pagination
+paginate = 3
+paginatePath = "page"
+
+# Theme to use
+theme = "hugo-bootstrap"
+
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+
+# Google analytics
+googleAnalytics = "UA-47268287-3"
+
+[languages.en]
+  languageName = "English"
+
+  # Replace the default footer message with a localized message
+  # copyright = "Hugo template made with ❤ by Xzya"
+
+  [[languages.en.menu.main]]
+    url = "/"
+    name = "Home"
+    weight = 1
+  [[languages.en.menu.main]]
+    url = "/about/"
+    name = "About"
+    weight = 2
+  [[languages.en.menu.main]]
+    url = "/contact/"
+    name = "Contact"
+    weight = 3
+
+[languages.es]
+  languageName = "Español"
+
+  [[languages.es.menu.main]]
+    url = "/es/"
+    name = "Casa"
+    weight = 1
+  [[languages.es.menu.main]]
+    url = "/about/"
+    name = "Acerca de"
+    weight = 2
+  [[languages.es.menu.main]]
+    url = "/contact/"
+    name = "Contacto"
+    weight = 3
+
+[languages.de]
+  languageName = "Deutsch"
+
+  [[languages.de.menu.main]]
+    url = "/de/"
+    name = "Start"
+    weight = 1
+  [[languages.de.menu.main]]
+    url = "/about/"
+    name = "Über uns"
+    weight = 2
+  [[languages.de.menu.main]]
+    url = "/contact/"
+    name = "Kontakt"
+    weight = 3
+
+# Links format
+
+[permalinks]
+  post = "/:year/:month/:title/"
+
+[params]
+  # Main sections (currently used for the recent posts in the sidebar)
+  mainSections = ["post"]
+
+  # Default author
+  author = "John Doe"
+
+  # Date format (default: Jan 2, 2006)
+  # date_format = "Jan 2, 2006"
+
+  # Display post summaries instead of content in list templates (default: true)
+  # truncate = false
+
+  [params.sidebar]
+    # Whether to show the recent posts or not (default: true)
+    # showRecent = false
+
+    # Whether to show the taxonomies or not (default: true)
+    # showTaxonomy = false
+
+    # How many posts to show on the sidebar (Default: 5)
+    # num_recent_posts = 5

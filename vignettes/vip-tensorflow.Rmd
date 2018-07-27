@@ -1,0 +1,101 @@
+---
+title: "Using vip with unsupported models"
+subtitle: "A TensorFlow example using the Keras API"
+author: "Brandon M. Greenwell and Bradley C. Boehmke"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: vip.bib
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  cache = TRUE,
+  collapse = TRUE,
+  comment = "#>",
+  fig.align = "center"
+)
+```
+
+It is possible to use the [vip](https://koalaverse.github.io/vip/index.html) package [@pkg-vip] with any fitted model for which new predictions can be generated. This is possible via `method = "ice"`, `method = "pdp"`, and `method = "permute"` since these methods construct variable importance (VI) plots based soley off of a model's predictions---albeit, in different ways. In this vignette, we will demonstrate the construction of permutation-based VI scores (i.e., `method = "permute"`) using a TensorFlow model trained to the Boston housing data with the [keras](https://keras.rstudio.com/) package [@pkg-keras]. This particular example is adapted from @chollet-deep-2018.
+
+
+### Prerequisites
+
+```{r prerequisites, message=FALSE}
+# Load required packages
+library(dplyr)    # for data wrangling
+library(ggplot2)  # for general visualization
+library(keras)    # for fitting DNNs
+library(pdp)      # for partial depe
+library(vip)      # for visualizing feature importance
+```
+
+
+## The Boston housing data
+
+To illustrate, we'll fit a TensorFlow model to the Boston housing data [@harrison-1978-hedonic]. A corrected version of these data are available in the [pdp](https://github.com/bgreenwell/pdp) package [@greenwell-pdp-2017]---a general R package for constructing *partial dependence plots* (PDPs) and *individual conditional expectation* (ICE) curves!
+
+```{r}
+# Loading the Boston housing dataset
+data(boston, package = "pdp")
+
+# Construct matrix of training data (features only)
+train_x <- boston %>%
+  select(-cmedv) %>%                   # remove response
+  mutate(chas = as.numeric(chas)) %>%  # convert factor to numeric
+  as.matrix() %>%                      # convert to numeric matrix
+  scale()                              # center and scale data
+
+# Construct vector of training response values
+train_y <- boston$cmedv
+
+# Inspect the data
+str(train_x)
+str(train_y)
+```
+
+Next, we use define a function for fitting a Keras model composed of a linear stack of layers:
+```{r define-model}
+# Define the model
+build_model <- function() {                                1
+  model <- keras_model_sequential() %>%
+    layer_dense(units = 64, activation = "relu",
+                input_shape = dim(train_x)[[2]]) %>%
+    layer_dense(units = 64, activation = "relu") %>%
+    layer_dense(units = 1)
+  model %>% compile(
+    optimizer = "rmsprop",
+    loss = "mse",
+    metrics = c("mae")
+  )
+}
+```
+
+The following code chunk sets us up to use $k$-fold cross-validation:
+```{r k-fold}
+# k <- 4  # number of folds
+# indices <- sample(1:nrow(train_x))
+# folds <- cut(indices, breaks = k, labels = FALSE)
+# num_epochs <- 100
+# all_scores <- c()
+# for (i in 1:k) {
+#   cat("processing fold #", i, "\n")
+#   val_indices <- which(folds == i, arr.ind = TRUE)                     
+#   val_data <- train_x[val_indices,]
+#   val_targets <- train_y[val_indices]
+#   partial_train_x <- train_x[-val_indices,]                      
+#   partial_train_y <- train_y[-val_indices]
+#   model <- build_model()                                               
+#   model %>% fit(partial_train_x, partial_train_y,             
+#                 epochs = num_epochs, batch_size = 1, verbose = 0)
+#   results <- model %>% evaluate(val_data, val_targets, verbose = 0)    
+#   all_scores <- c(all_scores, results$mean_absolute_error)
+# }
+```
+## Variable importance
+
+## References

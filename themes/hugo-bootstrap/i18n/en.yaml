@@ -1,0 +1,29 @@
+- id: by
+  translation: "by"
+
+- id: tags
+  translation: "Tags"
+
+- id: categories
+  translation: "Categories"
+
+- id: readMore
+  translation: "Read More →"
+
+- id: translations
+  translation: "Translations"
+
+- id: related
+  translation: "See also"
+
+- id: recentPosts
+  translation: "Recent Posts"
+
+- id: backToTop
+  translation: "Back to top"
+
+- id: language
+  translation: "Language"
+
+- id: thanks
+  translation: "Hugo template made with ❤ by {{.Xzya}}, inspired by {{.HugoThemeBootstrap4Blog}}"

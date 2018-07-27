@@ -1,0 +1,8 @@
+{{ if .Params.categories }}
+<div class="blog-post-categories text-secondary">
+    <strong>{{ i18n "categories" }}:</strong>
+    {{ range .Params.categories }}
+        <a class="badge badge-primary" href="{{ "/categories/" | relLangURL }}{{ . | urlize }}">{{ . }}</a>
+    {{ end }}
+</div>
+{{ end }}

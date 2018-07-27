@@ -1,0 +1,29 @@
+- id: by
+  translation: "de"
+
+- id: tags
+  translation: "Etiquetas"
+
+- id: categories
+  translation: "Categorías"
+
+- id: readMore
+  translation: "Lee Mas →"
+
+- id: translations
+  translation: "Traducciones"
+
+- id: related
+  translation: "Ver también"
+
+- id: recentPosts
+  translation: "Mensajes recientes"
+
+- id: backToTop
+  translation: "Volver arriba"
+
+- id: language
+  translation: "Idioma"
+
+- id: thanks
+  translation: "Plantilla de Hugo realizada con ❤ por {{.Xzya}}, inspirada en {{.HugoThemeBootstrap4Blog}}"

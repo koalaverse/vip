@@ -1,0 +1,17 @@
+name = "Hugo Bootstrap"
+license = "MIT"
+licenselink = "https://github.com/Xzya/hugo-bootstrap/blob/master/LICENSE.md"
+description = "A simple hugo theme using bootstrap"
+homepage = "https://github.com/Xzya/hugo-bootstrap"
+tags = ["blog", "multilingual", "bootstrap"]
+features = ["blog", "responsive", "Google Analytics", "bootstrap", "multilingual", "i18n"]
+min_version = 0.15
+
+[author]
+  name = "Mihail Cristian Dumitru"
+  homepage = "https://github.com/Xzya"
+
+[original]
+  author =  "Alan Orth"
+  homepage = "https://github.com/alanorth/hugo-theme-bootstrap4-blog"
+  repo = "https://github.com/alanorth/hugo-theme-bootstrap4-blog"
