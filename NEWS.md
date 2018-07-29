@@ -8,6 +8,8 @@
 
 * New generic `vi_permute()` for constructing permutation-based variable importance scores [(#19)](https://github.com/koalaverse/vip/issues/19).
 
+* Fixed bug and unnecessary error check in `vint()` [(#38)](https://github.com/koalaverse/vip/issues/38).
+
 
 # vip 0.1.0
 

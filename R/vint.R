@@ -35,15 +35,12 @@
 vint <- function(object, feature_names, progress = "none", parallel = FALSE,
                  paropts = NULL, ...) {
   warning("This function is experimental, use at your own risk!", call. = FALSE)
-  if (!is.character(feature_names) || (length(feature_names) != 2)) {
-    stop("`feature_names` should be a character vector of length 2.")
-  }
   all.pairs <- utils::combn(feature_names, m = 2)
   ints <- plyr::aaply(
     all.pairs, .margins = 2, .progress = progress, .parallel = parallel,
     .paropts = paropts,
     .fun = function(x) {
-      pd <- pdp::partial(object, feature_names = x, ...)
+      pd <- pdp::partial(object, pred.var = x, ...)
       mean(c(
         stats::sd(tapply(pd$yhat, INDEX = pd[[x[1L]]], FUN = stats::sd)),
         stats::sd(tapply(pd$yhat, INDEX = pd[[x[2L]]], FUN = stats::sd))
