@@ -10,6 +10,8 @@
 
 * Fixed bug and unnecessary error check in `vint()` [(#38)](https://github.com/koalaverse/vip/issues/38).
 
+* New vignette on using `vip` with unsupported models (using the Keras API to TensoFlow as an example).
+
 
 # vip 0.1.0
 
