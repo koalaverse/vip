@@ -1,6 +1,6 @@
 ---
-title: "Using vip with unsupported models"
-subtitle: "A TensorFlow example using the Keras API"
+title: "Using vip with Unsupported Models"
+subtitle: "A TensorFlow example Using the Keras API"
 author: "Brandon M. Greenwell and Bradley C. Boehmke"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
