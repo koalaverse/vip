@@ -91,10 +91,243 @@
 
     
     
-<p>Coming soon to a vignette near you!</p>
+<p><strong>Warning</strong> This vignette is still under construction!</p>
+<p>As it turns out, the PDP-based variable importance (VI) measure discussed in <span class="citation">Greenwell, Boehmke, and McCarthy (2018)</span> (and provided by <code>method = "pdp"</code>) can also be used to quantify the strength of potential interaction effects. Let <span class="math inline">\(i\left(x_i, x_j\right)\)</span> <span class="math inline">\(\left(i \ne j\right)\)</span> be the standard deviation of the joint partial dependence values <span class="math inline">\(\bar{f}_{ij}\left(x_{ii'}, x_{jj'}\right)\)</span> for <span class="math inline">\(i' = 1, 2, \dots, k_i\)</span> and <span class="math inline">\(j' = 1, 2, \dots, k_j\)</span>. Essentially, a weak interaction effect of <span class="math inline">\(x_i\)</span> and <span class="math inline">\(x_j\)</span> on <span class="math inline">\(Y\)</span> would suggest that <span class="math inline">\(i\left(x_i, x_j\right)\)</span> has little variation when either <span class="math inline">\(x_i\)</span> or <span class="math inline">\(x_j\)</span> is held constant while the other varies.</p>
+<p>Let <span class="math inline">\(\boldsymbol{z}_s = \left(x_i, x_j\right)\)</span>, <span class="math inline">\(i \neq j\)</span>, be any two predictors in the feature space <span class="math inline">\(\boldsymbol{x}\)</span>. Construct the partial dependence function <span class="math inline">\(\bar{f}_s\left(x_i, x_j\right)\)</span> and compute <span class="math inline">\(i\left(x_i\right)\)</span> for each unique value of <span class="math inline">\(x_j\)</span>, denoted <span class="math inline">\(\i\left(x_i | x_j\right)\)</span>, and take the standard deviation of the resulting importance scores. The same can be done for <span class="math inline">\(x_j\)</span> and the results averaged together. Large values (relative to each other) would be indicative of possible interaction effects.</p>
+<div id="prerequisites" class="section level3">
+<h3 class="hasAnchor">
+<a href="#prerequisites" class="anchor"></a>Prerequisites</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># Load required packages</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">library</span>(dplyr)           <span class="co"># for data wrangling</span></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw">library</span>(gbm)             <span class="co"># for fitting generalized boosted models</span></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw">library</span>(ggplot2)         <span class="co"># for general visualization</span></a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="kw">library</span>(lattice)         <span class="co"># for general visualization</span></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="kw">library</span>(mlbench)         <span class="co"># for machine learning benchmark data sets</span></a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="kw">library</span>(NeuralNetTools)  <span class="co"># for various tools for neural networks</span></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8"><span class="kw">library</span>(nnet)            <span class="co"># for fitting neural networks w/ a single hidden layer</span></a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="kw">library</span>(vip)             <span class="co"># for visualizing feature importance</span></a></code></pre></div>
+</div>
+<div id="friedmans-regression-problem" class="section level2">
+<h2 class="hasAnchor">
+<a href="#friedmans-regression-problem" class="anchor"></a>Friedman’s regression problem</h2>
+<p>To illustrate, we’ll use one of the regression problems described in <span class="citation">Friedman (1991)</span> and <span class="citation">Breiman (1996)</span>. The feature space consists of ten independent <span class="math inline">\(\mathcal{U}\left(0, 1\right)\)</span> random variables; however, only five out of these ten actually appear in the true model. The response is related to the features according to the formula <span class="math display">\[
+Y = 10 \sin\left(\pi x_1 x_2\right) + 20 \left(x_3 - 0.5\right) ^ 2 + 10 x_4 + 5 x_5 + \epsilon,
+\]</span> where <span class="math inline">\(\epsilon \sim \mathcal{N}\left(0, \sigma^2\right)\)</span>. Using the R package <code>nnet</code> <span class="citation">(Venables and Ripley 2002)</span>, we fit a NN with one hidden layer containing eight units and a weight decay of 0.01 (these parameters were chosen using 5-fold cross-validation) to 500 observations simulated from the above model with <span class="math inline">\(\sigma = 1\)</span>. The cross-validated <span class="math inline">\(R^2\)</span> value was 0.94.</p>
+<p>VIPs for the fitted network are displayed in <strong>Figure 1</strong>. Notice how the Garson and Olden algorithms incorrectly label some of the features not in the true model as “important”. For example, the Garson algorithm incorrectly labels <span class="math inline">\(x_8\)</span> (which is not included in the true model) as more important than <span class="math inline">\(x_5\)</span> (which is in the true model). Similarly, Oden’s method incorrectly labels <span class="math inline">\(x_{10}\)</span> as being more important than <span class="math inline">\(x_2\)</span>. Our method, on the other hand, clearly labels all five of the predictors in the true model as the most important features in the fitted NN.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co"># Simulate data</span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">101</span>)  <span class="co"># for reproducibility</span></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">trn &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/mlbench/topics/mlbench.friedman1">mlbench.friedman1</a></span>(<span class="dt">n =</span> <span class="dv">500</span>, <span class="dt">sd =</span> <span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="co"># Fit a neural network to simulated data</span></a>
+<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="kw">set.seed</span>(<span class="dv">103</span>)</a>
+<a class="sourceLine" id="cb2-7" data-line-number="7">nn &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/nnet/topics/nnet">nnet</a></span>(y <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> trn, <span class="dt">size =</span> <span class="dv">8</span>, <span class="dt">linout =</span> <span class="ot">TRUE</span>, <span class="dt">decay =</span> <span class="fl">0.01</span>,</a>
+<a class="sourceLine" id="cb2-8" data-line-number="8">           <span class="dt">maxit =</span> <span class="dv">1000</span>, <span class="dt">trace =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb2-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co"># VIP: partial dependence algorithm</span></a>
+<a class="sourceLine" id="cb2-11" data-line-number="11">p1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/vip.html">vip</a></span>(nn, <span class="dt">method =</span> <span class="st">"pdp"</span>, <span class="dt">feature_names =</span> <span class="kw">paste0</span>(<span class="st">"x."</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/labs">labs</a></span>(<span class="dt">x =</span> <span class="st">""</span>, <span class="dt">y =</span> <span class="st">"Importance"</span>, <span class="dt">title =</span> <span class="st">"PDP method"</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_light</a></span>()</a>
+<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co">#&gt; Warning: Setting `method = "pdp"` is experimental, use at your own risk!</span></a>
+<a class="sourceLine" id="cb2-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb2-16" data-line-number="16"><span class="co"># VIP: Garson's algorithm</span></a>
+<a class="sourceLine" id="cb2-17" data-line-number="17">nn_garson &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/NeuralNetTools/topics/garson">garson</a></span>(nn, <span class="dt">bar_plot =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb2-18" data-line-number="18"><span class="st">  </span>tibble<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/tibble/topics/rownames">rownames_to_column</a></span>(<span class="st">"Variable"</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb2-19" data-line-number="19"><span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/select.html">select</a></span>(Variable, <span class="dt">Importance =</span> rel_imp) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb2-20" data-line-number="20"><span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">Importance =</span> Importance)</a>
+<a class="sourceLine" id="cb2-21" data-line-number="21">p2 &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(nn_garson, <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x =</span> <span class="kw">reorder</span>(Variable, Importance), <span class="dt">y =</span> Importance)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-22" data-line-number="22"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_bar">geom_col</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-23" data-line-number="23"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/labs">labs</a></span>(<span class="dt">x =</span> <span class="st">""</span>, <span class="dt">y =</span> <span class="st">"Importance"</span>, <span class="dt">title =</span> <span class="st">"Garson's method"</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-24" data-line-number="24"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/coord_flip">coord_flip</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-25" data-line-number="25"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_light</a></span>()</a>
+<a class="sourceLine" id="cb2-26" data-line-number="26"></a>
+<a class="sourceLine" id="cb2-27" data-line-number="27"><span class="co"># VIP: Olden's algorithm</span></a>
+<a class="sourceLine" id="cb2-28" data-line-number="28">nn_olden &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/NeuralNetTools/topics/olden">olden</a></span>(nn, <span class="dt">bar_plot =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb2-29" data-line-number="29"><span class="st">  </span>tibble<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/tibble/topics/rownames">rownames_to_column</a></span>(<span class="st">"Variable"</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb2-30" data-line-number="30"><span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/select.html">select</a></span>(Variable, <span class="dt">Importance =</span> importance) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb2-31" data-line-number="31"><span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">Importance =</span> Importance)</a>
+<a class="sourceLine" id="cb2-32" data-line-number="32">p3 &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(nn_olden, <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x =</span> <span class="kw">reorder</span>(Variable, Importance), <span class="dt">y =</span> Importance)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-33" data-line-number="33"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_bar">geom_col</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-34" data-line-number="34"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/labs">labs</a></span>(<span class="dt">x =</span> <span class="st">""</span>, <span class="dt">y =</span> <span class="st">"Importance"</span>, <span class="dt">title =</span> <span class="st">"Olden's method"</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-35" data-line-number="35"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/coord_flip">coord_flip</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-36" data-line-number="36"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_light</a></span>()</a>
+<a class="sourceLine" id="cb2-37" data-line-number="37"></a>
+<a class="sourceLine" id="cb2-38" data-line-number="38"><span class="co"># Display plots side by side</span></a>
+<a class="sourceLine" id="cb2-39" data-line-number="39"><span class="kw"><a href="../reference/grid.arrange.html">grid.arrange</a></span>(p1, p2, p3, <span class="dt">ncol =</span> <span class="dv">3</span>)</a></code></pre></div>
+<div class="figure" style="text-align: left">
+<img src="vip-interaction_files/figure-html/network-vip-1.png" alt="**Figure 1** VIPs for the NN fit to Friedman's regression data. *Left:* Model-agnostic: partial dependence. *Middle:* Model-specific: Garson's method. *Right:* Model-specific: Olden's method." width="70%"><p class="caption">
+<strong>Figure 1</strong> VIPs for the NN fit to Friedman’s regression data. <em>Left:</em> Model-agnostic: partial dependence. <em>Middle:</em> Model-specific: Garson’s method. <em>Right:</em> Model-specific: Olden’s method.
+</p>
+</div>
+<p>We also constructed the partial dependence functions for all pairwise interactions and computed the interaction statistic discussed in <span class="citation">Greenwell, Boehmke, and McCarthy (2018)</span>. The top ten interaction statistics are displayed in <strong>Figure 2</strong>. There is a clear indication of an interaction effect between features <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span>, the only interaction effect present in the true model.</p>
+<pre><code>#&gt; Warning: This function is experimental, use at your own risk!</code></pre>
+<div class="figure" style="text-align: left">
+<img src="vip-interaction_files/figure-html/network-int-parallel-1.png" alt="**Figure 2** Top 10 VI-based interaction statistics for the NN fit to Friedman's regression data." width="70%"><p class="caption">
+<strong>Figure 2</strong> Top 10 VI-based interaction statistics for the NN fit to Friedman’s regression data.
+</p>
+</div>
+<p>In fact, since we know the distributions of the predictors in the true model, we can work out the true partial dependence functions. For example, for the pairs <span class="math inline">\(\left(x_1, x_2\right)\)</span> and <span class="math inline">\(\left(x_1, x_4\right)\)</span>, we have <span class="math display">\[
+f\left(x_1, x_2\right) = 10 \sin \left(\pi x_1 x_2\right) + 55 / 6,
+\]</span> and <span class="math display">\[
+f\left(x_1, x_4\right) = \frac{5 \pi x_1 \left(12 x_4 + 5\right) - 12 \cos \left(\pi x_1\right) + 12}{6 \pi x_1}.
+\]</span> Next, we simulated the standard deviation of <span class="math inline">\(f\left(x_1, x_2\right)\)</span> for a wide range of fixed values of <span class="math inline">\(x_2\)</span>; this is what <span class="math inline">\(i\left(x_1 | x_2\right)\)</span> is trying to estimate. The results from doing this for both predictors in each model are displayed in <strong>Figure 3</strong>. The top row of Figure <strong>Figure 3</strong> illustrates that the importance of <span class="math inline">\(x_1\)</span> (i.e., the strength of its relationship to the predicted outcome) heavily depends on the value of <span class="math inline">\(x_2\)</span> and vice versa (i.e., an interaction effect between <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span>). In the bottom row, on the other hand, we see that the importance of <span class="math inline">\(x_1\)</span> does not depend on the value of <span class="math inline">\(x_4\)</span> and vice versa (i.e., no interaction effect between <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_4\)</span>).</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co"># Simulation function</span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">sim_fun &lt;-<span class="st"> </span><span class="cf">function</span>(pred.var, pd.fun, <span class="dt">xlabs =</span> <span class="kw">c</span>(<span class="st">""</span>, <span class="st">""</span>), <span class="dt">ylabs =</span> <span class="kw">c</span>(<span class="st">""</span>, <span class="st">""</span>)) {</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">  x &lt;-<span class="st"> </span>y &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="dv">1</span>, <span class="dt">length =</span> <span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">  xy &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(x, y)</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">  z &lt;-<span class="st"> </span><span class="kw">apply</span>(xy, <span class="dt">MARGIN =</span> <span class="dv">1</span>, <span class="dt">FUN =</span> <span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">    <span class="kw">pd.fun</span>(x[1L], x[2L])</a>
+<a class="sourceLine" id="cb4-7" data-line-number="7">  })</a>
+<a class="sourceLine" id="cb4-8" data-line-number="8">  res &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">cbind</span>(xy, z))</a>
+<a class="sourceLine" id="cb4-9" data-line-number="9">  <span class="kw">names</span>(res) &lt;-<span class="st"> </span><span class="kw">c</span>(pred.var, <span class="st">"yhat"</span>)</a>
+<a class="sourceLine" id="cb4-10" data-line-number="10">  form &lt;-<span class="st"> </span><span class="kw">as.formula</span>(<span class="kw">paste</span>(<span class="st">"yhat ~"</span>, <span class="kw">paste</span>(<span class="kw">paste</span>(pred.var, <span class="dt">collapse =</span> <span class="st">"*"</span>))))</a>
+<a class="sourceLine" id="cb4-11" data-line-number="11">  p1 &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/lattice/topics/levelplot">levelplot</a></span>(form, <span class="dt">data =</span> res, <span class="dt">col.regions =</span> viridis<span class="op">::</span>viridis,</a>
+<a class="sourceLine" id="cb4-12" data-line-number="12">                  <span class="dt">xlab =</span> <span class="kw">expression</span>(x[<span class="dv">1</span>]), <span class="dt">ylab =</span> <span class="kw">expression</span>(x[<span class="dv">4</span>]))</a>
+<a class="sourceLine" id="cb4-13" data-line-number="13">  approxVar.x &lt;-<span class="st"> </span><span class="cf">function</span>(<span class="dt">x =</span> <span class="fl">0.5</span>, <span class="dt">n =</span> <span class="dv">100000</span>) {</a>
+<a class="sourceLine" id="cb4-14" data-line-number="14">    y &lt;-<span class="st"> </span><span class="kw">runif</span>(n, <span class="dt">min =</span> <span class="dv">0</span>, <span class="dt">max =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb4-15" data-line-number="15">    <span class="kw">sd</span>(<span class="kw">pd.fun</span>(x, y))</a>
+<a class="sourceLine" id="cb4-16" data-line-number="16">  }</a>
+<a class="sourceLine" id="cb4-17" data-line-number="17">  approxVar.y &lt;-<span class="st"> </span><span class="cf">function</span>(<span class="dt">y =</span> <span class="fl">0.5</span>, <span class="dt">n =</span> <span class="dv">100000</span>) {</a>
+<a class="sourceLine" id="cb4-18" data-line-number="18">    x &lt;-<span class="st"> </span><span class="kw">runif</span>(n, <span class="dt">min =</span> <span class="dv">0</span>, <span class="dt">max =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb4-19" data-line-number="19">    <span class="kw">sd</span>(<span class="kw">pd.fun</span>(x, y))</a>
+<a class="sourceLine" id="cb4-20" data-line-number="20">  }</a>
+<a class="sourceLine" id="cb4-21" data-line-number="21">  x &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="dv">1</span>, <span class="dt">length =</span> <span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb4-22" data-line-number="22">  y1 &lt;-<span class="st"> </span><span class="kw">sapply</span>(x, approxVar.x)</a>
+<a class="sourceLine" id="cb4-23" data-line-number="23">  y2 &lt;-<span class="st"> </span><span class="kw">sapply</span>(x, approxVar.y)</a>
+<a class="sourceLine" id="cb4-24" data-line-number="24">  p2 &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/lattice/topics/xyplot">xyplot</a></span>(SD <span class="op">~</span><span class="st"> </span>x, <span class="dt">data =</span> <span class="kw">data.frame</span>(<span class="dt">x =</span> x, <span class="dt">SD =</span> y1), <span class="dt">type =</span> <span class="st">"l"</span>,</a>
+<a class="sourceLine" id="cb4-25" data-line-number="25">               <span class="dt">lwd =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="st">"black"</span>,</a>
+<a class="sourceLine" id="cb4-26" data-line-number="26">               <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="kw">min</span>(y1, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="kw">max</span>(y1, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>) <span class="op">+</span><span class="st"> </span><span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb4-27" data-line-number="27">               <span class="dt">xlab =</span> <span class="kw">expression</span>(x[<span class="dv">1</span>]),</a>
+<a class="sourceLine" id="cb4-28" data-line-number="28">               <span class="dt">ylab =</span> <span class="kw">expression</span>(imp <span class="op">~</span><span class="st"> </span>(x[<span class="dv">4</span>]<span class="op">*</span><span class="st">" | "</span><span class="op">*</span>x[<span class="dv">1</span>])))</a>
+<a class="sourceLine" id="cb4-29" data-line-number="29">  p3 &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/lattice/topics/xyplot">xyplot</a></span>(SD <span class="op">~</span><span class="st"> </span>x, <span class="dt">data =</span> <span class="kw">data.frame</span>(<span class="dt">x =</span> x, <span class="dt">SD =</span> y2), <span class="dt">type =</span> <span class="st">"l"</span>,</a>
+<a class="sourceLine" id="cb4-30" data-line-number="30">               <span class="dt">lwd =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="st">"black"</span>,</a>
+<a class="sourceLine" id="cb4-31" data-line-number="31">               <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="kw">min</span>(y2, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="kw">max</span>(y2, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>) <span class="op">+</span><span class="st"> </span><span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb4-32" data-line-number="32">               <span class="dt">xlab =</span> <span class="kw">expression</span>(x[<span class="dv">4</span>]),</a>
+<a class="sourceLine" id="cb4-33" data-line-number="33">               <span class="dt">ylab =</span> <span class="kw">expression</span>(imp <span class="op">~</span><span class="st"> </span>(x[<span class="dv">1</span>]<span class="op">*</span><span class="st">" | "</span><span class="op">*</span>x[<span class="dv">4</span>])))</a>
+<a class="sourceLine" id="cb4-34" data-line-number="34">  <span class="kw">list</span>(p1, p2, p3)</a>
+<a class="sourceLine" id="cb4-35" data-line-number="35">}</a>
+<a class="sourceLine" id="cb4-36" data-line-number="36"></a>
+<a class="sourceLine" id="cb4-37" data-line-number="37"><span class="co"># Run simulations</span></a>
+<a class="sourceLine" id="cb4-38" data-line-number="38">sim1 &lt;-<span class="st"> </span><span class="kw">sim_fun</span>(</a>
+<a class="sourceLine" id="cb4-39" data-line-number="39">  <span class="dt">pred.var =</span> <span class="kw">c</span>(<span class="st">"x.1"</span>, <span class="st">"x.2"</span>), </a>
+<a class="sourceLine" id="cb4-40" data-line-number="40">  <span class="dt">xlabs =</span> <span class="kw">c</span>(<span class="kw">expression</span>(x[<span class="dv">1</span>]), <span class="kw">expression</span>(x[<span class="dv">2</span>])),</a>
+<a class="sourceLine" id="cb4-41" data-line-number="41">  <span class="dt">ylabs =</span> <span class="kw">c</span>(<span class="kw">expression</span>(imp <span class="op">~</span><span class="st"> </span>(x[<span class="dv">2</span>]<span class="op">*</span><span class="st">" | "</span><span class="op">*</span>x[<span class="dv">1</span>])), </a>
+<a class="sourceLine" id="cb4-42" data-line-number="42">            <span class="kw">expression</span>(imp <span class="op">~</span><span class="st"> </span>(x[<span class="dv">1</span>]<span class="op">*</span><span class="st">" | "</span><span class="op">*</span>x[<span class="dv">2</span>]))),</a>
+<a class="sourceLine" id="cb4-43" data-line-number="43">  <span class="dt">pd.fun =</span> <span class="cf">function</span>(x1, x2) {</a>
+<a class="sourceLine" id="cb4-44" data-line-number="44">    <span class="dv">5</span> <span class="op">*</span><span class="st"> </span>(pi <span class="op">*</span><span class="st"> </span>x1 <span class="op">*</span><span class="st"> </span>(<span class="dv">12</span> <span class="op">*</span><span class="st"> </span>x2 <span class="op">+</span><span class="st"> </span><span class="dv">5</span>) <span class="op">-</span><span class="st"> </span><span class="dv">12</span> <span class="op">*</span><span class="st"> </span><span class="kw">cos</span>(pi <span class="op">*</span><span class="st"> </span>x1) <span class="op">+</span><span class="st"> </span><span class="dv">12</span>) <span class="op">/</span><span class="st"> </span>(<span class="dv">6</span> <span class="op">*</span><span class="st"> </span>pi <span class="op">*</span><span class="st"> </span>x1)</a>
+<a class="sourceLine" id="cb4-45" data-line-number="45">  })</a>
+<a class="sourceLine" id="cb4-46" data-line-number="46">sim2 &lt;-<span class="st"> </span><span class="kw">sim_fun</span>(</a>
+<a class="sourceLine" id="cb4-47" data-line-number="47">  <span class="dt">pred.var =</span> <span class="kw">c</span>(<span class="st">"x.1"</span>, <span class="st">"x.4"</span>), </a>
+<a class="sourceLine" id="cb4-48" data-line-number="48">  <span class="dt">xlabs =</span> <span class="kw">c</span>(<span class="kw">expression</span>(x[<span class="dv">1</span>]), <span class="kw">expression</span>(x[<span class="dv">4</span>])),</a>
+<a class="sourceLine" id="cb4-49" data-line-number="49">  <span class="dt">ylabs =</span> <span class="kw">c</span>(<span class="kw">expression</span>(imp <span class="op">~</span><span class="st"> </span>(x[<span class="dv">4</span>]<span class="op">*</span><span class="st">" | "</span><span class="op">*</span>x[<span class="dv">1</span>])), </a>
+<a class="sourceLine" id="cb4-50" data-line-number="50">            <span class="kw">expression</span>(imp <span class="op">~</span><span class="st"> </span>(x[<span class="dv">1</span>]<span class="op">*</span><span class="st">" | "</span><span class="op">*</span>x[<span class="dv">4</span>]))),</a>
+<a class="sourceLine" id="cb4-51" data-line-number="51">  <span class="dt">pd.fun =</span> <span class="cf">function</span>(x1, x2) {</a>
+<a class="sourceLine" id="cb4-52" data-line-number="52">    <span class="dv">10</span> <span class="op">*</span><span class="st"> </span><span class="kw">sin</span>(pi <span class="op">*</span><span class="st"> </span>x1 <span class="op">*</span><span class="st"> </span>x2) <span class="op">+</span><span class="st"> </span><span class="dv">55</span> <span class="op">/</span><span class="st"> </span><span class="dv">6</span></a>
+<a class="sourceLine" id="cb4-53" data-line-number="53">})</a>
+<a class="sourceLine" id="cb4-54" data-line-number="54"></a>
+<a class="sourceLine" id="cb4-55" data-line-number="55"><span class="co"># Display plots side by side</span></a>
+<a class="sourceLine" id="cb4-56" data-line-number="56"><span class="kw"><a href="../reference/grid.arrange.html">grid.arrange</a></span>(</a>
+<a class="sourceLine" id="cb4-57" data-line-number="57">  sim1[[<span class="dv">1</span>]], sim1[[<span class="dv">2</span>]], sim1[[<span class="dv">3</span>]], </a>
+<a class="sourceLine" id="cb4-58" data-line-number="58">  sim2[[<span class="dv">1</span>]], sim2[[<span class="dv">2</span>]], sim2[[<span class="dv">3</span>]], </a>
+<a class="sourceLine" id="cb4-59" data-line-number="59">  <span class="dt">nrow =</span> <span class="dv">2</span></a>
+<a class="sourceLine" id="cb4-60" data-line-number="60">)</a></code></pre></div>
+<div class="figure" style="text-align: left">
+<img src="vip-interaction_files/figure-html/interaction-simulation-1.png" alt="**Figure 3** Results from a small Monte Carlo simulation on the interaction effects between $x_1$ and $x_2$ (top row), and $x_1$ and $x_4$ (bottom row)." width="100%"><p class="caption">
+<strong>Figure 3</strong> Results from a small Monte Carlo simulation on the interaction effects between <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> (top row), and <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_4\)</span> (bottom row).
+</p>
+</div>
+</div>
+<div id="friedmans-h-statistic" class="section level2">
+<h2 class="hasAnchor">
+<a href="#friedmans-h-statistic" class="anchor"></a>Friedman’s <span class="math inline">\(H\)</span>-statistic</h2>
+<p>An alternative measure for the strength of interaction effects is known as Friedman’s <span class="math inline">\(H\)</span>-statistic <span class="citation">(Friedman and Popescu 2008)</span>. Coincidentally, this method is also based on the estimated partial dependence functions of the corresponding predictors, but uses a different approach.</p>
+<p>For comparison, we fit a GBM to the Friedman regression data from the previous section. The parameters were chosen using 5-fold cross-validation. We used the R package <code>gbm</code> <span class="citation">(Ridgeway 2017)</span> which has built-in support for computing Friedman’s <span class="math inline">\(H\)</span>-statistic for any combination of predictors. The results are displayed in <strong>Figure 4</strong>. To our surprise, the <span class="math inline">\(H\)</span>-statistic did not seem to catch the true interaction between <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span>. Instead, the <span class="math inline">\(H\)</span>-statistic ranked the pairs <span class="math inline">\(\left(x_8, x_9\right)\)</span> and <span class="math inline">\(\left(x_7, x_{10}\right)\)</span> as having the strongest interaction effects, even though these predictors do not appear in the true model. Our VI-based interaction statistic, on the other hand, clearly suggests the pair <span class="math inline">\(\left(x_1, x_2\right)\)</span> as having the strongest interaction effect.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co"># Fit a GBM</span></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">937</span>)</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">trn.gbm &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/gbm/topics/gbm">gbm</a></span>(y <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> trn, <span class="dt">distribution =</span> <span class="st">"gaussian"</span>, <span class="dt">n.trees =</span> <span class="dv">25000</span>,</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">               <span class="dt">shrinkage =</span> <span class="fl">0.01</span>, <span class="dt">interaction.depth =</span> <span class="dv">2</span>, <span class="dt">bag.fraction =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">               <span class="dt">train.fraction =</span> <span class="fl">0.8</span>, <span class="dt">cv.folds =</span> <span class="dv">5</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">best.iter &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/gbm/topics/gbm.perf">gbm.perf</a></span>(trn.gbm, <span class="dt">method =</span> <span class="st">"cv"</span>, <span class="dt">plot.it =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb5-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="co"># Friedman's H-statistic</span></a>
+<a class="sourceLine" id="cb5-9" data-line-number="9">combns &lt;-<span class="st"> </span><span class="kw">t</span>(<span class="kw">combn</span>(<span class="kw">paste0</span>(<span class="st">"x."</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>), <span class="dt">m =</span> <span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb5-10" data-line-number="10">int.h &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="kw">nrow</span>(combns))</a>
+<a class="sourceLine" id="cb5-11" data-line-number="11"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(combns)) {</a>
+<a class="sourceLine" id="cb5-12" data-line-number="12">  <span class="co"># print(paste("iter", i, "of", nrow(combns)))</span></a>
+<a class="sourceLine" id="cb5-13" data-line-number="13">  int.h[i] &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/gbm/topics/interact.gbm">interact.gbm</a></span>(trn.gbm, <span class="dt">data =</span> trn, <span class="dt">i.var =</span> combns[i, ], </a>
+<a class="sourceLine" id="cb5-14" data-line-number="14">                           <span class="dt">n.trees =</span> best.iter)</a>
+<a class="sourceLine" id="cb5-15" data-line-number="15">}</a>
+<a class="sourceLine" id="cb5-16" data-line-number="16">int.h &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="kw">paste0</span>(combns[, 1L], <span class="st">"*"</span>, combns[, 2L]), <span class="dt">y =</span> int.h)</a>
+<a class="sourceLine" id="cb5-17" data-line-number="17">int.h &lt;-<span class="st"> </span>int.h[<span class="kw">order</span>(int.h<span class="op">$</span>y, <span class="dt">decreasing =</span> <span class="ot">TRUE</span>), ]</a>
+<a class="sourceLine" id="cb5-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb5-19" data-line-number="19"><span class="co"># VI-based interaction statistic</span></a>
+<a class="sourceLine" id="cb5-20" data-line-number="20">int.i &lt;-<span class="st"> </span><span class="kw"><a href="../reference/vint.html">vint</a></span>(</a>
+<a class="sourceLine" id="cb5-21" data-line-number="21">  <span class="dt">object =</span> trn.gbm,                    <span class="co"># fitted model object</span></a>
+<a class="sourceLine" id="cb5-22" data-line-number="22">  <span class="dt">feature_names =</span> <span class="kw">paste0</span>(<span class="st">"x."</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>),  <span class="co"># features for which to compute pairwise interactions statistics</span></a>
+<a class="sourceLine" id="cb5-23" data-line-number="23">  <span class="dt">n.trees =</span> best.iter,                 <span class="co"># needed if object is of class "gbm"</span></a>
+<a class="sourceLine" id="cb5-24" data-line-number="24">  <span class="dt">parallel =</span> <span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb5-25" data-line-number="25">)</a>
+<a class="sourceLine" id="cb5-26" data-line-number="26"><span class="co">#&gt; Warning: This function is experimental, use at your own risk!</span></a>
+<a class="sourceLine" id="cb5-27" data-line-number="27"></a>
+<a class="sourceLine" id="cb5-28" data-line-number="28"><span class="co"># Plot Friedman's H-statistics</span></a>
+<a class="sourceLine" id="cb5-29" data-line-number="29">p1 &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(int.h[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, ], <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="kw">reorder</span>(x, y), y)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-30" data-line-number="30"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_bar">geom_col</a></span>(<span class="dt">width =</span> <span class="fl">0.75</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-31" data-line-number="31"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/labs">labs</a></span>(<span class="dt">x =</span> <span class="st">""</span>, <span class="dt">y =</span> <span class="st">"Interaction strength"</span>, <span class="dt">title =</span> <span class="st">"Friedman's H-statistic"</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-32" data-line-number="32"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">axis.text.x =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_text</a></span>(<span class="dt">angle =</span> <span class="dv">45</span>, <span class="dt">vjust =</span> <span class="dv">1</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-33" data-line-number="33"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_light</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-34" data-line-number="34"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/coord_flip">coord_flip</a></span>()</a>
+<a class="sourceLine" id="cb5-35" data-line-number="35"></a>
+<a class="sourceLine" id="cb5-36" data-line-number="36"><span class="co"># Plot PDP-based interaction statistics</span></a>
+<a class="sourceLine" id="cb5-37" data-line-number="37">p2 &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(int.i[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, ], <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="kw">reorder</span>(Variables, Interaction), Interaction)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-38" data-line-number="38"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_bar">geom_col</a></span>(<span class="dt">width =</span> <span class="fl">0.75</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-39" data-line-number="39"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/labs">labs</a></span>(<span class="dt">x =</span> <span class="st">""</span>, <span class="dt">y =</span> <span class="st">"Interaction strength"</span>, <span class="dt">title =</span> <span class="st">"Partial dependence"</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-40" data-line-number="40"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">axis.text.x =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_text</a></span>(<span class="dt">angle =</span> <span class="dv">45</span>, <span class="dt">vjust =</span> <span class="dv">1</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-41" data-line-number="41"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_light</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-42" data-line-number="42"><span class="st">  </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/coord_flip">coord_flip</a></span>()</a>
+<a class="sourceLine" id="cb5-43" data-line-number="43"></a>
+<a class="sourceLine" id="cb5-44" data-line-number="44"><span class="co"># Display plots side by side</span></a>
+<a class="sourceLine" id="cb5-45" data-line-number="45"><span class="kw"><a href="../reference/grid.arrange.html">grid.arrange</a></span>(p1, p2, <span class="dt">ncol =</span> <span class="dv">2</span>)</a></code></pre></div>
+<div class="figure" style="text-align: left">
+<img src="vip-interaction_files/figure-html/gbm-int-1.png" alt="**Figure 4** Interaction statistics for the GBM model fit to Friedman's regression data. \textit{Left:} Friedman's $H$-statistic. \textit{Right:} Our VI-based interaction statistic." width="70%"><p class="caption">
+<strong>Figure 4</strong> Interaction statistics for the GBM model fit to Friedman’s regression data.  Friedman’s <span class="math inline">\(H\)</span>-statistic.  Our VI-based interaction statistic.
+</p>
+</div>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2 class="hasAnchor">
+<a href="#references" class="anchor"></a>References</h2>
+<div id="refs" class="references">
+<div id="ref-bagging-breiman-1996">
+<p>Breiman, Leo. 1996. “Bagging Predictors.” <em>Machine Learning</em> 8 (2): 209–18. <a href="https://doi.org/10.1023/A:1018054314350" class="uri">https://doi.org/10.1023/A:1018054314350</a>.</p>
+</div>
+<div id="ref-multivariate-friedman-1991">
+<p>Friedman, Jerome H. 1991. “Multivariate Adaptive Regression Splines.” <em>The Annals of Statistics</em> 19 (1): 1–67. <a href="https://doi.org/10.1214/aos/1176347963" class="uri">https://doi.org/10.1214/aos/1176347963</a>.</p>
+</div>
+<div id="ref-friedman-2008-predictive">
+<p>Friedman, Jerome H., and Bogdan E. Popescu. 2008. “Predictive Learning via Rule Ensembles.” <em>Annals of Applied Statistics</em> 2 (3): 916–54. <a href="https://doi.org/10.1214/07-aoas148" class="uri">https://doi.org/10.1214/07-aoas148</a>.</p>
+</div>
+<div id="ref-greenwell-simple-2018">
+<p>Greenwell, Brandon M., Bradley C. Boehmke, and Andrew J. McCarthy. 2018. “A Simple and Effective Model-Based Variable Importance Measure.” <em>arXiv Preprint arXiv:1805.04755</em>.</p>
+</div>
+<div id="ref-gbm-pkg">
+<p>Ridgeway, Greg. 2017. <em>Gbm: Generalized Boosted Regression Models</em>. <a href="https://CRAN.R-project.org/package=gbm" class="uri">https://CRAN.R-project.org/package=gbm</a>.</p>
+</div>
+<div id="ref-venables-modern-2002">
+<p>Venables, W. N., and B. D. Ripley. 2002. <em>Modern Applied Statistics with S</em>. 4th ed. New York: Springer-Verlag. <a href="http://www.stats.ox.ac.uk/pub/MASS4" class="uri">http://www.stats.ox.ac.uk/pub/MASS4</a>.</p>
+</div>
+</div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+        <div id="tocnav">
+      <h2 class="hasAnchor">
+<a href="#tocnav" class="anchor"></a>Contents</h2>
+      <ul class="nav nav-pills nav-stacked">
+<li><a href="#friedmans-regression-problem">Friedman’s regression problem</a></li>
+      <li><a href="#friedmans-h-statistic">Friedman’s <span class="math inline">\(H\)</span>-statistic</a></li>
+      <li><a href="#references">References</a></li>
+      </ul>
+</div>
       </div>
 
 </div>
