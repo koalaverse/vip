@@ -79,15 +79,12 @@ vi <- function(
       feature_names <- get_feature_names(object)
     }
   }
-  tib <- if (method == "model") {
-    vi_model(object, ...)
-  } else if (method == "pdp") {
-    vi_pdp(object, feature_names = feature_names, FUN = FUN, ...)
-  } else if (method == "ice") {
-    vi_ice(object, feature_names = feature_names, FUN = FUN, ...)
-  } else {
-    vi_permute(object, feature_names = feature_names, ...)
-  }
+
+  tib <- switch(method,
+                "model" = vi_model(object, ...),
+                "pdp" = vi_pdp(object, feature_names = feature_names, FUN = FUN, ...),
+                "ice" = vi_ice(object, feature_names = feature_names, FUN = FUN, ...),
+                vi_permute(object, feature_names = feature_names, ...))
 
   # Save attribute
   vi_type <- attr(tib, which = "type")

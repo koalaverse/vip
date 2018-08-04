@@ -74,7 +74,7 @@ vi_ice.default <- function(object, feature_names, FUN = NULL, ...) {
 ice_vi_score <- function(object, feature_name, FUN, ...) {
 
   # Only allow for a single feature
-  if (length(feature_name) != 1) {
+  if (length(feature_name) != 1L) {
     stop("Only a single feature allowed in `ice_vi_score()`.", call. = FALSE)
   }
 
