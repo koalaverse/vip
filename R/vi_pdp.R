@@ -74,7 +74,7 @@ vi_pdp.default <- function(object, feature_names, FUN = NULL, ...) {
 pdp_vi_score <- function(object, feature_name, FUN, ...) {
 
   # Only allow for a single feature
-  if (length(feature_name) != 1) {
+  if (length(feature_name) != 1L) {
     stop("Only a single feature allowed in `pdp_vi_score()`.", call. = FALSE)
   }
 

@@ -85,10 +85,10 @@ vi_permute.default <- function(
   }
 
   # Performance metric
-  if (metric == "auto") {
-    metric <- get_default_metric(object)
+  metric <- if (metric == "auto") {
+    get_default_metric(object)
   } else {
-    metric <- tolower(metric)
+    tolower(metric)
   }
 
   perf_fun <- switch(

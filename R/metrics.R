@@ -24,7 +24,7 @@ perf_ce <- ModelMetrics::ce
 
 #' @keywords internal
 perf_auc <- function(actual, predicted) {
-  if (ncol(predicted) != 2) {
+  if (ncol(predicted) != 2L) {
     stop("Expected a 2 column matrix of predicted class probabilities.")
   }
   ModelMetrics::auc(actual = actual, predicted = predicted[, 1L, drop = TRUE])
@@ -33,7 +33,7 @@ perf_auc <- function(actual, predicted) {
 
 #' @keywords internal
 perf_logLoss <- function(actual, predicted) {
-  if (ncol(predicted) != 2) {
+  if (ncol(predicted) != 2L) {
     stop("Expected a 2 column matrix of predicted class probabilities.")
   }
   ModelMetrics::logLoss(actual = actual, predicted = predicted[, 1L, drop = TRUE])
@@ -44,7 +44,7 @@ perf_logLoss <- function(actual, predicted) {
 
 #' @keywords internal
 perf_mauc <- function(actual, predicted) {
-  if (ncol(predicted) <= 2) {
+  if (ncol(predicted) <= 2L) {
     stop("Expected a >2 column matrix of predicted class probabilities.")
   }
   ModelMetrics::mauc(actual = actual, predicted = predicted)$mauc
@@ -53,7 +53,7 @@ perf_mauc <- function(actual, predicted) {
 
 #' @keywords internal
 perf_mlogLoss <- function(actual, predicted) {
-  if (ncol(predicted) <= 2) {
+  if (ncol(predicted) <= 2L) {
     stop("Expected a >2 column matrix of predicted class probabilities.")
   }
   ModelMetrics::mlogLoss(actual = actual, predicted = predicted)
@@ -76,13 +76,10 @@ get_default_metric.ranger <- function(object) {
 
 #' @keywords internal
 get_default_metric.ranger <- function(object) {
-  if (object$treetype == "Regression") {
-    "rmse"
-  } else if (object$treetype == "Classification") {
-    "error"
-  } else if (object$treetype == "Probability estimation") {
-    "auc"
-  } else {
-    stop("No support for \"ranger\" objects of type \"", object$treetype, "\".")
-  }
+  tree_type <- object$treetype
+  switch(tree_type,
+         "Regression" = "rmse",
+         "Classification" = "error",
+         "Probability estimation" = "auc",
+         stop("No support for \"ranger\" objects of type \"", tree_type, "\"."))
 }

@@ -30,14 +30,14 @@ check_FUN <- function(x) {
   if (!is.list(x)) {
     stop("FUN should be a list.", call. = FALSE)
   }
-  if (length(x) != 2) {
+  if (length(x) != 2L) {
     stop("FUN should be a list of length 2.", call. = FALSE)
   }
   if (!identical(names(x), c("con", "cat"))) {
     stop("FUN should be a list with comonents \"con\" and \"cat\".",
          call. = FALSE)
   }
-  if (!all(sapply(x, is.function))) {
+  if (!all(vapply(x, is.function, logical(1L)))) {
     stop("FUN should be a list of two functions.", call. = FALSE)
   }
 }
