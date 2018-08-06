@@ -51,7 +51,7 @@ vi_model.C5.0 <- function(object, ...) {
   # Add variable importance type attribute
   dot_pairlist <- substitute(...())
   attr(tib, "type") <- if ("metric" %in% names(dot_pairlist)) {
-    dot_pairlist[["metric"]]
+    eval(dot_pairlist[["metric"]], envir = parent.frame())
   } else {
     "usage"
   }
