@@ -82,3 +82,27 @@ test_that("get_feature_names() works for \"glmnet\" objects", {
 
 })
 
+test_that("get_feature_names() works for \"ranger\" objects", {
+
+  skip_if_not_installed("ranger")
+
+  for (write_forest in c(TRUE, FALSE)) {
+    for (import in c("none", "impurity")) {
+      if (! write_forest && identical(import, "none")) next
+      ranger_model <- ranger::ranger(Species ~ .,
+                                     data = iris,
+                                     importance = import,
+                                     write.forest = write_forest)
+      expect_setequal(get_feature_names(ranger_model), names(iris)[1:4])
+    }
+  }
+
+  ranger_model <- ranger::ranger(Species ~ .,
+                                 data = iris,
+                                 importance = "none",
+                                 write.forest = FALSE)
+  expect_error(get_feature_names(ranger_model),
+               regexp = paste("^Unable to recover feature names from ranger",
+                              "model with importance = \"none\" and write.forest = FALSE.$"))
+
+})

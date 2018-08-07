@@ -98,7 +98,12 @@ get_feature_names.RandomForest <- function(object, ...) {
 
 #' @keywords internal
 get_feature_names.ranger <- function(object, ...) {
-  names(object$variable.importance)
+  ind_vars <- object$forest$independent.variable.names
+  if (! is.null(ind_vars)) return(ind_vars)
+  var_imp_names <- names(object$variable.importance)
+  if (! is.null(var_imp_names)) return(var_imp_names)
+  stop("Unable to recover feature names from ranger model",
+       " with importance = \"none\" and write.forest = FALSE.")
 }
 
 
