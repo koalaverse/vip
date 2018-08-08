@@ -104,7 +104,7 @@ get_feature_names.ranger <- function(object, ...) {
     names(object$variable.importance)
   } else {
     stop("Unable to recover feature names from ranger models with `importance",
-         " = \"none\"`` and `write.forest = FALSE`.")
+         " = \"none\"` and `write.forest = FALSE`.")
   }
 }
 
