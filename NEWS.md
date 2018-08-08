@@ -1,5 +1,7 @@
 # vip 0.1.1
 
+* Fixed bug in `get_feature_names.ranger()` s.t. it never returns `NULL`; it either returns the feature names or throws an error if they cannot be recovered from the model object [(#43)](https://github.com/koalaverse/vip/issues/43).
+
 * Added `pkgdown` site: https://github.com/koalaverse/vip.
 
 * Changed `truncate_feature_names` argument of `vi()` to `abbreviate_feature_names` which abbreviates all feature names, rather than just truncating them.
@@ -10,7 +12,7 @@
 
 * Fixed bug and unnecessary error check in `vint()` [(#38)](https://github.com/koalaverse/vip/issues/38).
 
-* New vignette on using `vip` with unsupported models (using the Keras API to TensoFlow as an example).
+* New vignette on using `vip` with unsupported models (using the Keras API to TensorFlow as an example).
 
 
 # vip 0.1.0
