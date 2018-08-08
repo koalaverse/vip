@@ -102,7 +102,7 @@ test_that("get_feature_names() works for \"ranger\" objects", {
                                  importance = "none",
                                  write.forest = FALSE)
   expect_error(get_feature_names(ranger_model),
-               regexp = paste("^Unable to recover feature names from ranger",
-                              "model with importance = \"none\" and write.forest = FALSE.$"))
+               regexp = paste("^Unable to recover feature names from ranger models",
+                              "with `importance = \"none\"` and `write.forest = FALSE`.$"))
 
 })
