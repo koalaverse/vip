@@ -26,7 +26,6 @@ LazyData: true
 Imports:
     ggplot2 (>= 0.9.0),
     gridExtra,
-    magrittr,
     ModelMetrics,
     pdp,
     plyr,
@@ -42,21 +41,21 @@ Suggests:
     dplyr,
     earth,
     gbm,
+    glmnet,
     h2o,
     keras,
     knitr,
     lattice,
     mlbench,
-    nnet,
     NeuralNetTools,
+    nnet,
     party,
     partykit,
-    ranger,
-    rpart,
     randomForest,
+    ranger,
     rmarkdown,
-    xgboost,
-    glmnet,
-    testthat
+    rpart,
+    testthat,
+    xgboost
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
