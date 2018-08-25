@@ -19,7 +19,7 @@ Description: A general framework for constructing variable importance plots from
   expectation (ICE) curves as described in Greenwell et al. (2018) 
   <arXiv:1805.04755>.
 License: GPL (>= 2)
-URL: https://koalaverse.github.io/vip/index.html
+URL: https://koalaverse.github.io/vip/index.html, https://github.com/koalaverse/vip/
 BugReports: https://github.com/koalaverse/vip/issues
 Encoding: UTF-8
 LazyData: true
