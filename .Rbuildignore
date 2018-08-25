@@ -1,10 +1,10 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^README\.Rmd$
-^README\.html$
 ^README_cache
 ^appveyor\.yml$
 ^\.travis\.yml$
 ^slowtests
 ^_pkgdown\.yml$
 ^docs$
+^vignettes
