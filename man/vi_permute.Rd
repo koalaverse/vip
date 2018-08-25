@@ -7,37 +7,38 @@
 \usage{
 vi_permute(object, ...)
 
-\method{vi_permute}{default}(object, feature_names, train,
-  pred_fun = stats::predict, obs, metric = "auto", pos_class = NULL,
-  progress = "none", parallel = FALSE, paropts = NULL, ...)
+\method{vi_permute}{default}(object, train, response_name,
+  metric = "auto", smaller_is_better = NULL, pos_class = NULL,
+  pred_fun = NULL, progress = "none", parallel = FALSE,
+  paropts = NULL, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
 
 \item{...}{Additional optional arguments. (Currently ignored.)}
 
-\item{feature_names}{Character string giving the names of the predictor
-variables (i.e., features) of interest.}
+\item{train}{Data frame containing the original training data.}
 
-\item{train}{Optional data frame containing the original training data.}
+\item{response_name}{Character string giving the name (or position) of the
+traget column in \code{train}.}
 
-\item{pred_fun}{Optional prediction function that requires two arguments,
-\code{object} and \code{newdata}. If specified, then the function must return
-a vector of predictions (i.e., not a matrix or data frame). (In the future,
-this argument may become optional.)}
+\item{metric}{Either a function or character string specifying the
+performancefor metric to use in computing model performance (e.g.,
+RMSE for regression or accuracy for binary classification). If \code{metric}
+is a function, then it requires two arguments, \code{actual} and
+\code{predicted}, and should return a single, numeric value.}
 
-\item{obs}{Non-optional vector containing the original (i.e., training)
-response values.}
-
-\item{metric}{Non-optional function for computing model performance (e.g.,
-RMSE for regression or accuracy for binary classification). This function
-requires two arguments, \code{pred} (for predicted values) and \code{obs}
-(for observed values), and should return a single, numeric value.}
+\item{smaller_is_better}{Logical indicating whether or not a smaller value
+of \code{metric} is better. Default is \code{NULL}. Must be supplied if
+\code{metric} is a user-supplied function.}
 
 \item{pos_class}{Character string specifying which category in `obs`
 represents the "positive" class (i.e., the class for which the predicted
 class probabilties correspond to). Only needed for binary classification
 problems.}
+
+\item{pred_fun}{Optional prediction function that requires two arguments,
+\code{object} and \code{newdata}. Default is \code{NULL}.}
 
 \item{progress}{Character string giving the name of the progress bar to use.
 See \code{\link[plyr]{create_progress_bar}} for details. Default is

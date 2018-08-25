@@ -24,7 +24,7 @@ perf_ce <- ModelMetrics::ce
 
 #' @keywords internal
 perf_auc <- function(actual, predicted) {
-  if (ncol(predicted) != 2L) {
+  if (NCOL(predicted) != 2L) {
     stop("Expected a 2 column matrix of predicted class probabilities.")
   }
   ModelMetrics::auc(actual = actual, predicted = predicted[, 1L, drop = TRUE])
@@ -33,7 +33,7 @@ perf_auc <- function(actual, predicted) {
 
 #' @keywords internal
 perf_logLoss <- function(actual, predicted) {
-  if (ncol(predicted) != 2L) {
+  if (NCOL(predicted) != 2L) {
     stop("Expected a 2 column matrix of predicted class probabilities.")
   }
   ModelMetrics::logLoss(actual = actual, predicted = predicted[, 1L, drop = TRUE])
@@ -44,7 +44,7 @@ perf_logLoss <- function(actual, predicted) {
 
 #' @keywords internal
 perf_mauc <- function(actual, predicted) {
-  if (ncol(predicted) <= 2L) {
+  if (NCOL(predicted) <= 2L) {
     stop("Expected a >2 column matrix of predicted class probabilities.")
   }
   ModelMetrics::mauc(actual = actual, predicted = predicted)$mauc
@@ -53,7 +53,7 @@ perf_mauc <- function(actual, predicted) {
 
 #' @keywords internal
 perf_mlogLoss <- function(actual, predicted) {
-  if (ncol(predicted) <= 2L) {
+  if (NCOL(predicted) <= 2L) {
     stop("Expected a >2 column matrix of predicted class probabilities.")
   }
   ModelMetrics::mlogLoss(actual = actual, predicted = predicted)

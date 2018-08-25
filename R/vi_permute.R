@@ -5,23 +5,23 @@
 #'
 #' @param object A fitted model object (e.g., a \code{"randomForest"} object).
 #'
-#' @param feature_names Character string giving the names of the predictor
-#' variables (i.e., features) of interest.
+#' @param train Data frame containing the original training data.
 #'
-#' @param train Optional data frame containing the original training data.
+#' @param response_name Character string giving the name (or position) of the
+#' traget column in \code{train}.
 #'
 #' @param pred_fun Optional prediction function that requires two arguments,
-#' \code{object} and \code{newdata}. If specified, then the function must return
-#' a vector of predictions (i.e., not a matrix or data frame). (In the future,
-#' this argument may become optional.)
+#' \code{object} and \code{newdata}. Default is \code{NULL}.
 #'
-#' @param obs Non-optional vector containing the original (i.e., training)
-#' response values.
+#' @param metric Either a function or character string specifying the
+#' performancefor metric to use in computing model performance (e.g.,
+#' RMSE for regression or accuracy for binary classification). If \code{metric}
+#' is a function, then it requires two arguments, \code{actual} and
+#' \code{predicted}, and should return a single, numeric value.
 #'
-#' @param metric Non-optional function for computing model performance (e.g.,
-#' RMSE for regression or accuracy for binary classification). This function
-#' requires two arguments, \code{pred} (for predicted values) and \code{obs}
-#' (for observed values), and should return a single, numeric value.
+#' @param smaller_is_better Logical indicating whether or not a smaller value
+#' of \code{metric} is better. Default is \code{NULL}. Must be supplied if
+#' \code{metric} is a user-supplied function.
 #'
 #' @param pos_class Character string specifying which category in `obs`
 #' represents the "positive" class (i.e., the class for which the predicted
@@ -52,6 +52,49 @@
 #' @rdname vi_permute
 #'
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Load required packages
+#' library(ggplot2)  # for ggtitle() function
+#' library(mlbench)  # for ML benchmark data sets
+#' library(nnet)     # for fitting neural networks
+#'
+#' # Simulate training data
+#' set.seed(101)  # for reproducibility
+#' trn <- as.data.frame(mlbench.friedman1(500)  # ?mlbench.friedman1
+#'
+#' # Inspect data
+#' tibble::as.tibble(trn)
+#'
+#' # Fit PPR and NN models (hyperparameters were chosen using the caret package
+#' # with 5 repeats of 5-fold cross-validation)
+#' pp <- ppr(y ~ ., data = trn, nterms = 11)
+#' set.seed(0803) # for reproducibility
+#' nn <- nnet(y ~ ., data = trn, size = 7, decay = 0.1, linout = TRUE,
+#'            maxit = 500)
+#'
+#' # Plot VI scores
+#' set.seed(2021)  # for reproducibility
+#' p1 <- vip(pp, method = "permute", response_name = "y", metric = "rsquared",
+#'           pred_fun = predict) + ggtitle("PPR")
+#' p2 <- vip(nn, method = "permute", response_name = "y", metric = "rsquared",
+#'           pred_fun = predict) + ggtitle("NN")
+#' grid.arrange(p1, p2, ncol = 2)
+#'
+#' # Mean absolute error
+#' mae <- function(actual, predicted) {
+#'   mean(abs(actual - predicted))
+#' }
+#'
+#' # Permutation-based VIP with user-defined MAE metric
+#' set.seed(1101)  # for reproducibility
+#' vip(pp, method = "permute",
+#'     response_name = "y",
+#'     metric = mae,
+#'     smaller_is_better = TRUE,
+#'     pred_fun = function(object, newdata) predict(object, newdata)  # wrapper
+#' ) + ggtitle("PPR")
 vi_permute <- function(object, ...) {
   UseMethod("vi_permute")
 }
@@ -62,13 +105,13 @@ vi_permute <- function(object, ...) {
 #' @export
 vi_permute.default <- function(
   object,
-  feature_names,
   train,
-  # performance_fun,
-  pred_fun = stats::predict,
-  obs,
+  response_name,
+  # perf_fun = NULL,
   metric = "auto",  # add log loss, auc, mae, mape, etc.
+  smaller_is_better = NULL,
   pos_class = NULL,
+  pred_fun = NULL,
   progress = "none",
   parallel = FALSE,
   paropts = NULL,
@@ -84,60 +127,112 @@ vi_permute.default <- function(
     train <- get_training_data(object)
   }
 
-  # Performance metric
-  metric <- if (metric == "auto") {
-    get_default_metric(object)
-  } else {
-    tolower(metric)
-  }
+  # Feature names
+  feature_names <- setdiff(names(train), response_name)
 
-  perf_fun <- switch(
-    metric,
-    # Classification
-    "auc" = perf_auc,  # requires predicted class probabilities
-    "error" = perf_ce,  # requires predicted class labels
-    "logloss" = perf_logLoss,  # requires predicted class probabilities
-    "mauc" = perf_mauc,  # requires predicted class probabilities
-    "mlogloss" = perf_mlogLoss,  # requires predicted class probabilities
-    # Regression
-    "mse" = perf_mse,
-    "r2" = perf_rsquared,
-    "rsquared" = perf_rsquared,
-    "rmse" = perf_rmse,
-    stop("Metric \"", metric, "\" is not supported.")
-  )
+  # Observed (training) response values
+  obs <- train[[response_name]]
 
-  # Is smaller better?
-  smaller_is_better <- switch(
-    metric,
-    "auto" = TRUE,
-    # Classification
-    "auc" = FALSE,
-    "error" = TRUE,
-    "logloss" = TRUE,
-    "mauc" = FALSE,
-    "mlogloss" = TRUE,
-    # Regression
-    "mse" = TRUE,
-    "r2" = FALSE,
-    "rsquared" = FALSE,
-    "rmse" = TRUE,
-    stop("Metric \"", metric, "\" is not supported.")
-  )
+  # Metric
+  if (is.function(metric)) {  # user-supplied function
 
-  # Get prediction function, if not supplied
-  prob_based_metrics <- c("auc", "mauc", "logloss", "mlogloss")
-  if (missing(pred_fun)) {
-    type <- if (metric %in% prob_based_metrics) {
-      "prob"
-    } else {
-      "raw"
+    # If `metric` is a user-supplied function, then `smaller_is_better` cannot
+    # be `NULL`.
+    if (is.null(smaller_is_better) || !is.logical(smaller_is_better)) {
+      stop("Please specify a logical value for `smaller_is_better`.",
+           call. = FALSE)
     }
-    pred_fun <- get_predictions(object, type = type)
+
+    # If `metric` is a user-supplied function, then `pred_fun` cannot
+    # be `NULL`.
+    if (is.null(smaller_is_better)) {
+      stop("Please specify a logical value for `smaller_is_better`.",
+           call. = FALSE)
+    } else {
+      # Check prediction function arguments
+      if (!identical(c("object", "newdata"), names(formals(pred_fun)))) {
+        stop("`pred_fun()` must be a function with arguments `object` and ",
+             "`newdata`.", call. = FALSE)
+      }
+    }
+
+    # Check prediction function arguments
+    if (!identical(c("actual", "predicted"), names(formals(metric)))) {
+      stop("`metric()` must be a function with arguments `actual` and ",
+           "`predicted`.", call. = FALSE)
+    }
+
+    # Performance function
+    perf_fun <- metric
+
+  } else {
+
+    # Performance metric
+    metric <- if (metric == "auto") {
+      get_default_metric(object)
+    } else {
+      tolower(metric)
+    }
+
+    # Performance function
+    perf_fun <- switch(metric,
+
+      # Classification
+      "auc" = perf_auc,            # requires predicted class probabilities
+      "error" = perf_ce,           # requires predicted class labels
+      "logloss" = perf_logLoss,    # requires predicted class probabilities
+      "mauc" = perf_mauc,          # requires predicted class probabilities
+      "mlogloss" = perf_mlogLoss,  # requires predicted class probabilities
+
+      # Regression
+      "mse" = perf_mse,
+      "r2" = perf_rsquared,
+      "rsquared" = perf_rsquared,
+      "rmse" = perf_rmse,
+
+      # Return informative error
+      stop("Metric \"", metric, "\" is not supported.")
+
+    )
+
+    # Is smaller better?
+    smaller_is_better <- switch(metric,
+
+      "auto" = TRUE,
+
+      # Classification
+      "auc" = FALSE,
+      "error" = TRUE,
+      "logloss" = TRUE,
+      "mauc" = FALSE,
+      "mlogloss" = TRUE,
+
+      # Regression
+      "mse" = TRUE,
+      "r2" = FALSE,
+      "rsquared" = FALSE,
+      "rmse" = TRUE,
+
+      # Return informative error
+      stop("Metric \"", metric, "\" is not supported.")
+
+    )
+
+    # Get prediction function, if not supplied
+    prob_based_metrics <- c("auc", "mauc", "logloss", "mlogloss")
+    if (is.null(pred_fun)) {
+      type <- if (metric %in% prob_based_metrics) {
+        "prob"
+      } else {
+        "raw"
+      }
+      pred_fun <- get_predictions(object, type = type)
+    }
+
   }
 
-  # Determine reference class
-  if (!is.null(pos_class) && metric %in% prob_based_metrics) {
+  # Determine reference class (classification only)
+  if (!is.null(pos_class)) {
     obs <- ifelse(obs == pos_class, yes = 1, no = 0)
   }
 
