@@ -66,7 +66,14 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/koalaverse/vip/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -81,9 +88,9 @@
       <h1>Variable importance plots: an introduction to vip</h1>
                         <h4 class="author">Brandon M. Greenwell and Bradley C. Boehmke</h4>
             
-            <h4 class="date">2018-07-30</h4>
+            <h4 class="date">2018-08-26</h4>
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/koalaverse/vip//blob/master/vignettes/vip.Rmd"><code>vignettes/vip.Rmd</code></a></small>
       <div class="hidden name"><code>vip.Rmd</code></div>
 
     </div>
@@ -438,25 +445,15 @@
 <div id="permutation-method" class="section level4">
 <h4 class="hasAnchor">
 <a href="#permutation-method" class="anchor"></a>Permutation method</h4>
-<p>The permutation method exists in various forms and was made popular in <span class="citation">Breiman (2001)</span> for random forests. A more general approach to the permutation method is described in <a href="https://cran.r-project.org/web/packages/datarobot/vignettes/VariableImportance.html">Assessing Variable Importance for Predictive Models of Arbitrary Type</a>, an R package vignette by DataRobot. The permutation approach used in <code>vip</code> is quite simple. The idea is that if we randomly permute the values of an important feature in the training data, the training performance would degrade (since permuting the values of a feature effectively destroys any relationship between that feature and the target variable). This of course assumes that the model has been properly tuned (e.g., using cross-validation) and is not <a href="https://en.wikipedia.org/wiki/Overfitting">over fitting</a>. The permutation approach uses the difference between some baseline performance measure (e.g., training <span class="math inline">\(R^2\)</span> or RMSE) and the same performance measure obtained after permuting the values of a particular feature in the training data (<strong>Note</strong>: the model is NOT refit to the training data after randomly permuting the values of a feature). To use the permutation approach, specify <code>method = "permute"</code> in the call to <code><a href="../reference/vi.html">vi()</a></code> or <code><a href="../reference/vip.html">vip()</a></code>. <strong>Note</strong>: using <code>method = "permute"</code> requires specifying a few additional arguments (some of which will be automated in the future):</p>
-<ul>
-<li>
-<code>obs</code> a vector containing the response values from the training data;</li>
-<li>
-<code>metric</code> the performance metric to use (e.g., <code>"rmse"</code> for regression or <code>"logloss"</code> for binary classification);</li>
-<li>
-<code>pred_fun</code> a prediction function with two arguments, <code>object</code> and <code>newdata</code>, that returns a vector of predicted values or class labels (regression or classification), or a matrix of predicted probabilities (classification). The output of <code>pred_fun</code> depends upon which performance metric is used (for example, <code>metric = "mauc"</code> (for multiclass area under the curve requires that <code>pred_fun</code> return a matrix of predicted probabilities—one for each class).</li>
-<li>
-<code>pos_class</code> character string specifying which category in <code>obs</code> represents the “positive” class in binary classification problems (i.e., the class for which the predicted class probabilities correspond to)</li>
-</ul>
+<p>The permutation method exists in various forms and was made popular in <span class="citation">Breiman (2001)</span> for random forests. A more general approach to the permutation method is described in <a href="https://cran.r-project.org/web/packages/datarobot/vignettes/VariableImportance.html">Assessing Variable Importance for Predictive Models of Arbitrary Type</a>, an R package vignette by DataRobot. The permutation approach used in <code>vip</code> is quite simple. The idea is that if we randomly permute the values of an important feature in the training data, the training performance would degrade (since permuting the values of a feature effectively destroys any relationship between that feature and the target variable). This of course assumes that the model has been properly tuned (e.g., using cross-validation) and is not <a href="https://en.wikipedia.org/wiki/Overfitting">over fitting</a>. The permutation approach uses the difference between some baseline performance measure (e.g., training <span class="math inline">\(R^2\)</span> or RMSE) and the same performance measure obtained after permuting the values of a particular feature in the training data (<strong>Note</strong>: the model is NOT refit to the training data after randomly permuting the values of a feature). To use the permutation approach, specify <code>method = "permute"</code> in the call to <code><a href="../reference/vi.html">vi()</a></code> or <code><a href="../reference/vip.html">vip()</a></code>. Note that using <code>method = "permute"</code> requires specifying a few additional arguments; see <code><a href="../reference/vi_permute.html">?vi_permute</a></code> for details.</p>
 <p>An example is given below for the previously fitted PPR and NN models.</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="co"># Plot VI scores</span></a>
 <a class="sourceLine" id="cb20-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">2021</span>)  <span class="co"># for reproducibility</span></a>
-<a class="sourceLine" id="cb20-3" data-line-number="3">p1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/vip.html">vip</a></span>(pp, <span class="dt">method =</span> <span class="st">"permute"</span>, <span class="dt">obs =</span> trn<span class="op">$</span>y, <span class="dt">metric =</span> <span class="st">"rsquared"</span>,</a>
+<a class="sourceLine" id="cb20-3" data-line-number="3">p1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/vip.html">vip</a></span>(pp, <span class="dt">method =</span> <span class="st">"permute"</span>, <span class="dt">target =</span> <span class="st">"y"</span>, <span class="dt">metric =</span> <span class="st">"rsquared"</span>,</a>
 <a class="sourceLine" id="cb20-4" data-line-number="4">          <span class="dt">pred_fun =</span> predict) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/labs">ggtitle</a></span>(<span class="st">"PPR"</span>)</a>
 <a class="sourceLine" id="cb20-5" data-line-number="5"><span class="co">#&gt; Warning: Setting `method = "permute"` is experimental, use at your own</span></a>
 <a class="sourceLine" id="cb20-6" data-line-number="6"><span class="co">#&gt; risk!</span></a>
-<a class="sourceLine" id="cb20-7" data-line-number="7">p2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/vip.html">vip</a></span>(nn, <span class="dt">method =</span> <span class="st">"permute"</span>, <span class="dt">obs =</span> trn<span class="op">$</span>y, <span class="dt">metric =</span> <span class="st">"rsquared"</span>,</a>
+<a class="sourceLine" id="cb20-7" data-line-number="7">p2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/vip.html">vip</a></span>(nn, <span class="dt">method =</span> <span class="st">"permute"</span>, <span class="dt">target =</span> <span class="st">"y"</span>, <span class="dt">metric =</span> <span class="st">"rsquared"</span>,</a>
 <a class="sourceLine" id="cb20-8" data-line-number="8">          <span class="dt">pred_fun =</span> predict) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/labs">ggtitle</a></span>(<span class="st">"NN"</span>)</a>
 <a class="sourceLine" id="cb20-9" data-line-number="9"><span class="co">#&gt; Warning: Setting `method = "permute"` is experimental, use at your own</span></a>
 <a class="sourceLine" id="cb20-10" data-line-number="10"><span class="co">#&gt; risk!</span></a>
@@ -467,7 +464,7 @@
 <div id="the-pima-indians-diabetes-data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#the-pima-indians-diabetes-data" class="anchor"></a>The Pima indians diabetes data</h3>
-<p>As a final example, we’ll consider the well-known Pima Indians diabetes data; see <code><a href="http://www.rdocumentation.org/packages/pdp/topics/pima">?pdp::pima</a></code> for details. These data contain diabetes test results collected by the the US National Institute of Diabetes and Digestive and Kidney Diseases from a population of women who were at least 21 years old, of Pima Indian heritage, and living near Phoenix, Arizona. The target variable, <code>diabetes</code>, is a factor indicating the diabetes test result (<code>pos</code>/<code>neg</code>). In the code chunk below, we fit a random forest to the Pima Indians data using the fantastic <a href="https://github.com/imbs-hl/ranger">ranger</a> package. <strong>Note</strong>: we fit two different random forests: <code>rfo1</code> and <code>rfo2</code>. The only difference is that we would use <code>rfo1</code> if we wanted predicted class labels and we would use <code>rfo2</code> for predicted class probabilities. The distinction is important when using <code>method = "permute"</code> since the performance metric being used requires the predicted outcome to be either the class labels (e.g., <code>metric = "error"</code> for classification error) or predicted class labels (e.g., <code>"auc"</code> for area under the curve). We’ll illustrate both below. We should point out that there is more built-in support for <code>"ranger"</code> objects, so it is not necessary to supply <code>pred_fun</code> or specify a specific metric (the default is <code>metric = "auto"</code>), but for completeness, we explicitly specify all the options.</p>
+<p>As a final example, we’ll consider the well-known Pima Indians diabetes data; see <code><a href="http://www.rdocumentation.org/packages/pdp/topics/pima">?pdp::pima</a></code> for details. These data contain diabetes test results collected by the the US National Institute of Diabetes and Digestive and Kidney Diseases from a population of women who were at least 21 years old, of Pima Indian heritage, and living near Phoenix, Arizona. The target variable, <code>diabetes</code>, is a factor indicating the diabetes test result (<code>pos</code>/<code>neg</code>). In the code chunk below, we fit a random forest to the Pima Indians data using the fantastic <a href="https://github.com/imbs-hl/ranger">ranger</a> package. Note that we fit two different random forests: <code>rfo1</code> and <code>rfo2</code>. The only difference is that we would use <code>rfo1</code> if we wanted predicted class labels and we would use <code>rfo2</code> for predicted class probabilities. The distinction is important when using <code>method = "permute"</code> since the performance metric being used requires the predicted outcome to be either the class labels (e.g., <code>metric = "error"</code> for classification error) or predicted class labels (e.g., <code>"auc"</code> for area under the curve). We’ll illustrate both below. We should point out that there is more built-in support for <code>"ranger"</code> objects, so it is not necessary to supply <code>pred_fun</code> or specify a specific metric (the default is <code>metric = "auto"</code>), but for completeness, we explicitly specify all the options.</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="co"># Load required packages</span></a>
 <a class="sourceLine" id="cb21-2" data-line-number="2"><span class="kw">library</span>(ranger)</a>
 <a class="sourceLine" id="cb21-3" data-line-number="3"></a>
@@ -487,11 +484,11 @@
 <a class="sourceLine" id="cb21-17" data-line-number="17"><span class="kw">set.seed</span>(<span class="dv">1329</span>)  <span class="co"># for reproducibility</span></a>
 <a class="sourceLine" id="cb21-18" data-line-number="18">pfun &lt;-<span class="st"> </span><span class="cf">function</span>(object, newdata) <span class="kw">predict</span>(object, <span class="dt">data =</span> newdata)<span class="op">$</span>predictions</a>
 <a class="sourceLine" id="cb21-19" data-line-number="19">p3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/vip.html">vip</a></span>(rfo1, <span class="dt">method =</span> <span class="st">"permute"</span>, <span class="dt">metric =</span> <span class="st">"error"</span>, <span class="dt">pred_fun =</span> pfun, </a>
-<a class="sourceLine" id="cb21-20" data-line-number="20">          <span class="dt">obs =</span> pima<span class="op">$</span>diabetes)</a>
+<a class="sourceLine" id="cb21-20" data-line-number="20">          <span class="dt">target =</span> <span class="st">"diabetes"</span>)</a>
 <a class="sourceLine" id="cb21-21" data-line-number="21"><span class="co">#&gt; Warning: Setting `method = "permute"` is experimental, use at your own</span></a>
 <a class="sourceLine" id="cb21-22" data-line-number="22"><span class="co">#&gt; risk!</span></a>
 <a class="sourceLine" id="cb21-23" data-line-number="23">p4 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/vip.html">vip</a></span>(rfo2, <span class="dt">method =</span> <span class="st">"permute"</span>, <span class="dt">metric =</span> <span class="st">"auc"</span>, <span class="dt">pred_fun =</span> pfun,</a>
-<a class="sourceLine" id="cb21-24" data-line-number="24">          <span class="dt">obs =</span> pima<span class="op">$</span>diabetes, <span class="dt">pos_class =</span> <span class="st">"neg"</span>)</a>
+<a class="sourceLine" id="cb21-24" data-line-number="24">          <span class="dt">target =</span> <span class="st">"diabetes"</span>, <span class="dt">reference_class =</span> <span class="st">"neg"</span>)</a>
 <a class="sourceLine" id="cb21-25" data-line-number="25"><span class="co">#&gt; Warning: Setting `method = "permute"` is experimental, use at your own</span></a>
 <a class="sourceLine" id="cb21-26" data-line-number="26"><span class="co">#&gt; risk!</span></a>
 <a class="sourceLine" id="cb21-27" data-line-number="27"><span class="kw"><a href="../reference/grid.arrange.html">grid.arrange</a></span>(p1, p2, p3, p4, <span class="dt">ncol =</span> <span class="dv">2</span>)</a></code></pre></div>

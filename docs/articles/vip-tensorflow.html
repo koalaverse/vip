@@ -66,7 +66,14 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/koalaverse/vip/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -82,9 +89,9 @@
             <h3 class="subtitle">A TensorFlow example Using the Keras API</h3>
                         <h4 class="author">Brandon M. Greenwell and Bradley C. Boehmke</h4>
             
-            <h4 class="date">2018-07-30</h4>
+            <h4 class="date">2018-08-26</h4>
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/koalaverse/vip//blob/master/vignettes/vip-tensorflow.Rmd"><code>vignettes/vip-tensorflow.Rmd</code></a></small>
       <div class="hidden name"><code>vip-tensorflow.Rmd</code></div>
 
     </div>
@@ -168,18 +175,17 @@
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">102</span>)  <span class="co"># for reproducibility</span></a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">p1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/vip.html">vip</a></span>(</a>
 <a class="sourceLine" id="cb7-3" data-line-number="3">  <span class="dt">object =</span> model,                     <span class="co"># fitted model</span></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4">  <span class="dt">method =</span> <span class="st">"permute"</span>,                 <span class="co"># permutation-based VI scores</span></a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">  <span class="dt">method =</span> <span class="st">"permute"</span>,                 <span class="co"># request permutation-based VI scores</span></a>
 <a class="sourceLine" id="cb7-5" data-line-number="5">  <span class="dt">num_features =</span> <span class="kw">ncol</span>(train_x),       <span class="co"># default only plots top 10 features</span></a>
-<a class="sourceLine" id="cb7-6" data-line-number="6">  <span class="dt">feature_names =</span> <span class="kw">colnames</span>(train_x),  <span class="co"># feature names in training data</span></a>
-<a class="sourceLine" id="cb7-7" data-line-number="7">  <span class="dt">pred_fun =</span> pred_wrapper,            <span class="co"># user-defined prediction function</span></a>
-<a class="sourceLine" id="cb7-8" data-line-number="8">  <span class="dt">obs =</span> train_y,                      <span class="co"># response values used for training</span></a>
-<a class="sourceLine" id="cb7-9" data-line-number="9">  <span class="dt">metric =</span> <span class="st">"rsquared"</span>,                <span class="co"># evaluation metric</span></a>
-<a class="sourceLine" id="cb7-10" data-line-number="10">  <span class="dt">train =</span> <span class="kw">as.data.frame</span>(train_x)      <span class="co"># training data</span></a>
-<a class="sourceLine" id="cb7-11" data-line-number="11">  <span class="co"># progress = "text"                 # request a text-based progress bar</span></a>
-<a class="sourceLine" id="cb7-12" data-line-number="12">)</a>
-<a class="sourceLine" id="cb7-13" data-line-number="13"><span class="co">#&gt; Warning: Setting `method = "permute"` is experimental, use at your own</span></a>
-<a class="sourceLine" id="cb7-14" data-line-number="14"><span class="co">#&gt; risk!</span></a>
-<a class="sourceLine" id="cb7-15" data-line-number="15"><span class="kw">print</span>(p1)  <span class="co"># display plot</span></a></code></pre></div>
+<a class="sourceLine" id="cb7-6" data-line-number="6">  <span class="dt">pred_fun =</span> pred_wrapper,            <span class="co"># user-defined prediction function</span></a>
+<a class="sourceLine" id="cb7-7" data-line-number="7">  <span class="dt">target =</span> train_y,            <span class="co"># name of the target variable column</span></a>
+<a class="sourceLine" id="cb7-8" data-line-number="8">  <span class="dt">metric =</span> <span class="st">"rsquared"</span>,                <span class="co"># evaluation metric</span></a>
+<a class="sourceLine" id="cb7-9" data-line-number="9">  <span class="dt">train =</span> <span class="kw">as.data.frame</span>(train_x),     <span class="co"># training data</span></a>
+<a class="sourceLine" id="cb7-10" data-line-number="10">  <span class="co"># progress = "text"                 # request a text-based progress bar</span></a>
+<a class="sourceLine" id="cb7-11" data-line-number="11">)</a>
+<a class="sourceLine" id="cb7-12" data-line-number="12"><span class="co">#&gt; Warning: Setting `method = "permute"` is experimental, use at your own</span></a>
+<a class="sourceLine" id="cb7-13" data-line-number="13"><span class="co">#&gt; risk!</span></a>
+<a class="sourceLine" id="cb7-14" data-line-number="14"><span class="kw">print</span>(p1)  <span class="co"># display plot</span></a></code></pre></div>
 <div class="figure" style="text-align: left">
 <img src="vip-tensorflow_files/figure-html/vip-1.png" alt="**Figure 2** Permuation-based VIP for the fitted network." width="70%"><p class="caption">
 <strong>Figure 2</strong> Permuation-based VIP for the fitted network.

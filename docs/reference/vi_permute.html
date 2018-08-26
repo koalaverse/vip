@@ -101,7 +101,12 @@ model. (This function is meant for internal use only.)" />
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/koalaverse/vip/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -115,7 +120,7 @@ model. (This function is meant for internal use only.)" />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Permutation-Based Variable Importance</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/koalaverse/vip//blob/master/R/vi_permute.R'><code>R/vi_permute.R</code></a></small>
     <div class="hidden name"><code>vi_permute.Rd</code></div>
     </div>
 
@@ -129,9 +134,10 @@ model. (This function is meant for internal use only.)</p>
     <pre class="usage"><span class='fu'>vi_permute</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>vi_permute</span>(<span class='no'>object</span>, <span class='no'>feature_names</span>, <span class='no'>train</span>,
-  <span class='kw'>pred_fun</span> <span class='kw'>=</span> <span class='kw pkg'>stats</span><span class='kw ns'>::</span><span class='no'><a href='http://www.rdocumentation.org/packages/stats/topics/predict'>predict</a></span>, <span class='no'>obs</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"auto"</span>, <span class='kw'>pos_class</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>progress</span> <span class='kw'>=</span> <span class='st'>"none"</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>paropts</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>vi_permute</span>(<span class='no'>object</span>, <span class='no'>train</span>, <span class='no'>target</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
+  <span class='kw'>smaller_is_better</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>reference_class</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pred_fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>progress</span> <span class='kw'>=</span> <span class='st'>"none"</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>paropts</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -145,39 +151,47 @@ model. (This function is meant for internal use only.)</p>
       <td><p>Additional optional arguments. (Currently ignored.)</p></td>
     </tr>
     <tr>
-      <th>feature_names</th>
-      <td><p>Character string giving the names of the predictor
-variables (i.e., features) of interest.</p></td>
+      <th>train</th>
+      <td><p>A matrix-like R object (e.g., a data frame or matrix)
+containing the training data.</p></td>
     </tr>
     <tr>
-      <th>train</th>
-      <td><p>Optional data frame containing the original training data.</p></td>
+      <th>target</th>
+      <td><p>Either a character string giving the name (or position) of the
+target column in <code>train</code> or, if <code>train</code> only contains feature
+columns, a vector containing the target values used to train <code>object</code>.</p></td>
+    </tr>
+    <tr>
+      <th>metric</th>
+      <td><p>Either a function or character string specifying the
+performance metric to use in computing model performance (e.g., RMSE for
+regression or accuracy for binary classification). If <code>metric</code> is a
+function, then it requires two arguments, <code>actual</code> and <code>predicted</code>,
+and should return a single, numeric value.</p></td>
+    </tr>
+    <tr>
+      <th>smaller_is_better</th>
+      <td><p>Logical indicating whether or not a smaller value
+of <code>metric</code> is better. Default is <code>NULL</code>. Must be supplied if
+<code>metric</code> is a user-supplied function.</p></td>
+    </tr>
+    <tr>
+      <th>reference_class</th>
+      <td><p>Character string specifying which response category
+represents the "reference" class (i.e., the class for which the predicted
+class probabilities correspond to). Only needed for binary classification
+problems.</p></td>
     </tr>
     <tr>
       <th>pred_fun</th>
       <td><p>Optional prediction function that requires two arguments,
-<code>object</code> and <code>newdata</code>. If specified, then the function must return
-a vector of predictions (i.e., not a matrix or data frame). (In the future,
-this argument may become optional.)</p></td>
+<code>object</code> and <code>newdata</code>. Default is <code>NULL</code>. Must be supplied
+whenever <code>metric</code> is a custom function.</p></td>
     </tr>
     <tr>
-      <th>obs</th>
-      <td><p>Non-optional vector containing the original (i.e., training)
-response values.</p></td>
-    </tr>
-    <tr>
-      <th>metric</th>
-      <td><p>Non-optional function for computing model performance (e.g.,
-RMSE for regression or accuracy for binary classification). This function
-requires two arguments, <code>pred</code> (for predicted values) and <code>obs</code>
-(for observed values), and should return a single, numeric value.</p></td>
-    </tr>
-    <tr>
-      <th>pos_class</th>
-      <td><p>Character string specifying which category in `obs`
-represents the "positive" class (i.e., the class for which the predicted
-class probabilties correspond to). Only needed for binary classification
-problems.</p></td>
+      <th>verbose</th>
+      <td><p>Logical indicating whether or not to print information during
+the construction of variable importance scores. Default is <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>progress</th>
@@ -211,6 +225,47 @@ additional column, called <code>Sign</code>, is also included which gives the si
     <p>Coming soon!</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='co'># Load required packages</span>
+<span class='fu'>library</span>(<span class='no'>ggplot2</span>)  <span class='co'># for ggtitle() function</span>
+<span class='fu'>library</span>(<span class='no'>mlbench</span>)  <span class='co'># for ML benchmark data sets</span>
+<span class='fu'>library</span>(<span class='no'>nnet</span>)     <span class='co'># for fitting neural networks</span>
+
+<span class='co'># Simulate training data</span>
+<span class='fu'>set.seed</span>(<span class='fl'>101</span>)  <span class='co'># for reproducibility</span>
+<span class='no'>trn</span> <span class='kw'>&lt;-</span> <span class='fu'>as.data.frame</span>(<span class='fu'><a href='http://www.rdocumentation.org/packages/mlbench/topics/mlbench.friedman1'>mlbench.friedman1</a></span>(<span class='fl'>500</span>))  <span class='co'># ?mlbench.friedman1</span>
+
+<span class='co'># Inspect data</span>
+<span class='kw pkg'>tibble</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/tibble/topics/as_tibble'>as.tibble</a></span>(<span class='no'>trn</span>)
+
+<span class='co'># Fit PPR and NN models (hyperparameters were chosen using the caret package</span>
+<span class='co'># with 5 repeats of 5-fold cross-validation)</span>
+<span class='no'>pp</span> <span class='kw'>&lt;-</span> <span class='fu'>ppr</span>(<span class='no'>y</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>trn</span>, <span class='kw'>nterms</span> <span class='kw'>=</span> <span class='fl'>11</span>)
+<span class='fu'>set.seed</span>(<span class='fl'>0803</span>) <span class='co'># for reproducibility</span>
+<span class='no'>nn</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/nnet/topics/nnet'>nnet</a></span>(<span class='no'>y</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>trn</span>, <span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>7</span>, <span class='kw'>decay</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>linout</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+           <span class='kw'>maxit</span> <span class='kw'>=</span> <span class='fl'>500</span>)
+
+<span class='co'># Plot VI scores</span>
+<span class='fu'>set.seed</span>(<span class='fl'>2021</span>)  <span class='co'># for reproducibility</span>
+<span class='no'>p1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='vip.html'>vip</a></span>(<span class='no'>pp</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"permute"</span>, <span class='kw'>target</span> <span class='kw'>=</span> <span class='st'>"y"</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rsquared"</span>,
+          <span class='kw'>pred_fun</span> <span class='kw'>=</span> <span class='no'>predict</span>) + <span class='fu'><a href='http://www.rdocumentation.org/packages/ggplot2/topics/labs'>ggtitle</a></span>(<span class='st'>"PPR"</span>)
+<span class='no'>p2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='vip.html'>vip</a></span>(<span class='no'>nn</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"permute"</span>, <span class='kw'>target</span> <span class='kw'>=</span> <span class='st'>"y"</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rsquared"</span>,
+          <span class='kw'>pred_fun</span> <span class='kw'>=</span> <span class='no'>predict</span>) + <span class='fu'><a href='http://www.rdocumentation.org/packages/ggplot2/topics/labs'>ggtitle</a></span>(<span class='st'>"NN"</span>)
+<span class='fu'><a href='grid.arrange.html'>grid.arrange</a></span>(<span class='no'>p1</span>, <span class='no'>p2</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+
+<span class='co'># Mean absolute error</span>
+<span class='no'>mae</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>actual</span>, <span class='no'>predicted</span>) {
+  <span class='fu'>mean</span>(<span class='fu'>abs</span>(<span class='no'>actual</span> - <span class='no'>predicted</span>))
+}
+
+<span class='co'># Permutation-based VIP with user-defined MAE metric</span>
+<span class='fu'>set.seed</span>(<span class='fl'>1101</span>)  <span class='co'># for reproducibility</span>
+<span class='fu'><a href='vip.html'>vip</a></span>(<span class='no'>pp</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"permute"</span>, <span class='kw'>target</span> <span class='kw'>=</span> <span class='st'>"y"</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='no'>mae</span>,
+    <span class='kw'>smaller_is_better</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+    <span class='kw'>pred_fun</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>object</span>, <span class='no'>newdata</span>) <span class='fu'>predict</span>(<span class='no'>object</span>, <span class='no'>newdata</span>)  <span class='co'># wrapper</span>
+) + <span class='fu'><a href='http://www.rdocumentation.org/packages/ggplot2/topics/labs'>ggtitle</a></span>(<span class='st'>"PPR"</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -220,7 +275,9 @@ additional column, called <code>Sign</code>, is also included which gives the si
       <li><a href="#value">Value</a></li>
 
       <li><a href="#details">Details</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>
