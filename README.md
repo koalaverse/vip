@@ -8,8 +8,10 @@ Status](https://travis-ci.org/koalaverse/vip.svg?branch=master)](https://travis-
 Status](https://ci.appveyor.com/api/projects/status/github/koalaverse/vip?branch=master&svg=true)](https://ci.appveyor.com/project/koalaverse/vip)
 [![Coverage
 Status](https://img.shields.io/codecov/c/github/bgreenwell/vip.svg)](https://codecov.io/github/bgreenwell/vip?branch=master)
-<http://cranlogs.r-pkg.org/badges/vip>
-<http://cranlogs.r-pkg.org/badges/grand-total/vip>
+[![CRAN RStudio mirror
+downloads](http://cranlogs.r-pkg.org/badges/vip)](http://www.r-pkg.org/pkg/vip)
+[![Total
+Downloads](http://cranlogs.r-pkg.org/badges/grand-total/vip)](http://www.r-pkg.org/badges/grand-total/vip)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
 
 ## Overview
