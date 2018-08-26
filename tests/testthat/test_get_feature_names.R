@@ -1,108 +1,125 @@
 context("get_feature_names()")
 
+
 test_that("get_feature_names() works for \"C50\" objects", {
   skip_if_not_installed("C50")
-  C50_model <- C50::C5.0(Species ~ ., data = iris)
-  expect_equal(get_feature_names(C50_model), names(iris)[1:4])
+  fit <- C50::C5.0(
+    Species ~ ., data = iris
+  )
+  expect_equal(get_feature_names(fit), names(iris)[1L:4L])
 
+})
+
+
+test_that("get_feature_names() works for \"constparty\" objects", {
+  skip_if_not_installed("partykit")
+  suppressWarnings(fit <- fit <- partykit::ctree(
+    mpg ~ ., data = mtcars
+  ))
+  expect_setequal(get_feature_names(fit), names(mtcars)[-1L])
 })
 
 
 test_that("get_feature_names() works for \"earth\" objects", {
   skip_if_not_installed("earth")
-  earth_model <- earth::earth(mpg ~ ., data = mtcars)
-  expect_setequal(get_feature_names(earth_model), names(mtcars)[-1])
+  fit <- earth::earth(
+    mpg ~ ., data = mtcars
+  )
+  expect_setequal(get_feature_names(fit), names(mtcars)[-1L])
 })
 
 
 test_that("get_feature_names() works for \"gbm\" objects", {
   skip_if_not_installed("gbm")
-  gbm_model <- gbm::gbm(Species ~ ., data = iris, distribution = "multinomial")
-  expect_setequal(get_feature_names(gbm_model), names(iris)[1:4])
+  fit <- gbm::gbm(
+    mpg ~ ., data = mtcars, distribution = "gaussian", n.trees = 1,
+    interaction.depth = 1, n.minobsinnode = 1
+  )
+  expect_setequal(get_feature_names(fit), names(mtcars)[-1L])
 })
 
 
-# test_that("get_feature_names extracts h2o object names", {
-#
-#   skip_on_cran()
-#   skip_on_travis()
-#   skip_on_appveyor()
-#
-#   y <- "mpg"
-#   x <- setdiff(names(mtcars), y)
-#   sink("temp"); h2o::h2o.init(); sink(NULL)
-#   df <- h2o::as.h2o(mtcars)
-#   h2o_model <- h2o::h2o.glm(x = x, y = y, training_frame = df)
-#   expect_setequal(get_feature_names(h2o_model), x)
-#   h2o::h2o.shutdown(prompt = FALSE)
-#
-# })
+test_that("get_feature_names() works for \"nnet\" objects", {
+  skip_if_not_installed("nnet")
+  fit <- nnet::nnet(mpg ~ ., data = mtcars, size = 1, trace = FALSE)
+  expect_setequal(get_feature_names(fit), names(mtcars)[-1L])
+})
+
+
+test_that("get_feature_names() works for \"randomForest\" objects", {
+  skip_if_not_installed("randomForest")
+  fit <- randomForest::randomForest(
+    mpg ~ ., data = mtcars, ntree = 1, mtry = 1
+  )
+  expect_setequal(get_feature_names(fit), names(mtcars)[-1L])
+})
+
+
+test_that("get_feature_names() works for \"ppr\" objects", {
+  fit <- stats::ppr(mpg ~ ., data = mtcars, nterms = 1)
+  expect_setequal(get_feature_names(fit), names(mtcars)[-1L])
+})
 
 
 test_that("get_feature_names() works for \"lm\" objects", {
-
-  lm_model <- stats::lm(mpg ~ ., data = mtcars)
-  expect_setequal(get_feature_names(lm_model), names(mtcars)[-1])
-
+  fit <- stats::lm(
+    mpg ~ ., data = mtcars
+  )
+  expect_setequal(get_feature_names(fit), names(mtcars)[-1L])
 })
 
 
 test_that("get_feature_names() works for \"nls\" objects", {
-
-  nls_model <- stats::nls(mpg ~ SSlogis(log(wt), Asym, xmid, scal), data = mtcars)
-  expect_setequal(get_feature_names(nls_model), c("wt", "Asym", "xmid", "scal"))
-
+  fit <- stats::nls(
+    mpg ~ SSlogis(log(wt), Asym, xmid, scal), data = mtcars
+  )
+  expect_setequal(get_feature_names(fit), "wt")
 })
 
 
 test_that("get_feature_names() works for \"rpart\" objects", {
-
-  rpart_model <- rpart::rpart(Species ~ ., data = iris)
-  expect_setequal(get_feature_names(rpart_model), names(iris)[1:4])
-
+  skip_if_not_installed("rpart")
+  fit <- rpart::rpart(
+    mpg ~ ., data = mtcars
+  )
+  expect_setequal(get_feature_names(fit), names(mtcars)[-1L])
 })
 
 
 test_that("get_feature_names() works for \"train\" objects", {
-
   skip_if_not_installed("caret")
-  caret_model <- caret::train(mpg ~ ., data = mtcars, method = "glm")
-  expect_setequal(get_feature_names(caret_model), names(mtcars)[-1])
-
+  fit <- caret::train(
+    mpg ~ ., data = mtcars, method = "lm"
+  )
+  expect_setequal(get_feature_names(fit), names(mtcars)[-1L])
 })
 
 
 test_that("get_feature_names() works for \"glmnet\" objects", {
-
   skip_if_not_installed("glmnet")
-  y <- mtcars$mpg
-  x <- stats::model.matrix(mpg ~ ., data = mtcars)[, -1]
-  glmnet_model <- glmnet::glmnet(x = x, y = y)
-  expect_setequal(get_feature_names(glmnet_model), names(mtcars)[-1])
-
+  fit <- glmnet::glmnet(
+    x = stats::model.matrix(mpg ~ ., data = mtcars)[, -1], y = mtcars$mpg,
+    nlambda = 1
+  )
+  expect_setequal(get_feature_names(fit), names(mtcars)[-1L])
 })
 
+
 test_that("get_feature_names() works for \"ranger\" objects", {
-
   skip_if_not_installed("ranger")
-
-  for (write_forest in c(TRUE, FALSE)) {
-    for (import in c("none", "impurity")) {
-      if (! write_forest && identical(import, "none")) next
-      ranger_model <- ranger::ranger(Species ~ .,
-                                     data = iris,
-                                     importance = import,
-                                     write.forest = write_forest)
-      expect_setequal(get_feature_names(ranger_model), names(iris)[1:4])
+  for (.write.forest in c(TRUE, FALSE)) {
+    for (.importance in c("none", "impurity")) {
+      if (!.write.forest && .importance == "none") next
+      fit <- ranger::ranger(
+        mpg ~ ., data = mtcars, num.trees = 1, importance = .importance,
+        write.forest = .write.forest
+      )
+      expect_setequal(get_feature_names(fit), names(mtcars)[-1L])
     }
   }
-
-  ranger_model <- ranger::ranger(Species ~ .,
-                                 data = iris,
-                                 importance = "none",
-                                 write.forest = FALSE)
-  expect_error(get_feature_names(ranger_model),
-               regexp = paste("^Unable to recover feature names from ranger models",
-                              "with `importance = \"none\"` and `write.forest = FALSE`.$"))
-
+  fit <- ranger::ranger(
+    mpg ~ ., data = mtcars, num.trees = 1, importance = "none",
+    write.forest = FALSE
+  )
+  expect_error(get_feature_names(ranger_model))
 })

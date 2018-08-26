@@ -64,7 +64,8 @@ get_feature_names.lm <- function(object, ...) {
 
 #' @keywords internal
 get_feature_names.nls <- function(object, ...) {
-  all.vars(stats::formula(object)[[3L]])
+  # all.vars(stats::formula(object)[[3L]])  # returns all params
+  names(object$dataClasses)
 }
 
 
@@ -111,7 +112,8 @@ get_feature_names.ranger <- function(object, ...) {
 
 #' @keywords internal
 get_feature_names.rpart <- function(object, ...) {
-  names(object$variable.importance)
+  # names(object$variable.importance)
+  all.vars(stats::formula(object)[[3L]])
 }
 
 
