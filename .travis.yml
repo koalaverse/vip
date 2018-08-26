@@ -3,6 +3,3 @@
 language: R
 sudo: false
 cache: packages
-
-# GitHub packages
-r_github_packages: hadley/emo

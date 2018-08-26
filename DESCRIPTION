@@ -56,6 +56,7 @@ Suggests:
     rmarkdown,
     rpart,
     testthat,
-    xgboost
+    xgboost,
+    covr
 RoxygenNote: 6.1.0
 VignetteBuilder: knitr
