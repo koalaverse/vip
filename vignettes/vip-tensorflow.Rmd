@@ -116,13 +116,12 @@ A simple measure of variable importance can be obtained using the permutation ap
 set.seed(102)  # for reproducibility
 p1 <- vip(
   object = model,                     # fitted model
-  method = "permute",                 # permutation-based VI scores
+  method = "permute",                 # request permutation-based VI scores
   num_features = ncol(train_x),       # default only plots top 10 features
-  feature_names = colnames(train_x),  # feature names in training data
   pred_fun = pred_wrapper,            # user-defined prediction function
-  obs = train_y,                      # response values used for training
+  target = train_y,            # name of the target variable column
   metric = "rsquared",                # evaluation metric
-  train = as.data.frame(train_x)      # training data
+  train = as.data.frame(train_x),     # training data
   # progress = "text"                 # request a text-based progress bar
 )
 print(p1)  # display plot

@@ -41,4 +41,4 @@ if (!requireNamespace("devtools")) {
 devtools::install_github("koalaverse/vip")
 ```
 
-For details and example usage, click the [Get started](https://koalaverse.github.io/vip/articles/vip.html) tab on the [`vip` package website](https://koalaverse.github.io/vip/index.html).
+For details and example usage, visit the [**vip** package website](https://koalaverse.github.io/vip/index.html).

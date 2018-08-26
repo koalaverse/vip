@@ -16,8 +16,8 @@
 #' @param horizontal Logical indicating whether or not to plot the importance
 #' scores on the x-axis (\code{TRUE}). Default is \code{TRUE}.
 #'
-#' @param alpha Numeric value between 0 and 1 giving the trasparency of the
-#' bars.
+#' @param alpha Numeric value between 0 and 1 giving the transparency of the
+#' bars (\code{bar = TRUE}) or points (\code{bar = FALSE}).
 #'
 #' @param color Character string specifying the color to use for the borders of
 #' the bars. Could also be a function, such as

@@ -14,7 +14,7 @@
 #' @param feature_names Character string giving the names of the predictor
 #' variables (i.e., features) of interest.
 #'
-#' @param FUN List with two componenets, \code{"cat"} and \code{"con"},
+#' @param FUN List with two components, \code{"cat"} and \code{"con"},
 #' containing the functions to use for categorical and continuous features,
 #' respectively. If \code{NULL}, the standard deviation is used for continuous
 #' features. For categorical features, the range statistic is used (i.e.,
@@ -74,17 +74,19 @@ vi <- function(
 
   # Construct VI scores
   method <- match.arg(method)
-  if (method %in% c("pdp", "ice", "permute")) {
+  if (method %in% c("pdp", "ice")) {
     if (missing(feature_names)) {
       feature_names <- get_feature_names(object)
     }
   }
 
+  # Construct tibble of VI scores
   tib <- switch(method,
-                "model" = vi_model(object, ...),
-                "pdp" = vi_pdp(object, feature_names = feature_names, FUN = FUN, ...),
-                "ice" = vi_ice(object, feature_names = feature_names, FUN = FUN, ...),
-                vi_permute(object, feature_names = feature_names, ...))
+    "model" = vi_model(object, ...),
+    "pdp" = vi_pdp(object, feature_names = feature_names, FUN = FUN, ...),
+    "ice" = vi_ice(object, feature_names = feature_names, FUN = FUN, ...),
+    vi_permute(object, feature_names = feature_names, ...)
+  )
 
   # Save attribute
   vi_type <- attr(tib, which = "type")

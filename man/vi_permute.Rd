@@ -7,9 +7,9 @@
 \usage{
 vi_permute(object, ...)
 
-\method{vi_permute}{default}(object, train, response_name,
-  metric = "auto", smaller_is_better = NULL, pos_class = NULL,
-  pred_fun = NULL, progress = "none", parallel = FALSE,
+\method{vi_permute}{default}(object, train, target, metric = "auto",
+  smaller_is_better = NULL, reference_class = NULL, pred_fun = NULL,
+  verbose = FALSE, progress = "none", parallel = FALSE,
   paropts = NULL, ...)
 }
 \arguments{
@@ -17,28 +17,34 @@ vi_permute(object, ...)
 
 \item{...}{Additional optional arguments. (Currently ignored.)}
 
-\item{train}{Data frame containing the original training data.}
+\item{train}{A matrix-like R object (e.g., a data frame or matrix)
+containing the training data.}
 
-\item{response_name}{Character string giving the name (or position) of the
-traget column in \code{train}.}
+\item{target}{Either a character string giving the name (or position) of the
+target column in \code{train} or, if \code{train} only contains feature
+columns, a vector containing the target values used to train \code{object}.}
 
 \item{metric}{Either a function or character string specifying the
-performancefor metric to use in computing model performance (e.g.,
-RMSE for regression or accuracy for binary classification). If \code{metric}
-is a function, then it requires two arguments, \code{actual} and
-\code{predicted}, and should return a single, numeric value.}
+performance metric to use in computing model performance (e.g., RMSE for
+regression or accuracy for binary classification). If \code{metric} is a
+function, then it requires two arguments, \code{actual} and \code{predicted},
+and should return a single, numeric value.}
 
 \item{smaller_is_better}{Logical indicating whether or not a smaller value
 of \code{metric} is better. Default is \code{NULL}. Must be supplied if
 \code{metric} is a user-supplied function.}
 
-\item{pos_class}{Character string specifying which category in `obs`
-represents the "positive" class (i.e., the class for which the predicted
-class probabilties correspond to). Only needed for binary classification
+\item{reference_class}{Character string specifying which response category
+represents the "reference" class (i.e., the class for which the predicted
+class probabilities correspond to). Only needed for binary classification
 problems.}
 
 \item{pred_fun}{Optional prediction function that requires two arguments,
-\code{object} and \code{newdata}. Default is \code{NULL}.}
+\code{object} and \code{newdata}. Default is \code{NULL}. Must be supplied
+whenever \code{metric} is a custom function.}
+
+\item{verbose}{Logical indicating whether or not to print information during
+the construction of variable importance scores. Default is \code{FALSE}.}
 
 \item{progress}{Character string giving the name of the progress bar to use.
 See \code{\link[plyr]{create_progress_bar}} for details. Default is
@@ -64,4 +70,46 @@ model. (This function is meant for internal use only.)
 }
 \details{
 Coming soon!
+}
+\examples{
+\dontrun{
+# Load required packages
+library(ggplot2)  # for ggtitle() function
+library(mlbench)  # for ML benchmark data sets
+library(nnet)     # for fitting neural networks
+
+# Simulate training data
+set.seed(101)  # for reproducibility
+trn <- as.data.frame(mlbench.friedman1(500))  # ?mlbench.friedman1
+
+# Inspect data
+tibble::as.tibble(trn)
+
+# Fit PPR and NN models (hyperparameters were chosen using the caret package
+# with 5 repeats of 5-fold cross-validation)
+pp <- ppr(y ~ ., data = trn, nterms = 11)
+set.seed(0803) # for reproducibility
+nn <- nnet(y ~ ., data = trn, size = 7, decay = 0.1, linout = TRUE,
+           maxit = 500)
+
+# Plot VI scores
+set.seed(2021)  # for reproducibility
+p1 <- vip(pp, method = "permute", target = "y", metric = "rsquared",
+          pred_fun = predict) + ggtitle("PPR")
+p2 <- vip(nn, method = "permute", target = "y", metric = "rsquared",
+          pred_fun = predict) + ggtitle("NN")
+grid.arrange(p1, p2, ncol = 2)
+
+# Mean absolute error
+mae <- function(actual, predicted) {
+  mean(abs(actual - predicted))
+}
+
+# Permutation-based VIP with user-defined MAE metric
+set.seed(1101)  # for reproducibility
+vip(pp, method = "permute", target = "y", metric = mae,
+    smaller_is_better = TRUE,
+    pred_fun = function(object, newdata) predict(object, newdata)  # wrapper
+) + ggtitle("PPR")
+}
 }

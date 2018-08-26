@@ -8,7 +8,7 @@
 #' @param feature_names Character string giving the names of the predictor
 #' variables (i.e., features) of interest.
 #'
-#' @param FUN List with two componenets, \code{"cat"} and \code{"con"},
+#' @param FUN List with two components, \code{"cat"} and \code{"con"},
 #' containing the functions to use for categorical and continuous features,
 #' respectively. If \code{NULL}, the standard deviation is used for continuous
 #' features. For categorical features, the range statistic is used (i.e.,

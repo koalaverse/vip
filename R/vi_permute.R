@@ -5,33 +5,39 @@
 #'
 #' @param object A fitted model object (e.g., a \code{"randomForest"} object).
 #'
-#' @param train Data frame containing the original training data.
+#' @param train A matrix-like R object (e.g., a data frame or matrix)
+#' containing the training data.
 #'
-#' @param response_name Character string giving the name (or position) of the
-#' traget column in \code{train}.
-#'
-#' @param pred_fun Optional prediction function that requires two arguments,
-#' \code{object} and \code{newdata}. Default is \code{NULL}.
+#' @param target Either a character string giving the name (or position) of the
+#' target column in \code{train} or, if \code{train} only contains feature
+#' columns, a vector containing the target values used to train \code{object}.
 #'
 #' @param metric Either a function or character string specifying the
-#' performancefor metric to use in computing model performance (e.g.,
-#' RMSE for regression or accuracy for binary classification). If \code{metric}
-#' is a function, then it requires two arguments, \code{actual} and
-#' \code{predicted}, and should return a single, numeric value.
+#' performance metric to use in computing model performance (e.g., RMSE for
+#' regression or accuracy for binary classification). If \code{metric} is a
+#' function, then it requires two arguments, \code{actual} and \code{predicted},
+#' and should return a single, numeric value.
 #'
 #' @param smaller_is_better Logical indicating whether or not a smaller value
 #' of \code{metric} is better. Default is \code{NULL}. Must be supplied if
 #' \code{metric} is a user-supplied function.
 #'
-#' @param pos_class Character string specifying which category in `obs`
-#' represents the "positive" class (i.e., the class for which the predicted
-#' class probabilties correspond to). Only needed for binary classification
+#' @param reference_class Character string specifying which response category
+#' represents the "reference" class (i.e., the class for which the predicted
+#' class probabilities correspond to). Only needed for binary classification
 #' problems.
+#'
+#' @param pred_fun Optional prediction function that requires two arguments,
+#' \code{object} and \code{newdata}. Default is \code{NULL}. Must be supplied
+#' whenever \code{metric} is a custom function.
 #'
 #' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
 #' \code{Variable} and \code{Importance}. For \code{"glm"}-like object, an
 #' additional column, called \code{Sign}, is also included which gives the sign
 #' (i.e., POS/NEG) of the original coefficient.
+#'
+#' @param verbose Logical indicating whether or not to print information during
+#' the construction of variable importance scores. Default is \code{FALSE}.
 #'
 #' @param progress Character string giving the name of the progress bar to use.
 #' See \code{\link[plyr]{create_progress_bar}} for details. Default is
@@ -62,7 +68,7 @@
 #'
 #' # Simulate training data
 #' set.seed(101)  # for reproducibility
-#' trn <- as.data.frame(mlbench.friedman1(500)  # ?mlbench.friedman1
+#' trn <- as.data.frame(mlbench.friedman1(500))  # ?mlbench.friedman1
 #'
 #' # Inspect data
 #' tibble::as.tibble(trn)
@@ -76,9 +82,9 @@
 #'
 #' # Plot VI scores
 #' set.seed(2021)  # for reproducibility
-#' p1 <- vip(pp, method = "permute", response_name = "y", metric = "rsquared",
+#' p1 <- vip(pp, method = "permute", target = "y", metric = "rsquared",
 #'           pred_fun = predict) + ggtitle("PPR")
-#' p2 <- vip(nn, method = "permute", response_name = "y", metric = "rsquared",
+#' p2 <- vip(nn, method = "permute", target = "y", metric = "rsquared",
 #'           pred_fun = predict) + ggtitle("NN")
 #' grid.arrange(p1, p2, ncol = 2)
 #'
@@ -89,12 +95,11 @@
 #'
 #' # Permutation-based VIP with user-defined MAE metric
 #' set.seed(1101)  # for reproducibility
-#' vip(pp, method = "permute",
-#'     response_name = "y",
-#'     metric = mae,
+#' vip(pp, method = "permute", target = "y", metric = mae,
 #'     smaller_is_better = TRUE,
 #'     pred_fun = function(object, newdata) predict(object, newdata)  # wrapper
 #' ) + ggtitle("PPR")
+#' }
 vi_permute <- function(object, ...) {
   UseMethod("vi_permute")
 }
@@ -103,19 +108,9 @@ vi_permute <- function(object, ...) {
 #' @rdname vi_permute
 #'
 #' @export
-vi_permute.default <- function(
-  object,
-  train,
-  response_name,
-  # perf_fun = NULL,
-  metric = "auto",  # add log loss, auc, mae, mape, etc.
-  smaller_is_better = NULL,
-  pos_class = NULL,
-  pred_fun = NULL,
-  progress = "none",
-  parallel = FALSE,
-  paropts = NULL,
-  ...
+vi_permute.default <- function(object, train, target, metric = "auto",
+  smaller_is_better = NULL, reference_class = NULL, pred_fun = NULL,
+  verbose = FALSE, progress = "none", parallel = FALSE, paropts = NULL, ...
 ) {
 
   # Issue warning until this function is complete!
@@ -127,11 +122,16 @@ vi_permute.default <- function(
     train <- get_training_data(object)
   }
 
-  # Feature names
-  feature_names <- setdiff(names(train), response_name)
-
-  # Observed (training) response values
-  obs <- train[[response_name]]
+  # Extract feature names and separate features from target (if necessary)
+  if (is.character(target)) {
+    feature_names <- setdiff(colnames(train), target)
+    train_x <- train[, feature_names]
+    train_y <- train[, target, drop = TRUE]
+  } else {
+    feature_names <- colnames(train)
+    train_x <- train
+    train_y <- target
+  }
 
   # Metric
   if (is.function(metric)) {  # user-supplied function
@@ -150,7 +150,7 @@ vi_permute.default <- function(
            call. = FALSE)
     } else {
       # Check prediction function arguments
-      if (!identical(c("object", "newdata"), names(formals(pred_fun)))) {
+      if (!all(c("object", "newdata") %in% names(formals(pred_fun)))) {
         stop("`pred_fun()` must be a function with arguments `object` and ",
              "`newdata`.", call. = FALSE)
       }
@@ -229,17 +229,21 @@ vi_permute.default <- function(
       pred_fun <- get_predictions(object, type = type)
     }
 
-  }
+    # Determine reference class (binary classification only)
+    if (is.null(reference_class) && metric %in% c("auc", "logloss")) {
+      stop("Please specify the reference class via the `reference_class` ",
+           "argument when using \"auc\" or \"logloss\".")
+    }
+    if (!is.null(reference_class) && metric %in% c("auc", "logloss")) {
+      train_y <- ifelse(train_y == reference_class, yes = 1, no = 0)
+    }
 
-  # Determine reference class (classification only)
-  if (!is.null(pos_class)) {
-    obs <- ifelse(obs == pos_class, yes = 1, no = 0)
   }
 
   # Compute baseline metric for comparison
   baseline <- perf_fun(
-    actual = obs,
-    predicted = pred_fun(object, newdata = train)
+    actual = train_y,
+    predicted = pred_fun(object, newdata = train_x)
   )
 
   # Construct VI scores
@@ -253,11 +257,14 @@ vi_permute.default <- function(
   vis <- unlist(plyr::llply(feature_names, .progress = progress,
     .parallel = parallel, .paropts = paropts,
     .fun = function(x) {
-      copy <- train  # make copy
-      copy[[x]] <- sample(copy[[x]])  # permute values
+      if (verbose && !parallel) {
+        message("Computing variable importance for ", x, "...")
+      }
+      train_x_permuted <- train_x  # make copy
+      train_x_permuted[[x]] <- sample(train_x_permuted[[x]])  # permute values
       permuted <- perf_fun(
-        actual = obs,
-        predicted = pred_fun(object, newdata = copy)
+        actual = train_y,
+        predicted = pred_fun(object, newdata = train_x_permuted)
       )
       if (smaller_is_better) {
         permuted - baseline

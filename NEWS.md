@@ -6,7 +6,7 @@
 
 * Changed `truncate_feature_names` argument of `vi()` to `abbreviate_feature_names` which abbreviates all feature names, rather than just truncating them.
 
-* Added CRAN badge [(#32)](https://github.com/koalaverse/vip/issues/32).
+* Added CRAN-related badges [(#32)](https://github.com/koalaverse/vip/issues/32).
 
 * New generic `vi_permute()` for constructing permutation-based variable importance scores [(#19)](https://github.com/koalaverse/vip/issues/19).
 
