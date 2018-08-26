@@ -16,7 +16,8 @@
 #' performance metric to use in computing model performance (e.g., RMSE for
 #' regression or accuracy for binary classification). If \code{metric} is a
 #' function, then it requires two arguments, \code{actual} and \code{predicted},
-#' and should return a single, numeric value.
+#' and should return a single, numeric value. Ideally, this should be the same
+#' metric that was to train \code{object}.
 #'
 #' @param smaller_is_better Logical indicating whether or not a smaller value
 #' of \code{metric} is better. Default is \code{NULL}. Must be supplied if
