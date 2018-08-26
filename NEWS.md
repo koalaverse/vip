@@ -1,4 +1,4 @@
-# vip 0.1.1
+# vip 0.1.0.9000
 
 * Fixed bug in `get_feature_names.ranger()` s.t. it never returns `NULL`; it either returns the feature names or throws an error if they cannot be recovered from the model object [(#43)](https://github.com/koalaverse/vip/issues/43).
 
