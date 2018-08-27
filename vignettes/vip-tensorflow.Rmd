@@ -5,10 +5,6 @@ author: "Brandon M. Greenwell and Bradley C. Boehmke"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 bibliography: vip.bib
-vignette: >
-  %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include = FALSE}

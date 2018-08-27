@@ -59,4 +59,3 @@ Suggests:
     xgboost,
     covr
 RoxygenNote: 6.1.0
-VignetteBuilder: knitr
