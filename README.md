@@ -32,13 +32,12 @@ found here: <https://github.com/christophM/interpretable-ml-book>.
 # The easiest way to get vip is to install it from CRAN:
 install.packages("vip")
 
-# ALternatively, you can install the development version from GitHub:
+# Alternatively, you can install the development version from GitHub:
 if (!requireNamespace("devtools")) {
   install.packages("devtools")
 }
 devtools::install_github("koalaverse/vip")
 ```
 
-For details and example usage, click the [Get
-started](https://koalaverse.github.io/vip/articles/vip.html) tab on the
-[`vip` package website](https://koalaverse.github.io/vip/index.html).
+For details and example usage, visit the [**vip** package
+website](https://koalaverse.github.io/vip/index.html).

@@ -34,7 +34,7 @@ knitr::opts_chunk$set(
 # The easiest way to get vip is to install it from CRAN:
 install.packages("vip")
 
-# ALternatively, you can install the development version from GitHub:
+# Alternatively, you can install the development version from GitHub:
 if (!requireNamespace("devtools")) {
   install.packages("devtools")
 }
