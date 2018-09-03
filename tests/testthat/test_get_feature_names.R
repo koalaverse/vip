@@ -13,7 +13,7 @@ test_that("get_feature_names() works for \"C50\" objects", {
 
 test_that("get_feature_names() works for \"constparty\" objects", {
   skip_if_not_installed("partykit")
-  suppressWarnings(fit <- fit <- partykit::ctree(
+  suppressWarnings(fit <- partykit::ctree(
     mpg ~ ., data = mtcars
   ))
   expect_setequal(get_feature_names(fit), names(mtcars)[-1L])
