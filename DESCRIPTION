@@ -10,7 +10,10 @@ Authors@R: c(
   person("Brad", "Boehmke",
          email = "bradleyboehmke@gmail.com",
          role = c("aut"),
-         comment = c(ORCID = "0000-0002-3611-8516"))
+         comment = c(ORCID = "0000-0002-3611-8516")),
+  person("Bernie", "Gray",
+         email = "bfgray3@gmail.com",
+         role = c("aut"))
   )
 Description: A general framework for constructing variable importance plots from 
   various types machine learning models in R. Aside from some standard model-
