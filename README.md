@@ -7,7 +7,7 @@ Status](https://travis-ci.org/koalaverse/vip.svg?branch=master)](https://travis-
 [![AppVeyor Build
 Status](https://ci.appveyor.com/api/projects/status/github/koalaverse/vip?branch=master&svg=true)](https://ci.appveyor.com/project/koalaverse/vip)
 [![Coverage
-Status](https://img.shields.io/codecov/c/github/bgreenwell/vip.svg)](https://codecov.io/github/bgreenwell/vip?branch=master)
+Status](https://img.shields.io/codecov/c/github/koalaverse/vip/master.svg)](https://codecov.io/github/koalaverse/vip?branch=master)
 [![CRAN RStudio mirror
 downloads](http://cranlogs.r-pkg.org/badges/vip)](http://www.r-pkg.org/pkg/vip)
 [![Total
