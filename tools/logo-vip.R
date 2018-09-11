@@ -40,8 +40,8 @@ g <- ggplot() +
         panel.grid.minor = element_blank())
 print(g)
 
-png("tools/logo-vip.png", width = 181, height = 209,
-    bg = "transparent", type = "cairo-png")
+png("man/figures/logo-vip.png", width = 181, height = 209,
+    bg = "transparent", type = "quartz")
 print(g)
 dev.off()
 
