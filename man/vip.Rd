@@ -71,4 +71,5 @@ vip(vi_scores, bar = FALSE, size = 3, horiz = FALSE)
 vi_scores <- model \%>\%
   vi(method = "ice") \%T>\%
   {print(vip(.))}
+vi_scores
 }

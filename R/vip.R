@@ -62,6 +62,7 @@
 #' vi_scores <- model %>%
 #'   vi(method = "ice") %T>%
 #'   {print(vip(.))}
+#' vi_scores
 vip <- function(object, ...) {
   UseMethod("vip")
 }
@@ -74,7 +75,7 @@ vip.default <- function(
   object, num_features = 10L, bar = TRUE, width = 0.75, horizontal = TRUE,
   alpha = 1, color = "grey35", fill = "grey35", size = 1, shape = 19, ...
 ) {
-  imp <- if (inherits(vi_scores, what = "vi")) {
+  imp <- if (inherits(object, what = "vi")) {
     object
   } else {
     vi(object, ...)  # compute variable importance scores
