@@ -2,7 +2,8 @@
 #'
 #' Plot variable importance scores for the predictors in a model.
 #'
-#' @param object A fitted model object (e.g., a \code{"randomForest"} object).
+#' @param object A fitted model object (e.g., a \code{"randomForest"} object) or
+#' an object that inherits from class \code{"vi"}.
 #'
 #' @param num_features Integer specifying the number of variable importance
 #' scores to plot. Default is \code{10}.
@@ -52,6 +53,10 @@
 #'
 #' # Construct variable importance plot
 #' vip(mtcars.ppr, method = "ice")
+#'
+#' # Better yet, store the variable importance scores and then plot
+#' vi_scores <- vi(mtcars.ppr, method = "ice")
+#' vip(vi_scores, bar = FALSE, size = 3, horiz = FALSE)
 vip <- function(object, ...) {
   UseMethod("vip")
 }
@@ -64,7 +69,11 @@ vip.default <- function(
   object, num_features = 10L, bar = TRUE, width = 0.75, horizontal = TRUE,
   alpha = 1, color = "grey35", fill = "grey35", size = 1, shape = 19, ...
 ) {
-  imp <- vi(object, ...)  # variable importance scores
+  imp <- if (inherits(vi_scores, what = "vi")) {
+    object
+  } else {
+    vi(object, ...)  # compute variable importance scores
+  }
   vi_type <- attr(imp, which = "type")  # subsetting removes this attribute!
   num_features <- as.integer(num_features)[1L]  # make sure num_features is a single integer
   if (num_features > nrow(imp) || num_features < 1L) {

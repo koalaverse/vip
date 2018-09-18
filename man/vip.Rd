@@ -12,7 +12,8 @@ vip(object, ...)
   fill = "grey35", size = 1, shape = 19, ...)
 }
 \arguments{
-\item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
+\item{object}{A fitted model object (e.g., a \code{"randomForest"} object) or
+an object that inherits from class \code{"vi"}.}
 
 \item{...}{Additional optional arguments to be passed onto \code{\link{vi}}.}
 
@@ -61,4 +62,8 @@ mtcars.ppr <- ppr(mpg ~ ., data = mtcars, nterms = 1)
 
 # Construct variable importance plot
 vip(mtcars.ppr, method = "ice")
+
+# Better yet, store the variable importance scores and then plot
+vi_scores <- vi(mtcars.ppr, method = "ice")
+vip(vi_scores, bar = FALSE, size = 3, horiz = FALSE)
 }
