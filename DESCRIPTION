@@ -1,7 +1,7 @@
 Package: vip
 Type: Package
 Title: Variable Importance Plots
-Version: 0.1.0.9000
+Version: 0.1.1
 Authors@R: c(
   person("Brandon", "Greenwell", 
           email = "greenwell.brandon@gmail.com",
@@ -34,12 +34,12 @@ Imports:
     plyr,
     stats,
     tibble,
-    tidyr,
     utils
 Suggests:
     C50,
     caret,
     Ckmeans.1d.dp,
+    covr,
     doParallel,
     dplyr,
     earth,
@@ -58,7 +58,7 @@ Suggests:
     ranger,
     rmarkdown,
     rpart,
+    sparklyr,
     testthat,
-    xgboost,
-    covr
+    xgboost
 RoxygenNote: 6.1.0

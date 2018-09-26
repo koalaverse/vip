@@ -11,6 +11,12 @@
 \alias{vi_model.H2OMultinomialModel}
 \alias{vi_model.H2ORegressionModel}
 \alias{vi_model.lm}
+\alias{vi_model.ml_model_decision_tree_regression}
+\alias{vi_model.ml_model_decision_tree_classification}
+\alias{vi_model.ml_model_gbt_regression}
+\alias{vi_model.ml_model_gbt_classification}
+\alias{vi_model.ml_model_random_forest_regression}
+\alias{vi_model.ml_model_random_forest_classification}
 \alias{vi_model.randomForest}
 \alias{vi_model.RandomForest}
 \alias{vi_model.ranger}
@@ -38,6 +44,18 @@ vi_model(object, ...)
 \method{vi_model}{H2ORegressionModel}(object, ...)
 
 \method{vi_model}{lm}(object, ...)
+
+\method{vi_model}{ml_model_decision_tree_regression}(object, ...)
+
+\method{vi_model}{ml_model_decision_tree_classification}(object, ...)
+
+\method{vi_model}{ml_model_gbt_regression}(object, ...)
+
+\method{vi_model}{ml_model_gbt_classification}(object, ...)
+
+\method{vi_model}{ml_model_random_forest_regression}(object, ...)
+
+\method{vi_model}{ml_model_random_forest_classification}(object, ...)
 
 \method{vi_model}{randomForest}(object, ...)
 

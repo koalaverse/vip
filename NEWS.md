@@ -1,4 +1,4 @@
-# vip 0.1.0.9000
+# vip 0.1.1
 
 * Fixed bug in `get_feature_names.ranger()` s.t. it never returns `NULL`; it either returns the feature names or throws an error if they cannot be recovered from the model object [(#43)](https://github.com/koalaverse/vip/issues/43).
 
@@ -13,6 +13,8 @@
 * Fixed bug and unnecessary error check in `vint()` [(#38)](https://github.com/koalaverse/vip/issues/38).
 
 * New vignette on using `vip` with unsupported models (using the Keras API to TensorFlow as an example).
+
+* Added basic [sparklyr](http://spark.rstudio.com/mlib/) support.
 
 
 # vip 0.1.0
