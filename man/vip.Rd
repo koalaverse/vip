@@ -12,7 +12,8 @@ vip(object, ...)
   fill = "grey35", size = 1, shape = 19, ...)
 }
 \arguments{
-\item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
+\item{object}{A fitted model object (e.g., a \code{"randomForest"} object) or
+an object that inherits from class \code{"vi"}.}
 
 \item{...}{Additional optional arguments to be passed onto \code{\link{vi}}.}
 
@@ -57,8 +58,18 @@ Plot variable importance scores for the predictors in a model.
 data(mtcars)
 
 # Fit a projection pursuit regression model
-mtcars.ppr <- ppr(mpg ~ ., data = mtcars, nterms = 1)
+model <- ppr(mpg ~ ., data = mtcars, nterms = 1)
 
 # Construct variable importance plot
-vip(mtcars.ppr, method = "ice")
+vip(model, method = "ice")
+
+# Better yet, store the variable importance scores and then plot
+vi_scores <- vi(model, method = "ice")
+vip(vi_scores, bar = FALSE, size = 3, horiz = FALSE)
+
+# The \\code{\\link[magrittr]{\\\%T>\\\%}} operator is imported for convenience
+vi_scores <- model \%>\%
+  vi(method = "ice") \%T>\%
+  {print(vip(.))}
+vi_scores
 }

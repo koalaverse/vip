@@ -112,6 +112,9 @@ vi <- function(
   # Restore attribute
   attr(tib, which = "type") <- vi_type
 
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
   # Return results
   tib
 
