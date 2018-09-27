@@ -15,6 +15,8 @@
 \alias{vi_model.ml_model_decision_tree_classification}
 \alias{vi_model.ml_model_gbt_regression}
 \alias{vi_model.ml_model_gbt_classification}
+\alias{vi_model.ml_model_generalized_linear_regression}
+\alias{vi_model.ml_model_linear_regression}
 \alias{vi_model.ml_model_random_forest_regression}
 \alias{vi_model.ml_model_random_forest_classification}
 \alias{vi_model.randomForest}
@@ -52,6 +54,10 @@ vi_model(object, ...)
 \method{vi_model}{ml_model_gbt_regression}(object, ...)
 
 \method{vi_model}{ml_model_gbt_classification}(object, ...)
+
+\method{vi_model}{ml_model_generalized_linear_regression}(object, ...)
+
+\method{vi_model}{ml_model_linear_regression}(object, ...)
 
 \method{vi_model}{ml_model_random_forest_regression}(object, ...)
 
