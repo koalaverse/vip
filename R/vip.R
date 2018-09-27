@@ -89,13 +89,25 @@ vip.default <- function(
   x.string <- "reorder(Variable, Importance)"
   p <- ggplot2::ggplot(imp, ggplot2::aes_string(x = x.string, y = "Importance"))
   p <- if (bar) {
-    p + ggplot2::geom_col(
-      width = width, color = color, fill = fill, alpha = alpha
-    )
+    if ("Sign" %in% names(imp)) {
+      p + ggplot2::geom_col(aes(color = Sign, fill = Sign),
+                            width = width, alpha = alpha
+      )
+    } else {
+      p + ggplot2::geom_col(
+        width = width, color = color, fill = fill, alpha = alpha
+      )
+    }
   } else {
-    p + ggplot2::geom_point(
-      color = color, alpha = alpha, size = size, shape = shape
-    )
+    if ("Sign" %in% names(imp)) {
+      p + ggplot2::geom_point(aes(color = Sign),
+                              alpha = alpha, size = size, shape = shape
+      )
+    } else {
+      p + ggplot2::geom_point(
+        color = color, alpha = alpha, size = size, shape = shape
+      )
+    }
   }
   p <- p + ggplot2::theme(legend.position = "none")
   p <- p + ggplot2::xlab("")  # no need for x-axis label
