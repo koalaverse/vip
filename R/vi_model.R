@@ -306,6 +306,56 @@ vi_model.ml_model_gbt_classification <- function(object, ...) {
 #' @rdname vi_model
 #'
 #' @export
+vi_model.ml_model_generalized_linear_regression <- function(object, ...) {
+
+  # Construct model-based variable importance scores
+  vis <- sparklyr::tidy(object, ...)[, c("term", "statistic")]
+  if (vis$term[1L] == "(Intercept)") {
+    vis <- vis[-1L, ]
+  }
+  vis$Sign <- ifelse(sign(vis$statistic) == 1, yes = "POS", no = "NEG")
+  vis$statistic <- abs(vis$statistic)
+  names(vis) <- c("Variable", "Importance", "Sign")
+  type <- "spark_glm"
+  tib <- tibble::as_tibble(vis)
+
+  # Add variable importance type attribute
+  attr(tib, "type") <- type
+
+  # Return results
+  tib
+
+}
+
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.ml_model_linear_regression <- function(object, ...) {
+
+  # Construct model-based variable importance scores
+  vis <- sparklyr::tidy(object, ...)[, c("term", "statistic")]
+  if (vis$term[1L] == "(Intercept)") {
+    vis <- vis[-1L, ]
+  }
+  vis$Sign <- ifelse(sign(vis$statistic) == 1, yes = "POS", no = "NEG")
+  vis$statistic <- abs(vis$statistic)
+  names(vis) <- c("Variable", "Importance", "Sign")
+  type <- "spark_lm"
+  tib <- tibble::as_tibble(vis)
+
+  # Add variable importance type attribute
+  attr(tib, "type") <- type
+
+  # Return results
+  tib
+
+}
+
+
+#' @rdname vi_model
+#'
+#' @export
 vi_model.ml_model_random_forest_regression <- function(object, ...) {
 
   # Construct model-based variable importance scores
