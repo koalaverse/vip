@@ -90,7 +90,7 @@ vip.default <- function(
   p <- ggplot2::ggplot(imp, ggplot2::aes_string(x = x.string, y = "Importance"))
   p <- if (bar) {
     if ("Sign" %in% names(imp)) {
-      p + ggplot2::geom_col(aes(color = Sign, fill = Sign),
+      p + ggplot2::geom_col(ggplot2::aes_string(color = "Sign", fill = "Sign"),
                             width = width, alpha = alpha
       )
     } else {
@@ -100,7 +100,7 @@ vip.default <- function(
     }
   } else {
     if ("Sign" %in% names(imp)) {
-      p + ggplot2::geom_point(aes(color = Sign),
+      p + ggplot2::geom_point(ggplot2::aes_string(color = "Sign"),
                               alpha = alpha, size = size, shape = shape
       )
     } else {
