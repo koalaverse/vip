@@ -1,4 +1,9 @@
-# vip 0.1.1.9000
+# vip 0.1.2
+
+* Added support for Spark (G)LMs.
+
+* Bux fixes.
+
 
 # vip 0.1.1
 
