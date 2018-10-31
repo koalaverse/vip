@@ -10,6 +10,10 @@
 #' \code{\link[party]{cforest}} objects. See
 #' \code{\link[party]{varimpAUC}} for details. Default is \code{FALSE}.
 #'
+#' @param type For xgboost models, the type of variable importance to return.
+#' If \code{NULL} (the default), "Gain" is used. See
+#' \code{\link[xgboost]{xgb.importance}} for details.
+#'
 #' @param ... Additional optional arguments.
 #'
 #' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
@@ -525,19 +529,26 @@ vi_model.train <- function(object, ...) {
 #' @rdname vi_model
 #'
 #' @export
-vi_model.xgb.Booster <- function(object, ...) {
+vi_model.xgb.Booster <- function(object, type = NULL, ...) {
 
   # Construct model-based variable importance scores
-  vis <- tibble::as.tibble(xgboost::xgb.importance(
-    model = object, ...
-  ))[, c("Feature", "Gain")]  # FIXME: What about "Cover" and "Frequency"?
+  imp_mat <- xgboost::xgb.importance(model = object, ...)
+  if (is.null(type)) {
+    type <- "Gain"
+  } else {
+    if (!(type %in% c("Gain", "Cover", "Frequency"))) {
+      stop("Argument `type` must be one of \"Gain\", \"Cover\", or ",
+           "\"Frequency\".", call. = FALSE)
+    }
+  }
+  vis <- tibble::as.tibble(imp_mat)[, c("Feature", type)]
   tib <- tibble::tibble(
     "Variable" = vis$Feature,
     "Importance" = vis[[2L]]
   )
 
   # Add variable importance type attribute
-  attr(tib, "type") <- "Gain"  # match.arg(type)
+  attr(tib, "type") <- type
 
   # Return results
   tib

@@ -73,7 +73,7 @@ vi_model(object, ...)
 
 \method{vi_model}{train}(object, ...)
 
-\method{vi_model}{xgb.Booster}(object, ...)
+\method{vi_model}{xgb.Booster}(object, type = NULL, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
@@ -84,6 +84,10 @@ vi_model(object, ...)
 variable scores described in Janitza et al. (2012). Only available for
 \code{\link[party]{cforest}} objects. See
 \code{\link[party]{varimpAUC}} for details. Default is \code{FALSE}.}
+
+\item{type}{For xgboost models, the type of variable importance to return.
+If \code{NULL} (the default), "Gain" is used. See
+\code{\link[xgboost]{xgb.importance}} for details.}
 }
 \value{
 A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
