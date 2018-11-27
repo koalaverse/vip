@@ -13,10 +13,11 @@ Authors@R: c(
          comment = c(ORCID = "0000-0002-3611-8516")),
   person("Bernie", "Gray",
          email = "bfgray3@gmail.com",
-         role = c("aut"))
+         role = c("aut"),
+         comment = c(ORCID = "0000-0001-9190-6032"))
   )
 Description: A general framework for constructing variable importance plots from 
-  various types machine learning models in R. Aside from some standard model-
+  various types of machine learning models in R. Aside from some standard model-
   based variable importance measures, this package also provides a novel 
   approach based on partial dependence plots (PDPs) and individual conditional 
   expectation (ICE) curves as described in Greenwell et al. (2018) 
