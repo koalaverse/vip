@@ -8,9 +8,9 @@
 vi_permute(object, ...)
 
 \method{vi_permute}{default}(object, train, target, metric = "auto",
-  smaller_is_better = NULL, reference_class = NULL, pred_fun = NULL,
-  verbose = FALSE, progress = "none", parallel = FALSE,
-  paropts = NULL, ...)
+  smaller_is_better = NULL, nsim = 1, reference_class = NULL,
+  pred_fun = NULL, verbose = FALSE, progress = "none",
+  parallel = FALSE, paropts = NULL, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
@@ -34,6 +34,10 @@ metric that was used to train \code{object}.}
 \item{smaller_is_better}{Logical indicating whether or not a smaller value
 of \code{metric} is better. Default is \code{NULL}. Must be supplied if
 \code{metric} is a user-supplied function.}
+
+\item{nsim}{Integer specifying the number of Monte Carlo replications to
+perform. Default is 1. If \code{nsim > 1}, the results from each replication
+are simply averaged togther (the standard devaition will also be returned).}
 
 \item{reference_class}{Character string specifying which response category
 represents the "reference" class (i.e., the class for which the predicted

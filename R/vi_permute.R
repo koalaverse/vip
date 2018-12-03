@@ -23,6 +23,10 @@
 #' of \code{metric} is better. Default is \code{NULL}. Must be supplied if
 #' \code{metric} is a user-supplied function.
 #'
+#' @param nsim Integer specifying the number of Monte Carlo replications to
+#' perform. Default is 1. If \code{nsim > 1}, the results from each replication
+#' are simply averaged togther (the standard devaition will also be returned).
+#'
 #' @param reference_class Character string specifying which response category
 #' represents the "reference" class (i.e., the class for which the predicted
 #' class probabilities correspond to). Only needed for binary classification
@@ -110,7 +114,7 @@ vi_permute <- function(object, ...) {
 #'
 #' @export
 vi_permute.default <- function(object, train, target, metric = "auto",
-  smaller_is_better = NULL, reference_class = NULL, pred_fun = NULL,
+  smaller_is_better = NULL, nsim = 1, reference_class = NULL, pred_fun = NULL,
   verbose = FALSE, progress = "none", parallel = FALSE, paropts = NULL, ...
 ) {
 
@@ -255,29 +259,54 @@ vi_permute.default <- function(object, train, target, metric = "auto",
   #   2. permute the values of the original feature;
   #   3. get new predictions based on permuted data set;
   #   4. record difference in accuracy.
-  vis <- unlist(plyr::llply(feature_names, .progress = progress,
-    .parallel = parallel, .paropts = paropts,
-    .fun = function(x) {
-      if (verbose && !parallel) {
-        message("Computing variable importance for ", x, "...")
-      }
-      train_x_permuted <- train_x  # make copy
-      train_x_permuted[[x]] <- sample(train_x_permuted[[x]])  # permute values
-      permuted <- perf_fun(
-        actual = train_y,
-        predicted = pred_fun(object, newdata = train_x_permuted)
-      )
-      if (smaller_is_better) {
-        permuted - baseline
-      } else {
-        baseline - permuted
-      }
-    })
-  )
+  vis <- replicate(nsim,
+    unlist(plyr::llply(feature_names, .progress = progress,
+      .parallel = parallel, .paropts = paropts,
+      .fun = function(x) {
+        if (verbose && !parallel) {
+          message("Computing variable importance for ", x, "...")
+        }
+        train_x_permuted <- train_x  # make copy
+        train_x_permuted[[x]] <- sample(train_x_permuted[[x]])  # permute values
+        permuted <- perf_fun(
+          actual = train_y,
+          predicted = pred_fun(object, newdata = train_x_permuted)
+        )
+        if (smaller_is_better) {
+          permuted - baseline
+        } else {
+          baseline - permuted
+        }
+      })
+  ))
+  # vis <- unlist(plyr::llply(feature_names, .progress = progress,
+  #   .parallel = parallel, .paropts = paropts,
+  #   .fun = function(x) {
+  #     if (verbose && !parallel) {
+  #       message("Computing variable importance for ", x, "...")
+  #     }
+  #     train_x_permuted <- train_x  # make copy
+  #     train_x_permuted[[x]] <- sample(train_x_permuted[[x]])  # permute values
+  #     permuted <- perf_fun(
+  #       actual = train_y,
+  #       predicted = pred_fun(object, newdata = train_x_permuted)
+  #     )
+  #     if (smaller_is_better) {
+  #       permuted - baseline
+  #     } else {
+  #       baseline - permuted
+  #     }
+  #   })
+  # )
+
+  # Construct tibble of variable importance scores
   tib <- tibble::tibble(
     "Variable" = feature_names,
-    "Importance" = vis
+    "Importance" = apply(vis, MARGIN = 1, FUN = mean)
   )
+  if (nsim > 1) {
+    tib$StDev <- apply(vis, MARGIN = 1, FUN = sd)
+  }
 
   # Add variable importance type attribute
   attr(tib, which = "type") <- "permutation"
