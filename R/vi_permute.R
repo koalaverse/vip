@@ -27,6 +27,16 @@
 #' perform. Default is 1. If \code{nsim > 1}, the results from each replication
 #' are simply averaged togther (the standard devaition will also be returned).
 #'
+#' @param sample_size Integer specifying the size of the random sample to use
+#' for each Monte Carlo repitition. Default is \code{NULL} (i.e., use all of the
+#' available training data). Cannot be specified with \code{sample_frac}. Can be
+#' used to reduce computation time with large data sets.
+#'
+#' @param sample_frac Proportion specifying the size of the random sample to use
+#' for each Monte Carlo repitition. Default is \code{NULL} (i.e., use all of the
+#' available training data). Cannot be specified with \code{sample_size}. Can be
+#' used to reduce computation time with large data sets.
+#'
 #' @param reference_class Character string specifying which response category
 #' represents the "reference" class (i.e., the class for which the predicted
 #' class probabilities correspond to). Only needed for binary classification
@@ -114,8 +124,9 @@ vi_permute <- function(object, ...) {
 #'
 #' @export
 vi_permute.default <- function(object, train, target, metric = "auto",
-  smaller_is_better = NULL, nsim = 1, reference_class = NULL, pred_fun = NULL,
-  verbose = FALSE, progress = "none", parallel = FALSE, paropts = NULL, ...
+  smaller_is_better = NULL, nsim = 1, sample_size = NULL, sample_frac = NULL,
+  reference_class = NULL, pred_fun = NULL, verbose = FALSE, progress = "none",
+  parallel = FALSE, paropts = NULL, ...
 ) {
 
   # Issue warning until this function is complete!
@@ -136,6 +147,22 @@ vi_permute.default <- function(object, train, target, metric = "auto",
     feature_names <- colnames(train)
     train_x <- train
     train_y <- target
+  }
+
+  # Sample the data?
+  if (!is.null(sample_size) && !is.null(sample_frac)) {
+    stop("Arguments `sample_size` and `sample_frac` cannot both be specified.")
+  }
+  if (!is.null(sample_size)) {
+    if (sample_size <= 0 || sample_size > nrow(train)) {
+      stop("Argument `sample_size` must be in (0, ", nrow(train), "].")
+    }
+  }
+  if (!is.null(sample_frac)) {
+    if (sample_frac <= 0 || sample_frac > 1) {
+      stop("Argument `sample_frac` must be in (0, 1].")
+    }
+    sample_size <- round(nrow(train) * sample_frac, digits = 0)
   }
 
   # Metric
@@ -265,6 +292,11 @@ vi_permute.default <- function(object, train, target, metric = "auto",
       .fun = function(x) {
         if (verbose && !parallel) {
           message("Computing variable importance for ", x, "...")
+        }
+        if (!is.null(sample_size)) {
+          ids <- sample(length(train_y), size = sample_size, replace = FALSE)
+          train_x <- train_x[ids, ]
+          train_y <- train_y[ids]
         }
         train_x_permuted <- train_x  # make copy
         train_x_permuted[[x]] <- sample(train_x_permuted[[x]])  # permute values

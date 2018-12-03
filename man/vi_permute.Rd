@@ -8,9 +8,10 @@
 vi_permute(object, ...)
 
 \method{vi_permute}{default}(object, train, target, metric = "auto",
-  smaller_is_better = NULL, nsim = 1, reference_class = NULL,
-  pred_fun = NULL, verbose = FALSE, progress = "none",
-  parallel = FALSE, paropts = NULL, ...)
+  smaller_is_better = NULL, nsim = 1, sample_size = NULL,
+  sample_frac = NULL, reference_class = NULL, pred_fun = NULL,
+  verbose = FALSE, progress = "none", parallel = FALSE,
+  paropts = NULL, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
@@ -38,6 +39,16 @@ of \code{metric} is better. Default is \code{NULL}. Must be supplied if
 \item{nsim}{Integer specifying the number of Monte Carlo replications to
 perform. Default is 1. If \code{nsim > 1}, the results from each replication
 are simply averaged togther (the standard devaition will also be returned).}
+
+\item{sample_size}{Integer specifying the size of the random sample to use
+for each Monte Carlo repitition. Default is \code{NULL} (i.e., use all of the
+available training data). Cannot be specified with \code{sample_frac}. Can be
+used to reduce computation time with large data sets.}
+
+\item{sample_frac}{Proportion specifying the size of the random sample to use
+for each Monte Carlo repitition. Default is \code{NULL} (i.e., use all of the
+available training data). Cannot be specified with \code{sample_size}. Can be
+used to reduce computation time with large data sets.}
 
 \item{reference_class}{Character string specifying which response category
 represents the "reference" class (i.e., the class for which the predicted
