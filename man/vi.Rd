@@ -15,7 +15,7 @@ vi(object, method = c("model", "pdp", "ice", "permute"), feature_names,
 (VI) to compute. Current options are \code{"model"} (for model-based VI
 scores), \code{"pdp"} (for PDP-based VI scores), \code{"ice"} (for ICE-based
 VI scores), and \code{"permute"} (for permutation-based VI scores). The
-default is \code{"model"}. For details on the PDP/ICE-based method, see the
+default is \code{"model"}. For details on the PDP/ICE-based methods, see the
 reference below.}
 
 \item{feature_names}{Character string giving the names of the predictor

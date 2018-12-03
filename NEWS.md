@@ -1,6 +1,8 @@
 # vip 0.1.2
 
-* New argument `rank`, which default to `FALSE`, available in `vi()`.
+* Greatly improved the documentation for `vi_model()` and the various objects it supports.
+
+* New argument `rank`, which default to `FALSE`, available in `vi()` [(#55)](https://github.com/koalaverse/vip/issues/55).
 
 * Added support for Spark (G)LMs.
 
