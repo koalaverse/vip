@@ -1,5 +1,7 @@
 # vip 0.1.2
 
+* New argument `rank`, which default to `FALSE`, available in `vi()` and `vip()`.
+
 * Added support for Spark (G)LMs.
 
 * Bux fixes.

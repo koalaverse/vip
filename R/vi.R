@@ -34,6 +34,11 @@
 #' @param scale Logical indicating whether or not to scale the variable
 #' importance scores so that the largest is 100. Default is \code{FALSE}.
 #'
+#' @param rank Logical indicating whether or not to rank the variable
+#' importance scores (i.e., convert to integer ranks). Default is \code{FALSE}.
+#' Potentially useful when comparing variable importance scores across different
+#' models using different methods.
+#'
 #' @param ... Additional optional arguments.
 #'
 #' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
@@ -69,7 +74,7 @@
 vi <- function(
   object, method = c("model", "pdp", "ice", "permute"), feature_names,
   FUN = NULL, abbreviate_feature_names = NULL, sort = TRUE, decreasing = TRUE,
-  scale = FALSE, ...
+  scale = FALSE, rank = FALSE, ...
 ) {
 
   # Construct VI scores
@@ -107,6 +112,11 @@ vi <- function(
   # Scale VI scores so that largest is 100
   if (scale) {
     tib$Importance <- tib$Importance / max(tib$Importance) * 100
+  }
+
+  # Rank VI scores (i.e., convert to integer ranks)
+  if (rank) {
+    tib$Importance <- rev(rank(tib$Importance, ties.method = "average"))
   }
 
   # Restore attribute
