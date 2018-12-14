@@ -17,7 +17,7 @@
 #' @param ... Additional optional arguments.
 #'
 #' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
-#' \code{Variable} and \code{Importance}. For \code{"glm"}-like object, an
+#' \code{Variable} and \code{Importance}. For \code{"lm"/"glm"}-like object, an
 #' additional column, called \code{Sign}, is also included which includes the
 #' sign (i.e., POS/NEG) of the original coefficient.
 #'

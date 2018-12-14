@@ -93,7 +93,7 @@ model %>% fit(train_x, train_y, epochs = 80, batch_size = 16, verbose = 0)
 ```
 
 
-## Model interpreation
+## Model interpretation
 
 Here we'll look at two methods for model interpretation: *variable importance* and *individual conditional expectation* (ICE) curves. The methods are available in the R packages [vip](https://koalaverse.github.io/vip/index.html) and [pdp](https://github.com/bgreenwell/pdp), respectively.
 

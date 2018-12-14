@@ -4,19 +4,33 @@
 \alias{vi}
 \title{Variable Importance}
 \usage{
-vi(object, method = c("model", "pdp", "ice", "permute"), feature_names,
-  FUN = NULL, abbreviate_feature_names = NULL, sort = TRUE,
-  decreasing = TRUE, scale = FALSE, rank = FALSE, ...)
+vi(object, y, data, method = c("ace", "model", "pdp", "ice", "permute"),
+  feature_names, FUN = NULL, abbreviate_feature_names = NULL,
+  sort = TRUE, decreasing = TRUE, scale = FALSE, rank = FALSE, ...)
 }
 \arguments{
-\item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
+\item{object}{A fitted model object (e.g., a \code{"randomForest"} object) or
+an object that inherits from class \code{"vi"}. Can also be a a data frame or
+a matrix of predictors, or a formula of the form \code{response ~ features}
+(only applicable when \code{method = "ace"}).}
+
+\item{y}{A vector of response values. Only udes when \code{method = "ace"}.}
+
+\item{data}{an optional data frame, list or environment (or object coercible
+by \code{as.data.frame} to a data frame) containing the variables in the
+model. If not found in \code{data}, the variables are taken from
+\code{environment(formula)}, typically the environment from which
+\code{\link{vi_ace}} was called. Only udes when \code{method = "ace"}.}
 
 \item{method}{Character string specifying the type of variable importance
-(VI) to compute. Current options are \code{"model"} (for model-based VI
-scores), \code{"pdp"} (for PDP-based VI scores), \code{"ice"} (for ICE-based
-VI scores), and \code{"permute"} (for permutation-based VI scores). The
-default is \code{"model"}. For details on the PDP/ICE-based methods, see the
-reference below.}
+(VI) to compute. Current options are \code{"ace"}, for ACE-based VI scores
+(see \code{\link{vi_ace}} for details); \code{"model"}, for model-based VI
+scores (see \code{\link{vi_model}} for details), \code{"pdp"}, for PDP-based
+VI scores (see \code{\link{vi_pdp}} for details), \code{"ice"}, for ICE-based
+VI scores (see \code{\link{vi_ice}} for details), and \code{"permute"}, for
+permutation-based VI scores (see \code{\link{vi_permute}} for details). The
+default depends on the class of \code{object}. For more details on the
+PDP/ICE-based methods, see the reference below.}
 
 \item{feature_names}{Character string giving the names of the predictor
 variables (i.e., features) of interest.}
@@ -50,7 +64,7 @@ models using different methods.}
 }
 \value{
 A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
-\code{Variable} and \code{Importance}. For \code{"glm"}-like object, an
+\code{Variable} and \code{Importance}. For \code{"lm"/"glm"}-like objects, an
 additional column, called \code{Sign}, is also included which includes the
 sign (i.e., POS/NEG) of the original coefficient.
 }
@@ -73,6 +87,11 @@ vi(mtcars.ppr, method = "ice")
 
 # Plot variable importance scores
 vip(mtcars.ppr, method = "ice")
+
+#
+# Non-model based approach using ACE
+#
+
 }
 \references{
 Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J. A Simple

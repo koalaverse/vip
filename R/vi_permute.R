@@ -25,7 +25,7 @@
 #'
 #' @param nsim Integer specifying the number of Monte Carlo replications to
 #' perform. Default is 1. If \code{nsim > 1}, the results from each replication
-#' are simply averaged togther (the standard devaition will also be returned).
+#' are simply averaged together (the standard deviation will also be returned).
 #'
 #' @param sample_size Integer specifying the size of the random sample to use
 #' for each Monte Carlo repitition. Default is \code{NULL} (i.e., use all of the
@@ -47,9 +47,7 @@
 #' whenever \code{metric} is a custom function.
 #'
 #' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
-#' \code{Variable} and \code{Importance}. For \code{"glm"}-like object, an
-#' additional column, called \code{Sign}, is also included which gives the sign
-#' (i.e., POS/NEG) of the original coefficient.
+#' \code{Variable} and \code{Importance}.
 #'
 #' @param verbose Logical indicating whether or not to print information during
 #' the construction of variable importance scores. Default is \code{FALSE}.

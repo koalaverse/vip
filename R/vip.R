@@ -3,7 +3,17 @@
 #' Plot variable importance scores for the predictors in a model.
 #'
 #' @param object A fitted model object (e.g., a \code{"randomForest"} object) or
-#' an object that inherits from class \code{"vi"}.
+#' an object that inherits from class \code{"vi"}. Can also be a a data frame or
+#' a matrix of predictors, or a formula of the form \code{response ~ features}
+#' (only applicable when \code{method = "ace"}).
+#'
+#' @param y A vector of response values. Only udes when \code{method = "ace"}.
+#'
+#' @param data an optional data frame, list or environment (or object coercible
+#' by \code{as.data.frame} to a data frame) containing the variables in the
+#' model. If not found in \code{data}, the variables are taken from
+#' \code{environment(formula)}, typically the environment from which
+#' \code{\link{vi_ace}} was called. Only udes when \code{method = "ace"}.
 #'
 #' @param num_features Integer specifying the number of variable importance
 #' scores to plot. Default is \code{10}.
@@ -72,13 +82,30 @@ vip <- function(object, ...) {
 #'
 #' @export
 vip.default <- function(
-  object, num_features = 10L, bar = TRUE, width = 0.75, horizontal = TRUE,
-  alpha = 1, color = "grey35", fill = "grey35", size = 1, shape = 19, ...
+  object,
+  y,
+  data,
+  num_features = 10L,
+  bar = TRUE,
+  width = 0.75,
+  horizontal = TRUE,
+  alpha = 1,
+  color = "grey35",
+  fill = "grey35",
+  size = 1,
+  shape = 19,
+  ...
 ) {
-  imp <- if (inherits(object, what = "vi")) {
-    object
+  imp <- if (inherits(object, what = "formula") && !missing(data)) {
+    vi(object, data = data, ...)
+  } else if ((class(object) %in% c("matrix", "data.frame")) && !is.null(y)) {
+    vi(object, y = y, ...)
   } else {
-    vi(object, ...)  # compute variable importance scores
+    if (inherits(object, what = "vi")) {
+      object
+    } else {
+      vi(object = object, ...)  # compute variable importance scores
+    }
   }
   vi_type <- attr(imp, which = "type")  # subsetting removes this attribute!
   num_features <- as.integer(num_features)[1L]  # make sure num_features is a single integer
