@@ -2,17 +2,23 @@
 % Please edit documentation in R/vi.R
 \name{vi}
 \alias{vi}
+\alias{vi.default}
 \title{Variable Importance}
 \usage{
-vi(object, y, data, method = c("ace", "model", "pdp", "ice", "permute"),
-  feature_names, FUN = NULL, abbreviate_feature_names = NULL,
-  sort = TRUE, decreasing = TRUE, scale = FALSE, rank = FALSE, ...)
+vi(object, ...)
+
+\method{vi}{default}(object, y, data, method = c("ace", "model", "pdp",
+  "ice", "permute"), feature_names, FUN = NULL,
+  abbreviate_feature_names = NULL, sort = TRUE, decreasing = TRUE,
+  scale = FALSE, rank = FALSE, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object) or
 an object that inherits from class \code{"vi"}. Can also be a a data frame or
 a matrix of predictors, or a formula of the form \code{response ~ features}
 (only applicable when \code{method = "ace"}).}
+
+\item{...}{Additional optional arguments.}
 
 \item{y}{A vector of response values. Only udes when \code{method = "ace"}.}
 
@@ -59,8 +65,6 @@ importance scores so that the largest is 100. Default is \code{FALSE}.}
 importance scores (i.e., convert to integer ranks). Default is \code{FALSE}.
 Potentially useful when comparing variable importance scores across different
 models using different methods.}
-
-\item{...}{Additional optional arguments.}
 }
 \value{
 A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
@@ -87,11 +91,6 @@ vi(mtcars.ppr, method = "ice")
 
 # Plot variable importance scores
 vip(mtcars.ppr, method = "ice")
-
-#
-# Non-model based approach using ACE
-#
-
 }
 \references{
 Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J. A Simple

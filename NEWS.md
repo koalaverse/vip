@@ -10,6 +10,8 @@
 
 * Added support for Spark (G)LMs.
 
+* `vi()` is now a generic which makes adding new methods easier (e.g., to support [DataRobot](https://www.datarobot.com/) models).
+
 * Bux fixes.
 
 

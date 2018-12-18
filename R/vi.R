@@ -85,12 +85,15 @@
 #'
 #' # Plot variable importance scores
 #' vip(mtcars.ppr, method = "ice")
+vi <- function(object, ...) {
+  UseMethod("vi")
+}
+
+
+#' @rdname vi
 #'
-#' #
-#' # Non-model based approach using ACE
-#' #
-#'
-vi <- function(
+#' @export
+vi.default <- function(
   object, y, data,
   method = c("ace", "model", "pdp", "ice", "permute"), feature_names,
   FUN = NULL, abbreviate_feature_names = NULL, sort = TRUE, decreasing = TRUE,
