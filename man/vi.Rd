@@ -7,8 +7,8 @@
 \usage{
 vi(object, ...)
 
-\method{vi}{default}(object, y, data, method = c("ace", "model", "pdp",
-  "ice", "permute"), feature_names, FUN = NULL,
+\method{vi}{default}(object, y, data, method = c("model", "pdp", "ice",
+  "permute"), feature_names, FUN = NULL,
   abbreviate_feature_names = NULL, sort = TRUE, decreasing = TRUE,
   scale = FALSE, rank = FALSE, ...)
 }
@@ -29,8 +29,7 @@ model. If not found in \code{data}, the variables are taken from
 \code{\link{vi_ace}} was called. Only udes when \code{method = "ace"}.}
 
 \item{method}{Character string specifying the type of variable importance
-(VI) to compute. Current options are \code{"ace"}, for ACE-based VI scores
-(see \code{\link{vi_ace}} for details); \code{"model"}, for model-based VI
+(VI) to compute. Current options are \code{"model"}, for model-based VI
 scores (see \code{\link{vi_model}} for details), \code{"pdp"}, for PDP-based
 VI scores (see \code{\link{vi_pdp}} for details), \code{"ice"}, for ICE-based
 VI scores (see \code{\link{vi_ice}} for details), and \code{"permute"}, for

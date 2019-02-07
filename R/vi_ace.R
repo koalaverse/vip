@@ -24,16 +24,12 @@
 #' correlation coefficient between each feature and the response.
 #'
 #' @rdname vi_ace
-#'
-#' @export
 vi_ace <- function(x, y = NULL, ...) {
   UseMethod("vi_ace")
 }
 
 
 #' @rdname vi_ace
-#'
-#' @export
 vi_ace.default <- function(x, y = NULL, ...) {
   if (is.data.frame(x)) {
     x <- data.matrix(x)
@@ -52,8 +48,6 @@ vi_ace.default <- function(x, y = NULL, ...) {
 
 
 #' @rdname vi_ace
-#'
-#' @export
 vi_ace.formula <- function(formula, data, ..., na.action = stats::na.fail) {
   # Print warning message
   warning("Setting `method = \"ace\"` is experimental, use at your own risk!",

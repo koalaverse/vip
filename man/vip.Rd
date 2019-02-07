@@ -7,25 +7,15 @@
 \usage{
 vip(object, ...)
 
-\method{vip}{default}(object, y, data, num_features = 10L, bar = TRUE,
+\method{vip}{default}(object, num_features = 10L, bar = TRUE,
   width = 0.75, horizontal = TRUE, alpha = 1, color = "grey35",
   fill = "grey35", size = 1, shape = 19, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object) or
-an object that inherits from class \code{"vi"}. Can also be a a data frame or
-a matrix of predictors, or a formula of the form \code{response ~ features}
-(only applicable when \code{method = "ace"}).}
+an object that inherits from class \code{"vi"}.}
 
 \item{...}{Additional optional arguments to be passed onto \code{\link{vi}}.}
-
-\item{y}{A vector of response values. Only udes when \code{method = "ace"}.}
-
-\item{data}{an optional data frame, list or environment (or object coercible
-by \code{as.data.frame} to a data frame) containing the variables in the
-model. If not found in \code{data}, the variables are taken from
-\code{environment(formula)}, typically the environment from which
-\code{\link{vi_ace}} was called. Only udes when \code{method = "ace"}.}
 
 \item{num_features}{Integer specifying the number of variable importance
 scores to plot. Default is \code{10}.}

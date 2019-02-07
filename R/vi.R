@@ -16,8 +16,7 @@
 #' \code{\link{vi_ace}} was called. Only udes when \code{method = "ace"}.
 #'
 #' @param method Character string specifying the type of variable importance
-#' (VI) to compute. Current options are \code{"ace"}, for ACE-based VI scores
-#' (see \code{\link{vi_ace}} for details); \code{"model"}, for model-based VI
+#' (VI) to compute. Current options are \code{"model"}, for model-based VI
 #' scores (see \code{\link{vi_model}} for details), \code{"pdp"}, for PDP-based
 #' VI scores (see \code{\link{vi_pdp}} for details), \code{"ice"}, for ICE-based
 #' VI scores (see \code{\link{vi_ice}} for details), and \code{"permute"}, for
@@ -95,7 +94,7 @@ vi <- function(object, ...) {
 #' @export
 vi.default <- function(
   object, y, data,
-  method = c("ace", "model", "pdp", "ice", "permute"), feature_names,
+  method = c("model", "pdp", "ice", "permute"), feature_names,
   FUN = NULL, abbreviate_feature_names = NULL, sort = TRUE, decreasing = TRUE,
   scale = FALSE, rank = FALSE, ...
 ) {
@@ -109,22 +108,12 @@ vi.default <- function(
   }
 
   # Construct tibble of VI scores
-  tib <- if (method == "ace") {
-    if (inherits(object, what = "formula") && !missing(data)) {
-      vi_ace(object, data = data, ...)
-    } else if ((class(object) %in% c("matrix", "data.frame")) && !missing(y)) {
-      vi_ace(object, y = y, ...)
-    } else {
-      stop("No formula or data provided.", call. = FALSE)
-    }
-  } else {
-    switch(method,
-      "model" = vi_model(object, ...),
-      "pdp" = vi_pdp(object, feature_names = feature_names, FUN = FUN, ...),
-      "ice" = vi_ice(object, feature_names = feature_names, FUN = FUN, ...),
-      vi_permute(object, feature_names = feature_names, ...)
-    )
-  }
+  tib <- switch(method,
+    "model" = vi_model(object, ...),
+    "pdp" = vi_pdp(object, feature_names = feature_names, FUN = FUN, ...),
+    "ice" = vi_ice(object, feature_names = feature_names, FUN = FUN, ...),
+    vi_permute(object, feature_names = feature_names, ...)
+  )
 
   # Save attribute
   vi_type <- attr(tib, which = "type")
