@@ -3,17 +3,7 @@
 #' Compute variable importance scores for the predictors in a model.
 #'
 #' @param object A fitted model object (e.g., a \code{"randomForest"} object) or
-#' an object that inherits from class \code{"vi"}. Can also be a a data frame or
-#' a matrix of predictors, or a formula of the form \code{response ~ features}
-#' (only applicable when \code{method = "ace"}).
-#'
-#' @param y A vector of response values. Only udes when \code{method = "ace"}.
-#'
-#' @param data an optional data frame, list or environment (or object coercible
-#' by \code{as.data.frame} to a data frame) containing the variables in the
-#' model. If not found in \code{data}, the variables are taken from
-#' \code{environment(formula)}, typically the environment from which
-#' \code{\link{vi_ace}} was called. Only udes when \code{method = "ace"}.
+#' an object that inherits from class \code{"vi"}.
 #'
 #' @param method Character string specifying the type of variable importance
 #' (VI) to compute. Current options are \code{"model"}, for model-based VI
@@ -93,10 +83,16 @@ vi <- function(object, ...) {
 #'
 #' @export
 vi.default <- function(
-  object, y, data,
-  method = c("model", "pdp", "ice", "permute"), feature_names,
-  FUN = NULL, abbreviate_feature_names = NULL, sort = TRUE, decreasing = TRUE,
-  scale = FALSE, rank = FALSE, ...
+  object,
+  method = c("model", "pdp", "ice", "permute"),
+  feature_names,
+  FUN = NULL,
+  abbreviate_feature_names = NULL,
+  sort = TRUE,
+  decreasing = TRUE,
+  scale = FALSE,
+  rank = FALSE,
+  ...
 ) {
 
   # Construct VI scores
