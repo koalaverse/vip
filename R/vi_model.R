@@ -85,7 +85,7 @@
 #' \emph{t}-statistics. For such models, the sign of the original coefficient
 #' is also returned.}
 #'
-#' \item{\code{\link[sparklyr::ml_feature_importances]{ml_model}}}{The Spark ML
+#' \item{\code{\link[sparklyr]{ml_feature_importances}}}{The Spark ML
 #' library provides standard variable importance for tree-based methods (e.g.,
 #' random forests). See \code{\link[sparklyr]{ml_feature_importances}} for
 #' details.}
@@ -106,7 +106,7 @@
 #' is measured by the Gini index. For regression, it is measured by residual sum
 #' of squares. See \code{\link[randomForest]{importance}} for details.}
 #'
-#' \item{\code{\link[party]{RandomForest}}}{Same approach described in
+#' \item{\code{\link[party]{cforest}}}{Same approach described in
 #' \code{\link[partykit]{cforest}} above. See \code{\link[party]{varimp}} and
 #' \code{\link[party]{varimpAUC}} (if \code{auc = TRUE}) for details.}
 #'
@@ -131,7 +131,7 @@
 #' call to \code{\link[caret]{train}}. See \code{\link[caret]{varImp}} for
 #' details.}
 #'
-#' \item{\code{\link[xgboost]{xgb.Booster}}}{For linear models, the variable
+#' \item{\code{\link[xgboost]{xgboost}}}{For linear models, the variable
 #' importance is the absolute magnitude of the estimated coefficients. For that
 #' reason, in order to obtain a meaningful ranking by importance for a linear
 #' model, the features need to be on the same scale (which you also would want

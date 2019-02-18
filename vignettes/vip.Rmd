@@ -289,7 +289,7 @@ grid.arrange(p1, p2, ncol = 2)
 ```
 
 
-### The Pima indians diabetes data
+### The Pima Indians diabetes data
 
 As a final example, we'll consider the well-known Pima Indians diabetes data; see `?pdp::pima` for details. These data contain diabetes test results collected by the the US National Institute of Diabetes and Digestive and Kidney Diseases from a population of women who were at least 21 years old, of Pima Indian heritage, and living near Phoenix, Arizona. The target variable, `diabetes`, is a factor indicating the diabetes test result (`pos`/`neg`). In the code chunk below, we fit a random forest to the Pima Indians data using the fantastic [ranger](https://github.com/imbs-hl/ranger) package. Note that we fit two different random forests: `rfo1` and `rfo2`. The only difference is that we would use `rfo1` if we wanted predicted class labels and we would use `rfo2` for predicted class probabilities. The distinction is important when using `method = "permute"` since the performance metric being used requires the predicted outcome to be either the class labels (e.g., `metric = "error"` for classification error) or predicted class labels (e.g., `"auc"` for area under the curve). We'll illustrate both below. We should point out that there is more built-in support for `"ranger"` objects, so it is not necessary to supply `pred_fun` or specify a specific metric (the default is `metric = "auto"`), but for completeness, we explicitly specify all the options.
 
@@ -317,6 +317,27 @@ p3 <- vip(rfo1, method = "permute", metric = "error", pred_fun = pfun,
 p4 <- vip(rfo2, method = "permute", metric = "auc", pred_fun = pfun,
           target = "diabetes", reference_class = "neg")
 grid.arrange(p1, p2, p3, p4, ncol = 2)
+```
+
+
+# Use sparklines to characterize feature effects
+
+Starting with __vip__ v0.1.3, we have included a new function `vit()` for constructing html-based variable importance tables. The primary difference between `vi()` and `vit()` is that the latter includes an `Effect` column that displays a [sparkline](https://en.wikipedia.org/wiki/Sparkline) representation of the partial dependence function for each feature. This is a concise way to display both feature importance and feature effect information in a single table. See `?vip::vit` for details. We illustrate the basic use of `vit()` in the code chunks below.
+
+```{r pima ranger}
+# First, compute a tibble of variable importance scores using any method
+var_imp <- vi(rfo2, method = "permute", metric = "auc", pred_fun = pfun,
+              target = "diabetes", reference_class = "neg")
+
+# Next, convert to an html-based data table with sparklines
+vit(var_imp, fit = rfo2)
+
+# If you use the PDP- or ICE-based variable importance methods, then you don't 
+# have to wait as long since the feature effect information is already 
+# available
+nn %>%  # start with the previously trained neural network model
+  vi(method = "ice") %>%  # obtain ICE-based variable importance scores
+  vit()  # add sparkline representation of averaged ICE curves
 ```
 
 

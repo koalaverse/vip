@@ -335,7 +335,7 @@ vi_permute.default <- function(object, train, target, metric = "auto",
     "Importance" = apply(vis, MARGIN = 1, FUN = mean)
   )
   if (nsim > 1) {
-    tib$StDev <- apply(vis, MARGIN = 1, FUN = sd)
+    tib$StDev <- apply(vis, MARGIN = 1, FUN = stats::sd)
   }
 
   # Add variable importance type attribute

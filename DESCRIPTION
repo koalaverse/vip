@@ -28,7 +28,6 @@ BugReports: https://github.com/koalaverse/vip/issues
 Encoding: UTF-8
 LazyData: true
 Imports:
-    acepack,
     ggplot2 (>= 0.9.0),
     gridExtra,
     magrittr,
@@ -39,6 +38,7 @@ Imports:
     tibble,
     utils
 Suggests:
+    DT,
     C50,
     caret,
     Ckmeans.1d.dp,
@@ -49,6 +49,7 @@ Suggests:
     gbm,
     glmnet,
     h2o,
+    htmlwidgets,
     keras,
     knitr,
     lattice,
@@ -61,6 +62,7 @@ Suggests:
     ranger,
     rmarkdown,
     rpart,
+    sparkline,
     sparklyr,
     testthat,
     xgboost

@@ -50,6 +50,7 @@ sort_importance_scores <- function(x, decreasing) {
   x[order(x$Importance, decreasing = decreasing), ]
 }
 
+
 #' @keywords internal
 check_FUN <- function(x) {
   # x should be a named list of two functions with names "con" and "cat"
