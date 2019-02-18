@@ -1,3 +1,10 @@
+# vip 0.1.2.9000
+
+## New functions
+
+* `vit()` creates an HTML widget to display variable importance scores with a sparkline representation of each features effect (i.e., its partial dependence function) [(#64)](https://github.com/koalaverse/vip/issues/64).
+
+
 # vip 0.1.2
 
 * Added `nsim` argument to `vi_permute()` for reducing the sampling variability induced by permuting each predictor [(#36)](https://github.com/koalaverse/vip/issues/36).
