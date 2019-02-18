@@ -338,6 +338,12 @@ vit(var_imp, fit = rfo2)
 nn %>%  # start with the previously trained neural network model
   vi(method = "ice") %>%  # obtain ICE-based variable importance scores
   vit()  # add sparkline representation of averaged ICE curves
+
+# By default, the y-axis limit is the same for each sparkline. To make the
+# yaxis limit free to very for each sparkline, set `standardize_y = FALSE`
+nn %>%
+  vi(method = "ice") %>%
+  vit(standardize_y = FALSE)
 ```
 
 

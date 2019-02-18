@@ -5,9 +5,11 @@
 \alias{vit.vi}
 \title{Variable Importance Tables}
 \usage{
-vit(object, fit, digits = 3, verbose = FALSE, ...)
+vit(object, fit, digits = 3, standardize_y = TRUE, verbose = FALSE,
+  ...)
 
-\method{vit}{vi}(object, fit, digits = 3, verbose = FALSE, ...)
+\method{vit}{vi}(object, fit, digits = 3, standardize_y = TRUE,
+  verbose = FALSE, ...)
 }
 \arguments{
 \item{object}{An object that inherits from class \code{"vi"}.}
@@ -17,6 +19,9 @@ with `method = "pdp"` or `method = "ice"`.}
 
 \item{digits}{Integer specifying the minimal number of significant digits to
 use for displaying the importance scores.}
+
+\item{standardize_y}{Logical indicating whether or not the the y-axis limit
+should be the same for each sparkline. Default is \code{TRUE}.}
 
 \item{verbose}{Logical indicating whether or not to print progess. Default is
 \code{FALSE}.}

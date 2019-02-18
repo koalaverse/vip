@@ -12,6 +12,9 @@
 #' @param digits Integer specifying the minimal number of significant digits to
 #' use for displaying the importance scores.
 #'
+#' @param standardize_y Logical indicating whether or not the the y-axis limit
+#' should be the same for each sparkline. Default is \code{TRUE}.
+#'
 #' @param verbose Logical indicating whether or not to print progess. Default is
 #' \code{FALSE}.
 #'
@@ -33,7 +36,8 @@
 #' @rdname vit
 #'
 #' @export
-vit <- function(object, fit, digits = 3, verbose = FALSE, ...) {
+vit <- function(object, fit, digits = 3, standardize_y = TRUE,
+                verbose = FALSE, ...) {
   UseMethod("vit")
 }
 
@@ -41,7 +45,8 @@ vit <- function(object, fit, digits = 3, verbose = FALSE, ...) {
 #' @rdname vit
 #'
 #' @export
-vit.vi <- function(object, fit, digits = 3, verbose = FALSE, ...) {
+vit.vi <- function(object, fit, digits = 3, standardize_y = TRUE,
+                   verbose = FALSE, ...) {
 
   if (!requireNamespace("DT", quietly = TRUE)) {
     stop("Package \"DT\" needed for this function to work. Please ",
@@ -96,6 +101,31 @@ vit.vi <- function(object, fit, digits = 3, verbose = FALSE, ...) {
   }")
   ))
 
+  # Function that is called every time the DataTable performs a draw.
+  if (standardize_y) {
+    ylim <- range(sapply(pd, FUN = function(x) x$yhat))
+    fnDrawCallback <- htmlwidgets::JS(paste0(
+      "function (oSettings, json) {
+        $('.spark:not(:has(canvas))').sparkline('html', {
+          type: 'line',
+          highlightColor: 'orange',
+          chartRangeMin: ", ylim[1L], ",
+          chartRangeMax: ", ylim[2L], "
+        });
+      }"
+    ))
+  } else {
+    fnDrawCallback = htmlwidgets::JS(
+      "function (oSettings, json) {
+        $('.spark:not(:has(canvas))').sparkline('html', {
+          type: 'line',
+          highlightColor: 'orange'
+        });
+      }"
+    )
+  }
+
+
   # Construct data tables
   object$Importance <- round(object$Importance, digits = digits)
   d <- DT::datatable(object, options = list(
@@ -115,17 +145,6 @@ vit.vi <- function(object, fit, digits = 3, verbose = FALSE, ...) {
   d
 
 }
-
-
-#' @keywords internal
-#'
-#' @note Function that is called every time the DataTable performs a draw.
-fnDrawCallback = htmlwidgets::JS("function (oSettings, json) {
-  $('.spark:not(:has(canvas))').sparkline('html', {
-    type: 'line',
-    highlightColor: 'orange'
-  });
-}")
 
 
 #' @keywords internal
