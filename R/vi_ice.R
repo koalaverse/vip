@@ -8,11 +8,13 @@
 #' @param feature_names Character string giving the names of the predictor
 #' variables (i.e., features) of interest.
 #'
-#' @param FUN List with two components, \code{"cat"} and \code{"con"},
-#' containing the functions to use for categorical and continuous features,
-#' respectively. If \code{NULL}, the standard deviation is used for continuous
-#' features. For categorical features, the range statistic is used (i.e.,
-#' (max - min) / 4).
+#' @param var_fun List with two components, \code{"cat"} and \code{"con"},
+#' containing the functions to use to quantify the variability of the feature
+#' effects (e.g., partial dependence values) for categorical and continuous
+#' features, respectively. If \code{NULL}, the standard deviation is used for
+#' continuous features. For categorical features, the range statistic is used
+#' (i.e., (max - min) / 4). Only used when \code{method = "pdp"} or
+#' \code{method = "ice"}.
 #'
 #' @param ... Additional optional arguments to be passed onto
 #' \code{\link[pdp]{partial}}.
@@ -34,26 +36,26 @@ vi_ice <- function(object, ...) {
 #' @rdname vi_ice
 #'
 #' @export
-vi_ice.default <- function(object, feature_names, FUN = NULL, ...) {
+vi_ice.default <- function(object, feature_names, var_fun = NULL, ...) {
 
   # Print warning message
   warning("Setting `method = \"ice\"` is experimental, use at your own risk!",
           call. = FALSE)
 
-  # Check FUN argument
-  FUN <- if (is.null(FUN)) {
+  # Check var_fun argument
+  var_fun <- if (is.null(var_fun)) {
     list(
       "cat" = function(x) diff(range(x)) / 4,
       "con" = stats::sd
     )
   } else {
-    check_FUN(FUN)
-    FUN
+    check_var_fun(var_fun)
+    var_fun
   }
 
   # Consruct ICE-based variable importance scores
-  vis <- lapply(feature_names, function(x) {
-    ice_vi_score(object, feature_name = x, FUN = FUN, ...)
+  vis <- lapply(feature_names, FUN = function(x) {
+    ice_vi_score(object, feature_name = x, var_fun = var_fun, ...)
   })
   tib <- tibble::tibble(
     "Variable" = feature_names,
@@ -71,7 +73,7 @@ vi_ice.default <- function(object, feature_names, FUN = NULL, ...) {
 
 
 #' @keywords internal
-ice_vi_score <- function(object, feature_name, FUN, ...) {
+ice_vi_score <- function(object, feature_name, var_fun, ...) {
 
   # Only allow for a single feature
   if (length(feature_name) != 1L) {
@@ -82,12 +84,12 @@ ice_vi_score <- function(object, feature_name, FUN, ...) {
   ice <- pdp::partial(object, pred.var = feature_name, ice = TRUE, ...)
 
   # Compute partial dependence-based variable importance scores
-  FUN <- if (is.factor(ice[[feature_name]])) {
-    FUN$cat  # categorical feature
+  var_fun <- if (is.factor(ice[[feature_name]])) {
+    var_fun$cat  # categorical feature
   } else {
-    FUN$con  # continuous feature
+    var_fun$con  # continuous feature
   }
-  res <- mean(tapply(ice$yhat, INDEX = ice$yhat.id, FUN = FUN))
+  res <- mean(tapply(ice$yhat, INDEX = ice$yhat.id, FUN = var_fun))
 
   # Include ICE curves as an attribute
   attr(res, which = "ice") <- ice

@@ -4,12 +4,23 @@
 
 * `add_sparklines()` creates an HTML widget to display variable importance scores with a sparkline representation of each features effect (i.e., its partial dependence function) [(#64)](https://github.com/koalaverse/vip/issues/64).
 
+## Breaking changes
+
+* The `pred_fun` argument in `vi_permute()` has been changed to `pred_wrapper`.
+
+* The `FUN` argument to `vi()`, `vi_pdp()`, and `vi_ice()` has been changed to `var_fun`.
+
+* Only the predicted class probabilities for the reference class are required (as a numeric vector) for binary classification when `metric = "auc"` or `metric = "logloss"`.
+
+## Minor changes
+
+* Improved documentation (especially for `vi_permute`).
 
 # vip 0.1.2
 
 * Added `nsim` argument to `vi_permute()` for reducing the sampling variability induced by permuting each predictor [(#36)](https://github.com/koalaverse/vip/issues/36).
 
-* Added `sample_size` and `sample_frac` arguments to `vi_permute()` for reducing the size of the training sample for every Monte Carlo repition [(#41)](https://github.com/koalaverse/vip/issues/41).
+* Added `sample_size` and `sample_frac` arguments to `vi_permute()` for reducing the size of the training sample for every Monte Carlo repetition [(#41)](https://github.com/koalaverse/vip/issues/41).
 
 * Greatly improved the documentation for `vi_model()` and the various objects it supports.
 
@@ -19,7 +30,7 @@
 
 * `vi()` is now a generic which makes adding new methods easier (e.g., to support [DataRobot](https://www.datarobot.com/) models).
 
-* Bux fixes.
+* Bug fixes.
 
 
 # vip 0.1.1

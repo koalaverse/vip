@@ -17,7 +17,8 @@
 #' regression or accuracy for binary classification). If \code{metric} is a
 #' function, then it requires two arguments, \code{actual} and \code{predicted},
 #' and should return a single, numeric value. Ideally, this should be the same
-#' metric that was used to train \code{object}.
+#' metric that was used to train \code{object}. See \code{\link{list_metrics}}
+#' for a list of available metrics.
 #'
 #' @param smaller_is_better Logical indicating whether or not a smaller value
 #' of \code{metric} is better. Default is \code{NULL}. Must be supplied if
@@ -28,7 +29,7 @@
 #' are simply averaged together (the standard deviation will also be returned).
 #'
 #' @param sample_size Integer specifying the size of the random sample to use
-#' for each Monte Carlo repitition. Default is \code{NULL} (i.e., use all of the
+#' for each Monte Carlo repetition. Default is \code{NULL} (i.e., use all of the
 #' available training data). Cannot be specified with \code{sample_frac}. Can be
 #' used to reduce computation time with large data sets.
 #'
@@ -42,9 +43,21 @@
 #' class probabilities correspond to). Only needed for binary classification
 #' problems.
 #'
-#' @param pred_fun Optional prediction function that requires two arguments,
+#' @param pred_wrapper Optional prediction function that requires two arguments,
 #' \code{object} and \code{newdata}. Default is \code{NULL}. Must be supplied
-#' whenever \code{metric} is a custom function.
+#' whenever \code{metric} is a custom function. In fact, it is good practice to
+#' always supply this funtion! The output of this function should be determined
+#' by the metric being used:
+#'
+#' \describe{
+#'   \item{Regression}{A numeric vector of predicted outcomes.}
+#'   \item{Binary classification}{A vector of predicted class labels (e.g., if
+#'   using misclassification error) or a vector of predicted class probabilities
+#'   for the reference class (e.g., if using log loss or AUC).}
+#'   \item{Multiclass classification}{A vector of predicted class labels (e.g.,
+#'   if using misclassification error) or a A matrix/data frame of predicted
+#'   class probabilities for each class (e.g., if using log loss or AUC).}
+#' }
 #'
 #' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
 #' \code{Variable} and \code{Importance}.
@@ -96,9 +109,9 @@
 #' # Plot VI scores
 #' set.seed(2021)  # for reproducibility
 #' p1 <- vip(pp, method = "permute", target = "y", metric = "rsquared",
-#'           pred_fun = predict) + ggtitle("PPR")
+#'           pred_wrapper = predict) + ggtitle("PPR")
 #' p2 <- vip(nn, method = "permute", target = "y", metric = "rsquared",
-#'           pred_fun = predict) + ggtitle("NN")
+#'           pred_wrapper = predict) + ggtitle("NN")
 #' grid.arrange(p1, p2, ncol = 2)
 #'
 #' # Mean absolute error
@@ -110,7 +123,7 @@
 #' set.seed(1101)  # for reproducibility
 #' vip(pp, method = "permute", target = "y", metric = mae,
 #'     smaller_is_better = TRUE,
-#'     pred_fun = function(object, newdata) predict(object, newdata)  # wrapper
+#'     pred_wrapper = function(object, newdata) predict(object, newdata)
 #' ) + ggtitle("PPR")
 #' }
 vi_permute <- function(object, ...) {
@@ -123,7 +136,7 @@ vi_permute <- function(object, ...) {
 #' @export
 vi_permute.default <- function(object, train, target, metric = "auto",
   smaller_is_better = NULL, nsim = 1, sample_size = NULL, sample_frac = NULL,
-  reference_class = NULL, pred_fun = NULL, verbose = FALSE, progress = "none",
+  reference_class = NULL, pred_wrapper = NULL, verbose = FALSE, progress = "none",
   parallel = FALSE, paropts = NULL, ...
 ) {
 
@@ -173,15 +186,15 @@ vi_permute.default <- function(object, train, target, metric = "auto",
            call. = FALSE)
     }
 
-    # If `metric` is a user-supplied function, then `pred_fun` cannot
+    # If `metric` is a user-supplied function, then `pred_wrapper` cannot
     # be `NULL`.
     if (is.null(smaller_is_better)) {
       stop("Please specify a logical value for `smaller_is_better`.",
            call. = FALSE)
     } else {
       # Check prediction function arguments
-      if (!all(c("object", "newdata") %in% names(formals(pred_fun)))) {
-        stop("`pred_fun()` must be a function with arguments `object` and ",
+      if (!all(c("object", "newdata") %in% names(formals(pred_wrapper)))) {
+        stop("`pred_wrapper()` must be a function with arguments `object` and ",
              "`newdata`.", call. = FALSE)
       }
     }
@@ -250,13 +263,13 @@ vi_permute.default <- function(object, train, target, metric = "auto",
 
     # Get prediction function, if not supplied
     prob_based_metrics <- c("auc", "mauc", "logloss", "mlogloss")
-    if (is.null(pred_fun)) {
+    if (is.null(pred_wrapper)) {
       type <- if (metric %in% prob_based_metrics) {
         "prob"
       } else {
         "raw"
       }
-      pred_fun <- get_predictions(object, type = type)
+      pred_wrapper <- get_predictions(object, type = type)
     }
 
     # Determine reference class (binary classification only)
@@ -273,7 +286,7 @@ vi_permute.default <- function(object, train, target, metric = "auto",
   # Compute baseline metric for comparison
   baseline <- perf_fun(
     actual = train_y,
-    predicted = pred_fun(object, newdata = train_x)
+    predicted = pred_wrapper(object, newdata = train_x)
   )
 
   # Construct VI scores
@@ -300,7 +313,7 @@ vi_permute.default <- function(object, train, target, metric = "auto",
         train_x_permuted[[x]] <- sample(train_x_permuted[[x]])  # permute values
         permuted <- perf_fun(
           actual = train_y,
-          predicted = pred_fun(object, newdata = train_x_permuted)
+          predicted = pred_wrapper(object, newdata = train_x_permuted)
         )
         if (smaller_is_better) {
           permuted - baseline
@@ -319,7 +332,7 @@ vi_permute.default <- function(object, train, target, metric = "auto",
   #     train_x_permuted[[x]] <- sample(train_x_permuted[[x]])  # permute values
   #     permuted <- perf_fun(
   #       actual = train_y,
-  #       predicted = pred_fun(object, newdata = train_x_permuted)
+  #       predicted = pred_wrapper(object, newdata = train_x_permuted)
   #     )
   #     if (smaller_is_better) {
   #       permuted - baseline

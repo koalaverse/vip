@@ -1,4 +1,4 @@
-#' Variable Importance
+#' Variable importance
 #'
 #' Compute variable importance scores for the predictors in a model.
 #'
@@ -17,15 +17,17 @@
 #' @param feature_names Character string giving the names of the predictor
 #' variables (i.e., features) of interest.
 #'
-#' @param FUN List with two components, \code{"cat"} and \code{"con"},
-#' containing the functions to use for categorical and continuous features,
-#' respectively. If \code{NULL}, the standard deviation is used for continuous
-#' features. For categorical features, the range statistic is used (i.e.,
-#' (max - min) / 4).
+#' @param var_fun List with two components, \code{"cat"} and \code{"con"},
+#' containing the functions to use to quantify the variability of the feature
+#' effects (e.g., partial dependence values) for categorical and continuous
+#' features, respectively. If \code{NULL}, the standard deviation is used for
+#' continuous features. For categorical features, the range statistic is used
+#' (i.e., (max - min) / 4). Only used when \code{method = "pdp"} or
+#' \code{method = "ice"}.
 #'
 #' @param abbreviate_feature_names Integer specifying the length at which to
-#' abbreviate feature names. Default is \code{NULL} which results in no abbreviation
-#' (i.e., the full name of each feature will be printed).
+#' abbreviate feature names. Default is \code{NULL} which results in no
+#' abbreviation (i.e., the full name of each feature will be printed).
 #'
 #' @param sort Logical indicating whether or not to order the sort the variable
 #' importance scores. Default is \code{TRUE}.
@@ -42,12 +44,17 @@
 #' Potentially useful when comparing variable importance scores across different
 #' models using different methods.
 #'
-#' @param ... Additional optional arguments.
+#' @param ... Additional optional arguments to be passed onto
+#' \code{\link{vi_model}}, \code{\link{vi_pdp}}, \code{\link{vi_ice}}, or
+#' \code{\link{vi_permute}}.
 #'
-#' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
-#' \code{Variable} and \code{Importance}. For \code{"lm"/"glm"}-like objects, an
-#' additional column, called \code{Sign}, is also included which includes the
-#' sign (i.e., POS/NEG) of the original coefficient.
+#' @return A tidy data frame (i.e., a \code{"tibble"} object) with at least two
+#' columns: \code{Variable} and \code{Importance}. For \code{"lm"/"glm"}-like
+#' objects, an additional column, called \code{Sign}, is also included which
+#' includes the sign (i.e., POS/NEG) of the original coefficient. If
+#' \code{method = "permute"} and  \code{nsim > 1}, then an additional column,
+#' \code{StDev}, giving the standard deviation of the permutation-based
+#' variable importance scores is included.
 #'
 #' @references
 #' Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J. A Simple
@@ -86,7 +93,7 @@ vi.default <- function(
   object,
   method = c("model", "pdp", "ice", "permute"),
   feature_names,
-  FUN = NULL,
+  var_fun = NULL,
   abbreviate_feature_names = NULL,
   sort = TRUE,
   decreasing = TRUE,
@@ -106,8 +113,10 @@ vi.default <- function(
   # Construct tibble of VI scores
   tib <- switch(method,
     "model" = vi_model(object, ...),
-    "pdp" = vi_pdp(object, feature_names = feature_names, FUN = FUN, ...),
-    "ice" = vi_ice(object, feature_names = feature_names, FUN = FUN, ...),
+    "pdp" = vi_pdp(object, feature_names = feature_names,
+                   var_fun = var_fun, ...),
+    "ice" = vi_ice(object, feature_names = feature_names,
+                   var_fun = var_fun, ...),
     vi_permute(object, feature_names = feature_names, ...)
   )
 

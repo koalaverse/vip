@@ -16,8 +16,8 @@
 #' @param free_y Logical indicating whether or not the the y-axis limits should
 #' be allowed to vary for each sparkline. Default is \code{FALSE}.
 #'
-#' @param verbose Logical indicating whether or not to print progess. Default is
-#' \code{FALSE}.
+#' @param verbose Logical indicating whether or not to print progress. Default
+#' is \code{FALSE}.
 #'
 #' @param ... Additional optional arguments to be passed onto
 #' \code{\link[pdp]{partial}}.

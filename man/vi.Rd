@@ -3,12 +3,12 @@
 \name{vi}
 \alias{vi}
 \alias{vi.default}
-\title{Variable Importance}
+\title{Variable importance}
 \usage{
 vi(object, ...)
 
 \method{vi}{default}(object, method = c("model", "pdp", "ice",
-  "permute"), feature_names, FUN = NULL,
+  "permute"), feature_names, var_fun = NULL,
   abbreviate_feature_names = NULL, sort = TRUE, decreasing = TRUE,
   scale = FALSE, rank = FALSE, ...)
 }
@@ -16,7 +16,9 @@ vi(object, ...)
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object) or
 an object that inherits from class \code{"vi"}.}
 
-\item{...}{Additional optional arguments.}
+\item{...}{Additional optional arguments to be passed onto
+\code{\link{vi_model}}, \code{\link{vi_pdp}}, \code{\link{vi_ice}}, or
+\code{\link{vi_permute}}.}
 
 \item{method}{Character string specifying the type of variable importance
 (VI) to compute. Current options are \code{"model"}, for model-based VI
@@ -30,15 +32,17 @@ PDP/ICE-based methods, see the reference below.}
 \item{feature_names}{Character string giving the names of the predictor
 variables (i.e., features) of interest.}
 
-\item{FUN}{List with two components, \code{"cat"} and \code{"con"},
-containing the functions to use for categorical and continuous features,
-respectively. If \code{NULL}, the standard deviation is used for continuous
-features. For categorical features, the range statistic is used (i.e.,
-(max - min) / 4).}
+\item{var_fun}{List with two components, \code{"cat"} and \code{"con"},
+containing the functions to use to quantify the variability of the feature
+effects (e.g., partial dependence values) for categorical and continuous
+features, respectively. If \code{NULL}, the standard deviation is used for
+continuous features. For categorical features, the range statistic is used
+(i.e., (max - min) / 4). Only used when \code{method = "pdp"} or
+\code{method = "ice"}.}
 
 \item{abbreviate_feature_names}{Integer specifying the length at which to
-abbreviate feature names. Default is \code{NULL} which results in no abbreviation
-(i.e., the full name of each feature will be printed).}
+abbreviate feature names. Default is \code{NULL} which results in no
+abbreviation (i.e., the full name of each feature will be printed).}
 
 \item{sort}{Logical indicating whether or not to order the sort the variable
 importance scores. Default is \code{TRUE}.}
@@ -56,10 +60,13 @@ Potentially useful when comparing variable importance scores across different
 models using different methods.}
 }
 \value{
-A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
-\code{Variable} and \code{Importance}. For \code{"lm"/"glm"}-like objects, an
-additional column, called \code{Sign}, is also included which includes the
-sign (i.e., POS/NEG) of the original coefficient.
+A tidy data frame (i.e., a \code{"tibble"} object) with at least two
+columns: \code{Variable} and \code{Importance}. For \code{"lm"/"glm"}-like
+objects, an additional column, called \code{Sign}, is also included which
+includes the sign (i.e., POS/NEG) of the original coefficient. If
+\code{method = "permute"} and  \code{nsim > 1}, then an additional column,
+\code{StDev}, giving the standard deviation of the permutation-based
+variable importance scores is included.
 }
 \description{
 Compute variable importance scores for the predictors in a model.

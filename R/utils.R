@@ -51,7 +51,7 @@ sort_importance_scores <- function(x, decreasing) {
 
 
 #' @keywords internal
-check_FUN <- function(x) {
+check_var_fun <- function(x) {
   # x should be a named list of two functions with names "con" and "cat"
   if (!is.list(x)) {
     stop("FUN should be a list.", call. = FALSE)

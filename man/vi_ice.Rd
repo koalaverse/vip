@@ -7,7 +7,7 @@
 \usage{
 vi_ice(object, ...)
 
-\method{vi_ice}{default}(object, feature_names, FUN = NULL, ...)
+\method{vi_ice}{default}(object, feature_names, var_fun = NULL, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
@@ -18,11 +18,13 @@ vi_ice(object, ...)
 \item{feature_names}{Character string giving the names of the predictor
 variables (i.e., features) of interest.}
 
-\item{FUN}{List with two components, \code{"cat"} and \code{"con"},
-containing the functions to use for categorical and continuous features,
-respectively. If \code{NULL}, the standard deviation is used for continuous
-features. For categorical features, the range statistic is used (i.e.,
-(max - min) / 4).}
+\item{var_fun}{List with two components, \code{"cat"} and \code{"con"},
+containing the functions to use to quantify the variability of the feature
+effects (e.g., partial dependence values) for categorical and continuous
+features, respectively. If \code{NULL}, the standard deviation is used for
+continuous features. For categorical features, the range statistic is used
+(i.e., (max - min) / 4). Only used when \code{method = "pdp"} or
+\code{method = "ice"}.}
 }
 \value{
 A tidy data frame (i.e., a \code{"tibble"} object) with two columns,
