@@ -18,7 +18,8 @@ vit(object, fit, digits = 3, standardize_y = TRUE, verbose = FALSE,
 with `method = "pdp"` or `method = "ice"`.}
 
 \item{digits}{Integer specifying the minimal number of significant digits to
-use for displaying the importance scores.}
+use for displaying importance scores and, if available, their standard
+deviations.}
 
 \item{standardize_y}{Logical indicating whether or not the the y-axis limit
 should be the same for each sparkline. Default is \code{TRUE}.}

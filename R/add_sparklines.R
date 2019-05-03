@@ -1,4 +1,4 @@
-#' Variable Importance Tables
+#' Add sparklines
 #'
 #' Create an HTML widget to display variable importance scores with a sparkline
 #' representation of each features effect (i.e., its partial dependence
@@ -10,7 +10,8 @@
 #' with `method = "pdp"` or `method = "ice"`.
 #'
 #' @param digits Integer specifying the minimal number of significant digits to
-#' use for displaying the importance scores.
+#' use for displaying importance scores and, if available, their standard
+#' deviations.
 #'
 #' @param standardize_y Logical indicating whether or not the the y-axis limit
 #' should be the same for each sparkline. Default is \code{TRUE}.
@@ -36,7 +37,7 @@
 #' @rdname vit
 #'
 #' @export
-vit <- function(object, fit, digits = 3, standardize_y = TRUE,
+add_sparklines <- function(object, fit, digits = 3, standardize_y = TRUE,
                 verbose = FALSE, ...) {
   UseMethod("vit")
 }
@@ -45,8 +46,8 @@ vit <- function(object, fit, digits = 3, standardize_y = TRUE,
 #' @rdname vit
 #'
 #' @export
-vit.vi <- function(object, fit, digits = 3, standardize_y = TRUE,
-                   verbose = FALSE, ...) {
+add_sparklines.vi <- function(object, fit, digits = 3, standardize_y = TRUE,
+                              verbose = FALSE, ...) {
 
   if (!requireNamespace("DT", quietly = TRUE)) {
     stop("Package \"DT\" needed for this function to work. Please ",
@@ -125,9 +126,14 @@ vit.vi <- function(object, fit, digits = 3, standardize_y = TRUE,
     )
   }
 
+  # Pad with zeros so that decimals are aligned in the data table
+  object$Importance <- sprintf(object$Importance,
+                               fmt = paste0("%#.", digits, "f"))
+  if ("StDev" %in% names(object)) {
+    object$StDev <- sprintf(object$StDev, fmt = paste0("%#.", digits, "f"))
+  }
 
-  # Construct data tables
-  object$Importance <- round(object$Importance, digits = digits)
+  # Construct data table
   d <- DT::datatable(object, options = list(
     columnDefs = columnDefs,
     fnDrawCallback = fnDrawCallback
