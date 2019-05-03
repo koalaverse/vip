@@ -38,7 +38,6 @@ NULL
 
 
 #' @keywords internal
-
 abbreviate_names <- function(x, minlength) {
   x$Variable <- abbreviate(x$Variable, minlength = minlength)
   x

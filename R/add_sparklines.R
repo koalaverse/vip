@@ -13,8 +13,8 @@
 #' use for displaying importance scores and, if available, their standard
 #' deviations.
 #'
-#' @param standardize_y Logical indicating whether or not the the y-axis limit
-#' should be the same for each sparkline. Default is \code{TRUE}.
+#' @param free_y Logical indicating whether or not the the y-axis limits should
+#' be allowed to vary for each sparkline. Default is \code{FALSE}.
 #'
 #' @param verbose Logical indicating whether or not to print progess. Default is
 #' \code{FALSE}.
@@ -34,19 +34,19 @@
 #' and Effective Model-Based Variable Importance Measure. arXiv preprint
 #' arXiv:1805.04755 (2018).
 #'
-#' @rdname vit
+#' @rdname add_sparklines
 #'
 #' @export
-add_sparklines <- function(object, fit, digits = 3, standardize_y = TRUE,
+add_sparklines <- function(object, fit, digits = 3, free_y = FALSE,
                 verbose = FALSE, ...) {
-  UseMethod("vit")
+  UseMethod("add_sparklines")
 }
 
 
-#' @rdname vit
+#' @rdname add_sparklines
 #'
 #' @export
-add_sparklines.vi <- function(object, fit, digits = 3, standardize_y = TRUE,
+add_sparklines.vi <- function(object, fit, digits = 3, free_y = FALSE,
                               verbose = FALSE, ...) {
 
   if (!requireNamespace("DT", quietly = TRUE)) {
@@ -103,7 +103,16 @@ add_sparklines.vi <- function(object, fit, digits = 3, standardize_y = TRUE,
   ))
 
   # Function that is called every time the DataTable performs a draw.
-  if (standardize_y) {
+  if (free_y) {
+    fnDrawCallback = htmlwidgets::JS(
+      "function (oSettings, json) {
+        $('.spark:not(:has(canvas))').sparkline('html', {
+          type: 'line',
+          highlightColor: 'orange'
+        });
+      }"
+    )
+  } else {
     ylim <- range(sapply(pd, FUN = function(x) x$yhat))
     fnDrawCallback <- htmlwidgets::JS(paste0(
       "function (oSettings, json) {
@@ -115,25 +124,16 @@ add_sparklines.vi <- function(object, fit, digits = 3, standardize_y = TRUE,
         });
       }"
     ))
-  } else {
-    fnDrawCallback = htmlwidgets::JS(
-      "function (oSettings, json) {
-        $('.spark:not(:has(canvas))').sparkline('html', {
-          type: 'line',
-          highlightColor: 'orange'
-        });
-      }"
-    )
   }
 
-  # Pad with zeros so that decimals are aligned in the data table
+  # Pad with zeros so that decimals are aligned in the DataTable
   object$Importance <- sprintf(object$Importance,
                                fmt = paste0("%#.", digits, "f"))
   if ("StDev" %in% names(object)) {
     object$StDev <- sprintf(object$StDev, fmt = paste0("%#.", digits, "f"))
   }
 
-  # Construct data table
+  # Construct the DataTable
   d <- DT::datatable(object, options = list(
     columnDefs = columnDefs,
     fnDrawCallback = fnDrawCallback
