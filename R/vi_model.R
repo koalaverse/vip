@@ -10,7 +10,12 @@
 #' \code{\link[party]{cforest}} objects. See
 #' \code{\link[party]{varimpAUC}} for details. Default is \code{FALSE}.
 #'
-#' @param type For xgboost models, the type of variable importance to return.
+#' @param olden Logical indicating whether or not to use Olden's algorithm for
+#' neural networks. If \code{FALSE}, Garson's algorithm will be used. Default
+#' is \code{TRUE}. See \code{\link[NeuralNetTools]{garson}} and
+#' \code{\link[NeuralNetTools]{olden}} for details.
+#'
+#' @param type For XGBoost models, the type of variable importance to return.
 #' If \code{NULL} (the default), "Gain" is used. See
 #' \code{\link[xgboost]{xgb.importance}} for details.
 #'
@@ -552,6 +557,40 @@ vi_model.ml_model_random_forest_classification <- function(object, ...) {
   names(vis) <- c("Variable", "Importance")
   type <- "spark_rf"
   tib <- tibble::as_tibble(vis)
+
+  # Add variable importance type attribute
+  attr(tib, "type") <- type
+
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
+  # Return results
+  tib
+
+}
+
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.nnet <- function(object, olden = TRUE, ...) {
+
+  # Construct model-based variable importance scores
+  tib <- if (olden) {  # Olden's algorithm
+    type <- "Olden"
+    vis <- NeuralNetTools::olden(object, bar_plot = FALSE)
+    tibble::tibble(
+      "Variable" = rownames(vis),
+      "Importance" = vis$importance
+    )
+  } else {  # Garson's algorithm
+    type <- "Garson"
+    vis <- NeuralNetTools::garson(object, bar_plot = FALSE)
+    tibble::tibble(
+      "Variable" = rownames(vis),
+      "Importance" = vis$rel_imp
+    )
+  }
 
   # Add variable importance type attribute
   attr(tib, "type") <- type

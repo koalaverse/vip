@@ -19,6 +19,7 @@
 \alias{vi_model.ml_model_linear_regression}
 \alias{vi_model.ml_model_random_forest_regression}
 \alias{vi_model.ml_model_random_forest_classification}
+\alias{vi_model.nnet}
 \alias{vi_model.randomForest}
 \alias{vi_model.RandomForest}
 \alias{vi_model.ranger}
@@ -63,6 +64,8 @@ vi_model(object, ...)
 
 \method{vi_model}{ml_model_random_forest_classification}(object, ...)
 
+\method{vi_model}{nnet}(object, olden = TRUE, ...)
+
 \method{vi_model}{randomForest}(object, ...)
 
 \method{vi_model}{RandomForest}(object, auc = FALSE, ...)
@@ -80,12 +83,17 @@ vi_model(object, ...)
 
 \item{...}{Additional optional arguments.}
 
+\item{olden}{Logical indicating whether or not to use Olden's algorithm for
+neural networks. If \code{FALSE}, Garson's algorithm will be used. Default
+is \code{TRUE}. See \code{\link[NeuralNetTools]{garson}} and
+\code{\link[NeuralNetTools]{olden}} for details.}
+
 \item{auc}{Logical indicating whether or not to compute the AUC-based
 variable scores described in Janitza et al. (2012). Only available for
 \code{\link[party]{cforest}} objects. See
 \code{\link[party]{varimpAUC}} for details. Default is \code{FALSE}.}
 
-\item{type}{For xgboost models, the type of variable importance to return.
+\item{type}{For XGBoost models, the type of variable importance to return.
 If \code{NULL} (the default), "Gain" is used. See
 \code{\link[xgboost]{xgb.importance}} for details.}
 }

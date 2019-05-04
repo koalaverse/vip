@@ -93,8 +93,7 @@ test_that("vi() works for \"nnet\" objects", {
 
   check_vi_model(.model_function = nnet::nnet,
                  .model_args = list(mpg ~ ., data = mtcars, size = 1, trace = FALSE),
-                 .package = "nnet",
-                 .error_msg = "Model-based variable importance scores are currently not available for objects of class \"nnet.formulannet\".")
+                 .package = "nnet")
 
 })
 
