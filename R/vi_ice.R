@@ -66,6 +66,9 @@ vi_ice.default <- function(object, feature_names, var_fun = NULL, ...) {
   attr(tib, which = "ice") <- ice
   attr(tib, which = "type") <- "ice"
 
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
   # Return results
   tib
 

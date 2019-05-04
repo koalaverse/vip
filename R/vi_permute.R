@@ -354,6 +354,9 @@ vi_permute.default <- function(object, train, target, metric = "auto",
   # Add variable importance type attribute
   attr(tib, which = "type") <- "permutation"
 
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
   # Return results
   tib
 

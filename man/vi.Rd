@@ -84,6 +84,8 @@ mtcars.ppr <- ppr(mpg ~ ., data = mtcars, nterms = 1)
 
 # Compute variable importance scores
 vi(mtcars.ppr, method = "ice")
+vi(mtcars.ppr, method = "ice",
+   var_fun = list("con" = mad, "cat" = function(x) diff(range(x)) / 4))
 
 # Plot variable importance scores
 vip(mtcars.ppr, method = "ice")

@@ -14,7 +14,9 @@
 
 ## Minor changes
 
-* Improved documentation (especially for `vi_permute`).
+* Improved documentation (especially for `vi_permute()`).
+
+* Results from `vi_model()`, `vi_pdp()`, `vi_ice()`, and `vi_permute()` now have class `"vi"`, making them easier to plot with `vip()`.
 
 # vip 0.1.2
 

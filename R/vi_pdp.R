@@ -66,6 +66,9 @@ vi_pdp.default <- function(object, feature_names, var_fun = NULL, ...) {
   attr(tib, which = "pdp") <- pd
   attr(tib, which = "type") <- "pdp"
 
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
   # Return results
   tib
 

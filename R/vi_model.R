@@ -180,6 +180,9 @@ vi_model.C5.0 <- function(object, ...) {
     "usage"
   }
 
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
   # Return results
   tib
 
@@ -200,6 +203,9 @@ vi_model.constparty <- function(object, ...) {
 
   # Add variable importance type attribute
   attr(tib, "type") <- "permutation"
+
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
 
   # Return results
   tib
@@ -223,6 +229,9 @@ vi_model.earth <- function(object, ...) {
   # Add variable importance type attribute
   attr(tib, "type") <- "GCV"
 
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
   # Return results
   tib
 
@@ -243,6 +252,9 @@ vi_model.gbm <- function(object, ...) {
 
   # Add variable importance type attribute
   attr(tib, "type") <- "rel.inf"
+
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
 
   # Return results
   tib
@@ -268,6 +280,9 @@ vi_model.H2OBinomialModel <- function(object, ...) {
   # Add variable importance type attribute
   attr(tib, "type") <- "h2o"
 
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
   # Return results
   tib
 
@@ -292,6 +307,9 @@ vi_model.H2OMultinomialModel <- function(object, ...) {
   # Add variable importance type attribute
   attr(tib, "type") <- "h2o"
 
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
   # Return results
   tib
 
@@ -315,6 +333,9 @@ vi_model.H2ORegressionModel <- function(object, ...) {
 
   # Add variable importance type attribute
   attr(tib, "type") <- "h2o"
+
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
 
   # Return results
   tib
@@ -341,6 +362,9 @@ vi_model.lm <- function(object, ...) {
   # Add variable importance type attribute
   attr(tib, "type") <- "t-test"
 
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
   # Return results
   tib
 
@@ -360,6 +384,9 @@ vi_model.ml_model_decision_tree_regression <- function(object, ...) {
 
   # Add variable importance type attribute
   attr(tib, "type") <- type
+
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
 
   # Return results
   tib
@@ -381,6 +408,9 @@ vi_model.ml_model_decision_tree_classification <- function(object, ...) {
   # Add variable importance type attribute
   attr(tib, "type") <- type
 
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
   # Return results
   tib
 
@@ -401,6 +431,9 @@ vi_model.ml_model_gbt_regression <- function(object, ...) {
   # Add variable importance type attribute
   attr(tib, "type") <- type
 
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
   # Return results
   tib
 
@@ -420,6 +453,9 @@ vi_model.ml_model_gbt_classification <- function(object, ...) {
 
   # Add variable importance type attribute
   attr(tib, "type") <- type
+
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
 
   # Return results
   tib
@@ -446,6 +482,9 @@ vi_model.ml_model_generalized_linear_regression <- function(object, ...) {
   # Add variable importance type attribute
   attr(tib, "type") <- type
 
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
   # Return results
   tib
 
@@ -471,6 +510,9 @@ vi_model.ml_model_linear_regression <- function(object, ...) {
   # Add variable importance type attribute
   attr(tib, "type") <- type
 
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
   # Return results
   tib
 
@@ -491,6 +533,9 @@ vi_model.ml_model_random_forest_regression <- function(object, ...) {
   # Add variable importance type attribute
   attr(tib, "type") <- type
 
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
   # Return results
   tib
 
@@ -510,6 +555,9 @@ vi_model.ml_model_random_forest_classification <- function(object, ...) {
 
   # Add variable importance type attribute
   attr(tib, "type") <- type
+
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
 
   # Return results
   tib
@@ -536,6 +584,9 @@ vi_model.randomForest <- function(object, ...) {
 
   # Add variable importance type attribute
   attr(tib, "type") <- type
+
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
 
   # Return results
   tib
@@ -566,6 +617,9 @@ vi_model.RandomForest <- function(object, auc = FALSE, ...) {
     "Permutation"
   }
 
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
   # Return results
   tib
 
@@ -586,6 +640,9 @@ vi_model.ranger <- function(object, ...) {
 
   # Add variable importance type attribute
   attr(tib, "type") <- object$importance.mode
+
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
 
   # Return results
   tib
@@ -616,6 +673,9 @@ vi_model.rpart <- function(object, ...) {
   # Add variable importance type attribute
   attr(tib, "type") <- "GoodnessOfSplit"
 
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
   # Return results
   tib
 
@@ -639,6 +699,9 @@ vi_model.train <- function(object, ...) {
 
   # Add variable importance type attribute
   attr(tib, "type") <- "caret"
+
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
 
   # Return results
   tib
@@ -669,6 +732,9 @@ vi_model.xgb.Booster <- function(object, type = NULL, ...) {
 
   # Add variable importance type attribute
   attr(tib, "type") <- type
+
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
 
   # Return results
   tib
