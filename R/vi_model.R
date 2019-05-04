@@ -575,6 +575,12 @@ vi_model.ml_model_random_forest_classification <- function(object, ...) {
 #' @export
 vi_model.nnet <- function(object, olden = TRUE, ...) {
 
+  # Check for dependency
+  if (!requireNamespace("NeuralNetTools", quietly = TRUE)) {
+    stop("Package \"NeuralNetTools\" needed for this function to work. Please ",
+         "install it.", call. = FALSE)
+  }
+
   # Construct model-based variable importance scores
   tib <- if (olden) {  # Olden's algorithm
     type <- "Olden"
