@@ -43,6 +43,7 @@ Suggests:
     caret,
     Ckmeans.1d.dp,
     covr,
+    Cubist,
     doParallel,
     dplyr,
     earth,
@@ -65,5 +66,6 @@ Suggests:
     sparkline,
     sparklyr,
     testthat,
+    varImp,
     xgboost
 RoxygenNote: 6.1.1

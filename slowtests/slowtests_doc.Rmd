@@ -1,0 +1,335 @@
+---
+title: "Tests for the vip package"
+author: "Brandon M. Greenwell"
+date: "5/7/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r packages-and-data}
+# Load required packages
+library(vip)
+
+# Simulate Friedman's data
+set.seed(101)  # for reproducibility
+friedman1 <- as.data.frame(mlbench::mlbench.friedman1(1000, sd = 0.1))
+friedman2 <- friedman1
+friedman2$y <- as.factor(ifelse(friedman2$y > median(friedman2$y), 
+                                yes = "class1", no = "class2"))
+```
+
+
+## Model-based 
+
+Blah, blah, blah...
+
+
+### The C50 package
+
+```{r C50}
+# Fit model
+fit <- C50::C5.0(y ~ ., data = friedman2)
+
+# Compute variable importance
+res1 <- vi_model(fit, type = "usage")
+res2 <- vi_model(fit, type = "splits")
+
+# Variable importance plot(s)
+grid.arrange(
+  vip(res1, num_features = 16), 
+  vip(res2, num_features = 16), 
+  nrow = 1
+)
+```
+
+
+### The Cubist package
+
+```{r C50}
+# Fit model
+fit <- Cubist::cubist(
+  x = subset(friedman1, select = -y),
+  y = friedman1$y,
+  committees = 10
+)
+
+# Compute variable importance
+res1 <- vi_model(fit)
+res2 <- vi_model(fit, weights = c(0.1, 0.9))
+
+# Variable importance plot(s)
+grid.arrange(
+  vip(res1, num_features = 16), 
+  vip(res2, num_features = 16), 
+  nrow = 1
+)
+```
+
+### The earth package
+
+```{r earth}
+# Fit model
+fit <- earth::earth(y ~ ., data = friedman1, degree = 2)
+
+# Compute variable importance
+res1 <- vi_model(fit)
+res2 <- vi_model(fit, type = "rss")
+res3 <- vi_model(fit, type = "gcv")
+
+# Variable importance plot(s)
+grid.arrange(
+  vip(res1, num_features = 16),
+  vip(res2, num_features = 16),
+  vip(res3, num_features = 16),
+  nrow = 1
+)
+```
+
+
+### The gbm package
+
+```{r gbm}
+# Fit model
+set.seed(101)  # for reproducibility
+fit <- gbm::gbm(
+  y ~ .,
+  data = friedman1,
+  distribution = "gaussian",
+  n.trees = 1000,
+  interaction.depth = 5,
+  shrinkage = 0.1,
+  bag.fraction = 1,
+  cv.folds = 5
+)
+best_iter <- gbm::gbm.perf(fit, plot.it = FALSE, method = "cv")
+
+# Compute variable importance
+set.seed(102)  # for reproducibility
+res1 <- vi_model(fit, n.trees = best_iter)
+res2 <- vi_model(fit, type = "permutation", n.trees = best_iter)
+
+# Variable importance plot(s)
+grid.arrange(
+  vip(res1, num_features = 16),
+  vip(res2, num_features = 16),
+  nrow = 1
+)
+```
+
+
+### The glmnet package
+
+```{r glmnet}
+# Fit model
+fit1 <- glmnet::glmnet(
+  x = model.matrix(~ . - y - 1, data = friedman1), 
+  y = friedman1$y, 
+  nlambda = 100
+)
+
+# Fit model using 5-fold CV
+fit2 <- glmnet::cv.glmnet(
+  x = model.matrix(~ . - y - 1, data = friedman1),
+  y = friedman1$y,
+  nfolds = 5
+)
+
+# Compute variable importance
+res1 <- vi_model(fit1)
+res2 <- vi_model(fit2)
+
+# Variable importance plot(s)
+grid.arrange(
+  vip(res1, num_features = 16),
+  vip(res2, num_features = 16),
+  nrow = 1
+)
+```
+
+
+### The lm() and glm() functions
+
+```{r lm}
+# Fit model
+fit1 <- lm(y ~ ., data = friedman1)
+fit2 <- glm(y ~ ., data = friedman1)
+
+# Compute variable importance
+res1 <- vi_model(fit1)
+res2 <- vi_model(fit2)
+
+# Variable importance plot(s)
+grid.arrange(
+  vip(res1, num_features = 16), 
+  vip(res2, num_features = 16), 
+  nrow = 1
+)
+```
+
+
+### The neuralnet package
+
+```{r neuralnet}
+# Fit model
+fit <- neuralnet::neuralnet(y ~ ., data = data.matrix(friedman1))
+
+# Compute variable importance
+res1 <- vi_model(fit)
+res2 <- vi_model(fit, type = "garson")
+
+# Variable importance plot(s)
+grid.arrange(
+  vip(res1, num_features = 16),
+  vip(res2, num_features = 16),
+  nrow = 1
+)
+```
+
+
+### The nnet package
+
+```{r nnet}
+# Fit model
+fit <- nnet::nnet(
+  y ~ .,
+  data = friedman1,
+  size = 10,
+  linout = TRUE,
+  decay = 0.1,
+  maxit = 1000,
+  trace = FALSE
+)
+
+# Compute variable importance
+res1 <- vi_model(fit)
+res2 <- vi_model(fit, type = "garson")
+
+# Variable importance plot(s)
+grid.arrange(
+  vip(res1, num_features = 16),
+  vip(res2, num_features = 16),
+  nrow = 1
+)
+```
+
+
+### The party package
+
+```{r nnet}
+# Fit model
+set.seed(101)  # for reproducibility
+fit <- party::cforest(y ~ ., data = friedman2)
+
+# Compute variable importance
+res1 <- vi_model(fit)
+res2 <- vi_model(fit, type = "auc", nperm = 10)
+
+# Variable importance plot(s)
+set.seed(102)  # for reproducibility
+grid.arrange(
+  vip(res1, num_features = 16),
+  vip(res2, num_features = 16),
+  nrow = 1
+)
+```
+
+
+### The randomForest package
+
+```{r randomForest}
+# Fit model
+set.seed(101)  # for reproducibility
+fit1 <- randomForest::randomForest(y ~ ., data = friedman1)
+fit2 <- randomForest::randomForest(y ~ ., data = friedman1, importance = TRUE)
+
+# Compute variable importance
+res1 <- vi_model(fit1)
+res2 <- vi_model(fit2)
+
+# Variable importance plot(s)
+grid.arrange(
+  vip(res1, num_features = 16),
+  vip(res2, num_features = 16),
+  nrow = 1
+)
+```
+
+
+### The ranger package
+
+```{r ranger}
+# Fit model
+set.seed(101)  # for reproducibility
+fit1 <- ranger::ranger(y ~ ., data = friedman1, importance = "impurity")
+fit2 <- ranger::ranger(y ~ ., data = friedman1, importance = "impurity_corrected")
+fit3 <- ranger::ranger(y ~ ., data = friedman1, importance = "permutation")
+
+# Compute variable importance
+res1 <- vi_model(fit1)
+res2 <- vi_model(fit2)
+res3 <- vi_model(fit3)
+
+# Variable importance plot(s)
+grid.arrange(
+  vip(res1, num_features = 16),
+  vip(res2, num_features = 16),
+  vip(res3, num_features = 16),
+  nrow = 1
+)
+```
+
+
+### The RSNNS package
+
+```{r rsnns}
+# Fit model
+fit <- RSNNS::mlp(
+  x = model.matrix(~ . - y - 1, data = friedman1), 
+  y = friedman1$y, 
+  size = 5,
+  linOut = TRUE
+)
+
+# Compute variable importance
+res1 <- vi_model(fit)
+res2 <- vi_model(fit, type = "garson")
+
+# Variable importance plot(s)
+grid.arrange(
+  vip(res1, num_features = 16),
+  vip(res2, num_features = 16),
+  nrow = 1
+)
+```
+
+
+### The xgboost package
+
+```{r xgboost}
+# Fit model
+set.seed(101)  # for reproducibility
+fit <- xgboost::xgboost(
+  data = model.matrix(~ . - y - 1, data = friedman1), 
+  label = friedman1$y,
+  nrounds = 50,
+  params = list(eta = 0.1),
+  verbose = 0,
+  save_period = 0
+)
+
+# Compute variable importance
+res1 <- vi_model(fit)
+res2 <- vi_model(fit, type = "cover")
+res3 <- vi_model(fit, type = "frequency")
+
+# Variable importance plot(s)
+grid.arrange(
+  vip(res1, num_features = 16),
+  vip(res2, num_features = 16),
+  vip(res3, num_features = 16),
+  nrow = 1
+)
+```

@@ -4,7 +4,9 @@
 
 * `add_sparklines()` creates an HTML widget to display variable importance scores with a sparkline representation of each features effect (i.e., its partial dependence function) [(#64)](https://github.com/koalaverse/vip/issues/64).
 
-* New method `vi_model.nnet()` which support both Olden and Garson algorithms for neural networks fit using the __nnet__ package.
+* Added support for the Olden and Garson algorithms with neural networks fit using the __neuralnet__, __nnet__, and __RSNNS__ packages.
+
+* Added support for GLMNET models fit using the __glmnet__ package (with and without cross-validation).
 
 ## Breaking changes
 
@@ -16,9 +18,10 @@
 
 ## Minor changes
 
-* Improved documentation (especially for `vi_permute()`).
+* Improved documentation (especially for `vi_permute()` and `vi_model()`).
 
 * Results from `vi_model()`, `vi_pdp()`, `vi_ice()`, and `vi_permute()` now have class `"vi"`, making them easier to plot with `vip()`.
+
 
 # vip 0.1.2
 

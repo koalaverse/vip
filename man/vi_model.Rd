@@ -5,8 +5,11 @@
 \alias{vi_model.default}
 \alias{vi_model.C5.0}
 \alias{vi_model.constparty}
+\alias{vi_model.cubist}
 \alias{vi_model.earth}
 \alias{vi_model.gbm}
+\alias{vi_model.glmnet}
+\alias{vi_model.cv.glmnet}
 \alias{vi_model.H2OBinomialModel}
 \alias{vi_model.H2OMultinomialModel}
 \alias{vi_model.H2ORegressionModel}
@@ -19,6 +22,8 @@
 \alias{vi_model.ml_model_linear_regression}
 \alias{vi_model.ml_model_random_forest_regression}
 \alias{vi_model.ml_model_random_forest_classification}
+\alias{vi_model.mlp}
+\alias{vi_model.nn}
 \alias{vi_model.nnet}
 \alias{vi_model.randomForest}
 \alias{vi_model.RandomForest}
@@ -32,13 +37,20 @@ vi_model(object, ...)
 
 \method{vi_model}{default}(object, ...)
 
-\method{vi_model}{C5.0}(object, ...)
+\method{vi_model}{C5.0}(object, type = c("usage", "splits"), ...)
 
 \method{vi_model}{constparty}(object, ...)
 
-\method{vi_model}{earth}(object, ...)
+\method{vi_model}{cubist}(object, ...)
 
-\method{vi_model}{gbm}(object, ...)
+\method{vi_model}{earth}(object, type = c("nsubsets", "rss", "gcv"), ...)
+
+\method{vi_model}{gbm}(object, type = c("relative.influence",
+  "permutation"), ...)
+
+\method{vi_model}{glmnet}(object, ...)
+
+\method{vi_model}{cv.glmnet}(object, ...)
 
 \method{vi_model}{H2OBinomialModel}(object, ...)
 
@@ -64,11 +76,15 @@ vi_model(object, ...)
 
 \method{vi_model}{ml_model_random_forest_classification}(object, ...)
 
-\method{vi_model}{nnet}(object, olden = TRUE, ...)
+\method{vi_model}{mlp}(object, type = c("olden", "garson"), ...)
+
+\method{vi_model}{nn}(object, type = c("olden", "garson"), ...)
+
+\method{vi_model}{nnet}(object, type = c("olden", "garson"), ...)
 
 \method{vi_model}{randomForest}(object, ...)
 
-\method{vi_model}{RandomForest}(object, auc = FALSE, ...)
+\method{vi_model}{RandomForest}(object, type = c("accuracy", "auc"), ...)
 
 \method{vi_model}{ranger}(object, ...)
 
@@ -76,26 +92,17 @@ vi_model(object, ...)
 
 \method{vi_model}{train}(object, ...)
 
-\method{vi_model}{xgb.Booster}(object, type = NULL, ...)
+\method{vi_model}{xgb.Booster}(object, type = c("gain", "cover",
+  "frequency"), ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
 
 \item{...}{Additional optional arguments.}
 
-\item{olden}{Logical indicating whether or not to use Olden's algorithm for
-neural networks. If \code{FALSE}, Garson's algorithm will be used. Default
-is \code{TRUE}. See \code{\link[NeuralNetTools]{garson}} and
-\code{\link[NeuralNetTools]{olden}} for details.}
-
-\item{auc}{Logical indicating whether or not to compute the AUC-based
-variable scores described in Janitza et al. (2012). Only available for
-\code{\link[party]{cforest}} objects. See
-\code{\link[party]{varimpAUC}} for details. Default is \code{FALSE}.}
-
-\item{type}{For XGBoost models, the type of variable importance to return.
-If \code{NULL} (the default), "Gain" is used. See
-\code{\link[xgboost]{xgb.importance}} for details.}
+\item{type}{Character string specifying the type of variable importance to
+return (only used for some models). See details for which methods this
+argument applies to.}
 }
 \value{
 A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
@@ -125,6 +132,33 @@ return the number of times each predictor was involved in a split by using
 the option \code{metric = "usage"}. See \code{\link[C50]{C5imp}} for
 details.}
 
+\item{\code{\link[C50]{C5.0}}}{The Cubist output contains variable usage
+statistics. It gives the percentage of times where each variable was used in
+a condition and/or a linear model. Note that this output will probably be
+inconsistent with the rules shown in the output from summary.cubist. At each
+split of the tree, Cubist saves a linear model (after feature selection) that
+is allowed to have terms for each variable used in the current split or any
+split above it. Quinlan (1992) discusses a smoothing algorithm where each
+model prediction is a linear combination of the parent and child model along
+the tree. As such, the final prediction is a function of all the linear
+models from the initial node to the terminal node. The percentages shown in
+the Cubist output reflects all the models involved in prediction (as opposed
+to the terminal models shown in the output). The variable importance used
+here is a linear combination of the usage in the rule conditions and the
+model. See \code{\link[Cubist]{summary.cubist}} and
+\code{\link[caret]{varImp.cubist}} for details.}
+
+\item{\code{\link[glmnet]{glmnet}}}{Similar to (generalized) linear models,
+the absolute value of the coefficients are returned for a specific model.
+It is important that the features  (and hence, the estimated coefficients) be
+standardized prior to fitting the model. You can specify which coefficients
+to return by passing the specific value of the penalty parameter via the
+\code{...} argument. See \code{\link[glmnet]{coef.glmnet}} for details. By
+default, the coefficients corresponding to the final penalty value in the
+sequence is returned; in other words, you should ALWAYS SPECIFY THIS VALUE!
+For \code{"cv.glmnet"} objects, the largest value of lambda such that error
+is within one standard error of the minimum is used by default.}
+
 \item{\code{\link[partykit]{cforest}}}{Variable importance is measured in a
 way similar to those computed by \code{\link[randomForest]{importance}}.
 Besides the standard version, a conditional version is available that
@@ -143,26 +177,82 @@ Note that in the presence of missings in the predictor variables the
 procedure described in Hapfelmeier et al. (2012) is performed. See
 \code{\link[partykit]{varimp}} for details.}
 
-\item{\code{\link[earth]{earth}}}{The variable importance method for
-\code{\link[earth]{earth}} objects first calculates the decrease in the GCV for each
-subset relative to the previous subset during earth’s pruning pass. (For
-multiple response models, GCV's are calculated over all responses.) Then, for
-each variable, it sums these decreases over all subsets that include the
-variable. Finally, for ease of interpretation, the summed decreases are
-scaled so the largest summed decrease is 100. Variables which cause larger
-net decreases in the GCV are considered more important. See
-\code{\link[earth]{evimp}} for details.}
+\item{\code{\link[earth]{earth}}}{The \code{\link[earth]{earth}} package uses
+three criteria for estimating the variable importance in a MARS model (see
+\code{\link[earth]{evimp}} for details):
+\itemize{
+  \item The \code{nsubsets} criterion (\code{type = "nsubsets"}) counts the
+  number of model subsets that include each feature. Variables that are
+  included in more subsets are considered more important. This is the
+  criterion used by \code{\link[earth]{summary.earth}} to print variable
+  importance. By "subsets" we mean the subsets of terms generated by
+  \code{earth()}'s backward pass. There is one subset for each model size
+  (from one to the size of the selected model) and the subset is the best set
+  of terms for that model size. (These subsets are specified in the
+  \code{$prune.terms} component of \code{earth()}'s return value.) Only
+  subsets that are smaller than or equal in size to the final model are used
+  for estimating variable importance. This is the default method used by
+  \strong{vip}.
 
-\item{\code{\link[gbm]{gbm}}}{Variable importance is computed according to
-Friedman (2001). For tree-based methods, the approximate relative influence
-of a variable \eqn{x_j} is \deqn{\widehat{J}_j^2 = \sum{\text{splits on } x_j}I_t^2}
-where \eqn{I_t} is the empirical improvement by splitting on \eqn{x_j} at that point.
-Friedman's extension to boosted models is to average the relative influence
-of variable \eqn{x_j} across all the trees generated by the boosting algorithm.
-See \code{\link[gbm]{summary.gbm}} for details.}
+  \item The \code{rss} criterion (\code{type = "rss"}) first calculates the
+  decrease in the RSS for each subset relative to the previous subset during
+  \code{earth()}’s backward pass. (For multiple response models, RSS's are
+  calculated over all responses.) Then for each variable it sums these
+  decreases over all subsets that include the variable. Finally, for ease of
+  interpretation the summed decreases are scaled so the largest summed
+  decrease is 100. Variables which cause larger net decreases in the RSS are
+  considered more important.
+
+  \item The \code{gcv} criterion (\code{type = "gcv"}) is similar to the
+  \code{rss} approach, but uses the GCV statistic instead of the RSS. Note
+  that adding a variable can sometimes increase the GCV. (Adding the variable
+  has a deleterious effect on the model, as measured in terms of its
+  estimated predictive power on unseen data.) If that happens often enough,
+  the variable can have a negative total importance, and thus appear less
+  important than unused variables.
+}}
+
+\item{\code{\link[gbm]{gbm}}}{Variable importance is computed using one of
+two approaches (See \code{\link[gbm]{summary.gbm}} for details):
+\itemize{
+
+  \item The standard approach (\code{type = "relative.influence"}) described
+  in Friedman (2001). For tree-based methods, the approximate relative
+  influence of a variable \eqn{x_j} is
+  \deqn{\widehat{J}_j^2 = \sum{\text{splits on } x_j}I_t^2}
+  where \eqn{I_t} is the empirical improvement by splitting on \eqn{x_j} at
+  that point. Friedman's extension to boosted models is to average the
+  relative influence of variable \eqn{x_j} across all the trees generated by
+  the boosting algorithm. This is the default method used by \strong{vip}.
+
+  \item An experimental permutation-based approach
+  (\code{type = "permutation"}). This method randomly permutes each predictor
+  variable at a time and computes the associated reduction in predictive
+  performance. This is similar to the variable importance measures Leo
+  Breiman uses for random forests, but \strong{gbm} currently computes using
+  the entire training dataset (not the out-of-bag observations).
+
+}}
 
 \item{\code{\link[h2o]{H2OModel}}}{See \code{\link[h2o]{h2o.varimp}} or visit
 \url{http://docs.h2o.ai/h2o/latest-stable/h2o-docs/variable-importance.html}
+for details.}
+
+\item{\code{\link[nnet]{nnet}}}{Two popular methods for constructing variable
+importance scores with neural networks are the Garson algorithm
+(Garson 1991), later modified by Goh (1995), and the Olden algorithm
+(Olden et al. 2004). For both algorithms, the basis of these importance
+scores is the network’s connection weights. The Garson algorithm determines
+variable importance by identifying all weighted connections between the nodes
+of interest. Olden’s algorithm, on the other hand, uses the product of the
+raw connection weights between each input and output neuron and sums the
+product across all hidden neurons. This has been shown to outperform the
+Garson method in vari- ous simulations. For DNNs, a similar method due to
+Gedeon (1997) considers the weights connecting the input features to the
+first two hidden layers (for simplicity and speed); but this method can be
+slow for large networks.. To implement the Olden and Garson algorithims, use
+\code{type = "olden"} and \code{type = "garson"}, respectively. See
+\code{\link[NeuralNetTools]{garson}} and \code{\link[NeuralNetTools]{olden}}
 for details.}
 
 \item{\code{\link[stats]{lm}}}{In (generalized) linear models, variable
@@ -193,7 +283,7 @@ of squares. See \code{\link[randomForest]{importance}} for details.}
 
 \item{\code{\link[party]{cforest}}}{Same approach described in
 \code{\link[partykit]{cforest}} above. See \code{\link[party]{varimp}} and
-\code{\link[party]{varimpAUC}} (if \code{auc = TRUE}) for details.}
+\code{\link[party]{varimpAUC}} (if \code{type = "auc"}) for details.}
 
 \item{\code{\link[ranger]{ranger}}}{Variable importance for
 \code{\link[ranger]{ranger}} objects is computed in the usual way for random
@@ -222,7 +312,9 @@ reason, in order to obtain a meaningful ranking by importance for a linear
 model, the features need to be on the same scale (which you also would want
 to do when using either L1 or L2 regularization). Otherwise, the approach
 described in Friedman (2001) for \code{\link[gbm]{gbm}}s is used. See
-\code{\link[xgboost]{xgb.importance}} for details.}
+\code{\link[xgboost]{xgb.importance}} for details. If \code{type = NULL} (the
+default), \code{"Gain"} is used. See \code{\link[xgboost]{xgb.importance}}
+for details.}
 
 }
 }

@@ -24,46 +24,91 @@ check_vi_model <- function(.model_function, .model_args, .package = "", .error_m
 
 }
 
+
 test_that("vi() works for \"ranger\" objects", {
 
   # Skips
   skip_on_cran()
   skip_if_not_installed("ranger")
 
+  # Cycle through variable importance types
   for (.importance in c("none", "impurity")) {
     for (.write.forest in c(TRUE, FALSE)) {
-      fit <- ranger::ranger(cmedv ~ .,
-                            data = boston,
-                            num.trees = 2,
-                            importance = .importance,
-                            write.forest = .write.forest)
-      if (identical(.importance, "impurity"))
+      fit <- ranger::ranger(
+        formula = cmedv ~ .,
+        data = boston,
+        num.trees = 2,
+        importance = .importance,
+        write.forest = .write.forest
+      )
+      if (identical(.importance, "impurity")) {
         expect_is(vi(fit), class = c("tbl_df", "tbl", "data.frame"))
-      else
-        expect_error(vi(fit),
-                     regexp = "No variable importance found. Please use 'importance' option when growing the forest.",
-                     fixed = TRUE)
+      }
+      else {
+        expect_error(
+          object = vi(fit),
+          regexp = "No variable importance found.",
+          fixed = TRUE
+        )
+      }
     }
   }
 
 })
 
+
 test_that("vi() works for \"C50\" objects", {
 
-  check_vi_model(.model_function = C50::C5.0,
-                 .model_args = list(Species ~ ., data = iris),
-                 .package = "C50")
+  # Skips
+  skip_on_cran()
+  skip_if_not_installed("C50")
+
+  # Fit model
+  fit <- C50::C5.0(Species ~ ., data = iris)
+
+  # Cycle through variable importance types
+  for (type in c("usage", "splits")) {
+
+    # Compute variable importance
+    res <- vi_model(fit, type = type)
+
+    # Expectations
+    expect_is(vi(fit), class = c("tbl_df", "tbl", "data.frame"))
+    expect_identical(attr(res, which = "type"), expected = type)
+
+  }
 
 })
+
 
 test_that("vi() works for \"glmnet\" objects", {
 
-  check_vi_model(.model_function = glmnet::glmnet,
-                 .model_args = list(x = stats::model.matrix(mpg ~ ., data = mtcars)[, -1], y = mtcars$mpg, nlambda = 1),
-                 .package = "glmnet",
-                 .error_msg = "Model-based variable importance scores are currently not available for objects of class \"elnetglmnet\".")
+  # Skips
+  skip_on_cran()
+  skip_if_not_installed("glmnet")
+
+  # Fit model
+  fit1 <- glmnet::glmnet(
+    x = model.matrix(~ . - cmedv - 1, data = boston),
+    y = boston$cmedv,
+    nlambda = 100
+  )
+
+  # Fit model
+  fit2 <- glmnet::cv.glmnet(
+    x = model.matrix(~ . - cmedv - 1, data = boston),
+    y = boston$cmedv,
+    nfolds = 5
+  )
+
+  # Expectations
+  expect_is(vi(fit1), class = c("tbl_df", "tbl", "data.frame"))
+  expect_is(vi(fit2), class = c("tbl_df", "tbl", "data.frame"))
+  expect_identical(attr(vi(fit1), which = "type"), expected = "|coefficient|")
+  expect_identical(attr(vi(fit2), which = "type"), expected = "|coefficient|")
 
 })
+
 
 test_that("vi() works for \"train\" objects", {
 
@@ -91,6 +136,12 @@ test_that("vi() works for \"gbm\" objects", {
 
 test_that("vi() works for \"nnet\" objects", {
 
+  # Olden algorithm
+  check_vi_model(.model_function = nnet::nnet,
+                 .model_args = list(mpg ~ ., data = mtcars, size = 1, trace = FALSE),
+                 .package = "nnet")
+
+  # Garson algorithm
   check_vi_model(.model_function = nnet::nnet,
                  .model_args = list(mpg ~ ., data = mtcars, size = 1, trace = FALSE),
                  .package = "nnet")
