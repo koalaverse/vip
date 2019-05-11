@@ -17,6 +17,8 @@
 #' @param feature_names Character string giving the names of the predictor
 #' variables (i.e., features) of interest.
 #'
+#' @param FUN Deprecated. Use \code{var_fun} instead.
+#'
 #' @param var_fun List with two components, \code{"cat"} and \code{"con"},
 #' containing the functions to use to quantify the variability of the feature
 #' effects (e.g., partial dependence values) for categorical and continuous
