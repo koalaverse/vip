@@ -7,7 +7,8 @@
 \usage{
 vi_ice(object, ...)
 
-\method{vi_ice}{default}(object, feature_names, var_fun = NULL, ...)
+\method{vi_ice}{default}(object, feature_names, FUN = NULL,
+  var_fun = NULL, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
@@ -17,6 +18,8 @@ vi_ice(object, ...)
 
 \item{feature_names}{Character string giving the names of the predictor
 variables (i.e., features) of interest.}
+
+\item{FUN}{Deprecated. Use \code{var_fun} instead.}
 
 \item{var_fun}{List with two components, \code{"cat"} and \code{"con"},
 containing the functions to use to quantify the variability of the feature

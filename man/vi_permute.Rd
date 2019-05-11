@@ -9,9 +9,9 @@ vi_permute(object, ...)
 
 \method{vi_permute}{default}(object, train, target, metric = "auto",
   smaller_is_better = NULL, nsim = 1, sample_size = NULL,
-  sample_frac = NULL, reference_class = NULL, pred_wrapper = NULL,
-  verbose = FALSE, progress = "none", parallel = FALSE,
-  paropts = NULL, ...)
+  sample_frac = NULL, reference_class = NULL, pred_fun = NULL,
+  pred_wrapper = NULL, verbose = FALSE, progress = "none",
+  parallel = FALSE, paropts = NULL, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
@@ -47,7 +47,7 @@ available training data). Cannot be specified with \code{sample_frac}. Can be
 used to reduce computation time with large data sets.}
 
 \item{sample_frac}{Proportion specifying the size of the random sample to use
-for each Monte Carlo repitition. Default is \code{NULL} (i.e., use all of the
+for each Monte Carlo repetition. Default is \code{NULL} (i.e., use all of the
 available training data). Cannot be specified with \code{sample_size}. Can be
 used to reduce computation time with large data sets.}
 
@@ -56,10 +56,12 @@ represents the "reference" class (i.e., the class for which the predicted
 class probabilities correspond to). Only needed for binary classification
 problems.}
 
+\item{pred_fun}{Deprecated. Use \code{pred_wrapper} instead.}
+
 \item{pred_wrapper}{Optional prediction function that requires two arguments,
 \code{object} and \code{newdata}. Default is \code{NULL}. Must be supplied
 whenever \code{metric} is a custom function. In fact, it is good practice to
-always supply this funtion! The output of this function should be determined
+always supply this function! The output of this function should be determined
 by the metric being used:
 
 \describe{

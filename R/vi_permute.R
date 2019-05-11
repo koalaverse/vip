@@ -34,7 +34,7 @@
 #' used to reduce computation time with large data sets.
 #'
 #' @param sample_frac Proportion specifying the size of the random sample to use
-#' for each Monte Carlo repitition. Default is \code{NULL} (i.e., use all of the
+#' for each Monte Carlo repetition. Default is \code{NULL} (i.e., use all of the
 #' available training data). Cannot be specified with \code{sample_size}. Can be
 #' used to reduce computation time with large data sets.
 #'
@@ -43,10 +43,12 @@
 #' class probabilities correspond to). Only needed for binary classification
 #' problems.
 #'
+#' @param pred_fun Deprecated. Use \code{pred_wrapper} instead.
+#'
 #' @param pred_wrapper Optional prediction function that requires two arguments,
 #' \code{object} and \code{newdata}. Default is \code{NULL}. Must be supplied
 #' whenever \code{metric} is a custom function. In fact, it is good practice to
-#' always supply this funtion! The output of this function should be determined
+#' always supply this function! The output of this function should be determined
 #' by the metric being used:
 #'
 #' \describe{
@@ -136,13 +138,19 @@ vi_permute <- function(object, ...) {
 #' @export
 vi_permute.default <- function(object, train, target, metric = "auto",
   smaller_is_better = NULL, nsim = 1, sample_size = NULL, sample_frac = NULL,
-  reference_class = NULL, pred_wrapper = NULL, verbose = FALSE, progress = "none",
-  parallel = FALSE, paropts = NULL, ...
+  reference_class = NULL, pred_fun = NULL, pred_wrapper = NULL, verbose = FALSE,
+  progress = "none", parallel = FALSE, paropts = NULL, ...
 ) {
 
   # Issue warning until this function is complete!
   warning("Setting `method = \"permute\"` is experimental, use at your own ",
           "risk!", call. = FALSE)
+
+  # Catch deprecated arguments
+  if (!is.null(pred_fun)) {
+    stop("Argument `pred_fun` is deprecated; please use `pred_wrapper` ",
+         "instead.", call. = FALSE)
+  }
 
   # Get training data, if not supplied
   if (missing(train)) {

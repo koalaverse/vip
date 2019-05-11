@@ -31,7 +31,7 @@
 \alias{vi_model.rpart}
 \alias{vi_model.train}
 \alias{vi_model.xgb.Booster}
-\title{Model-Based Variable Importance}
+\title{Model-based variable importance}
 \usage{
 vi_model(object, ...)
 
@@ -247,10 +247,10 @@ variable importance by identifying all weighted connections between the nodes
 of interest. Olden’s algorithm, on the other hand, uses the product of the
 raw connection weights between each input and output neuron and sums the
 product across all hidden neurons. This has been shown to outperform the
-Garson method in vari- ous simulations. For DNNs, a similar method due to
+Garson method in various simulations. For DNNs, a similar method due to
 Gedeon (1997) considers the weights connecting the input features to the
 first two hidden layers (for simplicity and speed); but this method can be
-slow for large networks.. To implement the Olden and Garson algorithims, use
+slow for large networks.. To implement the Olden and Garson algorithms, use
 \code{type = "olden"} and \code{type = "garson"}, respectively. See
 \code{\link[NeuralNetTools]{garson}} and \code{\link[NeuralNetTools]{olden}}
 for details.}

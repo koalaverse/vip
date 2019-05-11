@@ -95,6 +95,7 @@ vi.default <- function(
   object,
   method = c("model", "pdp", "ice", "permute"),
   feature_names,
+  FUN = NULL,  # deprecated
   var_fun = NULL,
   abbreviate_feature_names = NULL,
   sort = TRUE,
@@ -103,6 +104,12 @@ vi.default <- function(
   rank = FALSE,
   ...
 ) {
+
+  # Catch deprecated arguments
+  if (!is.null(FUN)) {
+    stop("Argument `FUN` is deprecated; please use `var_fun` instead.",
+         call. = FALSE)
+  }
 
   # Construct VI scores
   method <- match.arg(method)

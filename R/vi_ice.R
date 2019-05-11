@@ -8,6 +8,8 @@
 #' @param feature_names Character string giving the names of the predictor
 #' variables (i.e., features) of interest.
 #'
+#' @param FUN Deprecated. Use \code{var_fun} instead.
+#'
 #' @param var_fun List with two components, \code{"cat"} and \code{"con"},
 #' containing the functions to use to quantify the variability of the feature
 #' effects (e.g., partial dependence values) for categorical and continuous
@@ -36,11 +38,18 @@ vi_ice <- function(object, ...) {
 #' @rdname vi_ice
 #'
 #' @export
-vi_ice.default <- function(object, feature_names, var_fun = NULL, ...) {
+vi_ice.default <- function(object, feature_names, FUN = NULL, var_fun = NULL,
+                           ...) {
 
   # Print warning message
   warning("Setting `method = \"ice\"` is experimental, use at your own risk!",
           call. = FALSE)
+
+  # Catch deprecated arguments
+  if (!is.null(FUN)) {
+    stop("Argument `FUN` is deprecated; please use `var_fun` instead.",
+         call. = FALSE)
+  }
 
   # Check var_fun argument
   var_fun <- if (is.null(var_fun)) {
