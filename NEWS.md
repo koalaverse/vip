@@ -4,7 +4,7 @@
 
 * `add_sparklines()` creates an HTML widget to display variable importance scores with a sparkline representation of each features effect (i.e., its partial dependence function) [(#64)](https://github.com/koalaverse/vip/issues/64).
 
-* Added support for the Olden and Garson algorithms with neural networks fit using the __neuralnet__, __nnet__, and __RSNNS__ packages.
+* Added support for the Olden and Garson algorithms with neural networks fit using the __neuralnet__, __nnet__, and __RSNNS__ packages [(#28)](https://github.com/koalaverse/vip/issues/28).
 
 * Added support for GLMNET models fit using the __glmnet__ package (with and without cross-validation).
 
