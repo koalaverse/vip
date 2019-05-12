@@ -15,8 +15,9 @@ test_that("abbreviate_names() works for \"ranger\" objects", {
   length <- 2
   vis <- vi(fit, abbreviate_feature_names = length)
 
-  # abbreviations
-  original_names <- abbreviate(names(subset(boston, select = -cmedv)), minlength = length)
+  # Abbreviate feature names
+  original_names <- abbreviate(names(subset(boston, select = -cmedv)),
+                               minlength = length)
   vi_names <- vis$Variable
 
   # Expectations

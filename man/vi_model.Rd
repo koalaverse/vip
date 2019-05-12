@@ -4,16 +4,18 @@
 \alias{vi_model}
 \alias{vi_model.default}
 \alias{vi_model.C5.0}
-\alias{vi_model.constparty}
+\alias{vi_model.train}
 \alias{vi_model.cubist}
 \alias{vi_model.earth}
 \alias{vi_model.gbm}
+\alias{vi_model.RandomForest}
+\alias{vi_model.constparty}
+\alias{vi_model.cforest}
 \alias{vi_model.glmnet}
 \alias{vi_model.cv.glmnet}
 \alias{vi_model.H2OBinomialModel}
 \alias{vi_model.H2OMultinomialModel}
 \alias{vi_model.H2ORegressionModel}
-\alias{vi_model.lm}
 \alias{vi_model.ml_model_decision_tree_regression}
 \alias{vi_model.ml_model_decision_tree_classification}
 \alias{vi_model.ml_model_gbt_regression}
@@ -22,14 +24,13 @@
 \alias{vi_model.ml_model_linear_regression}
 \alias{vi_model.ml_model_random_forest_regression}
 \alias{vi_model.ml_model_random_forest_classification}
+\alias{vi_model.lm}
 \alias{vi_model.mlp}
 \alias{vi_model.nn}
 \alias{vi_model.nnet}
 \alias{vi_model.randomForest}
-\alias{vi_model.RandomForest}
 \alias{vi_model.ranger}
 \alias{vi_model.rpart}
-\alias{vi_model.train}
 \alias{vi_model.xgb.Booster}
 \title{Model-based variable importance}
 \usage{
@@ -39,7 +40,7 @@ vi_model(object, ...)
 
 \method{vi_model}{C5.0}(object, type = c("usage", "splits"), ...)
 
-\method{vi_model}{constparty}(object, ...)
+\method{vi_model}{train}(object, ...)
 
 \method{vi_model}{cubist}(object, ...)
 
@@ -47,6 +48,12 @@ vi_model(object, ...)
 
 \method{vi_model}{gbm}(object, type = c("relative.influence",
   "permutation"), ...)
+
+\method{vi_model}{RandomForest}(object, type = c("accuracy", "auc"), ...)
+
+\method{vi_model}{constparty}(object, ...)
+
+\method{vi_model}{cforest}(object, ...)
 
 \method{vi_model}{glmnet}(object, ...)
 
@@ -57,8 +64,6 @@ vi_model(object, ...)
 \method{vi_model}{H2OMultinomialModel}(object, ...)
 
 \method{vi_model}{H2ORegressionModel}(object, ...)
-
-\method{vi_model}{lm}(object, ...)
 
 \method{vi_model}{ml_model_decision_tree_regression}(object, ...)
 
@@ -76,6 +81,8 @@ vi_model(object, ...)
 
 \method{vi_model}{ml_model_random_forest_classification}(object, ...)
 
+\method{vi_model}{lm}(object, ...)
+
 \method{vi_model}{mlp}(object, type = c("olden", "garson"), ...)
 
 \method{vi_model}{nn}(object, type = c("olden", "garson"), ...)
@@ -84,13 +91,9 @@ vi_model(object, ...)
 
 \method{vi_model}{randomForest}(object, ...)
 
-\method{vi_model}{RandomForest}(object, type = c("accuracy", "auc"), ...)
-
 \method{vi_model}{ranger}(object, ...)
 
 \method{vi_model}{rpart}(object, ...)
-
-\method{vi_model}{train}(object, ...)
 
 \method{vi_model}{xgb.Booster}(object, type = c("gain", "cover",
   "frequency"), ...)
