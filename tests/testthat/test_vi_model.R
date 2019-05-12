@@ -1,5 +1,34 @@
 context("Model-specific variable importance")
 
+
+# Helper function(s) from sparklyr tests ---------------------------------------
+
+# See https://github.com/rstudio/sparklyr/blob/master/tests/testthat/helper-initialize.R
+testthat_spark_connection <- function() {
+  version <- Sys.getenv("SPARK_VERSION", unset = "2.3.0")
+  spark_installed <- sparklyr::spark_installed_versions()
+  if (nrow(spark_installed[spark_installed$spark == version, ]) == 0) {
+    options(sparkinstall.verbose = TRUE)
+    sparklyr::spark_install(version)
+  }
+  connected <- FALSE
+  if (exists(".testthat_spark_connection", envir = .GlobalEnv)) {
+    sc <- get(".testthat_spark_connection", envir = .GlobalEnv)
+    connected <- sparklyr::connection_is_open(sc)
+  }
+  if (!connected) {
+    config <- sparklyr::spark_config()
+    options(sparklyr.sanitize.column.names.verbose = TRUE)
+    options(sparklyr.verbose = TRUE)
+    options(sparklyr.na.omit.verbose = TRUE)
+    options(sparklyr.na.action.verbose = TRUE)
+    sc <- sparklyr::spark_connect(master = "local", version = version,
+                                  config = config)
+    assign(".testthat_spark_connection", sc, envir = .GlobalEnv)
+  }
+  get(".testthat_spark_connection", envir = .GlobalEnv)
+}
+
 # h2o setup
 library(h2o)
 h2o.init()
@@ -21,7 +50,7 @@ friedman3$y <- bin(friedman1$y, num_bins = 3)
 
 # sparklyr setup
 library(sparklyr)
-sc <- spark_connect(master = "local")
+sc <- testthat_spark_connection()
 friedman1_tbl <- sdf_copy_to(sc, x = friedman1, name = "friedman1",
                              overwrite = TRUE)
 friedman2_tbl <- sdf_copy_to(sc, x = friedman2, name = "friedman2",
