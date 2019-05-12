@@ -231,7 +231,7 @@ test_that("`vi_model()` works for \"glmnet\" objects", {
 
   # Run checks (without specified lambda)
   check_vi_model(
-    FUN = glmnet::cv.glmnet,
+    FUN = glmnet::glmnet,
     args = list(
       x = model.matrix(~ . - y - 1, data = friedman1),
       y = friedman1$y
@@ -241,7 +241,7 @@ test_that("`vi_model()` works for \"glmnet\" objects", {
 
   # Run checks (with specified lambda)
   check_vi_model(
-    FUN = glmnet::cv.glmnet,
+    FUN = glmnet::glmnet,
     args = list(
       x = model.matrix(~ . - y - 1, data = friedman1),
       y = friedman1$y
@@ -547,14 +547,14 @@ test_that("`vi_model()` works for \"RSNNS\" objects", {
 
 # Package: sparklyr ------------------------------------------------------------
 
-test_that("`vi_model()` works for \"ml_model_gbt_regression\" objects", {
+test_that("`vi_model()` works for \"ml_model_decision_tree_classification\" objects", {
 
   # Skips
   skip_on_cran()
 
   # Run checks
   check_vi_model(
-    FUN = sparklyr::ml_gradient_boosted_trees,
+    FUN = sparklyr::ml_decision_tree,
     args = list(
       x = friedman1_tbl,
       formula = y ~ .,
@@ -566,14 +566,14 @@ test_that("`vi_model()` works for \"ml_model_gbt_regression\" objects", {
 })
 
 
-test_that("`vi_model()` works for \"ml_model_gbt_classification\" objects", {
+test_that("`vi_model()` works for \"ml_model_decision_tree_regression\" objects", {
 
   # Skips
   skip_on_cran()
 
   # Run checks
   check_vi_model(
-    FUN = sparklyr::ml_gradient_boosted_trees,
+    FUN = sparklyr::ml_decision_tree,
     args = list(
       x = friedman2_tbl,
       formula = y ~ .,
@@ -585,7 +585,7 @@ test_that("`vi_model()` works for \"ml_model_gbt_classification\" objects", {
 })
 
 
-test_that("`vi_model()` works for \"ml_generalized_linear_regression\" objects", {
+test_that("`vi_model()` works for \"ml_model_generalized_linear_regression\" objects", {
 
   # Skips
   skip_on_cran()
@@ -603,7 +603,7 @@ test_that("`vi_model()` works for \"ml_generalized_linear_regression\" objects",
 })
 
 
-test_that("`vi_model()` works for \"ml_linear_regression\" objects", {
+test_that("`vi_model()` works for \"ml_model_linear_regression\" objects", {
 
   # Skips
   skip_on_cran()

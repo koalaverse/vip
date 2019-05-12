@@ -281,11 +281,11 @@ vi_model.C5.0 <- function(object, type = c("usage", "splits"), ...) {
 #' @export
 vi_model.train <- function(object, ...) {
 
-  # Check for dependency
-  if (!requireNamespace("caret", quietly = TRUE)) {
-    stop("Package \"caret\" needed for this function to work. Please ",
-         "install it.", call. = FALSE)
-  }
+  # # Check for dependency
+  # if (!requireNamespace("caret", quietly = TRUE)) {
+  #   stop("Package \"caret\" needed for this function to work. Please ",
+  #        "install it.", call. = FALSE)
+  # }
 
   # Construct model-based variable importance scores
   vis <- caret::varImp(object, ...)
@@ -316,11 +316,11 @@ vi_model.train <- function(object, ...) {
 #' @export
 vi_model.cubist <- function(object, ...) {
 
-  # Check for dependency
-  if (!requireNamespace("Cubist", quietly = TRUE)) {
-    stop("Package \"Cubist\" needed for this function to work. Please ",
-         "install it.", call. = FALSE)
-  }
+  # # Check for dependency
+  # if (!requireNamespace("Cubist", quietly = TRUE)) {
+  #   stop("Package \"Cubist\" needed for this function to work. Please ",
+  #        "install it.", call. = FALSE)
+  # }
 
   # Consruct model-based variable importance scores
   vis <- caret::varImp(object, ...)
@@ -348,11 +348,11 @@ vi_model.cubist <- function(object, ...) {
 #' @export
 vi_model.earth <- function(object, type = c("nsubsets", "rss", "gcv"), ...) {
 
-  # Check for dependency
-  if (!requireNamespace("earth", quietly = TRUE)) {
-    stop("Package \"earth\" needed for this function to work. Please ",
-         "install it.", call. = FALSE)
-  }
+  # # Check for dependency
+  # if (!requireNamespace("earth", quietly = TRUE)) {
+  #   stop("Package \"earth\" needed for this function to work. Please ",
+  #        "install it.", call. = FALSE)
+  # }
 
   # Determine which type of variable importance to compute
   type <- match.arg(type)
@@ -385,11 +385,11 @@ vi_model.earth <- function(object, type = c("nsubsets", "rss", "gcv"), ...) {
 vi_model.gbm <- function(object, type = c("relative.influence", "permutation"),
                          ...) {
 
-  # Check for dependency
-  if (!requireNamespace("gbm", quietly = TRUE)) {
-    stop("Package \"gbm\" needed for this function to work. Please ",
-         "install it.", call. = FALSE)
-  }
+  # # Check for dependency
+  # if (!requireNamespace("gbm", quietly = TRUE)) {
+  #   stop("Package \"gbm\" needed for this function to work. Please ",
+  #        "install it.", call. = FALSE)
+  # }
 
   # Determine which type of variable importance to compute
   type <- match.arg(type)
@@ -426,11 +426,11 @@ vi_model.gbm <- function(object, type = c("relative.influence", "permutation"),
 #' @export
 vi_model.RandomForest <- function(object, type = c("accuracy", "auc"), ...) {
 
-  # Check for dependency
-  if (!requireNamespace("party", quietly = TRUE)) {
-    stop("Package \"party\" needed for this function to work. Please ",
-         "install it.", call. = FALSE)
-  }
+  # # Check for dependency
+  # if (!requireNamespace("party", quietly = TRUE)) {
+  #   stop("Package \"party\" needed for this function to work. Please ",
+  #        "install it.", call. = FALSE)
+  # }
 
   # Determine which type of variable importance to compute
   type <- match.arg(type)
@@ -697,11 +697,11 @@ vi_model.H2ORegressionModel <- function(object, ...) {
 #' @export
 vi_model.ml_model_decision_tree_regression <- function(object, ...) {
 
-  # Check for dependency
-  if (!requireNamespace("sparklyr", quietly = TRUE)) {
-    stop("Package \"sparklyr\" needed for this function to work. Please ",
-         "install it.", call. = FALSE)
-  }
+  # # Check for dependency
+  # if (!requireNamespace("sparklyr", quietly = TRUE)) {
+  #   stop("Package \"sparklyr\" needed for this function to work. Please ",
+  #        "install it.", call. = FALSE)
+  # }
 
   # Construct model-based variable importance scores
   vis <- sparklyr::ml_feature_importances(object, ...)
@@ -725,11 +725,11 @@ vi_model.ml_model_decision_tree_regression <- function(object, ...) {
 #' @export
 vi_model.ml_model_decision_tree_classification <- function(object, ...) {
 
-  # Check for dependency
-  if (!requireNamespace("sparklyr", quietly = TRUE)) {
-    stop("Package \"sparklyr\" needed for this function to work. Please ",
-         "install it.", call. = FALSE)
-  }
+  # # Check for dependency
+  # if (!requireNamespace("sparklyr", quietly = TRUE)) {
+  #   stop("Package \"sparklyr\" needed for this function to work. Please ",
+  #        "install it.", call. = FALSE)
+  # }
 
   # Construct model-based variable importance scores
   vis <- sparklyr::ml_feature_importances(object, ...)
@@ -753,11 +753,11 @@ vi_model.ml_model_decision_tree_classification <- function(object, ...) {
 #' @export
 vi_model.ml_model_gbt_regression <- function(object, ...) {
 
-  # Check for dependency
-  if (!requireNamespace("sparklyr", quietly = TRUE)) {
-    stop("Package \"sparklyr\" needed for this function to work. Please ",
-         "install it.", call. = FALSE)
-  }
+  # # Check for dependency
+  # if (!requireNamespace("sparklyr", quietly = TRUE)) {
+  #   stop("Package \"sparklyr\" needed for this function to work. Please ",
+  #        "install it.", call. = FALSE)
+  # }
 
   # Construct model-based variable importance scores
   vis <- sparklyr::ml_feature_importances(object, ...)
@@ -781,11 +781,11 @@ vi_model.ml_model_gbt_regression <- function(object, ...) {
 #' @export
 vi_model.ml_model_gbt_classification <- function(object, ...) {
 
-  # Check for dependency
-  if (!requireNamespace("sparklyr", quietly = TRUE)) {
-    stop("Package \"sparklyr\" needed for this function to work. Please ",
-         "install it.", call. = FALSE)
-  }
+  # # Check for dependency
+  # if (!requireNamespace("sparklyr", quietly = TRUE)) {
+  #   stop("Package \"sparklyr\" needed for this function to work. Please ",
+  #        "install it.", call. = FALSE)
+  # }
 
   # Construct model-based variable importance scores
   vis <- sparklyr::ml_feature_importances(object, ...)
@@ -809,11 +809,11 @@ vi_model.ml_model_gbt_classification <- function(object, ...) {
 #' @export
 vi_model.ml_model_generalized_linear_regression <- function(object, ...) {
 
-  # Check for dependency
-  if (!requireNamespace("sparklyr", quietly = TRUE)) {
-    stop("Package \"sparklyr\" needed for this function to work. Please ",
-         "install it.", call. = FALSE)
-  }
+  # # Check for dependency
+  # if (!requireNamespace("sparklyr", quietly = TRUE)) {
+  #   stop("Package \"sparklyr\" needed for this function to work. Please ",
+  #        "install it.", call. = FALSE)
+  # }
 
   # Construct model-based variable importance scores
   vis <- sparklyr::tidy(object, ...)[, c("term", "statistic")]
@@ -842,11 +842,11 @@ vi_model.ml_model_generalized_linear_regression <- function(object, ...) {
 #' @export
 vi_model.ml_model_linear_regression <- function(object, ...) {
 
-  # Check for dependency
-  if (!requireNamespace("sparklyr", quietly = TRUE)) {
-    stop("Package \"sparklyr\" needed for this function to work. Please ",
-         "install it.", call. = FALSE)
-  }
+  # # Check for dependency
+  # if (!requireNamespace("sparklyr", quietly = TRUE)) {
+  #   stop("Package \"sparklyr\" needed for this function to work. Please ",
+  #        "install it.", call. = FALSE)
+  # }
 
   # Construct model-based variable importance scores
   vis <- sparklyr::tidy(object, ...)[, c("term", "statistic")]
@@ -875,11 +875,11 @@ vi_model.ml_model_linear_regression <- function(object, ...) {
 #' @export
 vi_model.ml_model_random_forest_regression <- function(object, ...) {
 
-  # Check for dependency
-  if (!requireNamespace("sparklyr", quietly = TRUE)) {
-    stop("Package \"sparklyr\" needed for this function to work. Please ",
-         "install it.", call. = FALSE)
-  }
+  # # Check for dependency
+  # if (!requireNamespace("sparklyr", quietly = TRUE)) {
+  #   stop("Package \"sparklyr\" needed for this function to work. Please ",
+  #        "install it.", call. = FALSE)
+  # }
 
   # Construct model-based variable importance scores
   vis <- sparklyr::ml_feature_importances(object, ...)
@@ -903,11 +903,11 @@ vi_model.ml_model_random_forest_regression <- function(object, ...) {
 #' @export
 vi_model.ml_model_random_forest_classification <- function(object, ...) {
 
-  # Check for dependency
-  if (!requireNamespace("sparklyr", quietly = TRUE)) {
-    stop("Package \"sparklyr\" needed for this function to work. Please ",
-         "install it.", call. = FALSE)
-  }
+  # # Check for dependency
+  # if (!requireNamespace("sparklyr", quietly = TRUE)) {
+  #   stop("Package \"sparklyr\" needed for this function to work. Please ",
+  #        "install it.", call. = FALSE)
+  # }
 
   # Construct model-based variable importance scores
   vis <- sparklyr::ml_feature_importances(object, ...)
@@ -1088,11 +1088,11 @@ vi_model.nnet <- function(object, type = c("olden", "garson"), ...) {
 #' @export
 vi_model.randomForest <- function(object, ...) {
 
-  # Check for dependency
-  if (!requireNamespace("randomForest", quietly = TRUE)) {
-    stop("Package \"randomForest\" needed for this function to work. Please ",
-         "install it.", call. = FALSE)
-  }
+  # # Check for dependency
+  # if (!requireNamespace("randomForest", quietly = TRUE)) {
+  #   stop("Package \"randomForest\" needed for this function to work. Please ",
+  #        "install it.", call. = FALSE)
+  # }
 
   # Construct model-based variable importance scores
   vis <- randomForest::importance(object, ...)
@@ -1118,19 +1118,16 @@ vi_model.randomForest <- function(object, ...) {
 }
 
 
-
-
-
 #' @rdname vi_model
 #'
 #' @export
 vi_model.ranger <- function(object, ...) {
 
-  # Check for dependency
-  if (!requireNamespace("ranger", quietly = TRUE)) {
-    stop("Package \"ranger\" needed for this function to work. Please ",
-         "install it.", call. = FALSE)
-  }
+  # # Check for dependency
+  # if (!requireNamespace("ranger", quietly = TRUE)) {
+  #   stop("Package \"ranger\" needed for this function to work. Please ",
+  #        "install it.", call. = FALSE)
+  # }
 
   # Construct model-based variable importance scores
   vis <- ranger::importance(object)
@@ -1189,11 +1186,11 @@ vi_model.rpart <- function(object, ...) {
 vi_model.xgb.Booster <- function(object, type = c("gain", "cover", "frequency"),
                                  ...) {
 
-  # Check for dependency
-  if (!requireNamespace("xgboost", quietly = TRUE)) {
-    stop("Package \"xgboost\" needed for this function to work. Please ",
-         "install it.", call. = FALSE)
-  }
+  # # Check for dependency
+  # if (!requireNamespace("xgboost", quietly = TRUE)) {
+  #   stop("Package \"xgboost\" needed for this function to work. Please ",
+  #        "install it.", call. = FALSE)
+  # }
 
   # Determine which type of variable importance to compute
   type <- match.arg(type)
