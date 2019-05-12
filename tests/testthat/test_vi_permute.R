@@ -25,6 +25,9 @@ test_that("`vi_permute()` works in regression settings.", {
 
   # Fit model
   fit <- stats::ppr(y ~ ., data = friedman1, nterms = 11)
+  pfun <- function(object, newdata) {
+    predict(object, newdata = newdata)
+  }
 
   # Metric
   rsquared <- function(actual, predicted) {
@@ -35,23 +38,28 @@ test_that("`vi_permute()` works in regression settings.", {
   set.seed(101)  # for reproducibility
   vis1 <- vi_permute(
     object = fit,
+    train = friedman1,
     target = "y",
     metric = "rsquared",
-    pred_wrapper = predict
+    pred_wrapper = pfun
   )
   vis2 <- vi_permute(
     object = fit,
     train = subset(friedman1, select = -y),
     target = friedman1$y,
     metric = rsquared,
+    smaller_is_better = FALSE,
     sample_frac = 0.9,
-    pred_wrapper = predict
+    pred_wrapper = pfun
   )
 
   # Expectations
-  expect_is(vis, class = c("vi", "tbl_df", "tbl", "data.frame"))
-  expect_true(all(names(vis) %in% c("Variable", "Importance", "Sign")))
-  expect_identical(ncol(friedman1) - 1L, nrow(vis))
+  expect_is(vis1, class = c("vi", "tbl_df", "tbl", "data.frame"))
+  expect_is(vis2, class = c("vi", "tbl_df", "tbl", "data.frame"))
+  expect_true(all(names(vis1) %in% c("Variable", "Importance", "Sign")))
+  expect_true(all(names(vis2) %in% c("Variable", "Importance", "Sign")))
+  expect_identical(ncol(friedman1) - 1L, nrow(vis1))
+  expect_identical(ncol(friedman1) - 1L, nrow(vis2))
 
 })
 
@@ -72,6 +80,7 @@ test_that("`vi_permute()` works in binary classification settings.", {
   set.seed(101)  # for reproducibility
   vis <- vi_permute(
     object = fit,
+    train = friedman2,
     target = "y",
     metric = "auc",
     sample_size = 900,

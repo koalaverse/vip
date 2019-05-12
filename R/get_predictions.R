@@ -6,7 +6,9 @@ get_predictions <- function(object, type = c("raw", "prob")) {
 
 #' @keywords internal
 get_predictions.default <- function(object, type = c("raw", "prob")) {
-  stats::predict
+  function(object, newdata, ...) {
+    stats::predict(object, newdata = newdata)
+  }
 }
 
 
