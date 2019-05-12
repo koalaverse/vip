@@ -292,7 +292,7 @@ test_that("`vi_model()` works for \"H2OBinomialModel\" objects", {
     args = list(
       x = paste0("x.", 1:10),
       y = "y",
-      training_frame = as.h2o(friedman2),
+      training_frame = h2o::as.h2o(friedman2),
       ntrees = 50L,
       seed = 101
     ),
@@ -312,7 +312,7 @@ test_that("`vi_model()` works for \"H2OMultinomialModel\" objects", {
     args = list(
       x = paste0("x.", 1:10),
       y = "y",
-      training_frame = as.h2o(friedman3),
+      training_frame = h2o::as.h2o(friedman3),
       ntrees = 50L,
       seed = 101
     ),
@@ -332,7 +332,7 @@ test_that("`vi_model()` works for \"H2ORegressionModel\" objects", {
     args = list(
       x = paste0("x.", 1:10),
       y = "y",
-      training_frame = as.h2o(friedman1),
+      training_frame = h2o::as.h2o(friedman1),
       ntrees = 50,
       seed = 101
     ),
