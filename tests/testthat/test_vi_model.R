@@ -585,6 +585,44 @@ test_that("`vi_model()` works for \"ml_model_decision_tree_regression\" objects"
 })
 
 
+test_that("`vi_model()` works for \"ml_model_gbt_regression\" objects", {
+
+  # Skips
+  skip_on_cran()
+
+  # Run checks
+  check_vi_model(
+    FUN = sparklyr::ml_gradient_boosted_trees,
+    args = list(
+      x = friedman1_tbl,
+      formula = y ~ .,
+      type = "regression",
+      num_trees = 50
+    )
+  )
+
+})
+
+
+test_that("`vi_model()` works for \"ml_model_gbt_classification\" objects", {
+
+  # Skips
+  skip_on_cran()
+
+  # Run checks
+  check_vi_model(
+    FUN = sparklyr::ml_gradient_boosted_trees,
+    args = list(
+      x = friedman2_tbl,
+      formula = y ~ .,
+      type = "classification"
+    ),
+    pkg = "sparklyr"
+  )
+
+})
+
+
 test_that("`vi_model()` works for \"ml_model_generalized_linear_regression\" objects", {
 
   # Skips

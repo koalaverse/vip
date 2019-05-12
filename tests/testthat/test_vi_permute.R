@@ -82,7 +82,6 @@ test_that("`vi_permute()` works in binary classification settings.", {
     object = fit,
     train = friedman2,
     target = "y",
-    metric = "auc",
     sample_size = 900,
     reference_class = "class1",
     pred_wrapper = pfun
