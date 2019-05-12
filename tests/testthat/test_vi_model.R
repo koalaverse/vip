@@ -695,29 +695,29 @@ test_that("`vi_model()` works for \"lm\" objects", {
 
 # Package: xgboost -------------------------------------------------------------
 
-test_that("`vi_model()` works for \"xgboost\" objects", {
-
-  # Skips
-  skip_on_cran()
-
-  # Cycle through variable importance types
-  for (type in c("gain", "cover", "frequency")) {
-
-    # Run checks
-    check_vi_model(
-      FUN = xgboost::xgboost,
-      args = list(
-        data = model.matrix(~ . - y - 1, data = friedman1),
-        label = friedman1$y,
-        nrounds = 50,
-        params = list(eta = 0.1),
-        verbose = 0,
-        save_period = 0
-      ),
-      pkg = "xgboost",
-      type = type
-    )
-
-  }
-
-})
+# test_that("`vi_model()` works for \"xgboost\" objects", {
+#
+#   # Skips
+#   skip_on_cran()
+#
+#   # Cycle through variable importance types
+#   for (type in c("gain", "cover", "frequency")) {
+#
+#     # Run checks
+#     check_vi_model(
+#       FUN = xgboost::xgboost,
+#       args = list(
+#         data = model.matrix(~ . - y - 1, data = friedman1),
+#         label = friedman1$y,
+#         nrounds = 50,
+#         params = list(eta = 0.1),
+#         verbose = 0,
+#         save_period = 0
+#       ),
+#       pkg = "xgboost",
+#       type = type
+#     )
+#
+#   }
+#
+# })
