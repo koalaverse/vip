@@ -76,7 +76,7 @@ check_vi_model <- function(FUN, args, pkg = "", error_msg = "", ...) {
     expect_true(all(names(vis) %in% c("Variable", "Importance", "Sign")))
     expect_identical(ncol(friedman1) - 1L, nrow(vis))
   } else {
-    expect_error(vi(fit), regexp = error_msg, fixed = TRUE)
+    expect_error(vi_model(fit, ...), regexp = error_msg, fixed = TRUE)
   }
 
 }
@@ -121,6 +121,9 @@ test_that("`vi_model()` works for \"C50\" objects", {
 # Package: caret ---------------------------------------------------------------
 
 test_that("`vi_model()` works for \"train\" objects", {
+
+  # Skips
+  skip_on_cran()
 
   # Run checks
   check_vi_model(
@@ -457,6 +460,9 @@ test_that("`vi_model()` works for \"cforest\" objects", {
 
 test_that("`vi_model()` works for \"randomForest\" objects", {
 
+  # Skips
+  skip_on_cran()
+
   # Run checks
   check_vi_model(
     FUN = randomForest::randomForest,
@@ -497,6 +503,9 @@ test_that("`vi_model()` works for \"ranger\" objects", {
 # Package: rpart ---------------------------------------------------------------
 
 test_that("`vi_model()` works for \"rpart\" objects", {
+
+  # Skips
+  skip_on_cran()
 
   # Run checks
   check_vi_model(
@@ -540,6 +549,9 @@ test_that("`vi_model()` works for \"RSNNS\" objects", {
 
 test_that("`vi_model()` works for \"ml_model_gbt_regression\" objects", {
 
+  # Skips
+  skip_on_cran()
+
   # Run checks
   check_vi_model(
     FUN = sparklyr::ml_gradient_boosted_trees,
@@ -555,6 +567,9 @@ test_that("`vi_model()` works for \"ml_model_gbt_regression\" objects", {
 
 
 test_that("`vi_model()` works for \"ml_model_gbt_classification\" objects", {
+
+  # Skips
+  skip_on_cran()
 
   # Run checks
   check_vi_model(
@@ -572,6 +587,9 @@ test_that("`vi_model()` works for \"ml_model_gbt_classification\" objects", {
 
 test_that("`vi_model()` works for \"ml_generalized_linear_regression\" objects", {
 
+  # Skips
+  skip_on_cran()
+
   # Run checks
   check_vi_model(
     FUN = sparklyr::ml_generalized_linear_regression,
@@ -587,6 +605,9 @@ test_that("`vi_model()` works for \"ml_generalized_linear_regression\" objects",
 
 test_that("`vi_model()` works for \"ml_linear_regression\" objects", {
 
+  # Skips
+  skip_on_cran()
+
   # Run checks
   check_vi_model(
     FUN = sparklyr::ml_linear_regression,
@@ -601,6 +622,9 @@ test_that("`vi_model()` works for \"ml_linear_regression\" objects", {
 
 
 test_that("`vi_model()` works for \"ml_model_random_forest_regression\" objects", {
+
+  # Skips
+  skip_on_cran()
 
   # Run checks
   check_vi_model(
@@ -618,6 +642,9 @@ test_that("`vi_model()` works for \"ml_model_random_forest_regression\" objects"
 
 
 test_that("`vi_model()` works for \"ml_model_random_forest_classification\" objects", {
+
+  # Skips
+  skip_on_cran()
 
   # Run checks
   check_vi_model(
@@ -638,6 +665,9 @@ test_that("`vi_model()` works for \"ml_model_random_forest_classification\" obje
 
 test_that("`vi_model()` works for \"glm\" objects", {
 
+  # Skips
+  skip_on_cran()
+
   # Run checks
   check_vi_model(
     FUN = stats::glm,
@@ -649,6 +679,9 @@ test_that("`vi_model()` works for \"glm\" objects", {
 
 
 test_that("`vi_model()` works for \"lm\" objects", {
+
+  # Skips
+  skip_on_cran()
 
   # Run checks
   check_vi_model(
