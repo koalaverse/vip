@@ -1,21 +1,17 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
-language: R
+language: r
+
+r:
+  - oldrel
+  - release
+  - devel
+
 sudo: false
+
 cache: packages
 
-# work around temporary travis + R 3.5 bug
-r_packages: devtools
-
-env:
-  global:
-  - _R_CHECK_FORCE_SUGGESTS_=false
-
-install:
-  - R -e 'install.packages(c("h2o", "xgboost"))'
-
-before_install:
-  - Rscript -e 'update.packages(ask = FALSE)'
+warnings_are_errors: false
 
 after_success:
   - Rscript -e 'covr::codecov()'
