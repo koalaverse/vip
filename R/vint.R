@@ -35,6 +35,7 @@
 vint <- function(object, feature_names, progress = "none", parallel = FALSE,
                  paropts = NULL, ...) {
   warning("This function is experimental, use at your own risk!", call. = FALSE)
+  # FIXME: Should we force `chull = FALSE` in the call to `pdp::partial()`?
   all.pairs <- utils::combn(feature_names, m = 2)
   ints <- plyr::aaply(
     all.pairs, .margins = 2, .progress = progress, .parallel = parallel,

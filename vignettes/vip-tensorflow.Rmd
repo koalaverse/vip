@@ -79,13 +79,7 @@ build_model <- function() {
 }
 ```
 
-Since we don't have a lot of observations, we used $k$-fold cross-validation (CV) (with $k = 4$) to evaluate the network and choose the optimal number of *epochs*^[An epoch refers to a single iteration (both forward and backward) over the entire training data set.] ($k$-fold CV is illustrated in the **Figure 1** below). 
-
-```{r cv-illustration, echo=FALSE, fig.cap="**Figure 1** Illustration of $k$-fold CV. The training data are split into $k$ (roughly) equal blocks at random. For each of $k$ iterations, $k-1$ blocks are used for training and the performace is evalutaed on the $k$-th block. The overall measure of performance is obtained by averaging the $k$ performance metrics together."}
-knitr::include_graphics("cv.png")
-```
-
-The performance of the network was evaluated using *mean absolute error* (MAE), which is the absolute value of the difference between the predicted and observed outcomes. In this example, the cross-validated MAE stopped improving after about 125 epochs. Using this result, we train a final network using 80 epochs^[In practice, you'll want to tune various other hyperparameters of the network as well, like the size of the hidden layers.].
+Since we don't have a lot of observations, we used $k$-fold cross-validation (CV) (with $k = 4$) to evaluate the network and choose the optimal number of *epochs*^[An epoch refers to a single iteration (both forward and backward) over the entire training data set.] The performance of the network was evaluated using *mean absolute error* (MAE), which is the absolute value of the difference between the predicted and observed outcomes. In this example, the cross-validated MAE stopped improving after about 125 epochs. Using this result, we train a final network using 80 epochs^[In practice, you'll want to tune various other hyperparameters of the network as well, like the size of the hidden layers.].
 
 ```{r train-final-model}
 model <- build_model()
@@ -114,7 +108,7 @@ p1 <- vip(
   object = model,                     # fitted model
   method = "permute",                 # request permutation-based VI scores
   num_features = ncol(train_x),       # default only plots top 10 features
-  pred_fun = pred_wrapper,            # user-defined prediction function
+  pred_wrapper = pred_wrapper,            # user-defined prediction function
   target = train_y,            # name of the target variable column
   metric = "rsquared",                # evaluation metric
   train = as.data.frame(train_x),     # training data

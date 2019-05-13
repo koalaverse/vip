@@ -46,7 +46,7 @@ Y = 10 \sin\left(\pi x_1 x_2\right) + 20 \left(x_3 - 0.5\right) ^ 2 + 10 x_4 + 5
 $$
 where $\epsilon \sim \mathcal{N}\left(0, \sigma^2\right)$. Using the R package `nnet` [@venables-modern-2002], we fit a NN with one hidden layer containing eight units and a weight decay of 0.01 (these parameters were chosen using 5-fold cross-validation) to 500 observations simulated from the above model with $\sigma = 1$. The cross-validated $R^2$ value was 0.94.
 
-VIPs for the fitted network are displayed in **Figure 1**. Notice how the Garson and Olden algorithms incorrectly label some of the features not in the true model as "important". For example, the Garson algorithm incorrectly labels $x_8$ (which is not included in the true model) as more important than $x_5$ (which is in the true model). Similarly, Oden's method incorrectly labels $x_{10}$ as being more important than $x_2$. Our method, on the other hand, clearly labels all five of the predictors in the true model as the most important features in the fitted NN.
+VIPs for the fitted network are displayed in **Figure 1**. Notice how the Garson and Olden algorithms incorrectly label some of the features not in the true model as "important". For example, the Garson algorithm incorrectly labels $x_8$ (which is not included in the true model) as more important than $x_5$ (which is in the true model). Similarly, Olden's method incorrectly labels $x_{10}$ as being more important than $x_2$. Our method, on the other hand, clearly labels all five of the predictors in the true model as the most important features in the fitted NN.
 
 ```{r network-vip, echo=TRUE, fig.width = 6, fig.asp = 0.618, out.width="70%", fig.cap="**Figure 1** VIPs for the NN fit to Friedman's regression data. *Left:* Model-agnostic: partial dependence. *Middle:* Model-specific: Garson's method. *Right:* Model-specific: Olden's method."}
 # Simulate data
@@ -92,6 +92,10 @@ grid.arrange(p1, p2, p3, ncol = 3)
 We also constructed the partial dependence functions for all pairwise interactions and computed the interaction statistic discussed in @greenwell-simple-2018. The top ten interaction statistics are displayed in **Figure 2**. There is a clear indication of an interaction effect between features $x_1$ and $x_2$, the only interaction effect present in the true model.
 
 ```{r network-int-parallel, echo=FALSE, fig.width = 6, fig.asp = 0.618, out.width="70%", fig.cap="**Figure 2** Top 10 VI-based interaction statistics for the NN fit to Friedman's regression data."}
+#
+# The following parallel backend will only work on UNIX-like systems
+# 
+
 # Compute interaction statistics in parallel
 library(doParallel)  # any parallel backend supported by the foreach package should work
 registerDoParallel(cores = 4)  # use four cores

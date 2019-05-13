@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Model-Based Variable Importance — vi_model • vip</title>
+<title>Model-based variable importance — vi_model • vip</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
 
 
-<meta property="og:title" content="Model-Based Variable Importance — vi_model" />
+<meta property="og:title" content="Model-based variable importance — vi_model" />
 
 <meta property="og:description" content="Compute model-based variable importance scores for the predictors in a model.
 (This function is meant for internal use only.)" />
@@ -121,7 +121,7 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Model-Based Variable Importance</h1>
+    <h1>Model-based variable importance</h1>
     <small class="dont-index">Source: <a href='https://github.com/koalaverse/vip/blob/master/R/vi_model.R'><code>R/vi_model.R</code></a></small>
     <div class="hidden name"><code>vi_model.Rd</code></div>
     </div>
@@ -139,15 +139,34 @@
 <span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for C5.0</span>
+<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"usage"</span>, <span class='st'>"splits"</span>), <span class='no'>...</span>)
+
+<span class='co'># S3 method for train</span>
 <span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for cubist</span>
+<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for earth</span>
+<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"nsubsets"</span>, <span class='st'>"rss"</span>, <span class='st'>"gcv"</span>), <span class='no'>...</span>)
+
+<span class='co'># S3 method for gbm</span>
+<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"relative.influence"</span>,
+  <span class='st'>"permutation"</span>), <span class='no'>...</span>)
+
+<span class='co'># S3 method for RandomForest</span>
+<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"accuracy"</span>, <span class='st'>"auc"</span>), <span class='no'>...</span>)
 
 <span class='co'># S3 method for constparty</span>
 <span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
-<span class='co'># S3 method for earth</span>
+<span class='co'># S3 method for cforest</span>
 <span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
-<span class='co'># S3 method for gbm</span>
+<span class='co'># S3 method for glmnet</span>
+<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for cv.glmnet</span>
 <span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for H2OBinomialModel</span>
@@ -157,9 +176,6 @@
 <span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for H2ORegressionModel</span>
-<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for lm</span>
 <span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for ml_model_decision_tree_regression</span>
@@ -186,11 +202,20 @@
 <span class='co'># S3 method for ml_model_random_forest_classification</span>
 <span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
-<span class='co'># S3 method for randomForest</span>
+<span class='co'># S3 method for lm</span>
 <span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
-<span class='co'># S3 method for RandomForest</span>
-<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='kw'>auc</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+<span class='co'># S3 method for mlp</span>
+<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"olden"</span>, <span class='st'>"garson"</span>), <span class='no'>...</span>)
+
+<span class='co'># S3 method for nn</span>
+<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"olden"</span>, <span class='st'>"garson"</span>), <span class='no'>...</span>)
+
+<span class='co'># S3 method for nnet</span>
+<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"olden"</span>, <span class='st'>"garson"</span>), <span class='no'>...</span>)
+
+<span class='co'># S3 method for randomForest</span>
+<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for ranger</span>
 <span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
@@ -198,11 +223,9 @@
 <span class='co'># S3 method for rpart</span>
 <span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
-<span class='co'># S3 method for train</span>
-<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
-
 <span class='co'># S3 method for xgb.Booster</span>
-<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"gain"</span>, <span class='st'>"cover"</span>,
+  <span class='st'>"frequency"</span>), <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -216,17 +239,10 @@
       <td><p>Additional optional arguments.</p></td>
     </tr>
     <tr>
-      <th>auc</th>
-      <td><p>Logical indicating whether or not to compute the AUC-based
-variable scores described in Janitza et al. (2012). Only available for
-<code><a href='https://www.rdocumentation.org/packages/party/topics/cforest'>cforest</a></code> objects. See
-<code><a href='https://www.rdocumentation.org/packages/party/topics/varimp'>varimpAUC</a></code> for details. Default is <code>FALSE</code>.</p></td>
-    </tr>
-    <tr>
       <th>type</th>
-      <td><p>For xgboost models, the type of variable importance to return.
-If <code>NULL</code> (the default), "Gain" is used. See
-<code><a href='https://www.rdocumentation.org/packages/xgboost/topics/xgb.importance'>xgb.importance</a></code> for details.</p></td>
+      <td><p>Character string specifying the type of variable importance to
+return (only used for some models). See details for which methods this
+argument applies to.</p></td>
     </tr>
     </table>
     
@@ -253,6 +269,31 @@ models and boosted versions of the model. The underlying function can also
 return the number of times each predictor was involved in a split by using
 the option <code>metric = "usage"</code>. See <code><a href='https://www.rdocumentation.org/packages/C50/topics/C5imp'>C5imp</a></code> for
 details.</p></dd>
+    <dt><code><a href='https://www.rdocumentation.org/packages/C50/topics/C5.0'>C5.0</a></code></dt><dd><p>The Cubist output contains variable usage
+statistics. It gives the percentage of times where each variable was used in
+a condition and/or a linear model. Note that this output will probably be
+inconsistent with the rules shown in the output from summary.cubist. At each
+split of the tree, Cubist saves a linear model (after feature selection) that
+is allowed to have terms for each variable used in the current split or any
+split above it. Quinlan (1992) discusses a smoothing algorithm where each
+model prediction is a linear combination of the parent and child model along
+the tree. As such, the final prediction is a function of all the linear
+models from the initial node to the terminal node. The percentages shown in
+the Cubist output reflects all the models involved in prediction (as opposed
+to the terminal models shown in the output). The variable importance used
+here is a linear combination of the usage in the rule conditions and the
+model. See <code><a href='https://www.rdocumentation.org/packages/Cubist/topics/summary.cubist'>summary.cubist</a></code> and
+<code><a href='https://www.rdocumentation.org/packages/caret/topics/varImp'>varImp.cubist</a></code> for details.</p></dd>
+    <dt><code><a href='https://www.rdocumentation.org/packages/glmnet/topics/glmnet'>glmnet</a></code></dt><dd><p>Similar to (generalized) linear models,
+the absolute value of the coefficients are returned for a specific model.
+It is important that the features  (and hence, the estimated coefficients) be
+standardized prior to fitting the model. You can specify which coefficients
+to return by passing the specific value of the penalty parameter via the
+<code>...</code> argument. See <code><a href='https://www.rdocumentation.org/packages/glmnet/topics/predict.glmnet'>coef.glmnet</a></code> for details. By
+default, the coefficients corresponding to the final penalty value in the
+sequence is returned; in other words, you should ALWAYS SPECIFY THIS VALUE!
+For <code>"cv.glmnet"</code> objects, the largest value of lambda such that error
+is within one standard error of the minimum is used by default.</p></dd>
     <dt><code><a href='https://www.rdocumentation.org/packages/partykit/topics/cforest'>cforest</a></code></dt><dd><p>Variable importance is measured in a
 way similar to those computed by <code><a href='https://www.rdocumentation.org/packages/randomForest/topics/importance'>importance</a></code>.
 Besides the standard version, a conditional version is available that
@@ -270,24 +311,73 @@ increase the number of trees ntree in <code><a href='https://www.rdocumentation.
 Note that in the presence of missings in the predictor variables the
 procedure described in Hapfelmeier et al. (2012) is performed. See
 <code><a href='https://www.rdocumentation.org/packages/partykit/topics/varimp'>varimp</a></code> for details.</p></dd>
-    <dt><code><a href='https://www.rdocumentation.org/packages/earth/topics/earth'>earth</a></code></dt><dd><p>The variable importance method for
-<code><a href='https://www.rdocumentation.org/packages/earth/topics/earth'>earth</a></code> objects first calculates the decrease in the GCV for each
-subset relative to the previous subset during earth’s pruning pass. (For
-multiple response models, GCV's are calculated over all responses.) Then, for
-each variable, it sums these decreases over all subsets that include the
-variable. Finally, for ease of interpretation, the summed decreases are
-scaled so the largest summed decrease is 100. Variables which cause larger
-net decreases in the GCV are considered more important. See
-<code><a href='https://www.rdocumentation.org/packages/earth/topics/evimp'>evimp</a></code> for details.</p></dd>
-    <dt><code><a href='https://www.rdocumentation.org/packages/gbm/topics/gbm'>gbm</a></code></dt><dd><p>Variable importance is computed according to
-Friedman (2001). For tree-based methods, the approximate relative influence
-of a variable \(x_j\) is $$\widehat{J}_j^2 = \sum{\text{splits on } x_j}I_t^2$$
-where \(I_t\) is the empirical improvement by splitting on \(x_j\) at that point.
-Friedman's extension to boosted models is to average the relative influence
-of variable \(x_j\) across all the trees generated by the boosting algorithm.
-See <code><a href='https://www.rdocumentation.org/packages/gbm/topics/summary.gbm'>summary.gbm</a></code> for details.</p></dd>
+    <dt><code><a href='https://www.rdocumentation.org/packages/earth/topics/earth'>earth</a></code></dt><dd><p>The <code><a href='https://www.rdocumentation.org/packages/earth/topics/earth'>earth</a></code> package uses
+three criteria for estimating the variable importance in a MARS model (see
+<code><a href='https://www.rdocumentation.org/packages/earth/topics/evimp'>evimp</a></code> for details):
+<ul>
+<li><p>The <code>nsubsets</code> criterion (<code>type = "nsubsets"</code>) counts the
+  number of model subsets that include each feature. Variables that are
+  included in more subsets are considered more important. This is the
+  criterion used by <code><a href='https://www.rdocumentation.org/packages/earth/topics/summary.earth'>summary.earth</a></code> to print variable
+  importance. By "subsets" we mean the subsets of terms generated by
+  <code>earth()</code>'s backward pass. There is one subset for each model size
+  (from one to the size of the selected model) and the subset is the best set
+  of terms for that model size. (These subsets are specified in the
+  <code>$prune.terms</code> component of <code>earth()</code>'s return value.) Only
+  subsets that are smaller than or equal in size to the final model are used
+  for estimating variable importance. This is the default method used by
+  <strong>vip</strong>.</p></li>
+<li><p>The <code>rss</code> criterion (<code>type = "rss"</code>) first calculates the
+  decrease in the RSS for each subset relative to the previous subset during
+  <code>earth()</code>’s backward pass. (For multiple response models, RSS's are
+  calculated over all responses.) Then for each variable it sums these
+  decreases over all subsets that include the variable. Finally, for ease of
+  interpretation the summed decreases are scaled so the largest summed
+  decrease is 100. Variables which cause larger net decreases in the RSS are
+  considered more important.</p></li>
+<li><p>The <code>gcv</code> criterion (<code>type = "gcv"</code>) is similar to the
+  <code>rss</code> approach, but uses the GCV statistic instead of the RSS. Note
+  that adding a variable can sometimes increase the GCV. (Adding the variable
+  has a deleterious effect on the model, as measured in terms of its
+  estimated predictive power on unseen data.) If that happens often enough,
+  the variable can have a negative total importance, and thus appear less
+  important than unused variables.</p></li>
+</ul></p></dd>
+    <dt><code><a href='https://www.rdocumentation.org/packages/gbm/topics/gbm'>gbm</a></code></dt><dd><p>Variable importance is computed using one of
+two approaches (See <code><a href='https://www.rdocumentation.org/packages/gbm/topics/summary.gbm'>summary.gbm</a></code> for details):
+<ul>
+<li><p>The standard approach (<code>type = "relative.influence"</code>) described
+  in Friedman (2001). When <code>distribution = "gaussian"</code> this returns the
+  reduction of squared error attributable to each variable. For other loss
+  functions this returns the reduction attributable to each variable in sum
+  of squared error in predicting the gradient on each iteration. It describes
+  the <em>relative influence</em> of each variable in reducing the loss
+  function. This is the default method used by <strong>vip</strong>.</p></li>
+<li><p>An experimental permutation-based approach
+  (<code>type = "permutation"</code>). This method randomly permutes each predictor
+  variable at a time and computes the associated reduction in predictive
+  performance. This is similar to the variable importance measures Leo
+  Breiman uses for random forests, but <strong>gbm</strong> currently computes using
+  the entire training dataset (not the out-of-bag observations).</p></li>
+</ul></p></dd>
     <dt><code><a href='https://www.rdocumentation.org/packages/h2o/topics/H2OModel-class'>H2OModel</a></code></dt><dd><p>See <code><a href='https://www.rdocumentation.org/packages/h2o/topics/h2o.varimp'>h2o.varimp</a></code> or visit
 <a href='http://docs.h2o.ai/h2o/latest-stable/h2o-docs/variable-importance.html'>http://docs.h2o.ai/h2o/latest-stable/h2o-docs/variable-importance.html</a>
+for details.</p></dd>
+    <dt><code><a href='https://www.rdocumentation.org/packages/nnet/topics/nnet'>nnet</a></code></dt><dd><p>Two popular methods for constructing variable
+importance scores with neural networks are the Garson algorithm
+(Garson 1991), later modified by Goh (1995), and the Olden algorithm
+(Olden et al. 2004). For both algorithms, the basis of these importance
+scores is the network’s connection weights. The Garson algorithm determines
+variable importance by identifying all weighted connections between the nodes
+of interest. Olden’s algorithm, on the other hand, uses the product of the
+raw connection weights between each input and output neuron and sums the
+product across all hidden neurons. This has been shown to outperform the
+Garson method in various simulations. For DNNs, a similar method due to
+Gedeon (1997) considers the weights connecting the input features to the
+first two hidden layers (for simplicity and speed); but this method can be
+slow for large networks.. To implement the Olden and Garson algorithms, use
+<code>type = "olden"</code> and <code>type = "garson"</code>, respectively. See
+<code><a href='https://www.rdocumentation.org/packages/NeuralNetTools/topics/garson'>garson</a></code> and <code><a href='https://www.rdocumentation.org/packages/NeuralNetTools/topics/olden'>olden</a></code>
 for details.</p></dd>
     <dt><code><a href='https://www.rdocumentation.org/packages/stats/topics/lm'>lm</a></code></dt><dd><p>In (generalized) linear models, variable
 importance is based on the absolute value of the corresponding
@@ -313,7 +403,7 @@ is measured by the Gini index. For regression, it is measured by residual sum
 of squares. See <code><a href='https://www.rdocumentation.org/packages/randomForest/topics/importance'>importance</a></code> for details.</p></dd>
     <dt><code><a href='https://www.rdocumentation.org/packages/party/topics/cforest'>cforest</a></code></dt><dd><p>Same approach described in
 <code><a href='https://www.rdocumentation.org/packages/partykit/topics/cforest'>cforest</a></code> above. See <code><a href='https://www.rdocumentation.org/packages/party/topics/varimp'>varimp</a></code> and
-<code><a href='https://www.rdocumentation.org/packages/party/topics/varimp'>varimpAUC</a></code> (if <code>auc = TRUE</code>) for details.</p></dd>
+<code><a href='https://www.rdocumentation.org/packages/party/topics/varimp'>varimpAUC</a></code> (if <code>type = "auc"</code>) for details.</p></dd>
     <dt><code><a href='https://www.rdocumentation.org/packages/ranger/topics/ranger'>ranger</a></code></dt><dd><p>Variable importance for
 <code><a href='https://www.rdocumentation.org/packages/ranger/topics/ranger'>ranger</a></code> objects is computed in the usual way for random
 forests. The approach used depends on the <code>importance</code> argument provided
@@ -338,7 +428,9 @@ reason, in order to obtain a meaningful ranking by importance for a linear
 model, the features need to be on the same scale (which you also would want
 to do when using either L1 or L2 regularization). Otherwise, the approach
 described in Friedman (2001) for <code><a href='https://www.rdocumentation.org/packages/gbm/topics/gbm'>gbm</a></code>s is used. See
-<code><a href='https://www.rdocumentation.org/packages/xgboost/topics/xgb.importance'>xgb.importance</a></code> for details.</p></dd>
+<code><a href='https://www.rdocumentation.org/packages/xgboost/topics/xgb.importance'>xgb.importance</a></code> for details. If <code>type = NULL</code> (the
+default), <code>"Gain"</code> is used. See <code><a href='https://www.rdocumentation.org/packages/xgboost/topics/xgb.importance'>xgb.importance</a></code>
+for details.</p></dd>
     </dl>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>

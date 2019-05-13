@@ -4,7 +4,6 @@ output: github_document
 
 ```{r setup, echo = FALSE}
 knitr::opts_chunk$set(
-  cache = TRUE,
   collapse = TRUE,
   comment = "#>",
   fig.align = "center",
@@ -35,10 +34,10 @@ knitr::opts_chunk$set(
 install.packages("vip")
 
 # Alternatively, you can install the development version from GitHub:
-if (!requireNamespace("devtools")) {
-  install.packages("devtools")
+if (!requireNamespace("remotes")) {
+  install.packages("remotes")
 }
-devtools::install_github("koalaverse/vip")
+remotes::install_github("koalaverse/vip")
 ```
 
 For details and example usage, visit the [**vip** package website](https://koalaverse.github.io/vip/index.html).

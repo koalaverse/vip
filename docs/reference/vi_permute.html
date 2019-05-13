@@ -139,8 +139,8 @@ model. (This function is meant for internal use only.)</p>
 <span class='fu'>vi_permute</span>(<span class='no'>object</span>, <span class='no'>train</span>, <span class='no'>target</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
   <span class='kw'>smaller_is_better</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>sample_size</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>sample_frac</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>reference_class</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pred_fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>progress</span> <span class='kw'>=</span> <span class='st'>"none"</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>paropts</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>pred_wrapper</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>progress</span> <span class='kw'>=</span> <span class='st'>"none"</span>,
+  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>paropts</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -171,7 +171,8 @@ performance metric to use in computing model performance (e.g., RMSE for
 regression or accuracy for binary classification). If <code>metric</code> is a
 function, then it requires two arguments, <code>actual</code> and <code>predicted</code>,
 and should return a single, numeric value. Ideally, this should be the same
-metric that was used to train <code>object</code>.</p></td>
+metric that was used to train <code>object</code>. See <code><a href='list_metrics.html'>list_metrics</a></code>
+for a list of available metrics.</p></td>
     </tr>
     <tr>
       <th>smaller_is_better</th>
@@ -188,14 +189,14 @@ are simply averaged together (the standard deviation will also be returned).</p>
     <tr>
       <th>sample_size</th>
       <td><p>Integer specifying the size of the random sample to use
-for each Monte Carlo repitition. Default is <code>NULL</code> (i.e., use all of the
+for each Monte Carlo repetition. Default is <code>NULL</code> (i.e., use all of the
 available training data). Cannot be specified with <code>sample_frac</code>. Can be
 used to reduce computation time with large data sets.</p></td>
     </tr>
     <tr>
       <th>sample_frac</th>
       <td><p>Proportion specifying the size of the random sample to use
-for each Monte Carlo repitition. Default is <code>NULL</code> (i.e., use all of the
+for each Monte Carlo repetition. Default is <code>NULL</code> (i.e., use all of the
 available training data). Cannot be specified with <code>sample_size</code>. Can be
 used to reduce computation time with large data sets.</p></td>
     </tr>
@@ -208,9 +209,24 @@ problems.</p></td>
     </tr>
     <tr>
       <th>pred_fun</th>
+      <td><p>Deprecated. Use <code>pred_wrapper</code> instead.</p></td>
+    </tr>
+    <tr>
+      <th>pred_wrapper</th>
       <td><p>Optional prediction function that requires two arguments,
 <code>object</code> and <code>newdata</code>. Default is <code>NULL</code>. Must be supplied
-whenever <code>metric</code> is a custom function.</p></td>
+whenever <code>metric</code> is a custom function. In fact, it is good practice to
+always supply this function! The output of this function should be determined
+by the metric being used:</p>
+<dl class='dl-horizontal'>
+  <dt>Regression</dt><dd><p>A numeric vector of predicted outcomes.</p></dd>
+  <dt>Binary classification</dt><dd><p>A vector of predicted class labels (e.g., if
+  using misclassification error) or a vector of predicted class probabilities
+  for the reference class (e.g., if using log loss or AUC).</p></dd>
+  <dt>Multiclass classification</dt><dd><p>A vector of predicted class labels (e.g.,
+  if using misclassification error) or a A matrix/data frame of predicted
+  class probabilities for each class (e.g., if using log loss or AUC).</p></dd>
+</dl></td>
     </tr>
     <tr>
       <th>verbose</th>
@@ -271,9 +287,9 @@ is <code>FALSE</code>. If <code>TRUE</code>, an appropriate backend must be prov
 <span class='co'># Plot VI scores</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>2021</span>)  <span class='co'># for reproducibility</span>
 <span class='no'>p1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='vip.html'>vip</a></span>(<span class='no'>pp</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"permute"</span>, <span class='kw'>target</span> <span class='kw'>=</span> <span class='st'>"y"</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rsquared"</span>,
-          <span class='kw'>pred_fun</span> <span class='kw'>=</span> <span class='no'>predict</span>) + <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ggtitle</a></span>(<span class='st'>"PPR"</span>)
+          <span class='kw'>pred_wrapper</span> <span class='kw'>=</span> <span class='no'>predict</span>) + <span class='fu'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/labs'>ggtitle</a></span>(<span class='st'>"PPR"</span>)
 <span class='no'>p2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='vip.html'>vip</a></span>(<span class='no'>nn</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"permute"</span>, <span class='kw'>target</span> <span class='kw'>=</span> <span class='st'>"y"</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rsquared"</span>,
-          <span class='kw'>pred_fun</span> <span class='kw'>=</span> <span class='no'>predict</span>) + <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ggtitle</a></span>(<span class='st'>"NN"</span>)
+          <span class='kw'>pred_wrapper</span> <span class='kw'>=</span> <span class='no'>predict</span>) + <span class='fu'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/labs'>ggtitle</a></span>(<span class='st'>"NN"</span>)
 <span class='fu'><a href='grid.arrange.html'>grid.arrange</a></span>(<span class='no'>p1</span>, <span class='no'>p2</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>)
 
 <span class='co'># Mean absolute error</span>
@@ -285,8 +301,8 @@ is <code>FALSE</code>. If <code>TRUE</code>, an appropriate backend must be prov
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>1101</span>)  <span class='co'># for reproducibility</span>
 <span class='fu'><a href='vip.html'>vip</a></span>(<span class='no'>pp</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"permute"</span>, <span class='kw'>target</span> <span class='kw'>=</span> <span class='st'>"y"</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='no'>mae</span>,
     <span class='kw'>smaller_is_better</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-    <span class='kw'>pred_fun</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>object</span>, <span class='no'>newdata</span>) <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/predict'>predict</a></span>(<span class='no'>object</span>, <span class='no'>newdata</span>)  <span class='co'># wrapper</span>
-) + <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ggtitle</a></span>(<span class='st'>"PPR"</span>)
+    <span class='kw'>pred_wrapper</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>object</span>, <span class='no'>newdata</span>) <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/predict'>predict</a></span>(<span class='no'>object</span>, <span class='no'>newdata</span>)
+) + <span class='fu'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/labs'>ggtitle</a></span>(<span class='st'>"PPR"</span>)
 <span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

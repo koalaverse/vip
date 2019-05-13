@@ -6,7 +6,7 @@
 #' an object that inherits from class \code{"vi"}.
 #'
 #' @param method Character string specifying the type of variable importance
-#' (VI) to compute. Current options are \code{"model"}, for model-based VI
+#' (VI) to compute. Current options are \code{"model"}, for model-specific VI
 #' scores (see \code{\link{vi_model}} for details), \code{"pdp"}, for PDP-based
 #' VI scores (see \code{\link{vi_pdp}} for details), \code{"ice"}, for ICE-based
 #' VI scores (see \code{\link{vi_ice}} for details), and \code{"permute"}, for

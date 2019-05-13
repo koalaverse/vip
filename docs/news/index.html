@@ -121,18 +121,49 @@
       <small>Source: <a href='https://github.com/koalaverse/vip/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="vip-0-1-2-9000" class="section level1">
+<h1 class="page-header">
+<a href="#vip-0-1-2-9000" class="anchor"></a>vip 0.1.2.9000<small> Unreleased </small>
+</h1>
+<div id="new-functions" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-functions" class="anchor"></a>New functions</h2>
+<ul>
+<li><p><code><a href="../reference/add_sparklines.html">add_sparklines()</a></code> creates an HTML widget to display variable importance scores with a sparkline representation of each features effect (i.e., its partial dependence function) <a href="https://github.com/koalaverse/vip/issues/64">(<a href='https://github.com/koalaverse/vip/issues/64'>#64</a>)</a>.</p></li>
+<li><p>Added support for the Olden and Garson algorithms with neural networks fit using the <strong>neuralnet</strong>, <strong>nnet</strong>, and <strong>RSNNS</strong> packages <a href="https://github.com/koalaverse/vip/issues/28">(<a href='https://github.com/koalaverse/vip/issues/28'>#28</a>)</a>.</p></li>
+<li><p>Added support for GLMNET models fit using the <strong>glmnet</strong> package (with and without cross-validation).</p></li>
+</ul>
+</div>
+<div id="breaking-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#breaking-changes" class="anchor"></a>Breaking changes</h2>
+<ul>
+<li><p>The <code>pred_fun</code> argument in <code><a href="../reference/vi_permute.html">vi_permute()</a></code> has been changed to <code>pred_wrapper</code>.</p></li>
+<li><p>The <code>FUN</code> argument to <code><a href="../reference/vi.html">vi()</a></code>, <code><a href="../reference/vi_pdp.html">vi_pdp()</a></code>, and <code><a href="../reference/vi_ice.html">vi_ice()</a></code> has been changed to <code>var_fun</code>.</p></li>
+<li><p>Only the predicted class probabilities for the reference class are required (as a numeric vector) for binary classification when <code>metric = "auc"</code> or <code>metric = "logloss"</code>.</p></li>
+</ul>
+</div>
+<div id="minor-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#minor-changes" class="anchor"></a>Minor changes</h2>
+<ul>
+<li><p>Improved documentation (especially for <code><a href="../reference/vi_permute.html">vi_permute()</a></code> and <code><a href="../reference/vi_model.html">vi_model()</a></code>).</p></li>
+<li><p>Results from <code><a href="../reference/vi_model.html">vi_model()</a></code>, <code><a href="../reference/vi_pdp.html">vi_pdp()</a></code>, <code><a href="../reference/vi_ice.html">vi_ice()</a></code>, and <code><a href="../reference/vi_permute.html">vi_permute()</a></code> now have class <code>"vi"</code>, making them easier to plot with <code><a href="../reference/vip.html">vip()</a></code>.</p></li>
+</ul>
+</div>
+</div>
     <div id="vip-0-1-2" class="section level1">
 <h1 class="page-header">
 <a href="#vip-0-1-2" class="anchor"></a>vip 0.1.2<small> 2018-09-30 </small>
 </h1>
 <ul>
 <li><p>Added <code>nsim</code> argument to <code><a href="../reference/vi_permute.html">vi_permute()</a></code> for reducing the sampling variability induced by permuting each predictor <a href="https://github.com/koalaverse/vip/issues/36">(<a href='https://github.com/koalaverse/vip/issues/36'>#36</a>)</a>.</p></li>
-<li><p>Added <code>sample_size</code> and <code>sample_frac</code> arguments to <code><a href="../reference/vi_permute.html">vi_permute()</a></code> for reducing the size of the training sample for every Monte Carlo repition <a href="https://github.com/koalaverse/vip/issues/41">(<a href='https://github.com/koalaverse/vip/issues/41'>#41</a>)</a>.</p></li>
+<li><p>Added <code>sample_size</code> and <code>sample_frac</code> arguments to <code><a href="../reference/vi_permute.html">vi_permute()</a></code> for reducing the size of the training sample for every Monte Carlo repetition <a href="https://github.com/koalaverse/vip/issues/41">(<a href='https://github.com/koalaverse/vip/issues/41'>#41</a>)</a>.</p></li>
 <li><p>Greatly improved the documentation for <code><a href="../reference/vi_model.html">vi_model()</a></code> and the various objects it supports.</p></li>
 <li><p>New argument <code>rank</code>, which defaults to <code>FALSE</code>, available in <code><a href="../reference/vi.html">vi()</a></code> <a href="https://github.com/koalaverse/vip/issues/55">(<a href='https://github.com/koalaverse/vip/issues/55'>#55</a>)</a>.</p></li>
 <li><p>Added support for Spark (G)LMs.</p></li>
 <li><p><code><a href="../reference/vi.html">vi()</a></code> is now a generic which makes adding new methods easier (e.g., to support <a href="https://www.datarobot.com/">DataRobot</a> models).</p></li>
-<li><p>Bux fixes.</p></li>
+<li><p>Bug fixes.</p></li>
 </ul>
 </div>
     <div id="vip-0-1-1" class="section level1">
@@ -181,6 +212,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#vip-0-1-2-9000">0.1.2.9000</a></li>
         <li><a href="#vip-0-1-2">0.1.2</a></li>
         <li><a href="#vip-0-1-1">0.1.1</a></li>
         <li><a href="#vip-0-1-0">0.1.0</a></li>

@@ -284,65 +284,65 @@ test_that("`vi_model()` works for \"cv.glmnet\" objects", {
 
 # Package: h2o -----------------------------------------------------------------
 
-# test_that("`vi_model()` works for \"H2OBinomialModel\" objects", {
-#
-#   # Skips
-#   skip_on_cran()
-#
-#   # Run checks
-#   check_vi_model(
-#     FUN = h2o::h2o.randomForest,
-#     args = list(
-#       x = paste0("x.", 1:10),
-#       y = "y",
-#       training_frame = h2o::as.h2o(friedman2),
-#       ntrees = 50L,
-#       seed = 101
-#     ),
-#     pkg = "h2o"
-#   )
-#
-# })
-#
-# test_that("`vi_model()` works for \"H2OMultinomialModel\" objects", {
-#
-#   # Skips
-#   skip_on_cran()
-#
-#   # Run checks
-#   check_vi_model(
-#     FUN = h2o::h2o.randomForest,
-#     args = list(
-#       x = paste0("x.", 1:10),
-#       y = "y",
-#       training_frame = h2o::as.h2o(friedman3),
-#       ntrees = 50L,
-#       seed = 101
-#     ),
-#     pkg = "h2o"
-#   )
-#
-# })
-#
-# test_that("`vi_model()` works for \"H2ORegressionModel\" objects", {
-#
-#   # Skips
-#   skip_on_cran()
-#
-#   # Run checks
-#   check_vi_model(
-#     FUN = h2o::h2o.randomForest,
-#     args = list(
-#       x = paste0("x.", 1:10),
-#       y = "y",
-#       training_frame = h2o::as.h2o(friedman1),
-#       ntrees = 50,
-#       seed = 101
-#     ),
-#     pkg = "h2o"
-#   )
-#
-# })
+test_that("`vi_model()` works for \"H2OBinomialModel\" objects", {
+
+  # Skips
+  skip_on_cran()
+
+  # Run checks
+  check_vi_model(
+    FUN = h2o::h2o.randomForest,
+    args = list(
+      x = paste0("x.", 1:10),
+      y = "y",
+      training_frame = h2o::as.h2o(friedman2),
+      ntrees = 50L,
+      seed = 101
+    ),
+    pkg = "h2o"
+  )
+
+})
+
+test_that("`vi_model()` works for \"H2OMultinomialModel\" objects", {
+
+  # Skips
+  skip_on_cran()
+
+  # Run checks
+  check_vi_model(
+    FUN = h2o::h2o.randomForest,
+    args = list(
+      x = paste0("x.", 1:10),
+      y = "y",
+      training_frame = h2o::as.h2o(friedman3),
+      ntrees = 50L,
+      seed = 101
+    ),
+    pkg = "h2o"
+  )
+
+})
+
+test_that("`vi_model()` works for \"H2ORegressionModel\" objects", {
+
+  # Skips
+  skip_on_cran()
+
+  # Run checks
+  check_vi_model(
+    FUN = h2o::h2o.randomForest,
+    args = list(
+      x = paste0("x.", 1:10),
+      y = "y",
+      training_frame = h2o::as.h2o(friedman1),
+      ntrees = 50,
+      seed = 101
+    ),
+    pkg = "h2o"
+  )
+
+})
 
 
 # Package: neuralnet -----------------------------------------------------------

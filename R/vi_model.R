@@ -1,7 +1,7 @@
-#' Model-based variable importance
+#' Model-specific variable importance
 #'
-#' Compute model-based variable importance scores for the predictors in a model.
-#' (This function is meant for internal use only.)
+#' Compute model-specific variable importance scores for the predictors in a
+#' model. (This function is meant for internal use only.)
 #'
 #' @param object A fitted model object (e.g., a \code{"randomForest"} object).
 #'
@@ -18,7 +18,7 @@
 #'
 #' @details
 #'
-#' Computes model-based variable importance scores depending on the class of
+#' Computes model-specific variable importance scores depending on the class of
 #' \code{object}:
 #'
 #' \describe{
@@ -234,7 +234,7 @@ vi_model <- function(object, ...) {
 #'
 #' @export
 vi_model.default <- function(object, ...) {
-  stop("Model-based variable importance scores are currently not available ",
+  stop("model-specific variable importance scores are currently not available ",
        "for objects of class ", "\"", class(object), "\".")
 }
 
@@ -255,7 +255,7 @@ vi_model.C5.0 <- function(object, type = c("usage", "splits"), ...) {
   # Determine which type of variable importance to compute
   type <- match.arg(type)
 
-  # Consruct model-based variable importance scores
+  # Consruct model-specific variable importance scores
   vis <- C50::C5imp(object, metric = type, ...)
   tib <- tibble::tibble(
     "Variable" = rownames(vis),
@@ -287,7 +287,7 @@ vi_model.train <- function(object, ...) {
   #        "install it.", call. = FALSE)
   # }
 
-  # Construct model-based variable importance scores
+  # Construct model-specific variable importance scores
   vis <- caret::varImp(object, ...)
   if (inherits(vis, "varImp.train")) {
     vis <- vis$importance
@@ -322,7 +322,7 @@ vi_model.cubist <- function(object, ...) {
   #        "install it.", call. = FALSE)
   # }
 
-  # Consruct model-based variable importance scores
+  # Consruct model-specific variable importance scores
   vis <- caret::varImp(object, ...)
   tib <- tibble::tibble(
     "Variable" = rownames(vis),
@@ -357,7 +357,7 @@ vi_model.earth <- function(object, type = c("nsubsets", "rss", "gcv"), ...) {
   # Determine which type of variable importance to compute
   type <- match.arg(type)
 
-  # Construct model-based variable importance scores
+  # Construct model-specific variable importance scores
   vis <- earth::evimp(object, trim = FALSE, ...)[, type, drop = TRUE]
   tib <- tibble::tibble(
     "Variable" = names(vis),
@@ -394,7 +394,7 @@ vi_model.gbm <- function(object, type = c("relative.influence", "permutation"),
   # Determine which type of variable importance to compute
   type <- match.arg(type)
 
-  # Construct model-based variable importance scores
+  # Construct model-specific variable importance scores
   vis <- if (type == "relative.influence") {
     gbm::summary.gbm(object, plotit = FALSE, order = TRUE,
                      method = gbm::relative.influence, ...)
@@ -406,6 +406,255 @@ vi_model.gbm <- function(object, type = c("relative.influence", "permutation"),
     "Variable" = vis$var,
     "Importance" = vis$rel.inf
   )
+
+  # Add variable importance type attribute
+  attr(tib, which = "type") <- type
+
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
+  # Return results
+  tib
+
+}
+
+
+# Package: glmnet --------------------------------------------------------------
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.glmnet <- function(object, ...) {
+
+  # Extract coefficients
+  s <- list(...)$s
+  coefs <- if (is.null(s)) {
+    betas <- stats::coef(object)
+    betas[, ncol(betas), drop = TRUE]
+  } else {
+    stats::coef(object, s = s)[, 1L, drop = TRUE]
+  }
+
+  # Remove intercept (if it's there)
+  if ("(Intercept)" %in% names(coefs)) {
+    coefs <- coefs[setdiff(x = names(coefs), y = "(Intercept)")]
+  }
+
+  # Construct model-specific variable importance scores
+  vis <- summary(object, plotit = FALSE, order = TRUE, ...)
+  tib <- tibble::tibble(
+    "Variable" = names(coefs),
+    "Importance" = coefs,
+    "Sign" = ifelse(sign(coefs) == 1, yes = "POS", no = "NEG")
+  )
+
+  # Add variable importance type attribute
+  attr(tib, which = "type") <- "|coefficient|"
+
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
+  # Return results
+  tib
+
+}
+
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.cv.glmnet <- function(object, ...) {
+
+  # Extract coefficients
+  s <- list(...)$s
+  coefs <- if (is.null(s)) {
+    betas <- stats::coef(object, s = "lambda.1se")
+    betas[, ncol(betas), drop = TRUE]
+  } else {
+    stats::coef(object, s = s)[, 1L, drop = TRUE]
+  }
+
+  # Remove intercept (if it's there)
+  if ("(Intercept)" %in% names(coefs)) {
+    coefs <- coefs[setdiff(x = names(coefs), y = "(Intercept)")]
+  }
+
+  # Construct model-specific variable importance scores
+  vis <- summary(object, plotit = FALSE, order = TRUE, ...)
+  tib <- tibble::tibble(
+    "Variable" = names(coefs),
+    "Importance" = coefs,
+    "Sign" = ifelse(sign(coefs) == 1, yes = "POS", no = "NEG")
+  )
+
+  # Add variable importance type attribute
+  attr(tib, which = "type") <- "|coefficient|"
+
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
+  # Return results
+  tib
+
+}
+
+
+# Package: h2o -----------------------------------------------------------------
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.H2OBinomialModel <- function(object, ...) {
+
+  # Construct model-specific variable importance scores
+  tib <- tibble::as.tibble(h2o::h2o.varimp(object))
+  if (object@algorithm == "glm") {
+    names(tib) <- c("Variable", "Importance", "Sign")
+    # FIXME: Extra row at the bottom?
+  } else {
+    tib <- tib[1L:2L]
+    names(tib) <- c("Variable", "Importance")
+  }
+
+  # Add variable importance type attribute
+  attr(tib, which = "type") <- "h2o"
+
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
+  # Return results
+  tib
+
+}
+
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.H2OMultinomialModel <- function(object, ...) {
+
+  # Construct model-specific variable importance scores
+  tib <- tibble::as.tibble(h2o::h2o.varimp(object))
+  if (object@algorithm == "glm") {
+    names(tib) <- c("Variable", "Importance", "Sign")
+    # FIXME: Extra row at the bottom?
+  } else {
+    tib <- tib[1L:2L]
+    names(tib) <- c("Variable", "Importance")
+  }
+
+  # Add variable importance type attribute
+  attr(tib, which = "type") <- "h2o"
+
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
+  # Return results
+  tib
+
+}
+
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.H2ORegressionModel <- function(object, ...) {
+
+  # Construct model-specific variable importance scores
+  tib <- tibble::as.tibble(h2o::h2o.varimp(object))
+  if (object@algorithm == "glm") {
+    names(tib) <- c("Variable", "Importance", "Sign")
+    # FIXME: Extra row at the bottom?
+  } else {
+    tib <- tib[1L:2L]
+    names(tib) <- c("Variable", "Importance")
+  }
+
+  # Add variable importance type attribute
+  attr(tib, which = "type") <- "h2o"
+
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
+  # Return results
+  tib
+
+}
+
+
+# Package: neuralnet -----------------------------------------------------------
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.nn <- function(object, type = c("olden", "garson"), ...) {
+
+  # Check for dependency
+  if (!requireNamespace("NeuralNetTools", quietly = TRUE)) {
+    stop("Package \"NeuralNetTools\" needed for this function to work. Please ",
+         "install it.", call. = FALSE)
+  }
+
+  # Determine which type of variable importance to compute
+  type <- match.arg(type)
+
+  # Construct model-specific variable importance scores
+  tib <- if (type == "olden") {  # Olden's algorithm
+    vis <- NeuralNetTools::olden(object, bar_plot = FALSE)
+    tibble::tibble(
+      "Variable" = rownames(vis),
+      "Importance" = vis$importance
+    )
+  } else {  # Garson's algorithm
+    vis <- NeuralNetTools::garson(object, bar_plot = FALSE)
+    tibble::tibble(
+      "Variable" = rownames(vis),
+      "Importance" = vis$rel_imp
+    )
+  }
+
+  # Add variable importance type attribute
+  attr(tib, which = "type") <- type
+
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
+  # Return results
+  tib
+
+}
+
+
+# Package: nnet ----------------------------------------------------------------
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.nnet <- function(object, type = c("olden", "garson"), ...) {
+
+  # Check for dependency
+  if (!requireNamespace("NeuralNetTools", quietly = TRUE)) {
+    stop("Package \"NeuralNetTools\" needed for this function to work. Please ",
+         "install it.", call. = FALSE)
+  }
+
+  # Determine which type of variable importance to compute
+  type <- match.arg(type)
+
+  # Construct model-specific variable importance scores
+  tib <- if (type == "olden") {  # Olden's algorithm
+    vis <- NeuralNetTools::olden(object, bar_plot = FALSE)
+    tibble::tibble(
+      "Variable" = rownames(vis),
+      "Importance" = vis$importance
+    )
+  } else {  # Garson's algorithm
+    vis <- NeuralNetTools::garson(object, bar_plot = FALSE)
+    tibble::tibble(
+      "Variable" = rownames(vis),
+      "Importance" = vis$rel_imp
+    )
+  }
 
   # Add variable importance type attribute
   attr(tib, which = "type") <- type
@@ -435,7 +684,7 @@ vi_model.RandomForest <- function(object, type = c("accuracy", "auc"), ...) {
   # Determine which type of variable importance to compute
   type <- match.arg(type)
 
-  # Construct model-based variable importance scores
+  # Construct model-specific variable importance scores
   vis <- if (type == "auc") {
     # Check for dependency
     if (!requireNamespace("varImp", quietly = TRUE)) {
@@ -476,7 +725,7 @@ vi_model.constparty <- function(object, ...) {
   #        "install it.", call. = FALSE)
   # }
 
-  # Construct model-based variable importance scores
+  # Construct model-specific variable importance scores
   vis <- partykit::varimp(object, ...)
   features <- attr(stats::terms(object), which = "term.labels")
   unused <- setdiff(features, names(vis))
@@ -510,7 +759,7 @@ vi_model.cforest <- function(object, ...) {
   #        "install it.", call. = FALSE)
   # }
 
-  # Construct model-based variable importance scores
+  # Construct model-specific variable importance scores
   vis <- partykit::varimp(object, ...)
   tib <- tibble::tibble(
     "Variable" = names(vis),
@@ -529,37 +778,33 @@ vi_model.cforest <- function(object, ...) {
 }
 
 
-# Package: glmnet --------------------------------------------------------------
+# Package: randomForest --------------------------------------------------------
 
 #' @rdname vi_model
 #'
 #' @export
-vi_model.glmnet <- function(object, ...) {
+vi_model.randomForest <- function(object, ...) {
 
-  # Extract coefficients
-  s <- list(...)$s
-  coefs <- if (is.null(s)) {
-    betas <- stats::coef(object)
-    betas[, ncol(betas), drop = TRUE]
-  } else {
-    stats::coef(object, s = s)[, 1L, drop = TRUE]
+  # # Check for dependency
+  # if (!requireNamespace("randomForest", quietly = TRUE)) {
+  #   stop("Package \"randomForest\" needed for this function to work. Please ",
+  #        "install it.", call. = FALSE)
+  # }
+
+  # Construct model-specific variable importance scores
+  vis <- randomForest::importance(object, ...)
+  type <- colnames(vis)[1L]
+  if (dim(vis)[2L] == 0) {  # possible when importance = FALSE in RF call
+    importance_scores <- object$importance
   }
-
-  # Remove intercept (if it's there)
-  if ("(Intercept)" %in% names(coefs)) {
-    coefs <- coefs[setdiff(x = names(coefs), y = "(Intercept)")]
-  }
-
-  # Construct model-based variable importance scores
-  vis <- summary(object, plotit = FALSE, order = TRUE, ...)
+  vis <- vis[, 1L, drop = TRUE]
   tib <- tibble::tibble(
-    "Variable" = names(coefs),
-    "Importance" = coefs,
-    "Sign" = ifelse(sign(coefs) == 1, yes = "POS", no = "NEG")
+    "Variable" = names(vis),
+    "Importance" = vis
   )
 
   # Add variable importance type attribute
-  attr(tib, which = "type") <- "|coefficient|"
+  attr(tib, which = "type") <- type
 
   # Add "vi" class
   class(tib) <- c("vi", class(tib))
@@ -570,35 +815,28 @@ vi_model.glmnet <- function(object, ...) {
 }
 
 
+# Package: ranger --------------------------------------------------------------
+
 #' @rdname vi_model
 #'
 #' @export
-vi_model.cv.glmnet <- function(object, ...) {
+vi_model.ranger <- function(object, ...) {
 
-  # Extract coefficients
-  s <- list(...)$s
-  coefs <- if (is.null(s)) {
-    betas <- stats::coef(object, s = "lambda.1se")
-    betas[, ncol(betas), drop = TRUE]
-  } else {
-    stats::coef(object, s = s)[, 1L, drop = TRUE]
-  }
+  # # Check for dependency
+  # if (!requireNamespace("ranger", quietly = TRUE)) {
+  #   stop("Package \"ranger\" needed for this function to work. Please ",
+  #        "install it.", call. = FALSE)
+  # }
 
-  # Remove intercept (if it's there)
-  if ("(Intercept)" %in% names(coefs)) {
-    coefs <- coefs[setdiff(x = names(coefs), y = "(Intercept)")]
-  }
-
-  # Construct model-based variable importance scores
-  vis <- summary(object, plotit = FALSE, order = TRUE, ...)
+  # Construct model-specific variable importance scores
+  vis <- ranger::importance(object)
   tib <- tibble::tibble(
-    "Variable" = names(coefs),
-    "Importance" = coefs,
-    "Sign" = ifelse(sign(coefs) == 1, yes = "POS", no = "NEG")
+    "Variable" = names(vis),
+    "Importance" = vis
   )
 
   # Add variable importance type attribute
-  attr(tib, which = "type") <- "|coefficient|"
+  attr(tib, which = "type") <- object$importance.mode
 
   # Add "vi" class
   class(tib) <- c("vi", class(tib))
@@ -609,23 +847,30 @@ vi_model.cv.glmnet <- function(object, ...) {
 }
 
 
+# Package: rpart ---------------------------------------------------------------
+
 #' @rdname vi_model
 #'
 #' @export
-vi_model.H2OBinomialModel <- function(object, ...) {
+vi_model.rpart <- function(object, ...) {
 
-  # Construct model-based variable importance scores
-  tib <- tibble::as.tibble(h2o::h2o.varimp(object))
-  if (object@algorithm == "glm") {
-    names(tib) <- c("Variable", "Importance", "Sign")
-    # FIXME: Extra row at the bottom?
-  } else {
-    tib <- tib[1L:2L]
-    names(tib) <- c("Variable", "Importance")
+  # Construct model-specific variable importance scores
+  importance_scores <- object$variable.importance
+  if (is.null(importance_scores)) {
+    stop("Cannot extract variable importance scores from a tree with no ",
+         "splits.", call. = FALSE)
   }
+  feature_names <- names(importance_scores)
+
+  # Place variable importance scores in a tibble (the first and second columns
+  # should always be labelled "Variable" and "Importance", respectively)
+  tib <- tibble::tibble(
+    "Variable" = feature_names,
+    "Importance" = importance_scores
+  )
 
   # Add variable importance type attribute
-  attr(tib, which = "type") <- "h2o"
+  attr(tib, which = "type") <- "GoodnessOfSplit"
 
   # Add "vi" class
   class(tib) <- c("vi", class(tib))
@@ -636,50 +881,39 @@ vi_model.H2OBinomialModel <- function(object, ...) {
 }
 
 
-#' @rdname vi_model
-#'
-#' @export
-vi_model.H2OMultinomialModel <- function(object, ...) {
-
-  # Construct model-based variable importance scores
-  tib <- tibble::as.tibble(h2o::h2o.varimp(object))
-  if (object@algorithm == "glm") {
-    names(tib) <- c("Variable", "Importance", "Sign")
-    # FIXME: Extra row at the bottom?
-  } else {
-    tib <- tib[1L:2L]
-    names(tib) <- c("Variable", "Importance")
-  }
-
-  # Add variable importance type attribute
-  attr(tib, which = "type") <- "h2o"
-
-  # Add "vi" class
-  class(tib) <- c("vi", class(tib))
-
-  # Return results
-  tib
-
-}
-
+# Package: RSNNS ---------------------------------------------------------------
 
 #' @rdname vi_model
 #'
 #' @export
-vi_model.H2ORegressionModel <- function(object, ...) {
+vi_model.mlp <- function(object, type = c("olden", "garson"), ...) {
 
-  # Construct model-based variable importance scores
-  tib <- tibble::as.tibble(h2o::h2o.varimp(object))
-  if (object@algorithm == "glm") {
-    names(tib) <- c("Variable", "Importance", "Sign")
-    # FIXME: Extra row at the bottom?
-  } else {
-    tib <- tib[1L:2L]
-    names(tib) <- c("Variable", "Importance")
+  # Check for dependency
+  if (!requireNamespace("NeuralNetTools", quietly = TRUE)) {
+    stop("Package \"NeuralNetTools\" needed for this function to work. Please ",
+         "install it.", call. = FALSE)
+  }
+
+  # Determine which type of variable importance to compute
+  type <- match.arg(type)
+
+  # Construct model-specific variable importance scores
+  tib <- if (type == "olden") {  # Olden's algorithm
+    vis <- NeuralNetTools::olden(object, bar_plot = FALSE)
+    tibble::tibble(
+      "Variable" = rownames(vis),
+      "Importance" = vis$importance
+    )
+  } else {  # Garson's algorithm
+    vis <- NeuralNetTools::garson(object, bar_plot = FALSE)
+    tibble::tibble(
+      "Variable" = rownames(vis),
+      "Importance" = vis$rel_imp
+    )
   }
 
   # Add variable importance type attribute
-  attr(tib, which = "type") <- "h2o"
+  attr(tib, which = "type") <- type
 
   # Add "vi" class
   class(tib) <- c("vi", class(tib))
@@ -703,7 +937,7 @@ vi_model.ml_model_decision_tree_regression <- function(object, ...) {
   #        "install it.", call. = FALSE)
   # }
 
-  # Construct model-based variable importance scores
+  # Construct model-specific variable importance scores
   vis <- sparklyr::ml_feature_importances(object, ...)
   names(vis) <- c("Variable", "Importance")
   tib <- tibble::as_tibble(vis)
@@ -731,7 +965,7 @@ vi_model.ml_model_decision_tree_classification <- function(object, ...) {
   #        "install it.", call. = FALSE)
   # }
 
-  # Construct model-based variable importance scores
+  # Construct model-specific variable importance scores
   vis <- sparklyr::ml_feature_importances(object, ...)
   names(vis) <- c("Variable", "Importance")
   tib <- tibble::as_tibble(vis)
@@ -759,7 +993,7 @@ vi_model.ml_model_gbt_regression <- function(object, ...) {
   #        "install it.", call. = FALSE)
   # }
 
-  # Construct model-based variable importance scores
+  # Construct model-specific variable importance scores
   vis <- sparklyr::ml_feature_importances(object, ...)
   names(vis) <- c("Variable", "Importance")
   tib <- tibble::as_tibble(vis)
@@ -787,7 +1021,7 @@ vi_model.ml_model_gbt_classification <- function(object, ...) {
   #        "install it.", call. = FALSE)
   # }
 
-  # Construct model-based variable importance scores
+  # Construct model-specific variable importance scores
   vis <- sparklyr::ml_feature_importances(object, ...)
   names(vis) <- c("Variable", "Importance")
   tib <- tibble::as_tibble(vis)
@@ -815,7 +1049,7 @@ vi_model.ml_model_generalized_linear_regression <- function(object, ...) {
   #        "install it.", call. = FALSE)
   # }
 
-  # Construct model-based variable importance scores
+  # Construct model-specific variable importance scores
   vis <- sparklyr::tidy(object, ...)[, c("term", "statistic")]
   if (vis$term[1L] == "(Intercept)") {
     vis <- vis[-1L, ]
@@ -848,7 +1082,7 @@ vi_model.ml_model_linear_regression <- function(object, ...) {
   #        "install it.", call. = FALSE)
   # }
 
-  # Construct model-based variable importance scores
+  # Construct model-specific variable importance scores
   vis <- sparklyr::tidy(object, ...)[, c("term", "statistic")]
   if (vis$term[1L] == "(Intercept)") {
     vis <- vis[-1L, ]
@@ -881,7 +1115,7 @@ vi_model.ml_model_random_forest_regression <- function(object, ...) {
   #        "install it.", call. = FALSE)
   # }
 
-  # Construct model-based variable importance scores
+  # Construct model-specific variable importance scores
   vis <- sparklyr::ml_feature_importances(object, ...)
   names(vis) <- c("Variable", "Importance")
   tib <- tibble::as_tibble(vis)
@@ -909,7 +1143,7 @@ vi_model.ml_model_random_forest_classification <- function(object, ...) {
   #        "install it.", call. = FALSE)
   # }
 
-  # Construct model-based variable importance scores
+  # Construct model-specific variable importance scores
   vis <- sparklyr::ml_feature_importances(object, ...)
   names(vis) <- c("Variable", "Importance")
   tib <- tibble::as_tibble(vis)
@@ -933,7 +1167,7 @@ vi_model.ml_model_random_forest_classification <- function(object, ...) {
 #' @export
 vi_model.lm <- function(object, ...) {
 
-  # Construct model-based variable importance scores
+  # Construct model-specific variable importance scores
   coefs <- summary(object)$coefficients
   if (attr(object$terms, "intercept") == 1) {
     coefs <- coefs[-1L, , drop = FALSE]
@@ -960,225 +1194,7 @@ vi_model.lm <- function(object, ...) {
 }
 
 
-#' @rdname vi_model
-#'
-#' @export
-vi_model.mlp <- function(object, type = c("olden", "garson"), ...) {
-
-  # Check for dependency
-  if (!requireNamespace("NeuralNetTools", quietly = TRUE)) {
-    stop("Package \"NeuralNetTools\" needed for this function to work. Please ",
-         "install it.", call. = FALSE)
-  }
-
-  # Determine which type of variable importance to compute
-  type <- match.arg(type)
-
-  # Construct model-based variable importance scores
-  tib <- if (type == "olden") {  # Olden's algorithm
-    vis <- NeuralNetTools::olden(object, bar_plot = FALSE)
-    tibble::tibble(
-      "Variable" = rownames(vis),
-      "Importance" = vis$importance
-    )
-  } else {  # Garson's algorithm
-    vis <- NeuralNetTools::garson(object, bar_plot = FALSE)
-    tibble::tibble(
-      "Variable" = rownames(vis),
-      "Importance" = vis$rel_imp
-    )
-  }
-
-  # Add variable importance type attribute
-  attr(tib, which = "type") <- type
-
-  # Add "vi" class
-  class(tib) <- c("vi", class(tib))
-
-  # Return results
-  tib
-
-}
-
-
-#' @rdname vi_model
-#'
-#' @export
-vi_model.nn <- function(object, type = c("olden", "garson"), ...) {
-
-  # Check for dependency
-  if (!requireNamespace("NeuralNetTools", quietly = TRUE)) {
-    stop("Package \"NeuralNetTools\" needed for this function to work. Please ",
-         "install it.", call. = FALSE)
-  }
-
-  # Determine which type of variable importance to compute
-  type <- match.arg(type)
-
-  # Construct model-based variable importance scores
-  tib <- if (type == "olden") {  # Olden's algorithm
-    vis <- NeuralNetTools::olden(object, bar_plot = FALSE)
-    tibble::tibble(
-      "Variable" = rownames(vis),
-      "Importance" = vis$importance
-    )
-  } else {  # Garson's algorithm
-    vis <- NeuralNetTools::garson(object, bar_plot = FALSE)
-    tibble::tibble(
-      "Variable" = rownames(vis),
-      "Importance" = vis$rel_imp
-    )
-  }
-
-  # Add variable importance type attribute
-  attr(tib, which = "type") <- type
-
-  # Add "vi" class
-  class(tib) <- c("vi", class(tib))
-
-  # Return results
-  tib
-
-}
-
-
-#' @rdname vi_model
-#'
-#' @export
-vi_model.nnet <- function(object, type = c("olden", "garson"), ...) {
-
-  # Check for dependency
-  if (!requireNamespace("NeuralNetTools", quietly = TRUE)) {
-    stop("Package \"NeuralNetTools\" needed for this function to work. Please ",
-         "install it.", call. = FALSE)
-  }
-
-  # Determine which type of variable importance to compute
-  type <- match.arg(type)
-
-  # Construct model-based variable importance scores
-  tib <- if (type == "olden") {  # Olden's algorithm
-    vis <- NeuralNetTools::olden(object, bar_plot = FALSE)
-    tibble::tibble(
-      "Variable" = rownames(vis),
-      "Importance" = vis$importance
-    )
-  } else {  # Garson's algorithm
-    vis <- NeuralNetTools::garson(object, bar_plot = FALSE)
-    tibble::tibble(
-      "Variable" = rownames(vis),
-      "Importance" = vis$rel_imp
-    )
-  }
-
-  # Add variable importance type attribute
-  attr(tib, which = "type") <- type
-
-  # Add "vi" class
-  class(tib) <- c("vi", class(tib))
-
-  # Return results
-  tib
-
-}
-
-
-#' @rdname vi_model
-#'
-#' @export
-vi_model.randomForest <- function(object, ...) {
-
-  # # Check for dependency
-  # if (!requireNamespace("randomForest", quietly = TRUE)) {
-  #   stop("Package \"randomForest\" needed for this function to work. Please ",
-  #        "install it.", call. = FALSE)
-  # }
-
-  # Construct model-based variable importance scores
-  vis <- randomForest::importance(object, ...)
-  type <- colnames(vis)[1L]
-  if (dim(vis)[2L] == 0) {  # possible when importance = FALSE in RF call
-    importance_scores <- object$importance
-  }
-  vis <- vis[, 1L, drop = TRUE]
-  tib <- tibble::tibble(
-    "Variable" = names(vis),
-    "Importance" = vis
-  )
-
-  # Add variable importance type attribute
-  attr(tib, which = "type") <- type
-
-  # Add "vi" class
-  class(tib) <- c("vi", class(tib))
-
-  # Return results
-  tib
-
-}
-
-
-#' @rdname vi_model
-#'
-#' @export
-vi_model.ranger <- function(object, ...) {
-
-  # # Check for dependency
-  # if (!requireNamespace("ranger", quietly = TRUE)) {
-  #   stop("Package \"ranger\" needed for this function to work. Please ",
-  #        "install it.", call. = FALSE)
-  # }
-
-  # Construct model-based variable importance scores
-  vis <- ranger::importance(object)
-  tib <- tibble::tibble(
-    "Variable" = names(vis),
-    "Importance" = vis
-  )
-
-  # Add variable importance type attribute
-  attr(tib, which = "type") <- object$importance.mode
-
-  # Add "vi" class
-  class(tib) <- c("vi", class(tib))
-
-  # Return results
-  tib
-
-}
-
-
-#' @rdname vi_model
-#'
-#' @export
-vi_model.rpart <- function(object, ...) {
-
-  # Construct model-based variable importance scores
-  importance_scores <- object$variable.importance
-  if (is.null(importance_scores)) {
-    stop("Cannot extract variable importance scores from a tree with no ",
-         "splits.", call. = FALSE)
-  }
-  feature_names <- names(importance_scores)
-
-  # Place variable importance scores in a tibble (the first and second columns
-  # should always be labelled "Variable" and "Importance", respectively)
-  tib <- tibble::tibble(
-    "Variable" = feature_names,
-    "Importance" = importance_scores
-  )
-
-  # Add variable importance type attribute
-  attr(tib, which = "type") <- "GoodnessOfSplit"
-
-  # Add "vi" class
-  class(tib) <- c("vi", class(tib))
-
-  # Return results
-  tib
-
-}
-
+# Package: xgboost -------------------------------------------------------------
 
 #' @rdname vi_model
 #'
@@ -1195,7 +1211,7 @@ vi_model.xgb.Booster <- function(object, type = c("gain", "cover", "frequency"),
   # Determine which type of variable importance to compute
   type <- match.arg(type)
 
-  # Construct model-based variable importance scores
+  # Construct model-specific variable importance scores
   imp <- xgboost::xgb.importance(model = object, ...)
   names(imp) <- tolower(names(imp))
   vis <- tibble::as.tibble(imp)[, c("feature", type)]

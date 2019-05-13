@@ -136,7 +136,8 @@
     <pre class="usage"><span class='fu'>vi_pdp</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>vi_pdp</span>(<span class='no'>object</span>, <span class='no'>feature_names</span>, <span class='kw'>FUN</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>vi_pdp</span>(<span class='no'>object</span>, <span class='no'>feature_names</span>, <span class='kw'>FUN</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>var_fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -157,11 +158,17 @@ variables (i.e., features) of interest.</p></td>
     </tr>
     <tr>
       <th>FUN</th>
+      <td><p>Deprecated. Use <code>var_fun</code> instead.</p></td>
+    </tr>
+    <tr>
+      <th>var_fun</th>
       <td><p>List with two components, <code>"cat"</code> and <code>"con"</code>,
-containing the functions to use for categorical and continuous features,
-respectively. If <code>NULL</code>, the standard deviation is used for continuous
-features. For categorical features, the range statistic is used (i.e.,
-(max - min) / 4).</p></td>
+containing the functions to use to quantify the variability of the feature
+effects (e.g., partial dependence values) for categorical and continuous
+features, respectively. If <code>NULL</code>, the standard deviation is used for
+continuous features. For categorical features, the range statistic is used
+(i.e., (max - min) / 4). Only used when <code>method = "pdp"</code> or
+<code>method = "ice"</code>.</p></td>
     </tr>
     </table>
     

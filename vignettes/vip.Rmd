@@ -3,6 +3,7 @@ title: "Variable importance plots: an introduction to vip"
 author: "Brandon M. Greenwell and Bradley C. Boehmke"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
+df_print: paged
 bibliography: vip.bib
 ---
 
@@ -14,7 +15,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-In the era of "big data", it is becoming more of a challenge to not only build state-of-the-art predictive models, but also gain an understanding of what's really going on in the data. For example, it is often of interest to know which, if any, of the predictors in a fitted model are relatively influential on the predicted outcome. Some modern algorithms---like random forests and gradient boosted decision trees---have a natural way of quantifying the importance or relative influence of each feature. Other algorithms---like naive Bayes classifiers and support vector machines---are not capable of doing so and model-agnostic approaches are generally used to measure each predictor's importance. Enter [`vip`](https://koalaverse.github.io/vip/index.html), an R package for constructing variable importance (VI) scores/plots for many types of supervised learning algorithms using model-based and novel model-agnostic approaches.
+In the era of "big data", it is becoming more of a challenge to not only build state-of-the-art predictive models, but also gain an understanding of what's really going on in the data. For example, it is often of interest to know which, if any, of the predictors in a fitted model are relatively influential on the predicted outcome. Some modern algorithms---like random forests and gradient boosted decision trees---have a natural way of quantifying the importance or relative influence of each feature. Other algorithms---like naive Bayes classifiers and support vector machines---are not capable of doing so and model-agnostic approaches are generally used to measure each predictor's importance. Enter [`vip`](https://koalaverse.github.io/vip/index.html), an R package for constructing variable importance (VI) scores/plots for many types of supervised learning algorithms using model-specific and novel model-agnostic approaches.
 
 
 ## Installation
@@ -24,10 +25,10 @@ In the era of "big data", it is becoming more of a challenge to not only build s
 install.packages("vip")
 
 # Or install the the development version from GitHub:
-if (!requireNamespace("devtools")) {
-  install.packages("devtools")
+if (!requireNamespace("remotes")) {
+  install.packages("remotes")
 }
-devtools::install_github("koalaverse/vip")
+remotes::install_github("koalaverse/vip")
 ```
 
 
@@ -45,14 +46,14 @@ tibble::as.tibble(trn)
 ```
 
 
-### Model-based VI scores
+### model-specific VI scores
 
 Some machine learning algorithms have their own way of quantifying variable Importance. We describe some of these in the subsection that follow. The issue with model-specific VI scores is that they are not necessarily comparable across different types of models. For example, directly computing the impurity-based VI scores from tree-based models to the $t$-statistic from linear models.
 
 
 #### Trees and tree ensembles
 
-Decision trees probably offer the most natural model-based approach to quantifying the importance of each feature. In a binary decision tree, at each node $t$, a single predictor is used to partition the data into two homogeneous groups. The chosen predictor is the one that maximizes some measure of improvement $\widehat{i}_t$. The relative importance of predictor $x$ is the sum of the squared improvements over all internal nodes of the tree for which $x$ was chosen as the partitioning variable; see @classification-breiman-1984 for details. This idea also extends to ensembles of decision trees, such as RFs and GBMs. In ensembles, the improvement score for each predictor is averaged across all the trees in the ensemble. Fortunately, due to the stabilizing effect of averaging, the improvement-based VI metric is often more reliable in large ensembles [see @hastie-elements-2009, pg. 368]. RFs offer an additional method for computing VI scores. The idea is to use the leftover out-of-bag (OOB) data to construct validation-set errors for each tree. Then, each predictor is randomly shuffled in the OOB data and the error is computed again. The idea is that if variable $x$ is important, then the validation error will go up when $x$ is perturbed in the OOB data. The difference in the two errors is recorded for the OOB data then averaged across all trees in the forest.
+Decision trees probably offer the most natural model-specific approach to quantifying the importance of each feature. In a binary decision tree, at each node $t$, a single predictor is used to partition the data into two homogeneous groups. The chosen predictor is the one that maximizes some measure of improvement $\widehat{i}_t$. The relative importance of predictor $x$ is the sum of the squared improvements over all internal nodes of the tree for which $x$ was chosen as the partitioning variable; see @classification-breiman-1984 for details. This idea also extends to ensembles of decision trees, such as RFs and GBMs. In ensembles, the improvement score for each predictor is averaged across all the trees in the ensemble. Fortunately, due to the stabilizing effect of averaging, the improvement-based VI metric is often more reliable in large ensembles [see @hastie-elements-2009, pg. 368]. RFs offer an additional method for computing VI scores. The idea is to use the leftover out-of-bag (OOB) data to construct validation-set errors for each tree. Then, each predictor is randomly shuffled in the OOB data and the error is computed again. The idea is that if variable $x$ is important, then the validation error will go up when $x$ is perturbed in the OOB data. The difference in the two errors is recorded for the OOB data then averaged across all trees in the forest.
 
 To illustrate, we fit a CART-like regression tree, RF, and GBM to the simulated training data. (**Note:** there are a number of different packages available for fitting these types of models, we just picked popular and efficient implementations for illustration.)
 ```{r trees}
@@ -82,6 +83,7 @@ bst <- xgboost(
 ```
 
 Each of the above packages include the ability to compute VI scores for all the features in the model; however, the implementation is rather package specific, as shown in the code chunk below.
+
 ```{r trees-manual}
 # VI plot for single regression tree
 (vi_tree <- tree$variable.importance)
@@ -115,9 +117,9 @@ Notice how the `vi()` function always returns a tibble with two columns: `Variab
 library(vip)
 
 # Construct ggplot2-based VIPs
-(p1 <- vip(tree))  # CART-like decision tree
-(p2 <- vip(rfo, width = 0.5, fill = "green3"))   # RF
-(p3 <- vip(bst, col = "purple2"))   # GBM
+p1 <- vip(tree)  # CART-like decision tree
+p2 <- vip(rfo, width = 0.5, fill = "green3")   # RF
+p3 <- vip(bst, col = "purple2")   # GBM
 
 # Display all three plots side by side
 grid.arrange(p1, p2, p3, ncol = 3)
@@ -125,7 +127,7 @@ grid.arrange(p1, p2, p3, ncol = 3)
 
 Notice how the `vip()` function always returns a `"ggplot"` object (by default, this will be a bar plot). For large models with many features, a dot plot is more effective (in fact, a number of useful plotting options can be fiddles with).
 
-```{r trees-vi-vip-dot, fig.width=5}
+```{r trees-vi-vip-dot, fig.width=6, fig.asp=0.618, out.width="70%"}
 library(ggplot2)  # for theme_light() function
 vip(bst, num_features = 5, bar = FALSE, color, horizontal = FALSE, 
     color = "red", shape = 17, size = 4) +
@@ -137,7 +139,7 @@ vip(bst, num_features = 5, bar = FALSE, color, horizontal = FALSE,
 
 In multiple linear regression, or linear models (LMs), the absolute value of the $t$-statistic is commonly used as a measure of VI. The same idea also extends to generalized linear models (GLMs). In the code chunk below, we fit an LM to the simulated `trn` data set allowing for all main and two-way interaction effects, then use the `step()` function to perform [backward elimination](https://en.wikipedia.org/wiki/Stepwise_regression).
 
-```{r lms, fig.width=7}
+```{r lms, fig.width=6, fig.asp=0.618, out.width="70%"}
 # Fit a LM
 linmod <- lm(y ~ .^2, data = trn)
 backward <- step(linmod, direction = "backward", trace = 0)
@@ -154,7 +156,7 @@ One issue with computing VI scores for LMs using the $t$-statistic approach is t
 
 Multivariate adaptive regression splines (MARS), which were introduced in @friedman-1991-mars, is an automatic regression technique which can be seen as a generalization of multiple linear regression and generalized linear models. In the MARS algorithm, the contribution (or VI score) for each predictor is determined using a generalized cross-validation (GCV) statistic. An example using the `earth` package is given below:
 
-```{r earth}
+```{r earth, fig.width=6, fig.asp=0.618, out.width="70%"}
 # Load required packages
 library(earth)
 
@@ -173,9 +175,7 @@ vip(mars)
 
 For NNs, two popular methods for constructing VI scores are the Garson algorithm [@interpreting-garson-1991], later modified by @back-goh-1995, and the Olden algorithm [@accurate-olden-2004]. For both algorithms, the basis of these importance scores is the network's connection weights. The Garson algorithm determines VI by identifying all weighted connections between the nodes of interest. Olden's algorithm, on the other hand, uses the product of the raw connection weights between each input and output neuron and sums the product across all hidden neurons. This has been shown to outperform the Garson method in various simulations. For DNNs, a similar method due to @data-gedeon-1997 considers the weights connecting the input features to the first two hidden layers (for simplicity and speed); but this method can be slow for large networks.
 
-**These methods will be implemented in `vip` soon!**
-
-```{r nn}
+```{r nn, fig.width=6, fig.asp=0.618, out.width="70%"}
 # # Tune a neural network
 # library(caret)
 # set.seed(0755)
@@ -199,6 +199,24 @@ library(nnet)
 # Fit a neural network
 set.seed(0803)
 nn <- nnet(y ~ ., data = trn, size = 7, decay = 0.1, linout = TRUE)
+
+# Extract VI scores
+vi(mars)
+
+# Plot VI scores
+grid.arrange(
+  vip(nn),
+  vip(nn, type = "garson"),
+  nrow = 1
+)
+```
+
+The *vip* package currently supports model-specific variable importance scores for the following object classes:
+
+```{r classes}
+classes <- as.character(methods(vi_model))
+classes <- gsub("^vi_model\\.", replacement = "", x = classes)
+classes[classes != "default"]
 ```
 
 
@@ -282,16 +300,16 @@ An example is given below for the previously fitted PPR and NN models.
 # Plot VI scores
 set.seed(2021)  # for reproducibility
 p1 <- vip(pp, method = "permute", target = "y", metric = "rsquared",
-          pred_fun = predict) + ggtitle("PPR")
+          pred_wrapper = predict) + ggtitle("PPR")
 p2 <- vip(nn, method = "permute", target = "y", metric = "rsquared",
-          pred_fun = predict) + ggtitle("NN")
+          pred_wrapper = predict) + ggtitle("NN")
 grid.arrange(p1, p2, ncol = 2)
 ```
 
 
 ### The Pima Indians diabetes data
 
-As a final example, we'll consider the well-known Pima Indians diabetes data; see `?pdp::pima` for details. These data contain diabetes test results collected by the the US National Institute of Diabetes and Digestive and Kidney Diseases from a population of women who were at least 21 years old, of Pima Indian heritage, and living near Phoenix, Arizona. The target variable, `diabetes`, is a factor indicating the diabetes test result (`pos`/`neg`). In the code chunk below, we fit a random forest to the Pima Indians data using the fantastic [ranger](https://github.com/imbs-hl/ranger) package. Note that we fit two different random forests: `rfo1` and `rfo2`. The only difference is that we would use `rfo1` if we wanted predicted class labels and we would use `rfo2` for predicted class probabilities. The distinction is important when using `method = "permute"` since the performance metric being used requires the predicted outcome to be either the class labels (e.g., `metric = "error"` for classification error) or predicted class labels (e.g., `"auc"` for area under the curve). We'll illustrate both below. We should point out that there is more built-in support for `"ranger"` objects, so it is not necessary to supply `pred_fun` or specify a specific metric (the default is `metric = "auto"`), but for completeness, we explicitly specify all the options.
+As a final example, we'll consider the well-known Pima Indians diabetes data; see `?pdp::pima` for details. These data contain diabetes test results collected by the the US National Institute of Diabetes and Digestive and Kidney Diseases from a population of women who were at least 21 years old, of Pima Indian heritage, and living near Phoenix, Arizona. The target variable, `diabetes`, is a factor indicating the diabetes test result (`pos`/`neg`). In the code chunk below, we fit a random forest to the Pima Indians data using the fantastic [ranger](https://github.com/imbs-hl/ranger) package. Note that we fit two different random forests: `rfo1` and `rfo2`. The only difference is that we would use `rfo1` if we wanted predicted class labels and we would use `rfo2` for predicted class probabilities. The distinction is important when using `method = "permute"` since the performance metric being used requires the predicted outcome to be either the class labels (e.g., `metric = "error"` for classification error) or predicted class labels (e.g., `"auc"` for area under the curve). We'll illustrate both below. We should point out that there is more built-in support for `"ranger"` objects, so it is not necessary to supply `pred_wrapper` or specify a specific metric (the default is `metric = "auto"`), but for completeness, we explicitly specify all the options.
 
 ```{r pima-ranger, fig.width=7, fig.height=5, out.width="100%"}
 # Load required packages
@@ -312,9 +330,9 @@ p1 <- vip(rfo1)  # model-specific
 p2 <- vip(rfo2)  # model-specific
 set.seed(1329)  # for reproducibility
 pfun <- function(object, newdata) predict(object, data = newdata)$predictions
-p3 <- vip(rfo1, method = "permute", metric = "error", pred_fun = pfun, 
+p3 <- vip(rfo1, method = "permute", metric = "error", pred_wrapper = pfun, 
           target = "diabetes")
-p4 <- vip(rfo2, method = "permute", metric = "auc", pred_fun = pfun,
+p4 <- vip(rfo2, method = "permute", metric = "auc", pred_wrapper = pfun,
           target = "diabetes", reference_class = "neg")
 grid.arrange(p1, p2, p3, p4, ncol = 2)
 ```
@@ -322,28 +340,28 @@ grid.arrange(p1, p2, p3, p4, ncol = 2)
 
 # Use sparklines to characterize feature effects
 
-Starting with __vip__ v0.1.3, we have included a new function `vit()` for constructing html-based variable importance tables. The primary difference between `vi()` and `vit()` is that the latter includes an `Effect` column that displays a [sparkline](https://en.wikipedia.org/wiki/Sparkline) representation of the partial dependence function for each feature. This is a concise way to display both feature importance and feature effect information in a single table. See `?vip::vit` for details. We illustrate the basic use of `vit()` in the code chunks below.
+Starting with __vip__ v0.1.3, we have included a new function `add_sparklines()` for constructing html-based variable importance tables. The primary difference between `vi()` and `add_sparklines()` is that the latter includes an `Effect` column that displays a [sparkline](https://en.wikipedia.org/wiki/Sparkline) representation of the partial dependence function for each feature. This is a concise way to display both feature importance and feature effect information in a single table. See `?vip::add_sparklines` for details. We illustrate the basic use of `add_sparklines()` in the code chunks below.
 
 ```{r pima ranger}
 # First, compute a tibble of variable importance scores using any method
-var_imp <- vi(rfo2, method = "permute", metric = "auc", pred_fun = pfun,
+var_imp <- vi(rfo2, method = "permute", metric = "auc", pred_wrapper = pfun,
               target = "diabetes", reference_class = "neg")
 
 # Next, convert to an html-based data table with sparklines
-vit(var_imp, fit = rfo2)
+add_sparklines(var_imp, fit = rfo2)
 
 # If you use the PDP- or ICE-based variable importance methods, then you don't 
 # have to wait as long since the feature effect information is already 
 # available
 nn %>%  # start with the previously trained neural network model
   vi(method = "ice") %>%  # obtain ICE-based variable importance scores
-  vit()  # add sparkline representation of averaged ICE curves
+  add_sparklines()  # add sparkline representation of averaged ICE curves
 
 # By default, the y-axis limit is the same for each sparkline. To make the
 # yaxis limit free to very for each sparkline, set `standardize_y = FALSE`
 nn %>%
   vi(method = "ice") %>%
-  vit(standardize_y = FALSE)
+  add_sparklines(standardize_y = FALSE)
 ```
 
 
