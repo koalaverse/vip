@@ -160,7 +160,9 @@ to return by passing the specific value of the penalty parameter via the
 default, the coefficients corresponding to the final penalty value in the
 sequence is returned; in other words, you should ALWAYS SPECIFY THIS VALUE!
 For \code{"cv.glmnet"} objects, the largest value of lambda such that error
-is within one standard error of the minimum is used by default.}
+is within one standard error of the minimum is used by default. For
+\code{"multnet"} objects, the coefficients corresponding to the first class
+are used; that is, the fist component of \code{\link[glmnet]{coef.glmnet}}.}
 
 \item{\code{\link[partykit]{cforest}}}{Variable importance is measured in a
 way similar to those computed by \code{\link[randomForest]{importance}}.

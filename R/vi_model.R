@@ -60,7 +60,9 @@
 #' default, the coefficients corresponding to the final penalty value in the
 #' sequence is returned; in other words, you should ALWAYS SPECIFY THIS VALUE!
 #' For \code{"cv.glmnet"} objects, the largest value of lambda such that error
-#' is within one standard error of the minimum is used by default.}
+#' is within one standard error of the minimum is used by default. For
+#' \code{"multnet"} objects, the coefficients corresponding to the first class
+#' are used; that is, the fist component of \code{\link[glmnet]{coef.glmnet}}.}
 #'
 #' \item{\code{\link[partykit]{cforest}}}{Variable importance is measured in a
 #' way similar to those computed by \code{\link[randomForest]{importance}}.
@@ -428,12 +430,14 @@ vi_model.glmnet <- function(object, ...) {
 
   # Extract coefficients
   s <- list(...)$s
-  coefs <- if (is.null(s)) {
-    betas <- stats::coef(object)
-    betas[, ncol(betas), drop = TRUE]
-  } else {
-    stats::coef(object, s = s)[, 1L, drop = TRUE]
+  if (is.null(s)) {
+    s <- min(object$lambda)
   }
+  coefs <- stats::coef(object, s = s)
+  if (inherits(coefs, what = "list")) {  # "multnet" objects
+    coefs <- coefs[[1L]]
+  }
+  coefs <- coefs[, 1L, drop = TRUE]
 
   # Remove intercept (if it's there)
   if ("(Intercept)" %in% names(coefs)) {
@@ -441,7 +445,6 @@ vi_model.glmnet <- function(object, ...) {
   }
 
   # Construct model-specific variable importance scores
-  vis <- summary(object, plotit = FALSE, order = TRUE, ...)
   tib <- tibble::tibble(
     "Variable" = names(coefs),
     "Importance" = coefs,
@@ -467,12 +470,14 @@ vi_model.cv.glmnet <- function(object, ...) {
 
   # Extract coefficients
   s <- list(...)$s
-  coefs <- if (is.null(s)) {
-    betas <- stats::coef(object, s = "lambda.1se")
-    betas[, ncol(betas), drop = TRUE]
-  } else {
-    stats::coef(object, s = s)[, 1L, drop = TRUE]
+  if (is.null(s)) {
+    s <- "lambda.1se"
   }
+  coefs <- stats::coef(object, s = s)
+  if (inherits(coefs, what = "list")) {  # "multnet" objects
+    coefs <- coefs[[1L]]
+  }
+  coefs <- coefs[, 1L, drop = TRUE]
 
   # Remove intercept (if it's there)
   if ("(Intercept)" %in% names(coefs)) {
@@ -480,7 +485,6 @@ vi_model.cv.glmnet <- function(object, ...) {
   }
 
   # Construct model-specific variable importance scores
-  vis <- summary(object, plotit = FALSE, order = TRUE, ...)
   tib <- tibble::tibble(
     "Variable" = names(coefs),
     "Importance" = coefs,

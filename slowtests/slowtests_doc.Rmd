@@ -6,30 +6,81 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  cache = TRUE,
+  echo = TRUE
+)
 ```
 
 ```{r packages-and-data}
 # Load required packages
 library(vip)
 
+# Function to bin a numeric vector
+bin <- function(x, num_bins) {
+  quantiles <- quantile(x, probs = seq(from = 0, to = 1, length = num_bins + 1))
+  bins <- cut(x, breaks = quantiles, label = FALSE, include.lowest = TRUE)
+  as.factor(paste0("class", bins))
+}
+
 # Simulate Friedman's data
 set.seed(101)  # for reproducibility
-friedman1 <- as.data.frame(mlbench::mlbench.friedman1(1000, sd = 0.1))
-friedman2 <- friedman1
-friedman2$y <- as.factor(ifelse(friedman2$y > median(friedman2$y), 
-                                yes = "class1", no = "class2"))
+friedman1 <- friedman2 <- friedman3 <-
+  as.data.frame(mlbench::mlbench.friedman1(1000, sd = 0.1))
+friedman2$y <- bin(friedman1$y, num_bins = 2)
+friedman3$y <- bin(friedman1$y, num_bins = 3)
+```
+
+
+### Package: xyz
+
+#### Binary classification
+
+```{r xyx-binary}
+# Fit model
+fit <- NULL
+
+# Compute variable importance
+res <- NULL
+
+# Variable importance plot(s)
+```
+
+#### Multiclass classification
+
+```{r xyx-multiclass}
+# Fit model
+fit <- NULL
+
+# Compute variable importance
+res <- NULL
+
+# Variable importance plot(s)
+```
+
+#### Regression
+
+```{r xyx-regression}
+# Fit model
+fit <- NULL
+
+# Compute variable importance
+res <- NULL
+
+# Variable importance plot(s)
 ```
 
 
 ## Model-based 
 
-Blah, blah, blah...
+Some machine learning algorithms have their own way of quantifying variable Importance. We describe some of these in the subsection that follow. The issue with model-specific VI scores is that they are not necessarily comparable across different types of models. For example, directly computing the impurity-based VI scores from tree-based models to the $t$-statistic from linear models.
 
 
-### The C50 package
+### Package: C50
 
-```{r C50}
+#### Binary classification
+
+```{r C50-binary}
 # Fit model
 fit <- C50::C5.0(y ~ ., data = friedman2)
 
@@ -45,10 +96,110 @@ grid.arrange(
 )
 ```
 
+#### Multiclass classification
 
-### The Cubist package
+```{r C50-multiclass}
+print("Does not support multiclass classification.")
+```
 
-```{r C50}
+#### Regression
+
+```{r C50-regression}
+print("Does not support regression.")
+```
+
+### Package: caret
+
+#### Binary classification
+
+```{r caret-binary}
+# Fit model
+set.seed(101)  # for reproducibility
+fit <- caret::train(
+  y ~ ., data = friedman2,
+  method = "ranger",
+  importance = "impurity",
+  tuneLength = 1
+)
+
+# Compute variable importance
+res1 <- vi_model(fit)
+res2 <- vi_model(fit$finalModel)
+
+# Variable importance plot(s)
+grid.arrange(
+  vip(res1, num_features = 16), 
+  vip(res2, num_features = 16), 
+  nrow = 1
+)
+```
+
+#### Multiclass classification
+
+```{r caret-multi}
+# Fit model
+set.seed(101)  # for reproducibility
+fit <- caret::train(
+  y ~ ., data = friedman3,
+  method = "ranger",
+  importance = "impurity",
+  tuneLength = 1
+)
+
+# Compute variable importance
+res1 <- vi_model(fit)
+res2 <- vi_model(fit$finalModel)
+
+# Variable importance plot(s)
+grid.arrange(
+  vip(res1, num_features = 16), 
+  vip(res2, num_features = 16), 
+  nrow = 1
+)
+```
+
+#### Regression
+
+```{r caret-regression}
+# Fit model
+set.seed(101)  # for reproducibility
+fit <- caret::train(
+  y ~ ., data = friedman1,
+  method = "ranger",
+  importance = "impurity",
+  tuneLength = 1
+)
+
+# Compute variable importance
+res1 <- vi_model(fit)
+res2 <- vi_model(fit$finalModel)
+
+# Variable importance plot(s)
+grid.arrange(
+  vip(res1, num_features = 16), 
+  vip(res2, num_features = 16), 
+  nrow = 1
+)
+```
+
+
+### Package: Cubist
+
+#### Binary classification
+
+```{r Cubist-binary}
+print("Does not support binary classification.")
+```
+
+#### Multiclass classification
+
+```{r Cubist-multiclass}
+print("Does not support multiclass classification.")
+```
+
+#### Regression
+
+```{r Cubist-regression}
 # Fit model
 fit <- Cubist::cubist(
   x = subset(friedman1, select = -y),
@@ -68,9 +219,54 @@ grid.arrange(
 )
 ```
 
-### The earth package
 
-```{r earth}
+### Package: earth
+
+#### Binary classification
+
+```{r earth-binary}
+# Fit model
+fit <- earth::earth(y ~ ., data = friedman2, degree = 2,
+                     glm = list(family = binomial))
+
+# Compute variable importance
+res1 <- vi_model(fit)
+res2 <- vi_model(fit, type = "rss")
+res3 <- vi_model(fit, type = "gcv")
+
+# Variable importance plot(s)
+grid.arrange(
+  vip(res1, num_features = 16),
+  vip(res2, num_features = 16),
+  vip(res3, num_features = 16),
+  nrow = 1
+)
+```
+
+#### Multiclass classification
+
+```{r earth-multiclass}
+# # Fit model
+# fit <- earth::earth(y ~ ., data = friedman3, degree = 2,
+#                      glm = list(family = binomial))
+# 
+# # Compute variable importance
+# res1 <- vi_model(fit)
+# res2 <- vi_model(fit, type = "rss")
+# res3 <- vi_model(fit, type = "gcv")
+# 
+# # Variable importance plot(s)
+# grid.arrange(
+#   vip(res1, num_features = 16),
+#   vip(res2, num_features = 16),
+#   vip(res3, num_features = 16),
+#   nrow = 1
+# )
+```
+
+#### Regression
+
+```{r earth-regression}
 # Fit model
 fit <- earth::earth(y ~ ., data = friedman1, degree = 2)
 
@@ -89,9 +285,70 @@ grid.arrange(
 ```
 
 
-### The gbm package
+### Package: gbm
 
-```{r gbm}
+#### Binary classification
+
+```{r gbm-binary}
+friedman2_01 <- friedman2
+friedman2_01$y <- ifelse(friedman2_01$y == "class1", 1, 0)
+
+# Fit model
+set.seed(101)  # for reproducibility
+fit <- gbm::gbm(
+  y ~ .,
+  data = friedman2_01,
+  distribution = "bernoulli",
+  n.trees = 1000,
+  interaction.depth = 5,
+  shrinkage = 0.1,
+  bag.fraction = 1,
+  cv.folds = 5
+)
+best_iter <- gbm::gbm.perf(fit, plot.it = FALSE, method = "cv")
+
+# Compute variable importance
+set.seed(102)  # for reproducibility
+res1 <- vi_model(fit, n.trees = best_iter)
+res2 <- vi_model(fit, type = "permutation", n.trees = best_iter)
+
+# Variable importance plot(s)
+grid.arrange(
+  vip(res1, num_features = 16),
+  vip(res2, num_features = 16),
+  nrow = 1
+)
+```
+
+#### Multiclass classification
+
+```{r gbm-multiclass}
+# Fit model
+set.seed(101)  # for reproducibility
+fit <- gbm::gbm(
+  y ~ .,
+  data = friedman3,
+  distribution = "multinomial",
+  n.trees = 1000,
+  interaction.depth = 5,
+  shrinkage = 0.1,
+  bag.fraction = 1,
+  cv.folds = 5
+)
+best_iter <- gbm::gbm.perf(fit, plot.it = FALSE, method = "cv")
+
+# Compute variable importance
+set.seed(102)  # for reproducibility
+res <- vi_model(fit, n.trees = best_iter)
+# res <- vi_model(fit, type = "permutation", n.trees = best_iter)  # not supported
+
+# Variable importance plot(s)
+vip(res, num_features = 16)
+```
+
+#### Regression
+
+```{r gbm-regression}
 # Fit model
 set.seed(101)  # for reproducibility
 fit <- gbm::gbm(
@@ -120,9 +377,73 @@ grid.arrange(
 ```
 
 
-### The glmnet package
+### Package: glmnet
 
-```{r glmnet}
+#### Binary classification
+
+```{r glmnet-binary}
+# Fit model
+fit1 <- glmnet::glmnet(
+  x = model.matrix(~ . - y - 1, data = friedman2), 
+  y = friedman2$y, 
+  family = "binomial",
+  nlambda = 100
+)
+
+# Fit model using 5-fold CV
+fit2 <- glmnet::cv.glmnet(
+  x = model.matrix(~ . - y - 1, data = friedman2),
+  y = friedman2$y,
+  family = "binomial",
+  nfolds = 5
+)
+
+# Compute variable importance
+res1 <- vi_model(fit1)
+res2 <- vi_model(fit2)
+
+# Variable importance plot(s)
+grid.arrange(
+  vip(res1, num_features = 16),
+  vip(res2, num_features = 16),
+  nrow = 1
+)
+```
+
+#### Multiclass classification
+
+```{r glmnet-multiclass}
+# Fit model
+fit1 <- glmnet::glmnet(
+  x = model.matrix(~ . - y - 1, data = friedman3), 
+  y = friedman3$y, 
+  family = "multinomial",
+  nlambda = 100
+)
+
+# Fit model using 5-fold CV
+fit2 <- glmnet::cv.glmnet(
+  x = model.matrix(~ . - y - 1, data = friedman3),
+  y = friedman3$y,
+  family = "multinomial",
+  nfolds = 5
+)
+
+# Compute variable importance
+res1 <- vi_model(fit1)
+res2 <- vi_model(fit2)
+
+# Variable importance plot(s)
+grid.arrange(
+  vip(res1, num_features = 16),
+  vip(res2, num_features = 16),
+  nrow = 1
+)
+```
+
+#### Regression
+
+```{r glmnet-regression}
 # Fit model
 fit1 <- glmnet::glmnet(
   x = model.matrix(~ . - y - 1, data = friedman1), 
@@ -150,27 +471,9 @@ grid.arrange(
 ```
 
 
-### The lm() and glm() functions
+### Package: h2o
 
-```{r lm}
-# Fit model
-fit1 <- lm(y ~ ., data = friedman1)
-fit2 <- glm(y ~ ., data = friedman1)
-
-# Compute variable importance
-res1 <- vi_model(fit1)
-res2 <- vi_model(fit2)
-
-# Variable importance plot(s)
-grid.arrange(
-  vip(res1, num_features = 16), 
-  vip(res2, num_features = 16), 
-  nrow = 1
-)
-```
-
-
-### The neuralnet package
+### Package: neuralnet
 
 ```{r neuralnet}
 # Fit model
@@ -189,7 +492,7 @@ grid.arrange(
 ```
 
 
-### The nnet package
+### Package: nnet
 
 ```{r nnet}
 # Fit model
@@ -216,9 +519,9 @@ grid.arrange(
 ```
 
 
-### The party package
+### Package: party
 
-```{r nnet}
+```{r party}
 # Fit model
 set.seed(101)  # for reproducibility
 fit <- party::cforest(y ~ ., data = friedman2)
@@ -237,7 +540,8 @@ grid.arrange(
 ```
 
 
-### The randomForest package
+### Package: partykit
+### Package: randomForest
 
 ```{r randomForest}
 # Fit model
@@ -258,7 +562,7 @@ grid.arrange(
 ```
 
 
-### The ranger package
+### Package: ranger
 
 ```{r ranger}
 # Fit model
@@ -282,7 +586,8 @@ grid.arrange(
 ```
 
 
-### The RSNNS package
+### Package: rpart
+### Package: RSNNS
 
 ```{r rsnns}
 # Fit model
@@ -306,7 +611,28 @@ grid.arrange(
 ```
 
 
-### The xgboost package
+### Package: sparklyr
+### Package: stats
+
+```{r lm}
+# Fit model
+fit1 <- lm(y ~ ., data = friedman1)
+fit2 <- glm(y ~ ., data = friedman1)
+
+# Compute variable importance
+res1 <- vi_model(fit1)
+res2 <- vi_model(fit2)
+
+# Variable importance plot(s)
+grid.arrange(
+  vip(res1, num_features = 16), 
+  vip(res2, num_features = 16), 
+  nrow = 1
+)
+```
+
+
+### Package: xgboost
 
 ```{r xgboost}
 # Fit model
