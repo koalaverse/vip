@@ -18,6 +18,8 @@
 
 ## Minor changes
 
+* You can now pass a `type` argument to `vi_permute()` specifying how to compare the baseline and permuted performance metrics. Current choices are `"difference"` (the default) and `"ratio"`.
+
 * Improved documentation (especially for `vi_permute()` and `vi_model()`).
 
 * Results from `vi_model()`, `vi_pdp()`, `vi_ice()`, and `vi_permute()` now have class `"vi"`, making them easier to plot with `vip()`.

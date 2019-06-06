@@ -8,10 +8,11 @@
 vi_permute(object, ...)
 
 \method{vi_permute}{default}(object, train, target, metric = "auto",
-  smaller_is_better = NULL, nsim = 1, sample_size = NULL,
-  sample_frac = NULL, reference_class = NULL, pred_fun = NULL,
-  pred_wrapper = NULL, verbose = FALSE, progress = "none",
-  parallel = FALSE, paropts = NULL, ...)
+  smaller_is_better = NULL, type = c("difference", "ratio"),
+  nsim = 1, sample_size = NULL, sample_frac = NULL,
+  reference_class = NULL, pred_fun = NULL, pred_wrapper = NULL,
+  verbose = FALSE, progress = "none", parallel = FALSE,
+  paropts = NULL, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
@@ -36,6 +37,10 @@ for a list of available metrics.}
 \item{smaller_is_better}{Logical indicating whether or not a smaller value
 of \code{metric} is better. Default is \code{NULL}. Must be supplied if
 \code{metric} is a user-supplied function.}
+
+\item{type}{Character string specifying how to compare the baseline and
+permuted performance metrics. Current options are \code{"difference"} (the
+default) and \code{"ratio"}.}
 
 \item{nsim}{Integer specifying the number of Monte Carlo replications to
 perform. Default is 1. If \code{nsim > 1}, the results from each replication

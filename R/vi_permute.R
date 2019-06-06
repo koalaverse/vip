@@ -24,6 +24,10 @@
 #' of \code{metric} is better. Default is \code{NULL}. Must be supplied if
 #' \code{metric} is a user-supplied function.
 #'
+#' @param type Character string specifying how to compare the baseline and
+#' permuted performance metrics. Current options are \code{"difference"} (the
+#' default) and \code{"ratio"}.
+#'
 #' @param nsim Integer specifying the number of Monte Carlo replications to
 #' perform. Default is 1. If \code{nsim > 1}, the results from each replication
 #' are simply averaged together (the standard deviation will also be returned).
@@ -136,10 +140,24 @@ vi_permute <- function(object, ...) {
 #' @rdname vi_permute
 #'
 #' @export
-vi_permute.default <- function(object, train, target, metric = "auto",
-  smaller_is_better = NULL, nsim = 1, sample_size = NULL, sample_frac = NULL,
-  reference_class = NULL, pred_fun = NULL, pred_wrapper = NULL, verbose = FALSE,
-  progress = "none", parallel = FALSE, paropts = NULL, ...
+vi_permute.default <- function(
+  object,
+  train,
+  target,
+  metric = "auto",
+  smaller_is_better = NULL,
+  type = c("difference", "ratio"),
+  nsim = 1,
+  sample_size = NULL,
+  sample_frac = NULL,
+  reference_class = NULL,
+  pred_fun = NULL,
+  pred_wrapper = NULL,
+  verbose = FALSE,
+  progress = "none",
+  parallel = FALSE,
+  paropts = NULL,
+  ...
 ) {
 
   # Issue warning until this function is complete!
@@ -297,6 +315,14 @@ vi_permute.default <- function(object, train, target, metric = "auto",
     predicted = pred_wrapper(object, newdata = train_x)
   )
 
+  # Type of comparison
+  type <- match.arg(type)
+  `%compare%` <- if (type == "difference") {
+    `-`
+  } else {
+    `/`
+  }
+
   # Construct VI scores
   #
   # Loop through each feature and do the following:
@@ -324,31 +350,12 @@ vi_permute.default <- function(object, train, target, metric = "auto",
           predicted = pred_wrapper(object, newdata = train_x_permuted)
         )
         if (smaller_is_better) {
-          permuted - baseline
+          permuted %compare% baseline  # e.g., RMSE
         } else {
-          baseline - permuted
+          baseline %compare% permuted  # e.g., R-squared
         }
       })
   ))
-  # vis <- unlist(plyr::llply(feature_names, .progress = progress,
-  #   .parallel = parallel, .paropts = paropts,
-  #   .fun = function(x) {
-  #     if (verbose && !parallel) {
-  #       message("Computing variable importance for ", x, "...")
-  #     }
-  #     train_x_permuted <- train_x  # make copy
-  #     train_x_permuted[[x]] <- sample(train_x_permuted[[x]])  # permute values
-  #     permuted <- perf_fun(
-  #       actual = train_y,
-  #       predicted = pred_wrapper(object, newdata = train_x_permuted)
-  #     )
-  #     if (smaller_is_better) {
-  #       permuted - baseline
-  #     } else {
-  #       baseline - permuted
-  #     }
-  #   })
-  # )
 
   # Construct tibble of variable importance scores
   tib <- tibble::tibble(
