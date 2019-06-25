@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 
 ## Installation
 
-```{r, eval = FALSE}
+```{r, eval=FALSE}
 # The easiest way to get vip is to install it from CRAN:
 install.packages("vip")
 

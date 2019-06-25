@@ -33,10 +33,10 @@ found here: <https://github.com/christophM/interpretable-ml-book>.
 install.packages("vip")
 
 # Alternatively, you can install the development version from GitHub:
-if (!requireNamespace("devtools")) {
-  install.packages("devtools")
+if (!requireNamespace("remotes")) {
+  install.packages("remotes")
 }
-devtools::install_github("koalaverse/vip")
+remotes::install_github("koalaverse/vip")
 ```
 
 For details and example usage, visit the [**vip** package
