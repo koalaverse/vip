@@ -41,9 +41,9 @@ vi_pdp <- function(object, ...) {
 vi_pdp.default <- function(object, feature_names, FUN = NULL, var_fun = NULL,
                            ...) {
 
-  # Print warning message
-  warning("Setting `method = \"pdp\"` is experimental, use at your own risk!",
-          call. = FALSE)
+  # # Print warning message
+  # warning("Setting `method = \"pdp\"` is experimental, use at your own risk!",
+  #         call. = FALSE)
 
   # Catch deprecated arguments
   if (!is.null(FUN)) {

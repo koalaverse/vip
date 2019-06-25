@@ -8,7 +8,7 @@
 vi(object, ...)
 
 \method{vi}{default}(object, method = c("model", "pdp", "ice",
-  "permute"), feature_names, FUN = NULL, var_fun = NULL,
+  "permute"), feature_names = NULL, FUN = NULL, var_fun = NULL,
   abbreviate_feature_names = NULL, sort = TRUE, decreasing = TRUE,
   scale = FALSE, rank = FALSE, ...)
 }

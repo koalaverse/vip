@@ -7,9 +7,9 @@
 \usage{
 vi_permute(object, ...)
 
-\method{vi_permute}{default}(object, train, target, metric = "auto",
-  smaller_is_better = NULL, type = c("difference", "ratio"),
-  nsim = 1, sample_size = NULL, sample_frac = NULL,
+\method{vi_permute}{default}(object, feature_names = NULL, train, target,
+  metric = "auto", smaller_is_better = NULL, type = c("difference",
+  "ratio"), nsim = 1, sample_size = NULL, sample_frac = NULL,
   reference_class = NULL, pred_fun = NULL, pred_wrapper = NULL,
   verbose = FALSE, progress = "none", parallel = FALSE,
   paropts = NULL, ...)
@@ -18,6 +18,9 @@ vi_permute(object, ...)
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
 
 \item{...}{Additional optional arguments. (Currently ignored.)}
+
+\item{feature_names}{Character string giving the names of the predictor
+variables (i.e., features) of interest.}
 
 \item{train}{A matrix-like R object (e.g., a data frame or matrix)
 containing the training data.}

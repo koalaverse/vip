@@ -45,12 +45,6 @@ abbreviate_names <- function(x, minlength) {
 
 
 #' @keywords internal
-sort_importance_scores <- function(x, decreasing) {
-  x[order(x$Importance, decreasing = decreasing), ]
-}
-
-
-#' @keywords internal
 check_var_fun <- function(x) {
   # x should be a named list of two functions with names "con" and "cat"
   if (!is.list(x)) {
@@ -66,4 +60,20 @@ check_var_fun <- function(x) {
   if (!all(vapply(x, is.function, logical(1L)))) {
     stop("FUN should be a list of two functions.", call. = FALSE)
   }
+}
+
+
+#' @keywords internal
+permute_columns <- function(x, columns = NULL) {
+  if (is.null(columns)) {
+    stop("No columns specified for permutation.")
+  }
+  x[, columns] <- x[sample(nrow(x)), columns]
+  x
+}
+
+
+#' @keywords internal
+sort_importance_scores <- function(x, decreasing) {
+  x[order(x$Importance, decreasing = decreasing), ]
 }

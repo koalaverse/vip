@@ -96,7 +96,7 @@ vi <- function(object, ...) {
 vi.default <- function(
   object,
   method = c("model", "pdp", "ice", "permute"),
-  feature_names,
+  feature_names = NULL,
   FUN = NULL,  # deprecated
   var_fun = NULL,
   abbreviate_feature_names = NULL,

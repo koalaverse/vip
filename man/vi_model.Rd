@@ -135,7 +135,7 @@ return the number of times each predictor was involved in a split by using
 the option \code{metric = "usage"}. See \code{\link[C50]{C5imp}} for
 details.}
 
-\item{\code{\link[C50]{C5.0}}}{The Cubist output contains variable usage
+\item{\code{\link[Cubist]{cubist}}}{The Cubist output contains variable usage
 statistics. It gives the percentage of times where each variable was used in
 a condition and/or a linear model. Note that this output will probably be
 inconsistent with the rules shown in the output from summary.cubist. At each

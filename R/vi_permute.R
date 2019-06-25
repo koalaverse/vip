@@ -5,6 +5,9 @@
 #'
 #' @param object A fitted model object (e.g., a \code{"randomForest"} object).
 #'
+#' @param feature_names Character string giving the names of the predictor
+#' variables (i.e., features) of interest.
+#'
 #' @param train A matrix-like R object (e.g., a data frame or matrix)
 #' containing the training data.
 #'
@@ -142,6 +145,7 @@ vi_permute <- function(object, ...) {
 #' @export
 vi_permute.default <- function(
   object,
+  feature_names = NULL,
   train,
   target,
   metric = "auto",
@@ -160,9 +164,9 @@ vi_permute.default <- function(
   ...
 ) {
 
-  # Issue warning until this function is complete!
-  warning("Setting `method = \"permute\"` is experimental, use at your own ",
-          "risk!", call. = FALSE)
+  # # Issue warning until this function is complete!
+  # warning("Setting `method = \"permute\"` is experimental, use at your own ",
+  #         "risk!", call. = FALSE)
 
   # Catch deprecated arguments
   if (!is.null(pred_fun)) {
@@ -177,11 +181,15 @@ vi_permute.default <- function(
 
   # Extract feature names and separate features from target (if necessary)
   if (is.character(target)) {
-    feature_names <- setdiff(colnames(train), target)
+    if (is.null(feature_names)) {
+      feature_names <- setdiff(colnames(train), target)
+    }
     train_x <- train[, feature_names]
     train_y <- train[, target, drop = TRUE]
   } else {
-    feature_names <- colnames(train)
+    if (is.null(feature_names)) {
+      feature_names <- colnames(train)
+    }
     train_x <- train
     train_y <- target
   }
@@ -290,12 +298,12 @@ vi_permute.default <- function(
     # Get prediction function, if not supplied
     prob_based_metrics <- c("auc", "mauc", "logloss", "mlogloss")
     if (is.null(pred_wrapper)) {
-      type <- if (metric %in% prob_based_metrics) {
+      pred_type <- if (metric %in% prob_based_metrics) {
         "prob"
       } else {
         "raw"
       }
-      pred_wrapper <- get_predictions(object, type = type)
+      pred_wrapper <- get_predictions(object, type = pred_type)
     }
 
     # Determine reference class (binary classification only)
@@ -343,8 +351,9 @@ vi_permute.default <- function(
           train_x <- train_x[ids, ]
           train_y <- train_y[ids]
         }
-        train_x_permuted <- train_x  # make copy
-        train_x_permuted[[x]] <- sample(train_x_permuted[[x]])  # permute values
+        # train_x_permuted <- train_x  # make copy
+        # train_x_permuted[[x]] <- sample(train_x_permuted[[x]])  # permute values
+        train_x_permuted <- permute_columns(train_x, columns = x)
         permuted <- perf_fun(
           actual = train_y,
           predicted = pred_wrapper(object, newdata = train_x_permuted)

@@ -2,6 +2,10 @@
 
 ## New functions
 
+* Removed warnings from experimental functions.
+
+* `vi_permute()` gained a type argument (i.e., `type = "difference"` or `type = "ratio"`); this argument can be passed via `vi()` or `vip()` as well.
+
 * `add_sparklines()` creates an HTML widget to display variable importance scores with a sparkline representation of each features effect (i.e., its partial dependence function) [(#64)](https://github.com/koalaverse/vip/issues/64).
 
 * Added support for the Olden and Garson algorithms with neural networks fit using the __neuralnet__, __nnet__, and __RSNNS__ packages [(#28)](https://github.com/koalaverse/vip/issues/28).
