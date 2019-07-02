@@ -25,7 +25,21 @@
 #' \code{Variable} and \code{Importance}, containing the variable name and its
 #' associated importance score, respectively.
 #'
-#' @details Coming soon!
+#' @details Similar to the PDP-based method, this approach to computing VI
+#' scores is based on quantifying the relative "flatness" of the \emph{individual
+#' conditional expectation} (ICE) curves of each feature and then averaging them
+#' together. It is model-agnostic and can be applied to any supervised learning
+#' algorithm. By default, relative "flatness" is defined by computing the
+#' standard deviation of the y-axis values for each PDP for numeric features;
+#' for categorical features, the default is to use range divided by 4. This can
+#' be changed via the `var_fun` argument. See
+#' \href{https://arxiv.org/abs/1805.04755}{Greenwell et al. (2018)} for details
+#' and additional examples.
+#'
+#' #' @references
+#' Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J. A Simple
+#' and Effective Model-Based Variable Importance Measure. arXiv preprint
+#' arXiv:1805.04755 (2018).
 #'
 #' @rdname vi_ice
 #'

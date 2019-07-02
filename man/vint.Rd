@@ -33,7 +33,55 @@ Compute the strength of two-way interaction effects. For details, see the
 reference below.
 }
 \details{
-Coming soon!
+This function quantifies the strength of interaction between
+features $X_1$ and $X_2$ by measuring the change in variance along slices of
+the partial dependence of $X_1$ and $X_2$ on the target $Y$. See
+\href{https://arxiv.org/abs/1805.04755}{Greenwell et al. (2018)} for
+details and examples.
+}
+\examples{
+\dontrun{
+#
+# The Friedman 1 benchmark problem
+#
+
+# Load required packages
+library(gbm)
+library(ggplot2)
+library(mlbench)
+
+# Generate training data
+set.seed(101)  # for reproducibility
+friedman1 <- as.data.frame(mlbench.friedman1(500, sd = 0.1))
+
+#
+# NOTE: The only interaction that actually occurs in the model from which
+# these data are generated is between x.1 and x.2!
+#
+
+# Fit a GBM to the training data
+set.seed(102)  # for reproducibility
+fit <- gbm(y ~ ., data = friedman1, distribution = "gaussian",
+           n.trees = 1000, interaction.depth = 2, shrinkage = 0.01,
+           bag.fraction = 0.8, cv.folds = 5)
+best_iter <- gbm.perf(fit, plot.it = FALSE, method = "cv")
+
+# Quantify relative interaction strength
+all_pairs <- combn(paste0("x.", 1:10), m = 2)
+res <- NULL
+for (i in seq_along(all_pairs)) {
+  interact <- vint(fit, feature_names = all_pairs[, i], n.trees = best_iter)
+  res <- rbind(res, interact)
+}
+
+# Plot top 20 results
+top_20 <- res[1:20, ]
+ggplot(top_20, aes(x = reorder(Variables, Interaction), y = Interaction)) +
+  geom_col() +
+  coord_flip() +
+  xlab("") +
+  ylab("Interaction strength")
+}
 }
 \references{
 Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J.: A Simple
