@@ -1,4 +1,4 @@
-# vip 0.1.2.9000
+# vip 0.1.3
 
 ## New functions
 
@@ -21,6 +21,10 @@
 * Only the predicted class probabilities for the reference class are required (as a numeric vector) for binary classification when `metric = "auc"` or `metric = "logloss"`.
 
 ## Minor changes
+
+* `vi_permute()` gained a new logical `keep` argument. If `TRUE` (the default), the raw permutation scores from all `nsim` repetitions (provided `nsim > 1`) will be stored in an attribute called `"raw_scores"`.
+
+* `vip()` gained new logical arguments `all_permutations` and `jitter ` which help to visualize the raw permutation scores for all `nsim` repetitions (provided `nsim > 1`).
 
 * You can now pass a `type` argument to `vi_permute()` specifying how to compare the baseline and permuted performance metrics. Current choices are `"difference"` (the default) and `"ratio"`.
 

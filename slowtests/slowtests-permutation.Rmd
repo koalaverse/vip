@@ -1,0 +1,391 @@
+---
+title: "Permutation tests"
+author: "Brandon M. Greenwell"
+date: "7/1/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  error = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+
+## Setup
+
+```{r helper-functions}
+# Function to generate data from the Friedman 1 benchmark data set
+make_freidman1 <- function(n_samples = 100, n_features = 10, sigma = 0.0,
+                           seed = NULL) {
+  if (!is.null(seed)) {
+    set.seed(seed)
+  }
+  x <- matrix(runif(n_samples * n_features), ncol = n_features)
+  colnames(x) <- paste0("x", seq_len(n_features))
+  y = 10 * sin(pi * x[, 1L] * x[, 2L]) + 20 * (x[, 3L] - 0.5) ^ 2 +
+    10 * x[, 4L] + 5 * x[, 5L] + rnorm(n_samples, sd = sigma)
+  as.data.frame(cbind(y = y, x))
+}
+
+
+# Function to bin a numeric vector
+bin <- function(x, num_bins) {
+  quantiles <- quantile(x, probs = seq(from = 0, to = 1, length = num_bins + 1))
+  bins <- cut(x, breaks = quantiles, label = FALSE, include.lowest = TRUE)
+  as.factor(paste0("class", bins))
+}
+
+# Generate training data sets
+friedman1 <- friedman2 <- friedman3 <- make_freidman1(
+  n_samples = 500,
+  n_features = 10,
+  sigma = 0.1,
+  seed = 100
+)
+friedman2$y <- bin(friedman1$y, num_bins = 2)  # binary classification
+friedman3$y <- bin(friedman1$y, num_bins = 3)  # multiclass classification
+```
+
+
+## Regression
+
+```{r regression-setup}
+# Load required packages
+library(ranger)
+
+# Random forest
+set.seed(102)
+rfo1 <- ranger(y ~ ., data = friedman1, importance = "permutation")
+
+# Prediction wrapper
+pfun1 <- function(object, newdata) {
+  predict(object, data = newdata)$predictions
+}
+
+# Metric/loss function
+mfun1 <- function(actual, predicted) {  # RMSE
+  sqrt(mean((actual - predicted) ^ 2, na.rm = FALSE))
+}
+
+# Inspect output
+rfo1
+rfo1$variable.importance
+```
+
+
+### Package: DALEX
+
+Computing variable importance with **DALEX** requires the creation of an `"explainer"` object as well as the **ingredients** package:
+
+
+```{r regression-dalex, fig.width=6, fig.asp=0.618, out.width="80%"}
+# Load required packages
+library(DALEX)
+# library(ingredients)
+
+# Compute feature importance
+explainer1 <- explain(rfo1, data = friedman1, y = friedman1$y)
+vi_dalex1 <- ingredients::feature_importance(
+  x = explainer1, 
+  loss = mfun1, 
+  type = "difference",
+  n_sample = NULL  # use full training set
+)
+
+# Print VI scores
+vi_dalex1
+
+# Plot VI scores
+plot(vi_dalex1)
+```
+
+
+### Package: iml
+
+Computing variable importance with **iml** requires the creation of an R6 `"Predictor"` object:
+
+```{r regression-iml, fig.width=6, fig.asp=0.618, out.width="80%"}
+# Load required packages
+library(iml)
+
+# Compute variable importance
+model1 <- Predictor$new(rfo1, data = friedman1, y = "y", predict.fun = pfun1)
+vi_iml1 <- FeatureImp$new(
+  predictor = model1, 
+  loss = mfun1, 
+  compare = "difference", 
+  n.repetitions = 1
+)
+
+# Print VI scores
+vi_iml1
+
+# Plot VI scores
+plot(vi_iml1)
+```
+
+
+
+### Package: vip
+
+```{r regression-vip, fig.width=6, fig.asp=0.618, out.width="80%"}
+# Load required packages
+library(vip)
+
+# Compute variable importance scores
+vi_vip1 <- vi(
+  object = rfo1,
+  method = "permute",
+  train = friedman1,
+  target = "y",
+  metric = mfun1,
+  smaller_is_better = TRUE,
+  pred_wrapper = pfun1,
+  nsim = 1
+)
+
+# Print VI scores
+vi_vip1
+
+# Plot VI scores
+vip(vi_vip1)
+```
+
+
+## Classification (binary)
+
+```{r classification-binary-setup}
+# Random forest
+set.seed(201)
+rfo2 <- ranger(y ~ ., data = friedman2, probability = TRUE,
+               importance = "permutation")
+
+# Prediction wrapper
+pfun2 <- function(object, newdata) {
+  predict(object, data = newdata)$predictions[, "class1"]
+}
+
+# Metric/loss function; note that `ModelMetrics:::logLoss()` requires the
+# actual response values to be a binary (i.e., 0/1) vector
+mfun2 <- function(actual, predicted) {
+  actual <- ifelse(actual == "class1", 1, 0)
+  ModelMetrics:::logLoss.default(actual, predicted)
+}
+
+# Inspect output
+rfo2
+rfo2$variable.importance
+```
+
+
+### Package: DALEX
+
+Computing variable importance with **DALEX** requires the creation of an `"explainer"` object as well as the **ingredients** package:
+
+
+```{r classification-binary-dalex, fig.width=6, fig.asp=0.618, out.width="80%"}
+# Compute feature importance
+set.seed(202)
+explainer2 <- explain(rfo2, data = friedman2, y = friedman2$y)
+vi_dalex2 <- ingredients::feature_importance(
+  x = explainer2, 
+  loss = mfun2, 
+  type = "difference",
+  n_sample = NULL  # use full training set
+)
+
+# Print VI scores
+vi_dalex2
+
+# Plot VI scores
+plot(vi_dalex2)
+```
+
+
+### Package: iml
+
+Computing variable importance with **iml** requires the creation of an R6 `"Predictor"` object:
+
+```{r classification-binary-iml, fig.width=6, fig.asp=0.618, out.width="80%"}
+# Compute variable importance
+set.seed(203)
+model2 <- Predictor$new(rfo2, data = friedman2, y = "y", predict.fun = pfun2)
+vi_iml2 <- FeatureImp$new(
+  predictor = model2, 
+  loss = mfun2, 
+  compare = "difference", 
+  n.repetitions = 1
+)
+
+# Print VI scores
+vi_iml2
+
+# Plot VI scores
+plot(vi_iml2)
+```
+
+
+
+### Package: vip
+
+```{r classification-binary-vip, fig.width=6, fig.asp=0.618, out.width="80%"}
+# Compute variable importance scores
+set.seed(204)
+vi_vip2 <- vi(
+  object = rfo2,
+  method = "permute",
+  train = friedman2,
+  target = "y",
+  metric = mfun2,
+  smaller_is_better = TRUE,
+  pred_wrapper = pfun2,
+  nsim = 1
+)
+
+# Print VI scores
+vi_vip2
+
+# Plot VI scores
+vip(vi_vip2)
+```
+
+
+## Classification (multiclass)
+
+```{r classification-multiclass-setup}
+# Random forest
+set.seed(301)
+rfo3 <- ranger(y ~ ., data = friedman3, probability = TRUE,
+               importance = "permutation")
+
+# Prediction wrapper
+pfun3 <- function(object, newdata) {
+  predict(object, data = newdata)$predictions  # return all columns
+}
+
+# Metric/loss function
+mfun3 <- function(actual, predicted) {
+  ModelMetrics::mauc(actual = actual, predicted = predicted)$mauc
+}
+
+# Inspect output
+rfo3
+rfo3$variable.importance
+```
+
+
+### Package: DALEX
+
+Computing variable importance with **DALEX** requires the creation of an `"explainer"` object as well as the **ingredients** package:
+
+
+```{r classification-multiclass-dalex, fig.width=6, fig.asp=0.618, out.width="80%"}
+# Compute feature importance
+set.seed(302)
+explainer3 <- explain(rfo3, data = friedman3, y = friedman3$y)
+vi_dalex3 <- ingredients::feature_importance(
+  x = explainer3, 
+  loss = mfun3, 
+  type = "difference",
+  n_sample = NULL  # use full training set
+)
+
+# Print VI scores
+vi_dalex3
+
+# Plot VI scores
+plot(vi_dalex3)
+```
+
+
+### Package: iml
+
+Computing variable importance with **iml** requires the creation of an R6 `"Predictor"` object:
+
+```{r classification-multiclass-iml, fig.width=6, fig.asp=0.618, out.width="80%"}
+# Compute variable importance
+set.seed(303)
+model3 <- Predictor$new(rfo3, data = friedman3, y = "y", predict.fun = pfun3)
+vi_iml <- FeatureImp$new(
+  predictor = model3, 
+  loss = mfun3, 
+  compare = "difference", 
+  n.repetitions = 1
+)
+
+# Print VI scores
+vi_iml3
+
+# Plot VI scores
+plot(vi_iml3)
+```
+
+
+
+### Package: vip
+
+```{r classification-multiclass-vip, fig.width=6, fig.asp=0.618, out.width="80%"}
+# Compute variable importance scores
+set.seed(304)
+vi_vip <- vi3(
+  object = rfo3,
+  method = "permute",
+  train = friedman3,
+  target = "y",
+  metric = mfun3,
+  smaller_is_better = FALSE,
+  pred_wrapper = pfun3,
+  nsim = 1
+)
+
+# Print VI scores
+vi_vip3
+
+# Plot VI scores
+vip(vi_vip3)
+```
+
+
+## Using built-in metrics
+
+```{r built-in-metrics, fig.width=7, fig.asp=1/3, out.width="100%"}
+grid.arrange(
+  
+  # RMSE
+  vip(rfo1, method = "permute", train = friedman1, target = "y", 
+      metric = "rmse", pred_wrapper = pfun1),
+  
+  # For "logloss" or "auc", you must supply the refrence class
+  vip(rfo2, method = "permute", train = friedman2, target = "y", 
+      metric = "logloss", pred_wrapper = pfun2, reference_class = "class1"),
+  
+  # Multiclass AUC
+  vip(rfo3, method = "permute", train = friedman3, target = "y", 
+      metric = "mauc", pred_wrapper = pfun3),
+  
+  # Arrange plots side by side
+  nrow = 1
+
+)
+```
+
+
+## Multiple repititions
+
+```{r multiple-repititions}
+# Permute each feature 10 times and average the scores
+res <- vi(rfo1, method = "permute", train = friedman1, target = "y", 
+          metric = "rmse", pred_wrapper = pfun1, nsim = 10, type = "ratio")
+
+# Print results
+res
+attr(res, which = "raw_scores")
+
+# Plot scores
+vip(res, all_permutations = TRUE)
+```
+

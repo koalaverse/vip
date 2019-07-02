@@ -9,7 +9,8 @@ vip(object, ...)
 
 \method{vip}{default}(object, num_features = 10L, bar = TRUE,
   width = 0.75, horizontal = TRUE, alpha = 1, color = "grey35",
-  fill = "grey35", size = 1, shape = 19, ...)
+  fill = "grey35", size = 1, shape = 19, all_permutations = FALSE,
+  jitter = FALSE, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object) or
@@ -45,6 +46,14 @@ Default is \code{"grey35"}.}
 
 \item{shape}{Numeric value indicating the shape to use for the points
 whenever \code{bar = FALSE}. Default is \code{1}.}
+
+\item{all_permutations}{Logical indicating whether or not to plot all
+permutation scores along with the average. Default is \code{FALSE}. (Only
+used for permutation scores when \code{nsim > 1}.)}
+
+\item{jitter}{Logical indicating whether or not to jitter the raw permutation
+scores. Default is \code{FALSE}. (Only used when
+\code{all_permutations = TRUE}.)}
 }
 \description{
 Plot variable importance scores for the predictors in a model.
@@ -72,4 +81,9 @@ vi_scores <- model \%>\%
   vi(method = "ice") \%T>\%
   {print(vip(.))}
 vi_scores
+
+# Permutation scores
+vip(model, method = "permute", train = mtcars, target = "mpg", nsim = 10,
+    metric = "rmse", bar = FALSE, color = "red", size = 3,
+    all_permutations = TRUE, jitter = FALSE)
 }

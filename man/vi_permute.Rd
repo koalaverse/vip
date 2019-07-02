@@ -9,10 +9,10 @@ vi_permute(object, ...)
 
 \method{vi_permute}{default}(object, feature_names = NULL, train, target,
   metric = "auto", smaller_is_better = NULL, type = c("difference",
-  "ratio"), nsim = 1, sample_size = NULL, sample_frac = NULL,
-  reference_class = NULL, pred_fun = NULL, pred_wrapper = NULL,
-  verbose = FALSE, progress = "none", parallel = FALSE,
-  paropts = NULL, ...)
+  "ratio"), nsim = 1, keep = TRUE, sample_size = NULL,
+  sample_frac = NULL, reference_class = NULL, pred_fun = NULL,
+  pred_wrapper = NULL, verbose = FALSE, progress = "none",
+  parallel = FALSE, paropts = NULL, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
@@ -48,6 +48,11 @@ default) and \code{"ratio"}.}
 \item{nsim}{Integer specifying the number of Monte Carlo replications to
 perform. Default is 1. If \code{nsim > 1}, the results from each replication
 are simply averaged together (the standard deviation will also be returned).}
+
+\item{keep}{Logical indicating whether or not to keep the individual
+permutation scores for all \code{nsim} repetitions. If \code{TRUE} (the
+default) then the individual variable importance scores will be stored in an
+attribute called \code{"raw_scores"}. (Only used when \code{nsim > 1}.)}
 
 \item{sample_size}{Integer specifying the size of the random sample to use
 for each Monte Carlo repetition. Default is \code{NULL} (i.e., use all of the

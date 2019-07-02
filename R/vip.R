@@ -34,6 +34,14 @@
 #' @param shape Numeric value indicating the shape to use for the points
 #' whenever \code{bar = FALSE}. Default is \code{1}.
 #'
+#' @param all_permutations Logical indicating whether or not to plot all
+#' permutation scores along with the average. Default is \code{FALSE}. (Only
+#' used for permutation scores when \code{nsim > 1}.)
+#'
+#' @param jitter Logical indicating whether or not to jitter the raw permutation
+#' scores. Default is \code{FALSE}. (Only used when
+#' \code{all_permutations = TRUE}.)
+#'
 #' @param ... Additional optional arguments to be passed onto \code{\link{vi}}.
 #'
 #' @rdname vip
@@ -63,6 +71,11 @@
 #'   vi(method = "ice") %T>%
 #'   {print(vip(.))}
 #' vi_scores
+#'
+#' # Permutation scores
+#' vip(model, method = "permute", train = mtcars, target = "mpg", nsim = 10,
+#'     metric = "rmse", bar = FALSE, color = "red", size = 3,
+#'     all_permutations = TRUE, jitter = FALSE)
 vip <- function(object, ...) {
   UseMethod("vip")
 }
@@ -82,6 +95,8 @@ vip.default <- function(
   fill = "grey35",
   size = 1,
   shape = 19,
+  all_permutations = FALSE,
+  jitter = FALSE,
   ...
 ) {
   imp <- if (inherits(object, what = "vi")) {
@@ -96,6 +111,8 @@ vip.default <- function(
   }
   imp <- imp[seq_len(num_features), ]  # only retain num_features variable importance scores
   x.string <- "reorder(Variable, Importance)"
+
+  # Construct plot
   p <- ggplot2::ggplot(imp, ggplot2::aes_string(x = x.string, y = "Importance"))
   p <- if (bar) {
     if ("Sign" %in% names(imp)) {
@@ -118,10 +135,41 @@ vip.default <- function(
       )
     }
   }
+
+  # Plot raw permutation scores (if available and requested)
+  if (!is.null(attr(imp, which = "raw_scores")) && all_permutations) {
+    raw_scores <- as.data.frame(attr(imp, which = "raw_scores"))
+    raw_scores$Variable <- rownames(raw_scores)
+    raw_scores <- stats::reshape(
+      data = raw_scores,
+      varying = (1L:(ncol(raw_scores) - 1)),
+      v.names = "Importance",
+      direction = "long",
+      sep = "_"
+    )
+    p <- if (jitter) {
+      p + ggplot2::geom_jitter(
+        data = raw_scores,
+        alpha = alpha / 2,
+        size = size / 1.5,
+        shape = shape
+      )
+    } else {
+      p + ggplot2::geom_point(
+        data = raw_scores,
+        alpha = alpha / 2,
+        size = size / 1.5,
+        shape = shape
+      )
+    }
+  }
+
+  # Add labels, titles, etc.
   p <- p + ggplot2::theme(legend.position = "none")
   p <- p + ggplot2::xlab("")  # no need for x-axis label
   if (horizontal) {
     p <- p + ggplot2::coord_flip()
   }
   p + ggplot2::ylab(paste0("Importance (", vi_type, ")"))
+
 }

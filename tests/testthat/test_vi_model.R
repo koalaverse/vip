@@ -597,7 +597,7 @@ test_that("`vi_model()` works for \"ml_model_gbt_regression\" objects", {
       x = friedman1_tbl,
       formula = y ~ .,
       type = "regression",
-      num_trees = 50
+      max_iter = 50
     )
   )
 

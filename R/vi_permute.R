@@ -35,6 +35,11 @@
 #' perform. Default is 1. If \code{nsim > 1}, the results from each replication
 #' are simply averaged together (the standard deviation will also be returned).
 #'
+#' @param keep Logical indicating whether or not to keep the individual
+#' permutation scores for all \code{nsim} repetitions. If \code{TRUE} (the
+#' default) then the individual variable importance scores will be stored in an
+#' attribute called \code{"raw_scores"}. (Only used when \code{nsim > 1}.)
+#'
 #' @param sample_size Integer specifying the size of the random sample to use
 #' for each Monte Carlo repetition. Default is \code{NULL} (i.e., use all of the
 #' available training data). Cannot be specified with \code{sample_frac}. Can be
@@ -152,6 +157,7 @@ vi_permute.default <- function(
   smaller_is_better = NULL,
   type = c("difference", "ratio"),
   nsim = 1,
+  keep = TRUE,
   sample_size = NULL,
   sample_frac = NULL,
   reference_class = NULL,
@@ -234,10 +240,16 @@ vi_permute.default <- function(
     }
 
     # Check prediction function arguments
-    if (!identical(c("actual", "predicted"), names(formals(metric)))) {
+    if (!all(c("actual", "predicted") %in% names(formals(metric)))) {
       stop("`metric()` must be a function with arguments `actual` and ",
            "`predicted`.", call. = FALSE)
     }
+
+    # # Check if reference class is provided
+    # if (!is.null(reference_class)) {
+    #   reference_class <- train_y[1L]
+    # }
+    # train_y <- ifelse(train_y == reference_class, yes = 1, no = 0)
 
     # Performance function
     perf_fun <- metric
@@ -373,6 +385,13 @@ vi_permute.default <- function(
   )
   if (nsim > 1) {
     tib$StDev <- apply(vis, MARGIN = 1, FUN = stats::sd)
+  }
+
+  # Add all nsim scores as an attribute
+  if (nsim > 1 && keep) {
+    rownames(vis) <- feature_names
+    colnames(vis) <- paste0("permutation_", seq_len(ncol(vis)))
+    attr(tib, which = "raw_scores") <- vis
   }
 
   # Add variable importance type attribute
