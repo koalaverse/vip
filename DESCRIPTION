@@ -25,7 +25,7 @@ Description: A general framework for constructing variable importance plots from
   individual conditional expectation (ICE) curves which are described in 
   Greenwell et al. (2018) <arXiv:1805.04755>. An experimental method for 
   quantifying the relative strength of interaction effects is also included (see 
-  the previous referecne for details).
+  the previous reference for details).
 License: GPL (>= 2)
 URL: https://koalaverse.github.io/vip/index.html, https://github.com/koalaverse/vip/
 BugReports: https://github.com/koalaverse/vip/issues
