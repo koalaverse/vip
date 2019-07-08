@@ -20,6 +20,7 @@
 
 * Only the predicted class probabilities for the reference class are required (as a numeric vector) for binary classification when `metric = "auc"` or `metric = "logloss"`.
 
+
 ## Minor changes
 
 * `vi_permute()` gained a new logical `keep` argument. If `TRUE` (the default), the raw permutation scores from all `nsim` repetitions (provided `nsim > 1`) will be stored in an attribute called `"raw_scores"`.
