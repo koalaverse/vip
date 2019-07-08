@@ -5,11 +5,11 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Using vip with Unsupported Models • vip</title>
+<title>Extending vip • vip</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Using vip with Unsupported Models">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Extending vip">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vip</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3.9000</span>
       </span>
     </div>
 
@@ -56,10 +56,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/vip-interaction.html">Quantifying the Strength of Potential Interaction Effects</a>
+      <a href="../articles/vip-interaction.html">Interaction Effects</a>
     </li>
     <li>
-      <a href="../articles/vip-tensorflow.html">Using vip with Unsupported Models</a>
+      <a href="../articles/vip-tensorflow.html">Extending vip</a>
     </li>
   </ul>
 </li>
@@ -86,11 +86,11 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Using vip with Unsupported Models</h1>
+      <h1>Extending vip</h1>
             <h3 class="subtitle">A TensorFlow example Using the Keras API</h3>
                         <h4 class="author">Brandon M. Greenwell and Bradley C. Boehmke</h4>
             
-            <h4 class="date">2019-05-13</h4>
+            <h4 class="date">2019-07-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/koalaverse/vip/blob/master/vignettes/vip-tensorflow.Rmd"><code>vignettes/vip-tensorflow.Rmd</code></a></small>
       <div class="hidden name"><code>vip-tensorflow.Rmd</code></div>
@@ -181,9 +181,7 @@
 <a class="sourceLine" id="cb7-9" data-line-number="9">  <span class="dt">train =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(train_x),     <span class="co"># training data</span></a>
 <a class="sourceLine" id="cb7-10" data-line-number="10">  <span class="co"># progress = "text"                 # request a text-based progress bar</span></a>
 <a class="sourceLine" id="cb7-11" data-line-number="11">)</a>
-<a class="sourceLine" id="cb7-12" data-line-number="12"><span class="co">#&gt; Warning: Setting `method = "permute"` is experimental, use at your own</span></a>
-<a class="sourceLine" id="cb7-13" data-line-number="13"><span class="co">#&gt; risk!</span></a>
-<a class="sourceLine" id="cb7-14" data-line-number="14"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(p1)  <span class="co"># display plot</span></a></code></pre></div>
+<a class="sourceLine" id="cb7-12" data-line-number="12"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(p1)  <span class="co"># display plot</span></a></code></pre></div>
 <div class="figure" style="text-align: left">
 <img src="vip-tensorflow_files/figure-html/vip-1.png" alt="**Figure 2** Permuation-based VIP for the fitted network." width="70%"><p class="caption">
 <strong>Figure 2</strong> Permuation-based VIP for the fitted network.
@@ -192,10 +190,10 @@
 <p>Next, we’ll construct ICE curves for the top two features: <code>rm</code> and <code>lstat</code>. To do this we use <code>pdp</code>’s <code><a href="https://www.rdocumentation.org/packages/pdp/topics/partial">partial()</a></code> function. By default, <code><a href="https://www.rdocumentation.org/packages/pdp/topics/partial">partial()</a></code> constructs <em>partial dependence plots</em> (PDPs); The PDP for a feature of interest can be constructed by averaging together the ICE curves from each observation for that feature. To suppress this averaging and construct ICE curves, set <code>ice = TRUE</code> in the call to <code><a href="https://www.rdocumentation.org/packages/pdp/topics/partial">partial()</a></code>. Since ICE curves require a prediction for each observations, we can use the same wrapper function we defined earlier. The ICE curves for both <code>rm</code> and <code>lstat</code> in <strong>Figure 3</strong> display a bit of heterogeneity indicating the possible presence of interaction effects. The solid red curve in each plot represents the average of all of the ICE curves (i.e., the PDP for that feature).</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">p2 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/pdp/topics/partial">partial</a></span>(model, <span class="dt">pred.var =</span> <span class="st">"rm"</span>, <span class="dt">pred.fun =</span> pred_wrapper, </a>
 <a class="sourceLine" id="cb8-2" data-line-number="2">              <span class="dt">train =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(train_x)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/autoplot">autoplot</a></span>(<span class="dt">alpha =</span> <span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>(<span class="dt">alpha =</span> <span class="fl">0.1</span>)</a>
 <a class="sourceLine" id="cb8-4" data-line-number="4">p3 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/pdp/topics/partial">partial</a></span>(model, <span class="dt">pred.var =</span> <span class="st">"lstat"</span>, <span class="dt">pred.fun =</span> pred_wrapper, </a>
 <a class="sourceLine" id="cb8-5" data-line-number="5">              <span class="dt">train =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(train_x)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb8-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/autoplot">autoplot</a></span>(<span class="dt">alpha =</span> <span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb8-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>(<span class="dt">alpha =</span> <span class="fl">0.1</span>)</a>
 <a class="sourceLine" id="cb8-7" data-line-number="7"><span class="kw"><a href="../reference/grid.arrange.html">grid.arrange</a></span>(p2, p3, <span class="dt">ncol =</span> <span class="dv">2</span>)  <span class="co"># display plots side by side</span></a></code></pre></div>
 <div class="figure" style="text-align: left">
 <img src="vip-tensorflow_files/figure-html/ice-curves-1.png" alt="**Figure 3** ICE curves (black lines) and PDPs (red lines) for the predictors `rm` (left) and `lstat` (right)." width="70%"><p class="caption">
@@ -204,7 +202,7 @@
 </div>
 <p>A couple of additional points are worth noting:</p>
 <ol style="list-style-type: decimal">
-<li><p>The default output from <code><a href="https://www.rdocumentation.org/packages/pdp/topics/partial">partial()</a></code> is a data frame. You can set <code>plot = TRUE</code> to obtain a plot instead, but since these plots can be expensive to compute, it is better to store the results and plot them manually using, for example, <code><a href="https://www.rdocumentation.org/packages/ggplot2/topics/autoplot">autoplot()</a></code> (for <code>ggplot2</code>-based plots) or <code><a href="https://www.rdocumentation.org/packages/pdp/topics/plotPartial">plotPartial()</a></code> (for <code>lattice</code>-based plots).</p></li>
+<li><p>The default output from <code><a href="https://www.rdocumentation.org/packages/pdp/topics/partial">partial()</a></code> is a data frame. You can set <code>plot = TRUE</code> to obtain a plot instead, but since these plots can be expensive to compute, it is better to store the results and plot them manually using, for example, <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot()</a></code> (for <code>ggplot2</code>-based plots) or <code><a href="https://www.rdocumentation.org/packages/pdp/topics/plotPartial">plotPartial()</a></code> (for <code>lattice</code>-based plots).</p></li>
 <li><p>Before fitting the network we normalized the data by centering and scaling each feature. In order for these plots to be on the original scale, you would need to unscale the corresponding column(s) in the output by multiplying by the original sample standard deviation and adding back the sample mean of that feature.</p></li>
 <li><p>ICE curves and PDPs can be computationally expensive. Some strategies are discussed in <span class="citation">Greenwell (2017)</span>. The <code><a href="https://www.rdocumentation.org/packages/pdp/topics/partial">partial()</a></code> function has many useful options to help, for example, <code>progress</code> and <code>parallel</code> (see <code><a href="https://www.rdocumentation.org/packages/pdp/topics/partial">?pdp::partial</a></code> for details). To obtain a PDP, we need to supply a prediction function that returns the average prediction across all observations. This can be easily accomplished by adding an extra line to the previously defined wrapper.</p></li>
 </ol>
@@ -216,7 +214,7 @@
 <p>Next, we’ll construct the partial dependence of medium home value (<code>cmedv</code>) on the average number of rooms per dwelling (<code>rm</code>) and the percentage of lower status of the population (<code>lstat</code>). To restrict the predictions to the region of joint values of <code>rm</code> and <code>lstat</code> observed in the training data (i.e., to avoid extrapolating) we set <code>chull = TRUE</code> in the call to <code><a href="https://www.rdocumentation.org/packages/pdp/topics/partial">partial()</a></code>; this also helps speed up computation time by restricting the grid over which predictions are obtained. The resulting plot displayed in <strong>Figure 4</strong> indicates what we would naturally expect: that census tracts with a higher average number of rooms per dwelling and a lower percentage of lower status of the population tend to have a higher median value.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">p4 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/pdp/topics/partial">partial</a></span>(model, <span class="dt">pred.var =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"rm"</span>, <span class="st">"lstat"</span>), <span class="dt">chull =</span> <span class="ot">TRUE</span>, </a>
 <a class="sourceLine" id="cb10-2" data-line-number="2">              <span class="dt">pred.fun =</span> pdp_wrapper, <span class="dt">train =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(train_x)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/autoplot">autoplot</a></span>()</a>
+<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>()</a>
 <a class="sourceLine" id="cb10-4" data-line-number="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(p4)  <span class="co"># display plot</span></a></code></pre></div>
 <div class="figure" style="text-align: left">
 <img src="vip-tensorflow_files/figure-html/pdp-1.png" alt="**Figure 4** Partial dependence of `cmedv` on `rm` and `lstat`." width="70%"><p class="caption">

@@ -60,7 +60,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vip</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3.9000</span>
       </span>
     </div>
 
@@ -86,10 +86,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/vip-interaction.html">Quantifying the Strength of Potential Interaction Effects</a>
+      <a href="../articles/vip-interaction.html">Interaction Effects</a>
     </li>
     <li>
-      <a href="../articles/vip-tensorflow.html">Using vip with Unsupported Models</a>
+      <a href="../articles/vip-tensorflow.html">Extending vip</a>
     </li>
   </ul>
 </li>
@@ -121,14 +121,16 @@
       <small>Source: <a href='https://github.com/koalaverse/vip/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="vip-0-1-2-9000" class="section level1">
+    <div id="vip-0-1-3" class="section level1">
 <h1 class="page-header">
-<a href="#vip-0-1-2-9000" class="anchor"></a>vip 0.1.2.9000<small> Unreleased </small>
+<a href="#vip-0-1-3" class="anchor"></a>vip 0.1.3<small> Unreleased </small>
 </h1>
 <div id="new-functions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#new-functions" class="anchor"></a>New functions</h2>
 <ul>
+<li><p>Removed warnings from experimental functions.</p></li>
+<li><p><code><a href="../reference/vi_permute.html">vi_permute()</a></code> gained a type argument (i.e., <code>type = "difference"</code> or <code>type = "ratio"</code>); this argument can be passed via <code><a href="../reference/vi.html">vi()</a></code> or <code><a href="../reference/vip.html">vip()</a></code> as well.</p></li>
 <li><p><code><a href="../reference/add_sparklines.html">add_sparklines()</a></code> creates an HTML widget to display variable importance scores with a sparkline representation of each features effect (i.e., its partial dependence function) <a href="https://github.com/koalaverse/vip/issues/64">(<a href='https://github.com/koalaverse/vip/issues/64'>#64</a>)</a>.</p></li>
 <li><p>Added support for the Olden and Garson algorithms with neural networks fit using the <strong>neuralnet</strong>, <strong>nnet</strong>, and <strong>RSNNS</strong> packages <a href="https://github.com/koalaverse/vip/issues/28">(<a href='https://github.com/koalaverse/vip/issues/28'>#28</a>)</a>.</p></li>
 <li><p>Added support for GLMNET models fit using the <strong>glmnet</strong> package (with and without cross-validation).</p></li>
@@ -147,6 +149,9 @@
 <h2 class="hasAnchor">
 <a href="#minor-changes" class="anchor"></a>Minor changes</h2>
 <ul>
+<li><p><code><a href="../reference/vi_permute.html">vi_permute()</a></code> gained a new logical <code>keep</code> argument. If <code>TRUE</code> (the default), the raw permutation scores from all <code>nsim</code> repetitions (provided <code>nsim &gt; 1</code>) will be stored in an attribute called <code>"raw_scores"</code>.</p></li>
+<li><p><code><a href="../reference/vip.html">vip()</a></code> gained new logical arguments <code>all_permutations</code> and <code>jitter</code> which help to visualize the raw permutation scores for all <code>nsim</code> repetitions (provided <code>nsim &gt; 1</code>).</p></li>
+<li><p>You can now pass a <code>type</code> argument to <code><a href="../reference/vi_permute.html">vi_permute()</a></code> specifying how to compare the baseline and permuted performance metrics. Current choices are <code>"difference"</code> (the default) and <code>"ratio"</code>.</p></li>
 <li><p>Improved documentation (especially for <code><a href="../reference/vi_permute.html">vi_permute()</a></code> and <code><a href="../reference/vi_model.html">vi_model()</a></code>).</p></li>
 <li><p>Results from <code><a href="../reference/vi_model.html">vi_model()</a></code>, <code><a href="../reference/vi_pdp.html">vi_pdp()</a></code>, <code><a href="../reference/vi_ice.html">vi_ice()</a></code>, and <code><a href="../reference/vi_permute.html">vi_permute()</a></code> now have class <code>"vi"</code>, making them easier to plot with <code><a href="../reference/vip.html">vip()</a></code>.</p></li>
 </ul>
@@ -212,7 +217,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#vip-0-1-2-9000">0.1.2.9000</a></li>
+        <li><a href="#vip-0-1-3">0.1.3</a></li>
         <li><a href="#vip-0-1-2">0.1.2</a></li>
         <li><a href="#vip-0-1-1">0.1.1</a></li>
         <li><a href="#vip-0-1-0">0.1.0</a></li>

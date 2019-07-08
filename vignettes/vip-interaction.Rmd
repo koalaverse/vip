@@ -1,5 +1,5 @@
 ---
-title: "Quantifying the Strength of Potential Interaction Effects"
+title: "Interaction Effects"
 subtitle: "An Introduction to the vint() Function"
 author: "Brandon M. Greenwell and Bradley C. Boehmke"
 date: "`r Sys.Date()`"

@@ -63,7 +63,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vip</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3.9000</span>
       </span>
     </div>
 
@@ -89,10 +89,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/vip-interaction.html">Quantifying the Strength of Potential Interaction Effects</a>
+      <a href="../articles/vip-interaction.html">Interaction Effects</a>
     </li>
     <li>
-      <a href="../articles/vip-tensorflow.html">Using vip with Unsupported Models</a>
+      <a href="../articles/vip-tensorflow.html">Extending vip</a>
     </li>
   </ul>
 </li>
@@ -135,7 +135,7 @@
 
 <span class='co'># S3 method for default</span>
 <span class='fu'>vi</span>(<span class='no'>object</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"model"</span>, <span class='st'>"pdp"</span>, <span class='st'>"ice"</span>,
-  <span class='st'>"permute"</span>), <span class='no'>feature_names</span>, <span class='kw'>FUN</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>var_fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='st'>"permute"</span>), <span class='kw'>feature_names</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>FUN</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>var_fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>abbreviate_feature_names</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sort</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>decreasing</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>rank</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
@@ -156,7 +156,7 @@ an object that inherits from class <code>"vi"</code>.</p></td>
     <tr>
       <th>method</th>
       <td><p>Character string specifying the type of variable importance
-(VI) to compute. Current options are <code>"model"</code>, for model-based VI
+(VI) to compute. Current options are <code>"model"</code>, for model-specific VI
 scores (see <code><a href='vi_model.html'>vi_model</a></code> for details), <code>"pdp"</code>, for PDP-based
 VI scores (see <code><a href='vi_pdp.html'>vi_pdp</a></code> for details), <code>"ice"</code>, for ICE-based
 VI scores (see <code><a href='vi_ice.html'>vi_ice</a></code> for details), and <code>"permute"</code>, for
@@ -243,7 +243,7 @@ arXiv:1805.04755 (2018).</p>
 <span class='no'>mtcars.ppr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/ppr'>ppr</a></span>(<span class='no'>mpg</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>mtcars</span>, <span class='kw'>nterms</span> <span class='kw'>=</span> <span class='fl'>1</span>)
 
 <span class='co'># Compute variable importance scores</span>
-<span class='fu'>vi</span>(<span class='no'>mtcars.ppr</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"ice"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Setting `method = "ice"` is experimental, use at your own risk!</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 10 x 2</span><span>
+<span class='fu'>vi</span>(<span class='no'>mtcars.ppr</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"ice"</span>)</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 10 x 2</span><span>
 #&gt;    Variable Importance
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #555555;'> 1</span><span> wt           3.44  
@@ -256,7 +256,7 @@ arXiv:1805.04755 (2018).</p>
 #&gt; </span><span style='color: #555555;'> 8</span><span> drat         0.245 
 #&gt; </span><span style='color: #555555;'> 9</span><span> carb         0.087</span><span style='text-decoration: underline;'>0</span><span>
 #&gt; </span><span style='color: #555555;'>10</span><span> disp         0.024</span><span style='text-decoration: underline;'>8</span><span></div><div class='input'><span class='fu'>vi</span>(<span class='no'>mtcars.ppr</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"ice"</span>,
-   <span class='kw'>var_fun</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='st'>"con"</span> <span class='kw'>=</span> <span class='no'>mad</span>, <span class='st'>"cat"</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/diff'>diff</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/range'>range</a></span>(<span class='no'>x</span>)) / <span class='fl'>4</span>))</div><div class='output co'>#&gt; <span class='warning'>Warning: Setting `method = "ice"` is experimental, use at your own risk!</span></div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 10 x 2</span><span>
+   <span class='kw'>var_fun</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='st'>"con"</span> <span class='kw'>=</span> <span class='no'>mad</span>, <span class='st'>"cat"</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/diff'>diff</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/range'>range</a></span>(<span class='no'>x</span>)) / <span class='fl'>4</span>))</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 10 x 2</span><span>
 #&gt;    Variable Importance
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #555555;'> 1</span><span> wt           3.87  
@@ -270,7 +270,7 @@ arXiv:1805.04755 (2018).</p>
 #&gt; </span><span style='color: #555555;'> 9</span><span> carb         0.102 
 #&gt; </span><span style='color: #555555;'>10</span><span> disp         0.031</span><span style='text-decoration: underline;'>7</span><span></div><div class='input'>
 <span class='co'># Plot variable importance scores</span>
-<span class='fu'><a href='vip.html'>vip</a></span>(<span class='no'>mtcars.ppr</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"ice"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Setting `method = "ice"` is experimental, use at your own risk!</span></div><div class='img'><img src='vi-1.png' alt='' width='700' height='433' /></div></span></pre>
+<span class='fu'><a href='vip.html'>vip</a></span>(<span class='no'>mtcars.ppr</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"ice"</span>)</div><div class='img'><img src='vi-1.png' alt='' width='700' height='433' /></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

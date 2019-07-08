@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Model-based variable importance — vi_model • vip</title>
+<title>Model-specific variable importance — vi_model • vip</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,10 +30,10 @@
 
 
 
-<meta property="og:title" content="Model-based variable importance — vi_model" />
+<meta property="og:title" content="Model-specific variable importance — vi_model" />
 
-<meta property="og:description" content="Compute model-based variable importance scores for the predictors in a model.
-(This function is meant for internal use only.)" />
+<meta property="og:description" content="Compute model-specific variable importance scores for the predictors in a
+model. (This function is meant for internal use only.)" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -64,7 +64,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vip</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3.9000</span>
       </span>
     </div>
 
@@ -90,10 +90,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/vip-interaction.html">Quantifying the Strength of Potential Interaction Effects</a>
+      <a href="../articles/vip-interaction.html">Interaction Effects</a>
     </li>
     <li>
-      <a href="../articles/vip-tensorflow.html">Using vip with Unsupported Models</a>
+      <a href="../articles/vip-tensorflow.html">Extending vip</a>
     </li>
   </ul>
 </li>
@@ -121,15 +121,15 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Model-based variable importance</h1>
+    <h1>Model-specific variable importance</h1>
     <small class="dont-index">Source: <a href='https://github.com/koalaverse/vip/blob/master/R/vi_model.R'><code>R/vi_model.R</code></a></small>
     <div class="hidden name"><code>vi_model.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Compute model-based variable importance scores for the predictors in a model.
-(This function is meant for internal use only.)</p>
+    <p>Compute model-specific variable importance scores for the predictors in a
+model. (This function is meant for internal use only.)</p>
     
     </div>
 
@@ -154,15 +154,6 @@
 <span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"relative.influence"</span>,
   <span class='st'>"permutation"</span>), <span class='no'>...</span>)
 
-<span class='co'># S3 method for RandomForest</span>
-<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"accuracy"</span>, <span class='st'>"auc"</span>), <span class='no'>...</span>)
-
-<span class='co'># S3 method for constparty</span>
-<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for cforest</span>
-<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
-
 <span class='co'># S3 method for glmnet</span>
 <span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
@@ -177,6 +168,33 @@
 
 <span class='co'># S3 method for H2ORegressionModel</span>
 <span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for nn</span>
+<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"olden"</span>, <span class='st'>"garson"</span>), <span class='no'>...</span>)
+
+<span class='co'># S3 method for nnet</span>
+<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"olden"</span>, <span class='st'>"garson"</span>), <span class='no'>...</span>)
+
+<span class='co'># S3 method for RandomForest</span>
+<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"accuracy"</span>, <span class='st'>"auc"</span>), <span class='no'>...</span>)
+
+<span class='co'># S3 method for constparty</span>
+<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for cforest</span>
+<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for randomForest</span>
+<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for ranger</span>
+<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for rpart</span>
+<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for mlp</span>
+<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"olden"</span>, <span class='st'>"garson"</span>), <span class='no'>...</span>)
 
 <span class='co'># S3 method for ml_model_decision_tree_regression</span>
 <span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
@@ -203,24 +221,6 @@
 <span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for lm</span>
-<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for mlp</span>
-<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"olden"</span>, <span class='st'>"garson"</span>), <span class='no'>...</span>)
-
-<span class='co'># S3 method for nn</span>
-<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"olden"</span>, <span class='st'>"garson"</span>), <span class='no'>...</span>)
-
-<span class='co'># S3 method for nnet</span>
-<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"olden"</span>, <span class='st'>"garson"</span>), <span class='no'>...</span>)
-
-<span class='co'># S3 method for randomForest</span>
-<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for ranger</span>
-<span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for rpart</span>
 <span class='fu'>vi_model</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for xgb.Booster</span>
@@ -255,7 +255,7 @@ sign (i.e., POS/NEG) of the original coefficient.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Computes model-based variable importance scores depending on the class of
+    <p>Computes model-specific variable importance scores depending on the class of
 <code>object</code>:</p>
 <dl class='dl-horizontal'>
     <dt><code><a href='https://www.rdocumentation.org/packages/C50/topics/C5.0'>C5.0</a></code></dt><dd><p>Variable importance is measured by determining
@@ -269,7 +269,7 @@ models and boosted versions of the model. The underlying function can also
 return the number of times each predictor was involved in a split by using
 the option <code>metric = "usage"</code>. See <code><a href='https://www.rdocumentation.org/packages/C50/topics/C5imp'>C5imp</a></code> for
 details.</p></dd>
-    <dt><code><a href='https://www.rdocumentation.org/packages/C50/topics/C5.0'>C5.0</a></code></dt><dd><p>The Cubist output contains variable usage
+    <dt><code><a href='https://www.rdocumentation.org/packages/Cubist/topics/cubist.default'>cubist</a></code></dt><dd><p>The Cubist output contains variable usage
 statistics. It gives the percentage of times where each variable was used in
 a condition and/or a linear model. Note that this output will probably be
 inconsistent with the rules shown in the output from summary.cubist. At each
@@ -293,7 +293,9 @@ to return by passing the specific value of the penalty parameter via the
 default, the coefficients corresponding to the final penalty value in the
 sequence is returned; in other words, you should ALWAYS SPECIFY THIS VALUE!
 For <code>"cv.glmnet"</code> objects, the largest value of lambda such that error
-is within one standard error of the minimum is used by default.</p></dd>
+is within one standard error of the minimum is used by default. For
+<code>"multnet"</code> objects, the coefficients corresponding to the first class
+are used; that is, the fist component of <code><a href='https://www.rdocumentation.org/packages/glmnet/topics/predict.glmnet'>coef.glmnet</a></code>.</p></dd>
     <dt><code><a href='https://www.rdocumentation.org/packages/partykit/topics/cforest'>cforest</a></code></dt><dd><p>Variable importance is measured in a
 way similar to those computed by <code><a href='https://www.rdocumentation.org/packages/randomForest/topics/importance'>importance</a></code>.
 Besides the standard version, a conditional version is available that

@@ -1,5 +1,5 @@
 ---
-title: "Using vip with Unsupported Models"
+title: "Extending vip"
 subtitle: "A TensorFlow example Using the Keras API"
 author: "Brandon M. Greenwell and Bradley C. Boehmke"
 date: "`r Sys.Date()`"

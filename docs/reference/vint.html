@@ -64,7 +64,7 @@ reference below." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vip</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3.9000</span>
       </span>
     </div>
 
@@ -90,10 +90,10 @@ reference below." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/vip-interaction.html">Quantifying the Strength of Potential Interaction Effects</a>
+      <a href="../articles/vip-interaction.html">Interaction Effects</a>
     </li>
     <li>
-      <a href="../articles/vip-tensorflow.html">Using vip with Unsupported Models</a>
+      <a href="../articles/vip-tensorflow.html">Extending vip</a>
     </li>
   </ul>
 </li>
@@ -175,7 +175,11 @@ parallel using a backend provided by the <code>foreach</code> package. Default i
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Coming soon!</p>
+    <p>This function quantifies the strength of interaction between
+features $X_1$ and $X_2$ by measuring the change in variance along slices of
+the partial dependence of $X_1$ and $X_2$ on the target $Y$. See
+<a href='https://arxiv.org/abs/1805.04755'>Greenwell et al. (2018)</a> for
+details and examples.</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
@@ -184,6 +188,49 @@ and Effective Model-Based Variable Importance Measure. arXiv preprint
 arXiv:1805.04755 (2018).</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='co'>#</span>
+<span class='co'># The Friedman 1 benchmark problem</span>
+<span class='co'>#</span>
+
+<span class='co'># Load required packages</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>gbm</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>ggplot2</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>mlbench</span>)
+
+<span class='co'># Generate training data</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>101</span>)  <span class='co'># for reproducibility</span>
+<span class='no'>friedman1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/as.data.frame'>as.data.frame</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/mlbench/topics/mlbench.friedman1'>mlbench.friedman1</a></span>(<span class='fl'>500</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='fl'>0.1</span>))
+
+<span class='co'>#</span>
+<span class='co'># NOTE: The only interaction that actually occurs in the model from which</span>
+<span class='co'># these data are generated is between x.1 and x.2!</span>
+<span class='co'>#</span>
+
+<span class='co'># Fit a GBM to the training data</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>102</span>)  <span class='co'># for reproducibility</span>
+<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/gbm/topics/gbm'>gbm</a></span>(<span class='no'>y</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>friedman1</span>, <span class='kw'>distribution</span> <span class='kw'>=</span> <span class='st'>"gaussian"</span>,
+           <span class='kw'>n.trees</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>interaction.depth</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>shrinkage</span> <span class='kw'>=</span> <span class='fl'>0.01</span>,
+           <span class='kw'>bag.fraction</span> <span class='kw'>=</span> <span class='fl'>0.8</span>, <span class='kw'>cv.folds</span> <span class='kw'>=</span> <span class='fl'>5</span>)
+<span class='no'>best_iter</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/gbm/topics/gbm.perf'>gbm.perf</a></span>(<span class='no'>fit</span>, <span class='kw'>plot.it</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"cv"</span>)
+
+<span class='co'># Quantify relative interaction strength</span>
+<span class='no'>all_pairs</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/combn'>combn</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/paste'>paste0</a></span>(<span class='st'>"x."</span>, <span class='fl'>1</span>:<span class='fl'>10</span>), <span class='kw'>m</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+<span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='kw'>NULL</span>
+<span class='kw'>for</span> (<span class='no'>i</span> <span class='kw'>in</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/seq'>seq_along</a></span>(<span class='no'>all_pairs</span>)) {
+  <span class='no'>interact</span> <span class='kw'>&lt;-</span> <span class='fu'>vint</span>(<span class='no'>fit</span>, <span class='kw'>feature_names</span> <span class='kw'>=</span> <span class='no'>all_pairs</span>[, <span class='no'>i</span>], <span class='kw'>n.trees</span> <span class='kw'>=</span> <span class='no'>best_iter</span>)
+  <span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>rbind</a></span>(<span class='no'>res</span>, <span class='no'>interact</span>)
+}
+
+<span class='co'># Plot top 20 results</span>
+<span class='no'>top_20</span> <span class='kw'>&lt;-</span> <span class='no'>res</span>[<span class='fl'>1</span>:<span class='fl'>20</span>, ]
+<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span>(<span class='no'>top_20</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/reorder.factor'>reorder</a></span>(<span class='no'>Variables</span>, <span class='no'>Interaction</span>), <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>Interaction</span>)) +
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_col</a></span>() +
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/coord_flip.html'>coord_flip</a></span>() +
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>xlab</a></span>(<span class='st'>""</span>) +
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ylab</a></span>(<span class='st'>"Interaction strength"</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -193,7 +240,9 @@ arXiv:1805.04755 (2018).</p>
       <li><a href="#details">Details</a></li>
 
       <li><a href="#references">References</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>
