@@ -3,6 +3,7 @@
 \name{vip}
 \alias{vip}
 \alias{vip.default}
+\alias{vip.model_spec}
 \title{Variable Importance Plots}
 \usage{
 vip(object, ...)
@@ -11,6 +12,8 @@ vip(object, ...)
   width = 0.75, horizontal = TRUE, alpha = 1, color = "grey35",
   fill = "grey35", size = 1, shape = 19, all_permutations = FALSE,
   jitter = FALSE, ...)
+
+\method{vip}{model_spec}(object, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object) or
