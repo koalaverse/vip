@@ -759,3 +759,21 @@ test_that("`vi_model()` works for \"xgboost\" objects", {
   }
 
 })
+
+# parsnip package interface ----------------------------------------------------
+
+test_that("`vi_model()` works with parsnip objects", {
+
+  # Skips
+  skip_on_cran()
+
+  set.seed(363)
+  lm_mod <- lm(mpg ~ ., data = mtcars)
+  mod_vi <- vi(lm_mod)
+
+  parsnip <- list(fit = lm_mod)
+  class(parsnip) <- c("linear_reg", "model_spec")
+  expect_equal(mod_vi, vi(parsnip))
+})
+
+

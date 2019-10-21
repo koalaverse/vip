@@ -3,6 +3,7 @@
 \name{vi}
 \alias{vi}
 \alias{vi.default}
+\alias{vi.model_spec}
 \title{Variable importance}
 \usage{
 vi(object, ...)
@@ -11,6 +12,8 @@ vi(object, ...)
   "permute"), feature_names = NULL, FUN = NULL, var_fun = NULL,
   abbreviate_feature_names = NULL, sort = TRUE, decreasing = TRUE,
   scale = FALSE, rank = FALSE, ...)
+
+\method{vi}{model_spec}(object, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object) or

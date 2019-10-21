@@ -1,3 +1,10 @@
+# vip 0.1.3.9000
+
+## New functions
+
+ * The generic methods `vip()` and `vi()` not work directly with objects produced by the [`parsnip` package](https://cran.r-project.org/package=parsnip)
+
+
 # vip 0.1.3
 
 ## New functions

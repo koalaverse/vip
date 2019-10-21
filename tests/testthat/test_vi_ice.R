@@ -24,3 +24,20 @@ test_that("`vi_ice()` works.", {
   expect_identical(ncol(friedman1) - 1L, nrow(vis))
 
 })
+
+# parsnip package interface ----------------------------------------------------
+
+test_that("`vi_ice()` works with parsnip objects", {
+
+  # Skips
+  skip_on_cran()
+
+  set.seed(363)
+  lm_mod <- lm(mpg ~ ., data = mtcars)
+  ice_vi <- vi(lm_mod, method = "ice")
+
+  parsnip <- list(fit = lm_mod)
+  class(parsnip) <- c("linear_reg", "model_spec")
+  expect_equal(ice_vi, vi(parsnip, method = "ice"))
+})
+

@@ -173,3 +173,12 @@ vip.default <- function(
   p + ggplot2::ylab(paste0("Importance (", vi_type, ")"))
 
 }
+
+
+#' @rdname vip
+#'
+#' @export
+vip.model_spec <- function(object, ...) {
+  vip(object$fit, ...)
+}
+
