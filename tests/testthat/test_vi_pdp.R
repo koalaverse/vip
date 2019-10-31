@@ -38,7 +38,7 @@ test_that("`vi_pdp()` works with parsnip objects", {
   pdp_vi <- vi(lm_mod, method = "pdp")
 
   parsnip <- list(fit = lm_mod)
-  class(parsnip) <- c("linear_reg", "model_spec")
+  class(parsnip) <- c("linear_reg", "model_fit")
   expect_equal(pdp_vi, vi(parsnip, method = "pdp"))
 
 })

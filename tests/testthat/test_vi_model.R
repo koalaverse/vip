@@ -772,7 +772,7 @@ test_that("`vi_model()` works with parsnip objects", {
   mod_vi <- vi(lm_mod)
 
   parsnip <- list(fit = lm_mod)
-  class(parsnip) <- c("linear_reg", "model_spec")
+  class(parsnip) <- c("linear_reg", "model_fit")
   expect_equal(mod_vi, vi(parsnip))
 })
 
