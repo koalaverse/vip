@@ -236,8 +236,8 @@ vi_model <- function(object, ...) {
 #'
 #' @export
 vi_model.default <- function(object, ...) {
-  stop("model-specific variable importance scores are currently not available ",
-       "for objects of class ", "\"", class(object), "\".")
+  stop("Model-specific variable importance scores are currently not available ",
+       "for this type of model.", call. = FALSE)
 }
 
 
