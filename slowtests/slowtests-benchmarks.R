@@ -1,6 +1,8 @@
 # Load required packages
 library(DALEX)
+library(ggplot2)
 library(iml)
+library(ingredients)
 library(microbenchmark)
 library(ranger)
 library(vip)
@@ -49,5 +51,10 @@ mb <- microbenchmark(
   imp_vip(),
   times = 100L
 )
-plot(mb)
+levels(mb$expr) <- c("ingredients", "iml", "vip")
 mb
+
+# # Plot results
+# pdf("figures/benchmark.pdf", width = 7, height = 4.326)
+# autoplot(mb)
+# dev.off()

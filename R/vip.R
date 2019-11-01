@@ -178,7 +178,7 @@ vip.default <- function(
 #' @rdname vip
 #'
 #' @export
-vip.model_spec <- function(object, ...) {
+vip.model_fit <- function(object, ...) {
   vip(object$fit, ...)
 }
 
