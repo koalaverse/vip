@@ -171,6 +171,6 @@ vi.default <- function(
 #' @rdname vi
 #'
 #' @export
-vi.model_spec <- function(object, ...) {
+vi.model_fit <- function(object, ...) {
   vi(object$fit, ...)
 }

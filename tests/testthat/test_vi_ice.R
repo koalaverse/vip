@@ -37,7 +37,7 @@ test_that("`vi_ice()` works with parsnip objects", {
   ice_vi <- vi(lm_mod, method = "ice")
 
   parsnip <- list(fit = lm_mod)
-  class(parsnip) <- c("linear_reg", "model_spec")
+  class(parsnip) <- c("linear_reg", "model_fit")
   expect_equal(ice_vi, vi(parsnip, method = "ice"))
 })
 

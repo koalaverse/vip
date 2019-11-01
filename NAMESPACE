@@ -2,7 +2,7 @@
 
 S3method(add_sparklines,vi)
 S3method(vi,default)
-S3method(vi,model_spec)
+S3method(vi,model_fit)
 S3method(vi_ice,default)
 S3method(vi_model,C5.0)
 S3method(vi_model,H2OBinomialModel)
