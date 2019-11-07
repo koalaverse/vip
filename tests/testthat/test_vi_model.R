@@ -456,6 +456,23 @@ test_that("`vi_model()` works for \"cforest\" objects", {
 })
 
 
+# Package: pls -----------------------------------------------------------------
+
+test_that("`vi_model()` works for \"mvr\" objects", {
+
+  # Skips
+  skip_on_cran()
+
+  # Run checks
+  check_vi_model(
+    FUN = pls::plsr,
+    args = list(y ~ ., data = friedman1),
+    pkg = "pls"
+  )
+
+})
+
+
 # Package: randomForest --------------------------------------------------------
 
 test_that("`vi_model()` works for \"randomForest\" objects", {
