@@ -6,7 +6,7 @@
 
 ## Bug fixes
 
-* `vi_model()` now works correctly for `"glm"` objects with non-Gaussian families (e.g., logistic regression).
+* `vi_model()` now works correctly for `"glm"` objects with non-Gaussian families (e.g., logistic regression) [(#74)](https://github.com/koalaverse/vip/issues/74).
 
 
 # vip 0.1.3
