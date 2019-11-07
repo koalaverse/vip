@@ -18,6 +18,7 @@
 \alias{vi_model.RandomForest}
 \alias{vi_model.constparty}
 \alias{vi_model.cforest}
+\alias{vi_model.mvr}
 \alias{vi_model.randomForest}
 \alias{vi_model.ranger}
 \alias{vi_model.rpart}
@@ -68,6 +69,8 @@ vi_model(object, ...)
 \method{vi_model}{constparty}(object, ...)
 
 \method{vi_model}{cforest}(object, ...)
+
+\method{vi_model}{mvr}(object, ...)
 
 \method{vi_model}{randomForest}(object, ...)
 

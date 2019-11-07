@@ -70,7 +70,7 @@ Suggests:
     rpart,
     RSNNS,
     sparkline,
-    sparklyr,
+    sparklyr (>= 0.8.0),
     testthat,
     varImp,
     xgboost

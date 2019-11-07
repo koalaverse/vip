@@ -4,9 +4,13 @@
 
 * The generic methods `vip()` and `vi()` now work directly with objects produced by the [`parsnip` package](https://cran.r-project.org/package=parsnip)
 
+* Added initial support for `"mvr"` objects from the **pls** package (currently just calls `caret::varImp()`) [(#35)](https://github.com/koalaverse/vip/issues/35).
+
 ## Bug fixes
 
 * `vi_model()` now works correctly for `"glm"` objects with non-Gaussian families (e.g., logistic regression) [(#74)](https://github.com/koalaverse/vip/issues/74).
+
+* Added appropriate **sparklyr** version dependency [(#59)](https://github.com/koalaverse/vip/issues/59).
 
 
 # vip 0.1.3

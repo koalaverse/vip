@@ -782,6 +782,37 @@ vi_model.cforest <- function(object, ...) {
 }
 
 
+# Package: pls -----------------------------------------------------------------
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.mvr <- function(object, ...) {
+  # FIXME: For now, just default to using caret.
+  #
+  # Check for dependency
+  if (!requireNamespace("caret", quietly = TRUE)) {
+    stop("Package \"caret\" needed for this function to work. Please ",
+         "install it.", call. = FALSE)
+  }
+  vis <- caret::varImp(object, ...)
+  tib <- tibble::tibble(
+    "Variable" = rownames(vis),
+    "Importance" = vis[["Overall"]]
+  )
+
+  # Add variable importance type attribute
+  attr(tib, which = "type") <- "caret"
+
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
+  # Return results
+  tib
+
+}
+
+
 # Package: randomForest --------------------------------------------------------
 
 #' @rdname vi_model
