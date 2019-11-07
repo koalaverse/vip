@@ -706,10 +706,17 @@ test_that("`vi_model()` works for \"glm\" objects", {
   # Skips
   skip_on_cran()
 
-  # Run checks
+  # Run checks (t-statistic)
   check_vi_model(
     FUN = stats::glm,
     args = list(y ~ ., data = friedman1),
+    pkg = "stats"
+  )
+
+  # Run checks (z-statistic)
+  check_vi_model(
+    FUN = stats::glm,
+    args = list(y ~ ., data = friedman2, family = binomial),
     pkg = "stats"
   )
 

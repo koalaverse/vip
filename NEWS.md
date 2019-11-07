@@ -2,7 +2,11 @@
 
 ## New functions
 
- * The generic methods `vip()` and `vi()` now work directly with objects produced by the [`parsnip` package](https://cran.r-project.org/package=parsnip)
+* The generic methods `vip()` and `vi()` now work directly with objects produced by the [`parsnip` package](https://cran.r-project.org/package=parsnip)
+
+## Bug fixes
+
+* `vi_model()` now works correctly for `"glm"` objects with non-Gaussian families (e.g., logistic regression).
 
 
 # vip 0.1.3

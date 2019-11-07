@@ -1176,9 +1176,10 @@ vi_model.lm <- function(object, ...) {
   if (attr(object$terms, "intercept") == 1) {
     coefs <- coefs[-1L, , drop = FALSE]
   }
+  pos <- grep("^(t|z) value", x = colnames(coefs))  # grab pos of z/t stat col
   tib <- tibble::tibble(
     "Variable" = rownames(coefs),
-    "Importance" = abs(coefs[, "t value"]),
+    "Importance" = abs(coefs[, pos]),
     "Sign" = ifelse(sign(coefs[, "Estimate"]) == 1, yes = "POS", no = "NEG")
   )
 
