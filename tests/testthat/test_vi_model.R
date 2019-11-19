@@ -351,10 +351,7 @@ test_that("`vi_model()` works for \"neuralnet\" objects", {
 
   # Skips
   skip_on_cran()
-
-  if (!("NeuralNetTools" %in% installed.packages()[, "Package"])) {
-    skip("Required package (NeuralNetTools) is not installed.")
-  }
+  skip_if_not_installed("NeuralNetTools")
 
   # Cycle through variable importance types
   for (type in c("olden", "garson")) {
@@ -378,10 +375,7 @@ test_that("`vi_model()` works for \"nnet\" objects", {
 
   # Skips
   skip_on_cran()
-
-  if (!("NeuralNetTools" %in% installed.packages()[, "Package"])) {
-    skip("Required package (NeuralNetTools) is not installed.")
-  }
+  skip_if_not_installed("NeuralNetTools")
 
   # Cycle through variable importance types
   for (type in c("olden", "garson")) {
@@ -548,10 +542,7 @@ test_that("`vi_model()` works for \"RSNNS\" objects", {
 
   # Skips
   skip_on_cran()
-
-  if (!("NeuralNetTools" %in% installed.packages()[, "Package"])) {
-    skip("Required package (NeuralNetTools) is not installed.")
-  }
+  skip_if_not_installed("NeuralNetTools")
 
   # Cycle through variable importance types
   for (type in c("olden", "garson")) {

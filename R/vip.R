@@ -43,7 +43,7 @@
 #' \code{all_permutations = TRUE}.)
 #'
 #' @param include_type Logical indicating whether or not to include the type of
-#' variable importance computed in the axis label. Defaul is \code{FALSE}.
+#' variable importance computed in the axis label. Default is \code{FALSE}.
 #'
 #' @param ... Additional optional arguments to be passed onto \code{\link{vi}}.
 #'

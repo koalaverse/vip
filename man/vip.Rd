@@ -71,7 +71,7 @@ scores. Default is \code{FALSE}. (Only used when
 \code{all_permutations = TRUE}.)}
 
 \item{include_type}{Logical indicating whether or not to include the type of
-variable importance computed in the axis label. Defaul is \code{FALSE}.}
+variable importance computed in the axis label. Default is \code{FALSE}.}
 }
 \description{
 Plot variable importance scores for the predictors in a model.
