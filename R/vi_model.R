@@ -1215,11 +1215,9 @@ vi_model.lm <- function(object, ...) {
   )
 
   # Add variable importance type attribute
-  attr(tib, which = "type") <- if (inherits(object, what = "glm")) {
-    "|z-statistic|"
-  } else {
-    "|t-statistic|"
-  }
+  label <- colnames(coefs)[pos]
+  label <- substr(label, start = 1, stop = 1)  # strip off t or z
+  attr(tib, which = "type") <- paste0("|", label, "-statistic|")
 
   # Add "vi" class
   class(tib) <- c("vi", class(tib))

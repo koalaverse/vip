@@ -47,8 +47,7 @@ vi_model(object, ...)
 
 \method{vi_model}{earth}(object, type = c("nsubsets", "rss", "gcv"), ...)
 
-\method{vi_model}{gbm}(object, type = c("relative.influence",
-  "permutation"), ...)
+\method{vi_model}{gbm}(object, type = c("relative.influence", "permutation"), ...)
 
 \method{vi_model}{glmnet}(object, ...)
 
@@ -98,8 +97,7 @@ vi_model(object, ...)
 
 \method{vi_model}{lm}(object, ...)
 
-\method{vi_model}{xgb.Booster}(object, type = c("gain", "cover",
-  "frequency"), ...)
+\method{vi_model}{xgb.Booster}(object, type = c("gain", "cover", "frequency"), ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
