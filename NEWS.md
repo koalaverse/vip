@@ -6,6 +6,10 @@
 
 * Added initial support for `"mvr"` objects from the **pls** package (currently just calls `caret::varImp()`) [(#35)](https://github.com/koalaverse/vip/issues/35).
 
+## User-visible changes
+
+* The `vip()` function gained a new argument, `include_type`, which defaults to `FALSE`. If `TRUE`, the type of variable importance that was computed is included in the appropriate axis label. Set `include_type = TRUE` to revert to the old behavior.
+
 ## Bug fixes
 
 * `vi_model()` now works correctly for `"glm"` objects with non-Gaussian families (e.g., logistic regression) [(#74)](https://github.com/koalaverse/vip/issues/74).

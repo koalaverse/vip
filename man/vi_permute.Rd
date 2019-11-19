@@ -7,12 +7,27 @@
 \usage{
 vi_permute(object, ...)
 
-\method{vi_permute}{default}(object, feature_names = NULL, train, target,
-  metric = "auto", smaller_is_better = NULL, type = c("difference",
-  "ratio"), nsim = 1, keep = TRUE, sample_size = NULL,
-  sample_frac = NULL, reference_class = NULL, pred_fun = NULL,
-  pred_wrapper = NULL, verbose = FALSE, progress = "none",
-  parallel = FALSE, paropts = NULL, ...)
+\method{vi_permute}{default}(
+  object,
+  feature_names = NULL,
+  train,
+  target,
+  metric = "auto",
+  smaller_is_better = NULL,
+  type = c("difference", "ratio"),
+  nsim = 1,
+  keep = TRUE,
+  sample_size = NULL,
+  sample_frac = NULL,
+  reference_class = NULL,
+  pred_fun = NULL,
+  pred_wrapper = NULL,
+  verbose = FALSE,
+  progress = "none",
+  parallel = FALSE,
+  paropts = NULL,
+  ...
+)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}

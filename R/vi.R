@@ -168,6 +168,7 @@ vi.default <- function(
 
 }
 
+
 #' @rdname vi
 #'
 #' @export

@@ -42,8 +42,8 @@
 #' scores. Default is \code{FALSE}. (Only used when
 #' \code{all_permutations = TRUE}.)
 #'
-#' @param include_type Logical indicating whether or not to incude the iportance
-#' type in the plot axis label. Default is \code{FALSE}.
+#' @param include_type Logical indicating whether or not to include the type of
+#' variable importance computed in the axis label. Defaul is \code{FALSE}.
 #'
 #' @param ... Additional optional arguments to be passed onto \code{\link{vi}}.
 #'
@@ -174,12 +174,11 @@ vip.default <- function(
   if (horizontal) {
     p <- p + ggplot2::coord_flip()
   }
-  if (include_type) {
-    y_label <- paste0("Importance (", vi_type, ")")
+  if (isTRUE(include_type)) {
+    p + ggplot2::ylab(paste0("Importance (", vi_type, ")"))
   } else {
-    y_label <- paste0("Importance")
+    p + ggplot2::ylab("Importance")
   }
-  p + ggplot2::ylab(y_label)
 
 }
 
