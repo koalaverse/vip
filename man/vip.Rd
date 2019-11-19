@@ -11,7 +11,7 @@ vip(object, ...)
 \method{vip}{default}(object, num_features = 10L, bar = TRUE,
   width = 0.75, horizontal = TRUE, alpha = 1, color = "grey35",
   fill = "grey35", size = 1, shape = 19, all_permutations = FALSE,
-  jitter = FALSE, ...)
+  jitter = FALSE, include_type = FALSE, ...)
 
 \method{vip}{model_fit}(object, ...)
 }
@@ -57,6 +57,9 @@ used for permutation scores when \code{nsim > 1}.)}
 \item{jitter}{Logical indicating whether or not to jitter the raw permutation
 scores. Default is \code{FALSE}. (Only used when
 \code{all_permutations = TRUE}.)}
+
+\item{include_type}{Logical indicating whether or not to incude the iportance
+type in the plot axis label. Default is \code{FALSE}.}
 }
 \description{
 Plot variable importance scores for the predictors in a model.
