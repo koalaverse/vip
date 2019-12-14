@@ -1,16 +1,36 @@
 # vip 0.1.3.9000
 
-## New functions
+## Enhancements
 
-* The generic methods `vip()` and `vi()` now work directly with objects produced by the [`parsnip` package](https://cran.r-project.org/package=parsnip)
+* Added support for `"model_fit"` objects from the [parsnip](https://cran.r-project.org/package=parsnip) package.
 
-* Added initial support for `"mvr"` objects from the **pls** package (currently just calls `caret::varImp()`) [(#35)](https://github.com/koalaverse/vip/issues/35).
+* Added support for `"mvr"` objects from the [pls](https://cran.r-project.org/package=pls) package (currently just calls `caret::varImp()`) [(#35)](https://github.com/koalaverse/vip/issues/35).
 
 ## User-visible changes
 
 * The `vip()` function gained a new argument, `type`, for specifying which type of plot to construct. Current options are `type = "barplot"` (the default), `type = "dotplot"`, or `type = "boxplot"` (for permutation-based importance with `nsim > 1`) [(#79)](https://github.com/koalaverse/vip/issues/79). Consequently, the `bar` argument has been removed.
 
 * The `vip()` function gained two new arguments for specifying aesthetics: `mapping` and `aesthetics` (for fixed aesthetics like `color = "red"`). Consequently, the arguments `color`, `fill`, etc. have been removed [(#80)](https://github.com/koalaverse/vip/issues/80).
+
+An example illustrating the above two changes is given below:
+```r
+# Load required packages
+library(ggplot2)  # for `aes_string()` function
+
+# Load the sample data
+data(mtcars)
+
+# Fit a linear regression model
+model <- lm(mpg ~ ., data = mtcars, nterms = 1)
+
+# Construct variable importance plots
+p1 <- vip(model)
+p2 <- vip(model, mapping = aes_string(color = "Sign"))
+p3 <- vip(model, type = "dotplot")
+p4 <- vip(model, type = "dotplot", mapping = aes_string(color = "Variable"),
+          aesthetics = list(size = 3))
+grid.arrange(p1, p2, p3, p4, nrow = 2)
+```
 
 * The `vip()` function gained a new argument, `include_type`, which defaults to `FALSE`. If `TRUE`, the type of variable importance that was computed is included in the appropriate axis label. Set `include_type = TRUE` to revert to the old behavior.
 
