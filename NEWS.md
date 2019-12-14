@@ -21,7 +21,7 @@ library(ggplot2)  # for `aes_string()` function
 data(mtcars)
 
 # Fit a linear regression model
-model <- lm(mpg ~ ., data = mtcars, nterms = 1)
+model <- lm(mpg ~ ., data = mtcars)
 
 # Construct variable importance plots
 p1 <- vip(model)
