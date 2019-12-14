@@ -11,14 +11,10 @@ vip(object, ...)
 \method{vip}{default}(
   object,
   num_features = 10L,
-  bar = TRUE,
-  width = 0.75,
+  type = c("barplot", "dotplot", "boxplot"),
+  mapping = NULL,
+  aesthetics = list(),
   horizontal = TRUE,
-  alpha = 1,
-  color = "grey35",
-  fill = "grey35",
-  size = 1,
-  shape = 19,
   all_permutations = FALSE,
   jitter = FALSE,
   include_type = FALSE,
@@ -31,36 +27,29 @@ vip(object, ...)
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object) or
 an object that inherits from class \code{"vi"}.}
 
-\item{...}{Additional optional arguments to be passed onto \code{\link{vi}}.}
+\item{...}{Additional optional arguments to be passed on to \code{\link{vi}}.}
 
 \item{num_features}{Integer specifying the number of variable importance
 scores to plot. Default is \code{10}.}
 
-\item{bar}{Logical indicating whether or not to produce a barplot. Default
-is \code{TRUE}. If \code{bar = FALSE}, then a dotchart is displayed instead.}
+\item{type}{Character string specifying which type of plot to construct.
+Current options are \code{"barplot"} (the default), \code{"dotplot"} (for
+Cleveland dot plots), or \code{"boxplot"}; these may be abbreviated as well
+(e.g., \code{"bar"}, \code{"dot"}, and \code{"box"}, respectively).
+Specifying \code{type = "boxplot"} is only useful for the permutation-based
+importance method with \code{nsim > 1} and \code{keep = TRUE}; see
+\code{\link{vi_permute}} for details.}
 
-\item{width}{Numeric value specifying the width of the bars when
-\code{bar = TRUE}. Default is \code{0.75}.}
+\item{mapping}{Set of aesthetic mappings created by \code{link[ggplot2]{aes}}
+or \code{link[ggplot2]{aes_}}. See example usage below.}
+
+\item{aesthetics}{List specifying additional arguments passed on to
+\code{link[ggplot2]{layer}}. These are often aesthetics, used to set an
+aesthetic to a fixed value, like \code{colour = "red"} or \code{size = 3}.
+See example usage below.}
 
 \item{horizontal}{Logical indicating whether or not to plot the importance
 scores on the x-axis (\code{TRUE}). Default is \code{TRUE}.}
-
-\item{alpha}{Numeric value between 0 and 1 giving the transparency of the
-bars (\code{bar = TRUE}) or points (\code{bar = FALSE}).}
-
-\item{color}{Character string specifying the color to use for the borders of
-the bars. Could also be a function, such as
-\code{\link[grDevices]{heat.colors}}. Default is \code{"grey35"}.}
-
-\item{fill}{Character string specifying the color to use to fill the bars.
-Could also be a function, such as \code{\link[grDevices]{heat.colors}}.
-Default is \code{"grey35"}.}
-
-\item{size}{Numeric value indicating the size to use for the points whenever
-\code{bar = FALSE}. Default is \code{1}.}
-
-\item{shape}{Numeric value indicating the shape to use for the points
-whenever \code{bar = FALSE}. Default is \code{1}.}
 
 \item{all_permutations}{Logical indicating whether or not to plot all
 permutation scores along with the average. Default is \code{FALSE}. (Only
@@ -92,16 +81,29 @@ vip(model, method = "ice")
 
 # Better yet, store the variable importance scores and then plot
 vi_scores <- vi(model, method = "ice")
-vip(vi_scores, bar = FALSE, size = 3, horiz = FALSE)
+vip(vi_scores, type = "dotplot", horiz = FALSE)
+vip(vi_scores, type = "dotplot", horiz = FALSE, aesthetics = list(size = 3))
 
-# The \\code{\\link[magrittr]{\\\%T>\\\%}} operator is imported for convenience
+# The `\%T>\\%` operator is imported for convenience; see ?magrittr::`\%T>\%`
+# for details
 vi_scores <- model \%>\%
   vi(method = "ice") \%T>\%
   {print(vip(.))}
 vi_scores
 
-# Permutation scores
+# Permutation scores (barplot w/ raw values and jittering)
 vip(model, method = "permute", train = mtcars, target = "mpg", nsim = 10,
-    metric = "rmse", bar = FALSE, color = "red", size = 3,
-    all_permutations = TRUE, jitter = FALSE)
+    metric = "rmse", aesthetics = list(color = "grey50", fill = "grey50"),
+    all_permutations = TRUE, jitter = TRUE)
+
+# Permutation scores (boxplot)
+vip(model, method = "permute", train = mtcars, target = "mpg", nsim = 10,
+    metric = "rmse", type = "boxplot")
+
+# Permutation scores (boxplot colored by feature)
+library(ggplot2)  # for `aes_string()` function
+vip(model, method = "permute", train = mtcars, target = "mpg", nsim = 10,
+    metric = "rmse", type = "boxplot", all_permutations = TRUE,
+    mapping = aes_string(fill = "Variable"),
+    aesthetics = list(color = "grey35", size = 0.8))
 }

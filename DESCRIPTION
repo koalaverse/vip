@@ -74,4 +74,4 @@ Suggests:
     testthat,
     varImp,
     xgboost
-RoxygenNote: 7.0.0
+RoxygenNote: 7.0.2

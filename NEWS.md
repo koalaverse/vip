@@ -8,6 +8,10 @@
 
 ## User-visible changes
 
+* The `vip()` function gained a new argument, `type`, for specifying which type of plot to construct. Current options are `type = "barplot"` (the default), `type = "dotplot"`, or `type = "boxplot"` (for permutation-based importance with `nsim > 1`) [(#79)](https://github.com/koalaverse/vip/issues/79). Consequently, the `bar` argument has been removed.
+
+* The `vip()` function gained two new arguments for specifying aesthetics: `mapping` and `aesthetics` (for fixed aesthetics like `color = "red"`). Consequently, the arguments `color`, `fill`, etc. have been removed [(#80)](https://github.com/koalaverse/vip/issues/80).
+
 * The `vip()` function gained a new argument, `include_type`, which defaults to `FALSE`. If `TRUE`, the type of variable importance that was computed is included in the appropriate axis label. Set `include_type = TRUE` to revert to the old behavior.
 
 ## Bug fixes
