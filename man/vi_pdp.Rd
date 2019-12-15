@@ -34,8 +34,7 @@ A tidy data frame (i.e., a \code{"tibble"} object) with two columns,
 associated importance score, respectively.
 }
 \description{
-Compute PDP-based VIscores for the predictors in a model.
-See details below.
+Compute PDP-based VI scores for the predictors in a model. See details below.
 }
 \details{
 This approach to computing VI scores is based on quantifying the

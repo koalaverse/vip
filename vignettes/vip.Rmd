@@ -129,7 +129,7 @@ Notice how the `vip()` function always returns a `"ggplot"` object (by default, 
 
 ```{r trees-vi-vip-dot, fig.width=6, fig.asp=0.618, out.width="70%"}
 library(ggplot2)  # for theme_light() function
-vip(bst, num_features = 5, type = "dotplot", horizontal = FALSE, 
+vip(bst, num_features = 5, geom = "point", horizontal = FALSE, 
     aesthetics = list(color = "red", shape = 17, size = 4)) +
   theme_light()
 ```
@@ -152,9 +152,9 @@ vi(backward)
 
 # Plot VI scores
 p1 <- vip(backward, num_features = length(coef(backward)), 
-          type = "dotplot", horizontal = FALSE)
+          geom = "point", horizontal = FALSE)
 p2 <- vip(backward, num_features = length(coef(backward)), 
-          type = "dotplot", horizontal = FALSE, 
+          geom = "point", horizontal = FALSE, 
           mapping = aes_string(color = "Sign"))
 grid.arrange(p1, p2, nrow = 1)
 ```
@@ -314,13 +314,13 @@ p2 <- vip(nn, method = "permute", target = "y", metric = "rsquared",
 grid.arrange(p1, p2, ncol = 2)
 ```
 
-If computationally feasible, you'll want to run permutation-based importance several times and average the results. This reduces the error introduced by the randomness in the permutation procedure. You can set this via `nsim` argument:
+If computationally feasible, you'll want to run permutation-based importance several times and average the results. This reduces the error introduced by the randomness in the permutation procedure. You can set this via the `nsim` argument:
 
 ```{r ppr-permute-nsim}
 # Plot VI scores
 set.seed(2021)  # for reproducibility
 vip(pp, method = "permute", target = "y", metric = "rsquared", nsim = 20,
-    pred_wrapper = predict, type = "boxplot", all_permutations = TRUE,
+    pred_wrapper = predict, geom = "boxplot", all_permutations = TRUE,
     mapping = aes_string(fill = "Variable"), 
     aesthetics = list(color = "grey35")) + 
   ggtitle("PPR")

@@ -8,21 +8,25 @@
 
 <title>Interaction Effects — vint • vip</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,11 +34,12 @@
 
 
 
-<meta property="og:title" content="Interaction Effects — vint" />
 
+<meta property="og:title" content="Interaction Effects — vint" />
 <meta property="og:description" content="Compute the strength of two-way interaction effects. For details, see the
 reference below." />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -46,6 +51,7 @@ reference below." />
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
 
 
   </head>
@@ -72,7 +78,7 @@ reference below." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -101,11 +107,10 @@ reference below." />
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/koalaverse/vip">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -116,6 +121,7 @@ reference below." />
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -127,15 +133,19 @@ reference below." />
     </div>
 
     <div class="ref-description">
-    
     <p>Compute the strength of two-way interaction effects. For details, see the
 reference below.</p>
-    
     </div>
 
-    <pre class="usage"><span class='fu'>vint</span>(<span class='no'>object</span>, <span class='no'>feature_names</span>, <span class='kw'>progress</span> <span class='kw'>=</span> <span class='st'>"none"</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>paropts</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
-    
+    <pre class="usage"><span class='fu'>vint</span>(
+  <span class='no'>object</span>,
+  <span class='no'>feature_names</span>,
+  <span class='kw'>progress</span> <span class='kw'>=</span> <span class='st'>"none"</span>,
+  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>paropts</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>
+)</pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -152,7 +162,7 @@ interest.</p></td>
       <th>progress</th>
       <td><p>Character string giving the name of the progress bar to use
 while constructing the interaction statistics. See
-<code><a href='https://www.rdocumentation.org/packages/plyr/topics/create_progress_bar'>create_progress_bar</a></code> for details. Default is
+<code><a href='https://rdrr.io/pkg/plyr/man/create_progress_bar.html'>create_progress_bar</a></code> for details. Default is
 <code>"none"</code>.</p></td>
     </tr>
     <tr>
@@ -164,15 +174,15 @@ parallel using a backend provided by the <code>foreach</code> package. Default i
     <tr>
       <th>paropts</th>
       <td><p>List containing additional options to be passed onto
-<code><a href='https://www.rdocumentation.org/packages/foreach/topics/foreach'>foreach</a></code> when <code>parallel = TRUE</code>.</p></td>
+<code><a href='https://rdrr.io/pkg/foreach/man/foreach.html'>foreach</a></code> when <code>parallel = TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
       <td><p>Additional optional arguments to be passed onto
-<code><a href='https://www.rdocumentation.org/packages/pdp/topics/partial'>partial</a></code>.</p></td>
+<code><a href='https://rdrr.io/pkg/pdp/man/partial.html'>partial</a></code>.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>This function quantifies the strength of interaction between
@@ -180,28 +190,26 @@ features $X_1$ and $X_2$ by measuring the change in variance along slices of
 the partial dependence of $X_1$ and $X_2$ on the target $Y$. See
 <a href='https://arxiv.org/abs/1805.04755'>Greenwell et al. (2018)</a> for
 details and examples.</p>
-    
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J.: A Simple
 and Effective Model-Based Variable Importance Measure. arXiv preprint
 arXiv:1805.04755 (2018).</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='co'>#</span>
 <span class='co'># The Friedman 1 benchmark problem</span>
 <span class='co'>#</span>
 
 <span class='co'># Load required packages</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>gbm</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>ggplot2</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>mlbench</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>gbm</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mlbench</span>)
 
 <span class='co'># Generate training data</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>101</span>)  <span class='co'># for reproducibility</span>
-<span class='no'>friedman1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/as.data.frame'>as.data.frame</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/mlbench/topics/mlbench.friedman1'>mlbench.friedman1</a></span>(<span class='fl'>500</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='fl'>0.1</span>))
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>101</span>)  <span class='co'># for reproducibility</span>
+<span class='no'>friedman1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.data.frame.html'>as.data.frame</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/mlbench/man/mlbench.friedman1.html'>mlbench.friedman1</a></span>(<span class='fl'>500</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='fl'>0.1</span>))
 
 <span class='co'>#</span>
 <span class='co'># NOTE: The only interaction that actually occurs in the model from which</span>
@@ -209,43 +217,41 @@ arXiv:1805.04755 (2018).</p>
 <span class='co'>#</span>
 
 <span class='co'># Fit a GBM to the training data</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>102</span>)  <span class='co'># for reproducibility</span>
-<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/gbm/topics/gbm'>gbm</a></span>(<span class='no'>y</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>friedman1</span>, <span class='kw'>distribution</span> <span class='kw'>=</span> <span class='st'>"gaussian"</span>,
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>102</span>)  <span class='co'># for reproducibility</span>
+<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/gbm/man/gbm.html'>gbm</a></span>(<span class='no'>y</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>friedman1</span>, <span class='kw'>distribution</span> <span class='kw'>=</span> <span class='st'>"gaussian"</span>,
            <span class='kw'>n.trees</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>interaction.depth</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>shrinkage</span> <span class='kw'>=</span> <span class='fl'>0.01</span>,
            <span class='kw'>bag.fraction</span> <span class='kw'>=</span> <span class='fl'>0.8</span>, <span class='kw'>cv.folds</span> <span class='kw'>=</span> <span class='fl'>5</span>)
-<span class='no'>best_iter</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/gbm/topics/gbm.perf'>gbm.perf</a></span>(<span class='no'>fit</span>, <span class='kw'>plot.it</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"cv"</span>)
+<span class='no'>best_iter</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/gbm/man/gbm.perf.html'>gbm.perf</a></span>(<span class='no'>fit</span>, <span class='kw'>plot.it</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"cv"</span>)
 
 <span class='co'># Quantify relative interaction strength</span>
-<span class='no'>all_pairs</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/combn'>combn</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/paste'>paste0</a></span>(<span class='st'>"x."</span>, <span class='fl'>1</span>:<span class='fl'>10</span>), <span class='kw'>m</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+<span class='no'>all_pairs</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/combn.html'>combn</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"x."</span>, <span class='fl'>1</span>:<span class='fl'>10</span>), <span class='kw'>m</span> <span class='kw'>=</span> <span class='fl'>2</span>)
 <span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='kw'>NULL</span>
-<span class='kw'>for</span> (<span class='no'>i</span> <span class='kw'>in</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/seq'>seq_along</a></span>(<span class='no'>all_pairs</span>)) {
+<span class='kw'>for</span> (<span class='no'>i</span> <span class='kw'>in</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_along</a></span>(<span class='no'>all_pairs</span>)) {
   <span class='no'>interact</span> <span class='kw'>&lt;-</span> <span class='fu'>vint</span>(<span class='no'>fit</span>, <span class='kw'>feature_names</span> <span class='kw'>=</span> <span class='no'>all_pairs</span>[, <span class='no'>i</span>], <span class='kw'>n.trees</span> <span class='kw'>=</span> <span class='no'>best_iter</span>)
-  <span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>rbind</a></span>(<span class='no'>res</span>, <span class='no'>interact</span>)
+  <span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span>(<span class='no'>res</span>, <span class='no'>interact</span>)
 }
 
 <span class='co'># Plot top 20 results</span>
 <span class='no'>top_20</span> <span class='kw'>&lt;-</span> <span class='no'>res</span>[<span class='fl'>1</span>:<span class='fl'>20</span>, ]
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span>(<span class='no'>top_20</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/reorder.factor'>reorder</a></span>(<span class='no'>Variables</span>, <span class='no'>Interaction</span>), <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>Interaction</span>)) +
+<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span>(<span class='no'>top_20</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/reorder.factor.html'>reorder</a></span>(<span class='no'>Variables</span>, <span class='no'>Interaction</span>), <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>Interaction</span>)) +
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_col</a></span>() +
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/coord_flip.html'>coord_flip</a></span>() +
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>xlab</a></span>(<span class='st'>""</span>) +
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ylab</a></span>(<span class='st'>"Interaction strength"</span>)
-<span class='co'># }</span></pre>
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#details">Details</a></li>
-
       <li><a href="#references">References</a></li>
-      
       <li><a href="#examples">Examples</a></li>
     </ul>
 
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
@@ -253,13 +259,16 @@ arXiv:1805.04755 (2018).</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 

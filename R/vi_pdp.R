@@ -1,7 +1,6 @@
 #' PDP-Based Variable Importance
 #'
-#' Compute PDP-based VIscores for the predictors in a model.
-#' See details below.
+#' Compute PDP-based VI scores for the predictors in a model. See details below.
 #'
 #' @param object A fitted model object (e.g., a \code{"randomForest"} object).
 #'

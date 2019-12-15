@@ -9,7 +9,7 @@
 #' scores to plot. Default is \code{10}.
 #'
 #' @param geom Character string specifying which type of plot to construct.
-#' The currently avilable options are described below.
+#' The currently available options are described below.
 #'
 #'  \itemize{
 #'
@@ -72,13 +72,13 @@
 #'
 #' @param color Character string specifying the color to use for the borders of
 #' the bars. Could also be a function, such as
-#' \code{\link[grDevices]{heat.colors}. Default is \code{NULL}.
+#' \code{\link[grDevices]{heat.colors}}. Default is \code{NULL}.
 #' \strong{WARNING:} This argument has been deprecated in favor of the new
 #' \code{mapping} and \code{aesthetics} arguments. It will be removed in version
 #' 0.3.0.
 #'
 #' @param fill Character string specifying the color to use to fill the bars.
-#' Could also be a function, such as \code{\link[grDevices]{heat.colors}.
+#' Could also be a function, such as \code{\link[grDevices]{heat.colors}}.
 #' Default is \code{NULL}. \strong{WARNING:} This argument has been deprecated
 #' in favor of the new \code{mapping} and \code{aesthetics} arguments. It will be
 #' removed in version 0.3.0.
@@ -170,7 +170,7 @@ vip.default <- function(
   if (!is.null(bar)) {
     warning("The `bar` argument has been deprecated in favor of the new ",
             "`geom` argument. It will be removed in version 0.3.0.")
-    geom <- if (isTRUE(bar)) "barplot" else "dotplot"
+    geom <- if (isTRUE(bar)) "col" else "point"
   } else {
     # Character string specifying which type of plot to construct
     geom <- match.arg(geom, several.ok = FALSE)

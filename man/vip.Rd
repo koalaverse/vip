@@ -40,7 +40,7 @@ an object that inherits from class \code{"vi"}.}
 scores to plot. Default is \code{10}.}
 
 \item{geom}{Character string specifying which type of plot to construct.
-The currently avilable options are described below.
+The currently available options are described below.
 
  \itemize{
 
@@ -98,6 +98,19 @@ arguments. It will be removed in version 0.3.0.}
 bars (\code{bar = TRUE}) or points (\code{bar = FALSE}). \strong{WARNING:}
 This argument has been deprecated in favor of the new \code{mapping} and
 \code{aesthetics} arguments. It will be removed in version 0.3.0.}
+
+\item{color}{Character string specifying the color to use for the borders of
+the bars. Could also be a function, such as
+\code{\link[grDevices]{heat.colors}}. Default is \code{NULL}.
+\strong{WARNING:} This argument has been deprecated in favor of the new
+\code{mapping} and \code{aesthetics} arguments. It will be removed in version
+0.3.0.}
+
+\item{fill}{Character string specifying the color to use to fill the bars.
+Could also be a function, such as \code{\link[grDevices]{heat.colors}}.
+Default is \code{NULL}. \strong{WARNING:} This argument has been deprecated
+in favor of the new \code{mapping} and \code{aesthetics} arguments. It will be
+removed in version 0.3.0.}
 
 \item{size}{Numeric value indicating the size to use for the points whenever
 \code{bar = FALSE}. Default is \code{NULL}. \strong{WARNING:} This argument
