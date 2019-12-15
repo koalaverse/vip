@@ -31,11 +31,11 @@
 #'
 #'  }
 #'
-#' @param mapping Set of aesthetic mappings created by \code{link[ggplot2]{aes}}
-#' or \code{link[ggplot2]{aes_}}. See example usage below.
+#' @param mapping Set of aesthetic mappings created by \code{\link[ggplot2]{aes}}
+#' or \code{\link[ggplot2]{aes_}}. See example usage below.
 #'
 #' @param aesthetics List specifying additional arguments passed on to
-#' \code{link[ggplot2]{layer}}. These are often aesthetics, used to set an
+#' \code{\link[ggplot2]{layer}}. These are often aesthetics, used to set an
 #' aesthetic to a fixed value, like \code{colour = "red"} or \code{size = 3}.
 #' See example usage below.
 #'
