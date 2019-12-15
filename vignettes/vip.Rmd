@@ -118,8 +118,8 @@ library(vip)
 
 # Construct ggplot2-based VIPs
 p1 <- vip(tree)  # CART-like decision tree
-p2 <- vip(rfo, width = 0.5, fill = "green3")   # RF
-p3 <- vip(bst, col = "purple2")   # GBM
+p2 <- vip(rfo, width = 0.5, aesthetics = list(fill = "green3"))   # RF
+p3 <- vip(bst, aesthetics = list(col = "purple2"))   # GBM
 
 # Display all three plots side by side
 grid.arrange(p1, p2, p3, ncol = 3)
@@ -129,8 +129,8 @@ Notice how the `vip()` function always returns a `"ggplot"` object (by default, 
 
 ```{r trees-vi-vip-dot, fig.width=6, fig.asp=0.618, out.width="70%"}
 library(ggplot2)  # for theme_light() function
-vip(bst, num_features = 5, bar = FALSE, color, horizontal = FALSE, 
-    color = "red", shape = 17, size = 4) +
+vip(bst, num_features = 5, type = "dotplot", horizontal = FALSE, 
+    aesthetics = list(color = "red", shape = 17, size = 4)) +
   theme_light()
 ```
 
@@ -139,7 +139,10 @@ vip(bst, num_features = 5, bar = FALSE, color, horizontal = FALSE,
 
 In multiple linear regression, or linear models (LMs), the absolute value of the $t$-statistic is commonly used as a measure of VI. The same idea also extends to generalized linear models (GLMs). In the code chunk below, we fit an LM to the simulated `trn` data set allowing for all main and two-way interaction effects, then use the `step()` function to perform [backward elimination](https://en.wikipedia.org/wiki/Stepwise_regression).
 
-```{r lms, fig.width=6, fig.asp=0.618, out.width="70%"}
+```{r lms, fig.width=6, fig.asp=0.5, out.width="70%"}
+# Load required packages
+library(ggplot2)  # for `aes_string()` function
+
 # Fit a LM
 linmod <- lm(y ~ .^2, data = trn)
 backward <- step(linmod, direction = "backward", trace = 0)
@@ -148,8 +151,12 @@ backward <- step(linmod, direction = "backward", trace = 0)
 vi(backward)
 
 # Plot VI scores
-vip(backward, num_features = length(coef(backward)), 
-    bar = FALSE, horizontal = FALSE)
+p1 <- vip(backward, num_features = length(coef(backward)), 
+          type = "dotplot", horizontal = FALSE)
+p2 <- vip(backward, num_features = length(coef(backward)), 
+          type = "dotplot", horizontal = FALSE, 
+          mapping = aes_string(color = "Sign"))
+grid.arrange(p1, p2, nrow = 1)
 ```
 
 One issue with computing VI scores for LMs using the $t$-statistic approach is that a score is assigned to each term in the model, rather than to just each feature! We can solve this problem using one of the model-agnostic approaches discussed later.
@@ -296,6 +303,7 @@ grid.arrange(p1, p2, ncol = 2)
 The permutation method exists in various forms and was made popular in @random-breiman-2001 for random forests. A more general approach to the permutation method is described in [Assessing Variable Importance for Predictive Models of Arbitrary Type](https://cran.r-project.org/web/packages/datarobot/vignettes/VariableImportance.html), an R package vignette by DataRobot. The permutation approach used in `vip` is quite simple. The idea is that if we randomly permute the values of an important feature in the training data, the training performance would degrade (since permuting the values of a feature effectively destroys any relationship between that feature and the target variable). This of course assumes that the model has been properly tuned (e.g., using cross-validation) and is not [over fitting](https://en.wikipedia.org/wiki/Overfitting). The permutation approach uses the difference between some baseline performance measure (e.g., training $R^2$ or RMSE) and the same performance measure obtained after permuting the values of a particular feature in the training data (**Note**: the model is NOT refit to the training data after randomly permuting the values of a feature). To use the permutation approach, specify `method = "permute"` in the call to `vi()` or `vip()`. Note that using `method = "permute"` requires specifying a few additional arguments; see `?vi_permute` for details.
 
 An example is given below for the previously fitted PPR and NN models.
+
 ```{r ppr-permute}
 # Plot VI scores
 set.seed(2021)  # for reproducibility
@@ -306,6 +314,18 @@ p2 <- vip(nn, method = "permute", target = "y", metric = "rsquared",
 grid.arrange(p1, p2, ncol = 2)
 ```
 
+If computationally feasible, you'll want to run permutation-based importance several times and average the results. This reduces the error introduced by the randomness in the permutation procedure. You can set this via `nsim` argument:
+
+```{r ppr-permute-nsim}
+# Plot VI scores
+set.seed(2021)  # for reproducibility
+vip(pp, method = "permute", target = "y", metric = "rsquared", nsim = 20,
+    pred_wrapper = predict, type = "boxplot", all_permutations = TRUE,
+    mapping = aes_string(fill = "Variable"), 
+    aesthetics = list(color = "grey35")) + 
+  ggtitle("PPR")
+grid.arrange(p1, p2, ncol = 2)
+```
 
 ### The Pima Indians diabetes data
 

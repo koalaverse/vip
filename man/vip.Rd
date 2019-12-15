@@ -18,7 +18,14 @@ vip(object, ...)
   all_permutations = FALSE,
   jitter = FALSE,
   include_type = FALSE,
-  ...
+  ...,
+  bar = NULL,
+  width = NULL,
+  alpha = NULL,
+  color = NULL,
+  fill = NULL,
+  size = NULL,
+  shape = NULL
 )
 
 \method{vip}{model_fit}(object, ...)
@@ -34,7 +41,7 @@ scores to plot. Default is \code{10}.}
 
 \item{type}{Character string specifying which type of plot to construct.
 Current options are \code{"barplot"} (the default), \code{"dotplot"} (for
-Cleveland dot plots), or \code{"boxplot"}; these may be abbreviated as well
+a Cleveland dotplot), or \code{"boxplot"}; these may be abbreviated as well
 (e.g., \code{"bar"}, \code{"dot"}, and \code{"box"}, respectively).
 Specifying \code{type = "boxplot"} is only useful for the permutation-based
 importance method with \code{nsim > 1} and \code{keep = TRUE}; see
@@ -61,6 +68,31 @@ scores. Default is \code{FALSE}. (Only used when
 
 \item{include_type}{Logical indicating whether or not to include the type of
 variable importance computed in the axis label. Default is \code{FALSE}.}
+
+\item{bar}{Logical indicating whether or not to produce a barplot. Default is
+\code{NULL}. \strong{WARNING:} This argument has been deprecated in favor of
+the new \code{mapping} and \code{aesthetics} arguments. It will be removed in
+version 0.3.0.}
+
+\item{width}{Numeric value specifying the width of the bars when
+\code{bar = TRUE}. Default is \code{NULL}. \strong{WARNING:} This argument
+has been deprecated in favor of the new \code{mapping} and \code{aesthetics}
+arguments. It will be removed in version 0.3.0.}
+
+\item{alpha}{Numeric value between 0 and 1 giving the transparency of the
+bars (\code{bar = TRUE}) or points (\code{bar = FALSE}). \strong{WARNING:}
+This argument has been deprecated in favor of the new \code{mapping} and
+\code{aesthetics} arguments. It will be removed in version 0.3.0.}
+
+\item{size}{Numeric value indicating the size to use for the points whenever
+\code{bar = FALSE}. Default is \code{NULL}. \strong{WARNING:} This argument
+has been deprecated in favor of the new \code{mapping} and \code{aesthetics}
+arguments. It will be removed in version 0.3.0.}
+
+\item{shape}{Numeric value indicating the shape to use for the points
+whenever \code{bar = FALSE}. Default is \code{NULL}. \strong{WARNING:} This
+argument has been deprecated in favor of the new \code{mapping} and
+\code{aesthetics} arguments. It will be removed in version 0.3.0.}
 }
 \description{
 Plot variable importance scores for the predictors in a model.

@@ -10,7 +10,7 @@
 #'
 #' @param type Character string specifying which type of plot to construct.
 #' Current options are \code{"barplot"} (the default), \code{"dotplot"} (for
-#' Cleveland dot plots), or \code{"boxplot"}; these may be abbreviated as well
+#' a Cleveland dotplot), or \code{"boxplot"}; these may be abbreviated as well
 #' (e.g., \code{"bar"}, \code{"dot"}, and \code{"box"}, respectively).
 #' Specifying \code{type = "boxplot"} is only useful for the permutation-based
 #' importance method with \code{nsim > 1} and \code{keep = TRUE}; see
@@ -39,6 +39,44 @@
 #' variable importance computed in the axis label. Default is \code{FALSE}.
 #'
 #' @param ... Additional optional arguments to be passed on to \code{\link{vi}}.
+#'
+#' @param bar Logical indicating whether or not to produce a barplot. Default is
+#' \code{NULL}. \strong{WARNING:} This argument has been deprecated in favor of
+#' the new \code{mapping} and \code{aesthetics} arguments. It will be removed in
+#' version 0.3.0.
+#'
+#' @param width Numeric value specifying the width of the bars when
+#' \code{bar = TRUE}. Default is \code{NULL}. \strong{WARNING:} This argument
+#' has been deprecated in favor of the new \code{mapping} and \code{aesthetics}
+#' arguments. It will be removed in version 0.3.0.
+#'
+#' @param alpha Numeric value between 0 and 1 giving the transparency of the
+#' bars (\code{bar = TRUE}) or points (\code{bar = FALSE}). \strong{WARNING:}
+#' This argument has been deprecated in favor of the new \code{mapping} and
+#' \code{aesthetics} arguments. It will be removed in version 0.3.0.
+#'
+#' @param color Character string specifying the color to use for the borders of
+#' the bars. Could also be a function, such as
+#' \code{\link[grDevices]{heat.colors}. Default is \code{NULL}.
+#' \strong{WARNING:} This argument has been deprecated in favor of the new
+#' \code{mapping} and \code{aesthetics} arguments. It will be removed in version
+#' 0.3.0.
+#'
+#' @param fill Character string specifying the color to use to fill the bars.
+#' Could also be a function, such as \code{\link[grDevices]{heat.colors}.
+#' Default is \code{NULL}. \strong{WARNING:} This argument has been deprecated
+#' in favor of the new \code{mapping} and \code{aesthetics} arguments. It will be
+#' removed in version 0.3.0.
+#'
+#' @param size Numeric value indicating the size to use for the points whenever
+#' \code{bar = FALSE}. Default is \code{NULL}. \strong{WARNING:} This argument
+#' has been deprecated in favor of the new \code{mapping} and \code{aesthetics}
+#' arguments. It will be removed in version 0.3.0.
+#'
+#' @param shape Numeric value indicating the shape to use for the points
+#' whenever \code{bar = FALSE}. Default is \code{NULL}. \strong{WARNING:} This
+#' argument has been deprecated in favor of the new \code{mapping} and
+#' \code{aesthetics} arguments. It will be removed in version 0.3.0.
 #'
 #' @rdname vip
 #'
@@ -103,8 +141,65 @@ vip.default <- function(
   all_permutations = FALSE,
   jitter = FALSE,
   include_type = FALSE,
-  ...
+  ...,
+  bar = NULL,    # deprecated
+  width = NULL,  # deprecated
+  alpha = NULL,  # deprecated
+  color = NULL,  # deprecated
+  fill = NULL,   # deprecated
+  size = NULL,   # deprecated
+  shape = NULL   # deprecated
 ) {
+
+  # Deal with deprecated arguments
+  if (!is.null(bar)) {
+    warning("The `bar` argument has been deprecated in favor of the new ",
+            "`type` argument. It will be removed in version 0.3.0.")
+    type <- if (isTRUE(bar)) "barplot" else "dotplot"
+  } else {
+    # Character string specifying which type of plot to construct
+    type <- match.arg(type, several.ok = FALSE)
+  }
+  if (!(is.null(width) && is.null(alpha) && is.null(color) && is.null(fill) &&
+        is.null(size) && is.null(shape))) {
+    aesthetics <- list()
+    if (!is.null(width)) {
+      warning("The `width` argument has been deprecated in favor of the new ",
+              "`mapping` and  `aesthetics` arguments. It will be removed in ",
+              "version 0.3.0.")
+      aesthetics <- c(aesthetics, list(width = width))
+    }
+    if (!is.null(alpha)) {
+      warning("The `alpha` argument has been deprecated in favor of the new ",
+              "`mapping` and  `aesthetics` arguments. It will be removed in ",
+              "version 0.3.0.")
+      aesthetics <- c(aesthetics, list(alpha = alpha))
+    }
+    if (!is.null(color)) {
+      warning("The `color` argument has been deprecated in favor of the new ",
+              "`mapping` and  `aesthetics` arguments. It will be removed in ",
+              "version 0.3.0.")
+      aesthetics <- c(aesthetics, list(color = color))
+    }
+    if (!is.null(fill)) {
+      warning("The `fill` argument has been deprecated in favor of the new ",
+              "`mapping` and  `aesthetics` arguments. It will be removed in ",
+              "version 0.3.0.")
+      aesthetics <- c(aesthetics, list(fill = fill))
+    }
+    if (!is.null(size)) {
+      warning("The `size` argument has been deprecated in favor of the new ",
+              "`mapping` and  `aesthetics` arguments. It will be removed in ",
+              "version 0.3.0.")
+      aesthetics <- c(aesthetics, list(size = size))
+    }
+    if (!is.null(shape)) {
+      warning("The `shape` argument has been deprecated in favor of the new ",
+              "`mapping` and  `aesthetics` arguments. It will be removed in ",
+              "version 0.3.0.")
+      aesthetics <- c(aesthetics, list(shape = shape))
+    }
+  }
 
   # Extract or compute importance scores
   imp <- if (inherits(object, what = "vi")) {
@@ -141,9 +236,6 @@ vip.default <- function(
 
   # Initialize plot
   p <- ggplot2::ggplot(imp, ggplot2::aes_string(x = x.string, y = "Importance"))
-
-  # Character string specifying which type of plot to construct
-  type <- match.arg(type, several.ok = FALSE)
 
   # Construct a barplot
   if (type == "barplot") {
