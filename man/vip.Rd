@@ -11,7 +11,7 @@ vip(object, ...)
 \method{vip}{default}(
   object,
   num_features = 10L,
-  type = c("barplot", "dotplot", "boxplot"),
+  geom = c("col", "point", "boxplot", "violin"),
   mapping = NULL,
   aesthetics = list(),
   horizontal = TRUE,
@@ -39,13 +39,28 @@ an object that inherits from class \code{"vi"}.}
 \item{num_features}{Integer specifying the number of variable importance
 scores to plot. Default is \code{10}.}
 
-\item{type}{Character string specifying which type of plot to construct.
-Current options are \code{"barplot"} (the default), \code{"dotplot"} (for
-a Cleveland dotplot), or \code{"boxplot"}; these may be abbreviated as well
-(e.g., \code{"bar"}, \code{"dot"}, and \code{"box"}, respectively).
-Specifying \code{type = "boxplot"} is only useful for the permutation-based
-importance method with \code{nsim > 1} and \code{keep = TRUE}; see
-\code{\link{vi_permute}} for details.}
+\item{geom}{Character string specifying which type of plot to construct.
+The currently avilable options are described below.
+
+ \itemize{
+
+ \item \code{geom = "col"} uses \code{\link[ggplot2]{geom_col}} to construct
+ a bar chart of the variable importance scores.
+
+ \item \code{geom = "point"} uses \code{\link[ggplot2]{geom_point}} to
+ construct a Cleveland dot plot of the variable importance scores.
+
+ \item \code{geom = "boxplot"} uses \code{\link[ggplot2]{geom_boxplot}} to
+ construct a boxplot plot of the variable importance scores. This option can
+ only for the permutation-based importance method with \code{nsim > 1} and
+ \code{keep = TRUE}; see \code{\link{vi_permute}} for details.
+
+ \item \code{geom = "violin"} uses \code{\link[ggplot2]{geom_violin}} to
+ construct a violin plot of the variable importance scores. This option can
+ only for the permutation-based importance method with \code{nsim > 1} and
+ \code{keep = TRUE}; see \code{\link{vi_permute}} for details.
+
+ }}
 
 \item{mapping}{Set of aesthetic mappings created by \code{link[ggplot2]{aes}}
 or \code{link[ggplot2]{aes_}}. See example usage below.}
@@ -113,8 +128,8 @@ vip(model, method = "ice")
 
 # Better yet, store the variable importance scores and then plot
 vi_scores <- vi(model, method = "ice")
-vip(vi_scores, type = "dotplot", horiz = FALSE)
-vip(vi_scores, type = "dotplot", horiz = FALSE, aesthetics = list(size = 3))
+vip(vi_scores, geom = "point", horiz = FALSE)
+vip(vi_scores, geom = "point", horiz = FALSE, aesthetics = list(size = 3))
 
 # The `\%T>\\%` operator is imported for convenience; see ?magrittr::`\%T>\%`
 # for details
@@ -130,12 +145,12 @@ vip(model, method = "permute", train = mtcars, target = "mpg", nsim = 10,
 
 # Permutation scores (boxplot)
 vip(model, method = "permute", train = mtcars, target = "mpg", nsim = 10,
-    metric = "rmse", type = "boxplot")
+    metric = "rmse", geom = "boxplot")
 
 # Permutation scores (boxplot colored by feature)
 library(ggplot2)  # for `aes_string()` function
 vip(model, method = "permute", train = mtcars, target = "mpg", nsim = 10,
-    metric = "rmse", type = "boxplot", all_permutations = TRUE,
+    metric = "rmse", geom = "boxplot", all_permutations = TRUE,
     mapping = aes_string(fill = "Variable"),
     aesthetics = list(color = "grey35", size = 0.8))
 }

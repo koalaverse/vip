@@ -8,13 +8,28 @@
 #' @param num_features Integer specifying the number of variable importance
 #' scores to plot. Default is \code{10}.
 #'
-#' @param type Character string specifying which type of plot to construct.
-#' Current options are \code{"barplot"} (the default), \code{"dotplot"} (for
-#' a Cleveland dotplot), or \code{"boxplot"}; these may be abbreviated as well
-#' (e.g., \code{"bar"}, \code{"dot"}, and \code{"box"}, respectively).
-#' Specifying \code{type = "boxplot"} is only useful for the permutation-based
-#' importance method with \code{nsim > 1} and \code{keep = TRUE}; see
-#' \code{\link{vi_permute}} for details.
+#' @param geom Character string specifying which type of plot to construct.
+#' The currently avilable options are described below.
+#'
+#'  \itemize{
+#'
+#'  \item \code{geom = "col"} uses \code{\link[ggplot2]{geom_col}} to construct
+#'  a bar chart of the variable importance scores.
+#'
+#'  \item \code{geom = "point"} uses \code{\link[ggplot2]{geom_point}} to
+#'  construct a Cleveland dot plot of the variable importance scores.
+#'
+#'  \item \code{geom = "boxplot"} uses \code{\link[ggplot2]{geom_boxplot}} to
+#'  construct a boxplot plot of the variable importance scores. This option can
+#'  only for the permutation-based importance method with \code{nsim > 1} and
+#'  \code{keep = TRUE}; see \code{\link{vi_permute}} for details.
+#'
+#'  \item \code{geom = "violin"} uses \code{\link[ggplot2]{geom_violin}} to
+#'  construct a violin plot of the variable importance scores. This option can
+#'  only for the permutation-based importance method with \code{nsim > 1} and
+#'  \code{keep = TRUE}; see \code{\link{vi_permute}} for details.
+#'
+#'  }
 #'
 #' @param mapping Set of aesthetic mappings created by \code{link[ggplot2]{aes}}
 #' or \code{link[ggplot2]{aes_}}. See example usage below.
@@ -98,8 +113,8 @@
 #'
 #' # Better yet, store the variable importance scores and then plot
 #' vi_scores <- vi(model, method = "ice")
-#' vip(vi_scores, type = "dotplot", horiz = FALSE)
-#' vip(vi_scores, type = "dotplot", horiz = FALSE, aesthetics = list(size = 3))
+#' vip(vi_scores, geom = "point", horiz = FALSE)
+#' vip(vi_scores, geom = "point", horiz = FALSE, aesthetics = list(size = 3))
 #'
 #' # The `%T>\%` operator is imported for convenience; see ?magrittr::`%T>%`
 #' # for details
@@ -115,12 +130,12 @@
 #'
 #' # Permutation scores (boxplot)
 #' vip(model, method = "permute", train = mtcars, target = "mpg", nsim = 10,
-#'     metric = "rmse", type = "boxplot")
+#'     metric = "rmse", geom = "boxplot")
 #'
 #' # Permutation scores (boxplot colored by feature)
 #' library(ggplot2)  # for `aes_string()` function
 #' vip(model, method = "permute", train = mtcars, target = "mpg", nsim = 10,
-#'     metric = "rmse", type = "boxplot", all_permutations = TRUE,
+#'     metric = "rmse", geom = "boxplot", all_permutations = TRUE,
 #'     mapping = aes_string(fill = "Variable"),
 #'     aesthetics = list(color = "grey35", size = 0.8))
 vip <- function(object, ...) {
@@ -134,7 +149,7 @@ vip <- function(object, ...) {
 vip.default <- function(
   object,
   num_features = 10L,
-  type = c("barplot", "dotplot", "boxplot"),
+  geom = c("col", "point", "boxplot", "violin"),
   mapping = NULL,
   aesthetics = list(),
   horizontal = TRUE,
@@ -154,49 +169,34 @@ vip.default <- function(
   # Deal with deprecated arguments
   if (!is.null(bar)) {
     warning("The `bar` argument has been deprecated in favor of the new ",
-            "`type` argument. It will be removed in version 0.3.0.")
-    type <- if (isTRUE(bar)) "barplot" else "dotplot"
+            "`geom` argument. It will be removed in version 0.3.0.")
+    geom <- if (isTRUE(bar)) "barplot" else "dotplot"
   } else {
     # Character string specifying which type of plot to construct
-    type <- match.arg(type, several.ok = FALSE)
+    geom <- match.arg(geom, several.ok = FALSE)
   }
   if (!(is.null(width) && is.null(alpha) && is.null(color) && is.null(fill) &&
         is.null(size) && is.null(shape))) {
+    warning("Arguments `width`, `alpha`, `color`, `fill`, `size`, and `shape` ",
+            "have all been deprecated in favor of the new `mapping` and ",
+            "`aesthetics` arguments. They will be removed in version 0.3.0.")
     aesthetics <- list()
     if (!is.null(width)) {
-      warning("The `width` argument has been deprecated in favor of the new ",
-              "`mapping` and  `aesthetics` arguments. It will be removed in ",
-              "version 0.3.0.")
       aesthetics <- c(aesthetics, list(width = width))
     }
     if (!is.null(alpha)) {
-      warning("The `alpha` argument has been deprecated in favor of the new ",
-              "`mapping` and  `aesthetics` arguments. It will be removed in ",
-              "version 0.3.0.")
       aesthetics <- c(aesthetics, list(alpha = alpha))
     }
     if (!is.null(color)) {
-      warning("The `color` argument has been deprecated in favor of the new ",
-              "`mapping` and  `aesthetics` arguments. It will be removed in ",
-              "version 0.3.0.")
       aesthetics <- c(aesthetics, list(color = color))
     }
     if (!is.null(fill)) {
-      warning("The `fill` argument has been deprecated in favor of the new ",
-              "`mapping` and  `aesthetics` arguments. It will be removed in ",
-              "version 0.3.0.")
       aesthetics <- c(aesthetics, list(fill = fill))
     }
     if (!is.null(size)) {
-      warning("The `size` argument has been deprecated in favor of the new ",
-              "`mapping` and  `aesthetics` arguments. It will be removed in ",
-              "version 0.3.0.")
       aesthetics <- c(aesthetics, list(size = size))
     }
     if (!is.null(shape)) {
-      warning("The `shape` argument has been deprecated in favor of the new ",
-              "`mapping` and  `aesthetics` arguments. It will be removed in ",
-              "version 0.3.0.")
       aesthetics <- c(aesthetics, list(shape = shape))
     }
   }
@@ -238,18 +238,7 @@ vip.default <- function(
   p <- ggplot2::ggplot(imp, ggplot2::aes_string(x = x.string, y = "Importance"))
 
   # Construct a barplot
-  if (type == "barplot") {
-    # if ("Sign" %in% names(imp)) {
-    #   p <- p + ggplot2::geom_col(
-    #     # Use color to differentiate pos/neg coefficients
-    #     ggplot2::aes_string(color = "Sign", fill = "Sign"),
-    #     size = size, width = width, alpha = alpha
-    #   )
-    # } else {
-    #   p <- p + ggplot2::geom_col(
-    #     width = width, color = color, fill = fill, size = size, alpha = alpha
-    #   )
-    # }
+  if (geom == "col") {
     p <- p + do.call(
       what = ggplot2::geom_col,
       args = c(list(mapping = mapping), aesthetics)
@@ -257,18 +246,7 @@ vip.default <- function(
   }
 
   # Construct a (Cleveland) dotplot
-  if (type == "dotplot") {
-    # if ("Sign" %in% names(imp)) {
-    #   # Use color to differentiate pos/neg coefficients
-    #   p <- p + ggplot2::geom_point(
-    #     ggplot2::aes_string(color = "Sign"),
-    #     alpha = alpha, size = size, shape = shape
-    #   )
-    # } else {
-    #   p <- p + ggplot2::geom_point(
-    #     color = color, alpha = alpha, size = size, shape = shape
-    #   )
-    # }
+  if (geom == "point") {
     p <- p + do.call(
       what = ggplot2::geom_point,
       args = c(list(mapping = mapping), aesthetics)
@@ -276,7 +254,7 @@ vip.default <- function(
   }
 
   # Construct a boxplot
-  if (type == "boxplot") {
+  if (geom == "boxplot") {
     if (!is.null(attr(imp, which = "raw_scores"))) {
       p <- p + do.call(
         what = ggplot2::geom_boxplot,
@@ -286,6 +264,21 @@ vip.default <- function(
       stop("To construct boxplots for permutation-based importance scores you ",
            "must specify `keep = TRUE` in the call `vi()` or `vi_permute()`. ",
            "Additionally, you also need to set `nsim >= 2`.",
+           call. = FALSE)
+    }
+  }
+
+  # Construct a violin plot
+  if (geom == "violin") {
+    if (!is.null(attr(imp, which = "raw_scores"))) {
+      p <- p + do.call(
+        what = ggplot2::geom_violin,
+        args = c(list(data = raw_scores, mapping = mapping), aesthetics)
+      )
+    } else {
+      stop("To construct violin plots for permutation-based importance scores ",
+           "you must specify `keep = TRUE` in the call `vi()` or ",
+           "`vi_permute()`. Additionally, you also need to set `nsim >= 2`.",
            call. = FALSE)
     }
   }
