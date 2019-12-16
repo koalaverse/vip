@@ -6,6 +6,9 @@
 
 * Added support for `"mvr"` objects from the [pls](https://cran.r-project.org/package=pls) package (currently just calls `caret::varImp()`) [(#35)](https://github.com/koalaverse/vip/issues/35).
 
+* Added `type` parameter for lm and GLM models (stats package) that allows user
+to use raw coefficients if they properly standardized the inputs.
+
 ## User-visible changes
 
 * The `vip()` function gained a new argument, `type`, for specifying which type of plot to construct. Current options are `type = "barplot"` (the default), `type = "dotplot"`, or `type = "boxplot"` (for permutation-based importance with `nsim > 1`) [(#79)](https://github.com/koalaverse/vip/issues/79). Consequently, the `bar` argument has been removed.

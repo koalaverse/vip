@@ -4,14 +4,8 @@
 \alias{vint}
 \title{Interaction Effects}
 \usage{
-vint(
-  object,
-  feature_names,
-  progress = "none",
-  parallel = FALSE,
-  paropts = NULL,
-  ...
-)
+vint(object, feature_names, progress = "none", parallel = FALSE,
+  paropts = NULL, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}

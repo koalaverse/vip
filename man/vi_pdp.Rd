@@ -7,7 +7,8 @@
 \usage{
 vi_pdp(object, ...)
 
-\method{vi_pdp}{default}(object, feature_names, FUN = NULL, var_fun = NULL, ...)
+\method{vi_pdp}{default}(object, feature_names, FUN = NULL,
+  var_fun = NULL, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}

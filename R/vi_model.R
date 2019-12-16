@@ -160,9 +160,11 @@
 #' for details.}
 #'
 #' \item{\code{\link[stats]{lm}}}{In (generalized) linear models, variable
-#' importance is based on the absolute value of the corresponding
+#' importance is typically based on the absolute value of the corresponding
 #' \emph{t}-statistics. For such models, the sign of the original coefficient
-#' is also returned.}
+#' is also returned. By default, \code{type = "stat"} is used; however, if the
+#' inputs have been appropriately standardized then the raw coefficients can be
+#' used with \code{type = "raw"}.}
 #'
 #' \item{\code{\link[sparklyr]{ml_feature_importances}}}{The Spark ML
 #' library provides standard variable importance for tree-based methods (e.g.,
@@ -1200,14 +1202,24 @@ vi_model.ml_model_random_forest_classification <- function(object, ...) {
 #' @rdname vi_model
 #'
 #' @export
-vi_model.lm <- function(object, ...) {
+vi_model.lm <- function(object, type = c("stat", "raw"), ...) {
+
+  # Determine which type of variable importance to compute
+  type <- match.arg(type)
+
+  # pattern to match based on type
+  if (type == "stat") {
+    type_pattern <- "^(t|z) value"
+  } else {
+    type_pattern <- "Estimate"
+  }
 
   # Construct model-specific variable importance scores
   coefs <- summary(object)$coefficients
   if (attr(object$terms, "intercept") == 1) {
     coefs <- coefs[-1L, , drop = FALSE]
   }
-  pos <- grep("^(t|z) value", x = colnames(coefs))  # grab pos of z/t stat col
+  pos <- grep(type_pattern, x = colnames(coefs))
   tib <- tibble::tibble(
     "Variable" = rownames(coefs),
     "Importance" = abs(coefs[, pos]),
@@ -1215,9 +1227,13 @@ vi_model.lm <- function(object, ...) {
   )
 
   # Add variable importance type attribute
-  label <- colnames(coefs)[pos]
-  label <- substr(label, start = 1, stop = 1)  # strip off t or z
-  attr(tib, which = "type") <- paste0("|", label, "-statistic|")
+  if (type == "stat") {
+    label <- colnames(coefs)[pos]
+    label <- substr(label, start = 1, stop = 1)  # strip off t or z
+    attr(tib, which = "type") <- paste0("|", label, "-statistic|")
+  } else {
+    attr(tib, which = "type") <- "|raw coefficients|"
+  }
 
   # Add "vi" class
   class(tib) <- c("vi", class(tib))

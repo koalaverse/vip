@@ -5,9 +5,11 @@
 \alias{add_sparklines.vi}
 \title{Add sparklines}
 \usage{
-add_sparklines(object, fit, digits = 3, free_y = FALSE, verbose = FALSE, ...)
+add_sparklines(object, fit, digits = 3, free_y = FALSE,
+  verbose = FALSE, ...)
 
-\method{add_sparklines}{vi}(object, fit, digits = 3, free_y = FALSE, verbose = FALSE, ...)
+\method{add_sparklines}{vi}(object, fit, digits = 3, free_y = FALSE,
+  verbose = FALSE, ...)
 }
 \arguments{
 \item{object}{An object that inherits from class \code{"vi"}.}
