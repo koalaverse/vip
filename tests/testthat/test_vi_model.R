@@ -757,6 +757,25 @@ test_that("`vi_model()` works for \"lm\" objects", {
 
 })
 
+test_that("`type` parameter returns proper values", {
+
+  # Skips
+  skip_on_cran()
+
+  X <- scale(mtcars[, -1])
+  Y <- mtcars$mpg
+  lm_model <- lm(Y ~ X)
+
+  # Run checks
+  coefs <- summary(lm_model)[["coefficients"]][-1, ]
+  t_stat <- vi_model(lm_model)
+  raw <- vi_model(lm_model, type = "raw")
+
+  expect_equal(as.vector(abs(coefs[, "t value"])), t_stat$Importance)
+  expect_equal(as.vector(abs(coefs[, "Estimate"])), raw$Importance)
+
+})
+
 
 # Package: xgboost -------------------------------------------------------------
 

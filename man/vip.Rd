@@ -8,25 +8,12 @@
 \usage{
 vip(object, ...)
 
-\method{vip}{default}(
-  object,
-  num_features = 10L,
-  geom = c("col", "point", "boxplot", "violin"),
-  mapping = NULL,
-  aesthetics = list(),
-  horizontal = TRUE,
-  all_permutations = FALSE,
-  jitter = FALSE,
-  include_type = FALSE,
-  ...,
-  bar = NULL,
-  width = NULL,
-  alpha = NULL,
-  color = NULL,
-  fill = NULL,
-  size = NULL,
-  shape = NULL
-)
+\method{vip}{default}(object, num_features = 10L, geom = c("col",
+  "point", "boxplot", "violin"), mapping = NULL, aesthetics = list(),
+  horizontal = TRUE, all_permutations = FALSE, jitter = FALSE,
+  include_type = FALSE, ..., bar = NULL, width = NULL,
+  alpha = NULL, color = NULL, fill = NULL, size = NULL,
+  shape = NULL)
 
 \method{vip}{model_fit}(object, ...)
 }
@@ -144,7 +131,7 @@ vi_scores <- vi(model, method = "ice")
 vip(vi_scores, geom = "point", horiz = FALSE)
 vip(vi_scores, geom = "point", horiz = FALSE, aesthetics = list(size = 3))
 
-# The `\%T>\\%` operator is imported for convenience; see ?magrittr::`\%T>\%`
+# The `\%T>\\\%` operator is imported for convenience; see ?magrittr::`\%T>\%`
 # for details
 vi_scores <- model \%>\%
   vi(method = "ice") \%T>\%

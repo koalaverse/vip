@@ -47,7 +47,8 @@ vi_model(object, ...)
 
 \method{vi_model}{earth}(object, type = c("nsubsets", "rss", "gcv"), ...)
 
-\method{vi_model}{gbm}(object, type = c("relative.influence", "permutation"), ...)
+\method{vi_model}{gbm}(object, type = c("relative.influence",
+  "permutation"), ...)
 
 \method{vi_model}{glmnet}(object, ...)
 
@@ -95,9 +96,10 @@ vi_model(object, ...)
 
 \method{vi_model}{ml_model_random_forest_classification}(object, ...)
 
-\method{vi_model}{lm}(object, ...)
+\method{vi_model}{lm}(object, type = c("t-stat", "raw"), ...)
 
-\method{vi_model}{xgb.Booster}(object, type = c("gain", "cover", "frequency"), ...)
+\method{vi_model}{xgb.Booster}(object, type = c("gain", "cover",
+  "frequency"), ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
@@ -261,9 +263,11 @@ slow for large networks.. To implement the Olden and Garson algorithms, use
 for details.}
 
 \item{\code{\link[stats]{lm}}}{In (generalized) linear models, variable
-importance is based on the absolute value of the corresponding
+importance is typically based on the absolute value of the corresponding
 \emph{t}-statistics. For such models, the sign of the original coefficient
-is also returned.}
+is also returned. By default, \code{type = "t-stat"} is used; however, if the
+inputs have been appropriately standardized then the raw coefficients can be
+used with \code{type = "raw"}.}
 
 \item{\code{\link[sparklyr]{ml_feature_importances}}}{The Spark ML
 library provides standard variable importance for tree-based methods (e.g.,
