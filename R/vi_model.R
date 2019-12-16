@@ -162,7 +162,7 @@
 #' \item{\code{\link[stats]{lm}}}{In (generalized) linear models, variable
 #' importance is typically based on the absolute value of the corresponding
 #' \emph{t}-statistics. For such models, the sign of the original coefficient
-#' is also returned. By default, \code{type = "t-stat"} is used; however, if the
+#' is also returned. By default, \code{type = "stat"} is used; however, if the
 #' inputs have been appropriately standardized then the raw coefficients can be
 #' used with \code{type = "raw"}.}
 #'
@@ -1202,13 +1202,13 @@ vi_model.ml_model_random_forest_classification <- function(object, ...) {
 #' @rdname vi_model
 #'
 #' @export
-vi_model.lm <- function(object, type = c("t-stat", "raw"), ...) {
+vi_model.lm <- function(object, type = c("stat", "raw"), ...) {
 
   # Determine which type of variable importance to compute
   type <- match.arg(type)
 
   # pattern to match based on type
-  if (type == "t-stat") {
+  if (type == "stat") {
     type_pattern <- "^(t|z) value"
   } else {
     type_pattern <- "Estimate"
@@ -1227,7 +1227,7 @@ vi_model.lm <- function(object, type = c("t-stat", "raw"), ...) {
   )
 
   # Add variable importance type attribute
-  if (type == "t-stat") {
+  if (type == "stat") {
     label <- colnames(coefs)[pos]
     label <- substr(label, start = 1, stop = 1)  # strip off t or z
     attr(tib, which = "type") <- paste0("|", label, "-statistic|")

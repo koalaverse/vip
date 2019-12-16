@@ -96,7 +96,7 @@ vi_model(object, ...)
 
 \method{vi_model}{ml_model_random_forest_classification}(object, ...)
 
-\method{vi_model}{lm}(object, type = c("t-stat", "raw"), ...)
+\method{vi_model}{lm}(object, type = c("stat", "raw"), ...)
 
 \method{vi_model}{xgb.Booster}(object, type = c("gain", "cover",
   "frequency"), ...)
@@ -265,7 +265,7 @@ for details.}
 \item{\code{\link[stats]{lm}}}{In (generalized) linear models, variable
 importance is typically based on the absolute value of the corresponding
 \emph{t}-statistics. For such models, the sign of the original coefficient
-is also returned. By default, \code{type = "t-stat"} is used; however, if the
+is also returned. By default, \code{type = "stat"} is used; however, if the
 inputs have been appropriately standardized then the raw coefficients can be
 used with \code{type = "raw"}.}
 
