@@ -6,12 +6,12 @@
 
 * Added support for `"mvr"` objects from the [pls](https://cran.r-project.org/package=pls) package (currently just calls `caret::varImp()`) [(#35)](https://github.com/koalaverse/vip/issues/35).
 
-* Added `type` parameter for lm and GLM models (stats package) that allows user
-to use raw coefficients if they properly standardized the inputs.
+* The `"lm"` method for `vi_model()` gained a new `type` argument that allows users
+to use either (1) the raw coefficients if the features were properly standardized (`type = "raw"`), or (2) the absolute value of the corresponding *t*- or *z*-statistic (`type = "stat"`, the default) [(#77)](https://github.com/koalaverse/vip/issues/77).
 
 ## User-visible changes
 
-* The `vip()` function gained a new argument, `type`, for specifying which type of plot to construct. Current options are `type = "barplot"` (the default), `type = "dotplot"`, or `type = "boxplot"` (for permutation-based importance with `nsim > 1`) [(#79)](https://github.com/koalaverse/vip/issues/79). Consequently, the `bar` argument has been removed.
+* The `vip()` function gained a new argument, `geom`, for specifying which type of plot to construct. Current options are `geom = "col"` (the default), `geom = "point"`, `geom = "boxplot"`, or `geom = "violin"` (the latter two only work for permutation-based importance with `nsim > 1`) [(#79)](https://github.com/koalaverse/vip/issues/79). Consequently, the `bar` argument has been removed.
 
 * The `vip()` function gained two new arguments for specifying aesthetics: `mapping` and `aesthetics` (for fixed aesthetics like `color = "red"`). Consequently, the arguments `color`, `fill`, etc. have been removed [(#80)](https://github.com/koalaverse/vip/issues/80).
 
