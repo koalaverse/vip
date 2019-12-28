@@ -74,5 +74,5 @@ Suggests:
     sparklyr (>= 0.8.0),
     testthat,
     varImp,
-    xgboost, tinytest
+    xgboost
 RoxygenNote: 7.0.2
