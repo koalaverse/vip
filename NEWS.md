@@ -39,6 +39,8 @@ grid.arrange(p1, p2, p3, p4, nrow = 2)
 
 ## Bug fixes
 
+* The internal (i.e., not exported) `get_feature_names()` function does a better job with `"nnet"` objects containing factors. It also does a better job at extracting feature names from model objects containiing a `"formula"` component.
+
 * `vi_model()` now works correctly for `"glm"` objects with non-Gaussian families (e.g., logistic regression) [(#74)](https://github.com/koalaverse/vip/issues/74).
 
 * Added appropriate **sparklyr** version dependency [(#59)](https://github.com/koalaverse/vip/issues/59).

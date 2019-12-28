@@ -31,7 +31,7 @@ URL: https://koalaverse.github.io/vip/index.html, https://github.com/koalaverse/
 BugReports: https://github.com/koalaverse/vip/issues
 Encoding: UTF-8
 LazyData: true
-Imports:
+Imports: 
     ggplot2 (>= 0.9.0),
     gridExtra,
     magrittr,
@@ -41,7 +41,7 @@ Imports:
     stats,
     tibble,
     utils
-Suggests:
+Suggests: 
     DT,
     C50,
     caret,
@@ -64,6 +64,7 @@ Suggests:
     nnet,
     party,
     partykit,
+    pls,
     randomForest,
     ranger,
     rmarkdown,
@@ -73,5 +74,5 @@ Suggests:
     sparklyr (>= 0.8.0),
     testthat,
     varImp,
-    xgboost
+    xgboost, tinytest
 RoxygenNote: 7.0.2

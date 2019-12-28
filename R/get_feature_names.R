@@ -1,4 +1,35 @@
-#' Extract Predictor Names
+#' Extract model formula
+#'
+#' Calls \code{\link[stats]{formula}} to extract the formulae from various
+#' modeling objects, but returns \code{NULL} instead of an error for objects
+#' that do not contain a formula component.
+#'
+#' @param object An appropriate fitted model object.
+#'
+#' @return Either a \code{\link[stats]{formula}} object or \code{NULL}.
+get_formula <- function(object) {
+  UseMethod("get_formula")
+}
+
+
+#' @keywords internal
+get_formula.default <- function(object) {
+  form <- tryCatch(
+    expr = stats::formula(object),
+    error = function(e) {
+      NULL
+    }
+  )
+}
+
+
+#' @keywords internal
+get_formula.constparty <- function(object) {
+  get_formula.default(attr(stats::terms(object), which = "Formula_without_dot"))
+}
+
+
+#' Extract feature names
 #'
 #' Extract predictor names from a fitted model.
 #'
@@ -20,6 +51,17 @@ get_feature_names.default <- function(object, ...) {
 
 
 #' @keywords internal
+get_feature_names.formula <- function(object, ...) {
+  tryCatch(  # FIXME: IS the RHS always located in the third component?
+    expr = all.vars(object[[3L]]),  # extract unique vars from RHS side of formula
+    error = function(e) {  # in case formula doesn't have both a LHS and RHS, etc.
+      get_feature_names.default(object)
+    }
+  )
+}
+
+
+#' @keywords internal
 get_feature_names.C5.0 <- function(object, ...) {
   object$predictors
 }
@@ -27,8 +69,7 @@ get_feature_names.C5.0 <- function(object, ...) {
 
 #' @keywords internal
 get_feature_names.constparty <- function(object, ...) {
-  all.vars(stats::formula(attr(stats::terms(object),
-                               which = "Formula_without_dot"))[[3L]])
+  get_feature_names(get_formula(object))
 }
 
 
@@ -58,7 +99,7 @@ get_feature_names.H2ORegressionModel <- function(object, ...) {
 
 #' @keywords internal
 get_feature_names.lm <- function(object, ...) {
-  all.vars(stats::formula(object)[[3L]])
+  get_feature_names(get_formula(object))
 }
 
 
@@ -71,11 +112,7 @@ get_feature_names.nls <- function(object, ...) {
 
 #' @keywords internal
 get_feature_names.nnet <- function(object, ...) {
-  if (!is.null(object$coefnames)) {
-    object$coefnames
-  } else {
-    get_feature_names.default(object)
-  }
+  get_feature_names(get_formula(object))
 }
 
 
@@ -113,7 +150,7 @@ get_feature_names.ranger <- function(object, ...) {
 #' @keywords internal
 get_feature_names.rpart <- function(object, ...) {
   # names(object$variable.importance)
-  all.vars(stats::formula(object)[[3L]])
+  get_feature_names(get_formula(object))
 }
 
 
