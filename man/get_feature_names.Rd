@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_feature_names.R
 \name{get_feature_names}
 \alias{get_feature_names}
-\title{Extract Predictor Names}
+\title{Extract feature names}
 \usage{
 get_feature_names(object, ...)
 }
