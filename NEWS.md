@@ -2,6 +2,8 @@
 
 ## Enhancements
 
+* Added support for SHAP-based feature importance which makes use of the recent [fastshap](https://cran.r-project.org/package=fastshap) package on CRAN. To use, simply call `vi_shap()` or `vi()` and specify `method = "shap"` [(#87)](https://github.com/koalaverse/vip/issues/87).
+
 * Added support for `"model_fit"` objects from the [parsnip](https://cran.r-project.org/package=parsnip) package.
 
 * Added support for `"mvr"` objects from the [pls](https://cran.r-project.org/package=pls) package (currently just calls `caret::varImp()`) [(#35)](https://github.com/koalaverse/vip/issues/35).
@@ -37,9 +39,13 @@ grid.arrange(p1, p2, p3, p4, nrow = 2)
 
 * The `vip()` function gained a new argument, `include_type`, which defaults to `FALSE`. If `TRUE`, the type of variable importance that was computed is included in the appropriate axis label. Set `include_type = TRUE` to revert to the old behavior.
 
+## Miscellaneous
+
+* Minor documentation improvements.
+
 ## Bug fixes
 
-* The internal (i.e., not exported) `get_feature_names()` function does a better job with `"nnet"` objects containing factors. It also does a better job at extracting feature names from model objects containiing a `"formula"` component.
+* The internal (i.e., not exported) `get_feature_names()` function does a better job with `"nnet"` objects containing factors. It also does a better job at extracting feature names from model objects containing a `"formula"` component.
 
 * `vi_model()` now works correctly for `"glm"` objects with non-Gaussian families (e.g., logistic regression) [(#74)](https://github.com/koalaverse/vip/issues/74).
 
