@@ -29,3 +29,11 @@ vis3 <- vi_shap(fit3, pred_wrapper = pfun, nsim = 10)
 
 # Display plots in a grid
 grid.arrange(vip(vis1), vip(vis2), vip(vis3), nrow = 1)
+
+# Try using `vip::vi()` and `vip::vip()` directly
+set.seed(1612)  # for reproducibility
+vis <- vi(fit1, method = "shap", pred_wrapper = pfun, nsim = 10,
+          .progress = "text")
+p <- vip(fit1, method = "shap", pred_wrapper = pfun, nsim = 10,
+         .progress = "text")
+grid.arrange(vip(vis), p, nrow = 1)
