@@ -10,7 +10,7 @@ vi_permute(object, ...)
 \method{vi_permute}{default}(
   object,
   feature_names = NULL,
-  train,
+  train = NULL,
   target,
   metric = "auto",
   smaller_is_better = NULL,
@@ -35,10 +35,14 @@ vi_permute(object, ...)
 \item{...}{Additional optional arguments. (Currently ignored.)}
 
 \item{feature_names}{Character string giving the names of the predictor
-variables (i.e., features) of interest.}
+variables (i.e., features) of interest. If \code{NULL} (the default) then the
+internal `get_feature_names()` function will be called to try and extract
+them automatically. It is good practice to always specify this argument.}
 
 \item{train}{A matrix-like R object (e.g., a data frame or matrix)
-containing the training data.}
+containing the training data. If \code{NULL} (the default) then the
+internal `get_training_data()` function will be called to try and extract it
+automatically. It is good practice to always specify this argument.}
 
 \item{target}{Either a character string giving the name (or position) of the
 target column in \code{train} or, if \code{train} only contains feature

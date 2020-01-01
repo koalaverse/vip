@@ -1,4 +1,4 @@
-#' PDP-Based Variable Importance
+#' PDP-based variable importance
 #'
 #' Compute PDP-based VI scores for the predictors in a model. See details below.
 #'

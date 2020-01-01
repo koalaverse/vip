@@ -3,7 +3,7 @@
 \name{vi_pdp}
 \alias{vi_pdp}
 \alias{vi_pdp.default}
-\title{PDP-Based Variable Importance}
+\title{PDP-based variable importance}
 \usage{
 vi_pdp(object, ...)
 

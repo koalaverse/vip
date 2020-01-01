@@ -6,10 +6,14 @@
 #' @param object A fitted model object (e.g., a \code{"randomForest"} object).
 #'
 #' @param feature_names Character string giving the names of the predictor
-#' variables (i.e., features) of interest.
+#' variables (i.e., features) of interest. If \code{NULL} (the default) then the
+#' internal `get_feature_names()` function will be called to try and extract
+#' them automatically. It is good practice to always specify this argument.
 #'
 #' @param train A matrix-like R object (e.g., a data frame or matrix)
-#' containing the training data.
+#' containing the training data. If \code{NULL} (the default) then the
+#' internal `get_training_data()` function will be called to try and extract it
+#' automatically. It is good practice to always specify this argument.
 #'
 #' @param target Either a character string giving the name (or position) of the
 #' target column in \code{train} or, if \code{train} only contains feature
@@ -151,7 +155,7 @@ vi_permute <- function(object, ...) {
 vi_permute.default <- function(
   object,
   feature_names = NULL,
-  train,
+  train = NULL,
   target,
   metric = "auto",
   smaller_is_better = NULL,
@@ -180,9 +184,20 @@ vi_permute.default <- function(
          "instead.", call. = FALSE)
   }
 
-  # Get training data, if not supplied
-  if (missing(train)) {
+  # # Try to extract feature names if not supplied
+  # if (is.null(feature_names)) {
+  #   feature_names <- get_feature_names(object)
+  # }
+
+  # Try to extract training data if not supplied
+  if (is.null(train)) {
     train <- get_training_data(object)
+  }
+
+  # Throw informative error if `target` argument is not specified
+  if (is.null(target)) {
+    stop("Could not find target. Please specify a target variable via the ",
+         "`target` argument.", call. = FALSE)
   }
 
   # Extract feature names and separate features from target (if necessary)
