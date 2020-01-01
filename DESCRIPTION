@@ -51,6 +51,7 @@ Suggests:
     doParallel,
     dplyr,
     earth,
+    fastshap,
     gbm,
     glmnet,
     h2o,

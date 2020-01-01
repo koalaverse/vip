@@ -10,7 +10,7 @@ vi(object, ...)
 
 \method{vi}{default}(
   object,
-  method = c("model", "pdp", "ice", "permute"),
+  method = c("model", "pdp", "ice", "permute", "shap"),
   feature_names = NULL,
   FUN = NULL,
   var_fun = NULL,
@@ -33,12 +33,12 @@ an object that inherits from class \code{"vi"}.}
 \code{\link{vi_permute}}.}
 
 \item{method}{Character string specifying the type of variable importance
-(VI) to compute. Current options are \code{"model"}, for model-specific VI
+(VI) to compute. Current options are \code{"model"} (the default), for model-specific VI
 scores (see \code{\link{vi_model}} for details), \code{"pdp"}, for PDP-based
 VI scores (see \code{\link{vi_pdp}} for details), \code{"ice"}, for ICE-based
-VI scores (see \code{\link{vi_ice}} for details), and \code{"permute"}, for
-permutation-based VI scores (see \code{\link{vi_permute}} for details). The
-default depends on the class of \code{object}. For more details on the
+VI scores (see \code{\link{vi_ice}} for details), \code{"permute"}, for
+permutation-based VI scores (see \code{\link{vi_permute}} for details), or
+\code{"shao"}, for SHAP-based VI scores. For more details on the
 PDP/ICE-based methods, see the reference below.}
 
 \item{feature_names}{Character string giving the names of the predictor

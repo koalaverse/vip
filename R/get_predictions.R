@@ -13,6 +13,12 @@ get_predictions.default <- function(object, type = c("raw", "prob")) {
 
 
 #' @keywords internal
+get_predictions.earth <- function(object, newdata) {
+  stats::predict(object, newdata = newdata)[, 1L, drop = TRUE]
+}
+
+
+#' @keywords internal
 get_predictions.ranger <- function(object, type = c("raw", "prob")) {
   type <- match.arg(type)
   if (object$treetype %in% c("Classification", "Regression")) {
