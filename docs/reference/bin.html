@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>PDP-based variable importance — vi_pdp • vip</title>
+<title>Bin a numeric vector — bin • vip</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="PDP-based variable importance — vi_pdp" />
-<meta property="og:description" content="Compute PDP-based VI scores for the predictors in a model. See details below." />
+<meta property="og:title" content="Bin a numeric vector — bin" />
+<meta property="og:description" content="Function to bin a numeric vector" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -126,84 +126,36 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>PDP-based variable importance</h1>
-    <small class="dont-index">Source: <a href='https://github.com/koalaverse/vip/blob/master/R/vi_pdp.R'><code>R/vi_pdp.R</code></a></small>
-    <div class="hidden name"><code>vi_pdp.Rd</code></div>
+    <h1>Bin a numeric vector</h1>
+    <small class="dont-index">Source: <a href='https://github.com/koalaverse/vip/blob/master/R/gen_friedman.R'><code>R/gen_friedman.R</code></a></small>
+    <div class="hidden name"><code>bin.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Compute PDP-based VI scores for the predictors in a model. See details below.</p>
+    <p>Function to bin a numeric vector</p>
     </div>
 
-    <pre class="usage"><span class='fu'>vi_pdp</span>(<span class='no'>object</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for default</span>
-<span class='fu'>vi_pdp</span>(<span class='no'>object</span>, <span class='no'>feature_names</span>, <span class='kw'>FUN</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>var_fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>bin</span>(<span class='no'>x</span>, <span class='no'>n_bins</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>object</th>
-      <td><p>A fitted model object (e.g., a <code>"randomForest"</code> object).</p></td>
+      <th>x</th>
+      <td><p>A numeric vector.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Additional optional arguments to be passed onto
-<code><a href='https://rdrr.io/pkg/pdp/man/partial.html'>partial</a></code>.</p></td>
-    </tr>
-    <tr>
-      <th>feature_names</th>
-      <td><p>Character string giving the names of the predictor
-variables (i.e., features) of interest.</p></td>
-    </tr>
-    <tr>
-      <th>FUN</th>
-      <td><p>Deprecated. Use <code>var_fun</code> instead.</p></td>
-    </tr>
-    <tr>
-      <th>var_fun</th>
-      <td><p>List with two components, <code>"cat"</code> and <code>"con"</code>,
-containing the functions to use to quantify the variability of the feature
-effects (e.g., partial dependence values) for categorical and continuous
-features, respectively. If <code>NULL</code>, the standard deviation is used for
-continuous features. For categorical features, the range statistic is used
-(i.e., (max - min) / 4). Only used when <code>method = "pdp"</code> or
-<code>method = "ice"</code>.</p></td>
+      <th>Integer</th>
+      <td><p>specifying the number of bins to split <code>x</code> into.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>A tidy data frame (i.e., a <code>"tibble"</code> object) with two columns,
-<code>Variable</code> and <code>Importance</code>, containing the variable name and its
-associated importance score, respectively.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>This approach to computing VI scores is based on quantifying the
-relative "flatness" of the <em>partial dependence plot</em> (PDP) of each
-feature. It is model-agnostic and can be applied to any supervised learning
-algorithm. By default, relative "flatness" is defined by computing the
-standard deviation of the y-axis values for each PDP for numeric features;
-for categorical features, the default is to use range divided by 4. This can
-be changed via the `var_fun` argument. See
-<a href='https://arxiv.org/abs/1805.04755'>Greenwell et al. (2018)</a> for details
-and additional examples.</p>
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p>Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J. A Simple
-and Effective Model-Based Variable Importance Measure. arXiv preprint
-arXiv:1805.04755 (2018).
-#' @rdname vi_pdp</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#details">Details</a></li>
-      <li><a href="#references">References</a></li>
     </ul>
 
   </div>

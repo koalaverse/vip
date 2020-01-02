@@ -140,7 +140,7 @@
 <span class='co'># S3 method for default</span>
 <span class='fu'>vi</span>(
   <span class='no'>object</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"model"</span>, <span class='st'>"pdp"</span>, <span class='st'>"ice"</span>, <span class='st'>"permute"</span>),
+  <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"model"</span>, <span class='st'>"pdp"</span>, <span class='st'>"ice"</span>, <span class='st'>"permute"</span>, <span class='st'>"shap"</span>),
   <span class='kw'>feature_names</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>FUN</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>var_fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -172,12 +172,12 @@ an object that inherits from class <code>"vi"</code>.</p></td>
     <tr>
       <th>method</th>
       <td><p>Character string specifying the type of variable importance
-(VI) to compute. Current options are <code>"model"</code>, for model-specific VI
+(VI) to compute. Current options are <code>"model"</code> (the default), for model-specific VI
 scores (see <code><a href='vi_model.html'>vi_model</a></code> for details), <code>"pdp"</code>, for PDP-based
 VI scores (see <code><a href='vi_pdp.html'>vi_pdp</a></code> for details), <code>"ice"</code>, for ICE-based
-VI scores (see <code><a href='vi_ice.html'>vi_ice</a></code> for details), and <code>"permute"</code>, for
-permutation-based VI scores (see <code><a href='vi_permute.html'>vi_permute</a></code> for details). The
-default depends on the class of <code>object</code>. For more details on the
+VI scores (see <code><a href='vi_ice.html'>vi_ice</a></code> for details), <code>"permute"</code>, for
+permutation-based VI scores (see <code><a href='vi_permute.html'>vi_permute</a></code> for details), or
+<code>"shao"</code>, for SHAP-based VI scores. For more details on the
 PDP/ICE-based methods, see the reference below.</p></td>
     </tr>
     <tr>

@@ -136,15 +136,17 @@
 <h2 class="hasAnchor">
 <a href="#enhancements" class="anchor"></a>Enhancements</h2>
 <ul>
+<li><p>Added support for SHAP-based feature importance which makes use of the recent <a href="https://cran.r-project.org/package=fastshap">fastshap</a> package on CRAN. To use, simply call <code><a href="../reference/vi_shap.html">vi_shap()</a></code> or <code><a href="../reference/vi.html">vi()</a></code> and specify <code>method = "shap"</code> <a href="https://github.com/koalaverse/vip/issues/87">(<a href='https://github.com/koalaverse/vip/issues/87'>#87</a>)</a>.</p></li>
 <li><p>Added support for <code>"model_fit"</code> objects from the <a href="https://cran.r-project.org/package=parsnip">parsnip</a> package.</p></li>
 <li><p>Added support for <code>"mvr"</code> objects from the <a href="https://cran.r-project.org/package=pls">pls</a> package (currently just calls <code><a href="https://rdrr.io/pkg/caret/man/varImp.html">caret::varImp()</a></code>) <a href="https://github.com/koalaverse/vip/issues/35">(<a href='https://github.com/koalaverse/vip/issues/35'>#35</a>)</a>.</p></li>
+<li><p>The <code>"lm"</code> method for <code><a href="../reference/vi_model.html">vi_model()</a></code> gained a new <code>type</code> argument that allows users to use either (1) the raw coefficients if the features were properly standardized (<code>type = "raw"</code>), or (2) the absolute value of the corresponding <em>t</em>- or <em>z</em>-statistic (<code>type = "stat"</code>, the default) <a href="https://github.com/koalaverse/vip/issues/77">(<a href='https://github.com/koalaverse/vip/issues/77'>#77</a>)</a>.</p></li>
 </ul>
 </div>
 <div id="user-visible-changes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#user-visible-changes" class="anchor"></a>User-visible changes</h2>
 <ul>
-<li><p>The <code><a href="../reference/vip.html">vip()</a></code> function gained a new argument, <code>type</code>, for specifying which type of plot to construct. Current options are <code>type = "barplot"</code> (the default), <code>type = "dotplot"</code>, or <code>type = "boxplot"</code> (for permutation-based importance with <code>nsim &gt; 1</code>) <a href="https://github.com/koalaverse/vip/issues/79">(<a href='https://github.com/koalaverse/vip/issues/79'>#79</a>)</a>. Consequently, the <code>bar</code> argument has been removed.</p></li>
+<li><p>The <code><a href="../reference/vip.html">vip()</a></code> function gained a new argument, <code>geom</code>, for specifying which type of plot to construct. Current options are <code>geom = "col"</code> (the default), <code>geom = "point"</code>, <code>geom = "boxplot"</code>, or <code>geom = "violin"</code> (the latter two only work for permutation-based importance with <code>nsim &gt; 1</code>) <a href="https://github.com/koalaverse/vip/issues/79">(<a href='https://github.com/koalaverse/vip/issues/79'>#79</a>)</a>. Consequently, the <code>bar</code> argument has been removed.</p></li>
 <li><p>The <code><a href="../reference/vip.html">vip()</a></code> function gained two new arguments for specifying aesthetics: <code>mapping</code> and <code>aesthetics</code> (for fixed aesthetics like <code>color = "red"</code>). Consequently, the arguments <code>color</code>, <code>fill</code>, etc. have been removed <a href="https://github.com/koalaverse/vip/issues/80">(<a href='https://github.com/koalaverse/vip/issues/80'>#80</a>)</a>.</p></li>
 </ul>
 <p>An example illustrating the above two changes is given below:</p>
@@ -168,10 +170,18 @@
 <li>The <code><a href="../reference/vip.html">vip()</a></code> function gained a new argument, <code>include_type</code>, which defaults to <code>FALSE</code>. If <code>TRUE</code>, the type of variable importance that was computed is included in the appropriate axis label. Set <code>include_type = TRUE</code> to revert to the old behavior.</li>
 </ul>
 </div>
+<div id="miscellaneous" class="section level2">
+<h2 class="hasAnchor">
+<a href="#miscellaneous" class="anchor"></a>Miscellaneous</h2>
+<ul>
+<li>Minor documentation improvements.</li>
+</ul>
+</div>
 <div id="bug-fixes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"></a>Bug fixes</h2>
 <ul>
+<li><p>The internal (i.e., not exported) <code><a href="../reference/get_feature_names.html">get_feature_names()</a></code> function does a better job with <code>"nnet"</code> objects containing factors. It also does a better job at extracting feature names from model objects containing a <code>"formula"</code> component.</p></li>
 <li><p><code><a href="../reference/vi_model.html">vi_model()</a></code> now works correctly for <code>"glm"</code> objects with non-Gaussian families (e.g., logistic regression) <a href="https://github.com/koalaverse/vip/issues/74">(<a href='https://github.com/koalaverse/vip/issues/74'>#74</a>)</a>.</p></li>
 <li><p>Added appropriate <strong>sparklyr</strong> version dependency <a href="https://github.com/koalaverse/vip/issues/59">(<a href='https://github.com/koalaverse/vip/issues/59'>#59</a>)</a>.</p></li>
 </ul>

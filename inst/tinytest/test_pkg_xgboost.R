@@ -1,30 +1,65 @@
-# Load Friedman benchmark data
-friedman1 <- readRDS("friedman.rds")$friedman1
-friedman2 <- readRDS("friedman.rds")$friedman2
+# Generate Friedman benchmark data
+friedman1 <- gen_friedman(seed = 101)
 
-# Fit an additive linear regression model
-fit_lm <- lm(y ~ ., data = friedman1)
+# Tests for package C50
+if (require(xgboost, quietly = TRUE)) {
 
-# Fit an additive logistic regression model
-fit_glm <- glm(y ~ ., data = friedman2, family = "binomial")
+  # Fit model(s)
+  set.seed(101)
+  fit <- xgboost::xgboost(  # params found using `autoxgb::autoxgb()`
+    data = data.matrix(subset(friedman1, select = -y)),
+    label = friedman1$y,
+    max_depth = 3,
+    eta = 0.1,
+    nrounds = 301,
+    verbose = 0
+  )
 
-# Compute variable importance scores
-vi_lm <- vi_model(fit_lm)
-vi_glm <- vi_model(fit_glm)
+  # Compute VI scores
+  vis_gain <- vi_model(fit)
+  vis_cover <- vi_model(fit, type = "cover")
+  vis_frequency <- vi_model(fit, type = "frequency")
+  vis_xgboost <- xgboost::xgb.importance(model = fit)
 
-# Expectations
-expect_identical(
-  current = vi_lm$Importance,
-  target = unname(abs(summary(fit_lm)$coefficients[, "t value"])[-1])
-)
-expect_identical(
-  current = vi_glm$Importance,
-  target = unname(abs(summary(fit_glm)$coefficients[, "z value"])[-1])
-)
+  # Expectations for `vi_model()`
+  expect_identical(
+    current = vis_gain$Importance,
+    target = vis_xgboost$Gain
+  )
+  expect_identical(
+    current = vis_cover$Importance,
+    target = vis_xgboost$Cover
+  )
+  expect_identical(
+    current = vis_frequency$Importance,
+    target = vis_xgboost$Frequency
+  )
 
-# Setting `type = "raw"` should return the aboldute value of the original
-# coefficients (as opposed to |t-value| or |z-value|)
-expect_identical(
-  current = vi_model(fit_lm, type = "raw")$Importance,
-  target = unname(abs(coef(fit_lm))[-1])
-)
+  # Expectations for `get_training_data()`
+  expect_error(vip:::get_training_data.default(fit))
+
+  # Expectations for `get_feature_names()`
+  expect_identical(
+    current = vip:::get_feature_names.xgb.Booster(fit),
+    target = paste0("x", 1L:10L)
+  )
+
+  # Call `vip::vip()` directly
+  p <- vip(fit, method = "model", include_type = TRUE)
+
+  # Expect `p` to be a `"gg" "ggplot"` object
+  expect_identical(
+    current = class(p),
+    target = c("gg", "ggplot")
+  )
+
+  # Display VIPs side by side
+  grid.arrange(
+    vip(vis_gain, include_type = TRUE),
+    vip(vis_cover, include_type = TRUE),
+    vip(vis_frequency, include_type = TRUE),
+    p,
+    nrow = 1
+  )
+
+}

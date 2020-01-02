@@ -21,12 +21,12 @@ if (require(nnet, quietly = TRUE)) {
 
   # Formula interface
   fit1 <- nnet::nnet(Sepal.Length ~ . + I(Petal.Width^2), size = 2, data = iris,
-                     linout = TRUE)
+                     linout = TRUE, verbose = 0)
 
   # Matrix interface
   mm <- model.matrix(Sepal.Length ~ . - 1, data = iris)
   fit2 <- nnet::nnet(x = mm, y = iris$Sepal.Length, size = 2, data = iris,
-                     linout = TRUE)
+                     linout = TRUE, verbose = 0)
 
   # Expectations
   expect_identical(
