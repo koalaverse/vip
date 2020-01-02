@@ -43,7 +43,7 @@ grid.arrange(p1, p2, p3, p4, nrow = 2)
 
 ## Miscellaneous
 
-* Switched to the [tinytest](https://cran.r-project.org/package=tinytest) framework.
+* Switched to the [tinytest](https://cran.r-project.org/package=tinytest) framework [(#82)](https://github.com/koalaverse/vip/issues/82).
 
 * Minor documentation improvements.
 
