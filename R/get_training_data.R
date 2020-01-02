@@ -11,28 +11,6 @@ get_training_data <- function(object) {
 }
 
 
-#' #' @keywords internal
-#' get_training_data.default <- function(object) {
-#'   if (isS4(object)) {
-#'     stop(msg)
-#'   } else {
-#'     train <- eval(stats::getCall(object)$data)
-#'     if (is.null(train)) {
-#'       stop(msg)
-#'     } else {
-#'       if (!(is.data.frame(train))) {
-#'         if (is.matrix(train) || is.list(train)) {
-#'           train <- as.data.frame(train)
-#'         } else {
-#'           stop(msg)
-#'         }
-#'       }
-#'     }
-#'   }
-#'   train
-#' }
-
-
 #' @keywords internal
 get_training_data.default <- function(object, env = parent.frame(),
                                       arg = "data") {
