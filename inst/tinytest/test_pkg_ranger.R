@@ -9,10 +9,6 @@ if (require(ranger, quietly = TRUE)) {
   set.seed(101)
   fit1 <- ranger::ranger(y ~ ., data = friedman1)
   fit2 <- ranger::ranger(y ~ ., data = friedman1, importance = "impurity")
-  fit3 <- ranger::ranger(y ~ ., data = friedman3, importance = "permutation")
-  fit4 <- ranger::ranger(y ~ ., data = friedman3, importance = "permutation",
-                         probability = TRUE)
-
 
   # Compute model-based VI scores
   vis <- vi_model(fit2)
@@ -45,36 +41,11 @@ if (require(ranger, quietly = TRUE)) {
     target = c("gg", "ggplot")
   )
 
-  # Compute permutation-based VI scores
-  set.seed(102)
-  vis_permute_error <- vi(
-    object = fit3,
-    method = "permute",
-    target = "y",
-    # metric = "error",  # default
-    nsim = 10
-  )
-  vis_permute_mauc <- vi(
-    object = fit4,
-    method = "permute",
-    target = "y",
-    metric = "mauc",
-    nsim = 10
-  )
-
-  # Expectations for `vi_permute()`
-  expect_identical(
-    current = dim(vis_permute_mauc),
-    target = c(10L, 3L)
-  )
-
   # Display VIPs side by side
   grid.arrange(
     vip(vis, include_type = TRUE),
     p,
-    vip(vis_permute_error, include_type = TRUE),
-    vip(fit3, include_type = TRUE),
-    nrow = 2
+    nrow = 1
   )
 
 }

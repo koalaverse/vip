@@ -1,17 +1,16 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: r
-
+sudo: false
+cache: packages
+r_build_args: "--no-build-vignettes"
+r_check_args: "--no-vignettes"
 r:
   - oldrel
   - release
   - devel
-
-sudo: false
-
-cache: packages
-
-warnings_are_errors: false
-
+env:
+  global:
+  - _R_CHECK_FORCE_SUGGESTS_=false
 after_success:
   - Rscript -e 'covr::codecov()'

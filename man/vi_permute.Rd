@@ -12,7 +12,7 @@ vi_permute(object, ...)
   feature_names = NULL,
   train = NULL,
   target,
-  metric = "auto",
+  metric = NULL,
   smaller_is_better = NULL,
   type = c("difference", "ratio"),
   nsim = 1,

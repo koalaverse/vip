@@ -157,7 +157,7 @@ vi_permute.default <- function(
   feature_names = NULL,
   train = NULL,
   target,
-  metric = "auto",
+  metric = NULL,
   smaller_is_better = NULL,
   type = c("difference", "ratio"),
   nsim = 1,
@@ -194,10 +194,21 @@ vi_permute.default <- function(
     train <- get_training_data(object)
   }
 
-  # Throw informative error if `target` argument is not specified
+  # Throw informative error messages if required arguments are missing
   if (is.null(target)) {
     stop("Could not find target. Please specify a target variable via the ",
-         "`target` argument.", call. = FALSE)
+         "`target` argument; see `?vip::vi_permute` for details.",
+         call. = FALSE)
+  }
+  if (is.null(metric)) {
+    stop("Could not find metric. Please specify a valid metric via the ",
+         "`metric` argument; see `?vip::vi_permute` for details.",
+         call. = FALSE)
+  }
+  if (is.null(pred_wrapper)) {
+    stop("Could not find prediction wrapper. Please specify a valid prediction ",
+         "function via the `pred_wrapper` argument; see `?vip::vi_permute` ",
+         "for details.", call. = FALSE)
   }
 
   # Extract feature names and separate features from target (if necessary)
@@ -241,20 +252,13 @@ vi_permute.default <- function(
            call. = FALSE)
     }
 
-    # If `metric` is a user-supplied function, then `pred_wrapper` cannot
-    # be `NULL`.
-    if (is.null(smaller_is_better)) {
-      stop("Please specify a logical value for `smaller_is_better`.",
-           call. = FALSE)
-    } else {
-      # Check prediction function arguments
-      if (!all(c("object", "newdata") %in% names(formals(pred_wrapper)))) {
-        stop("`pred_wrapper()` must be a function with arguments `object` and ",
-             "`newdata`.", call. = FALSE)
-      }
+    # Check prediction function arguments
+    if (!all(c("object", "newdata") %in% names(formals(pred_wrapper)))) {
+      stop("`pred_wrapper()` must be a function with arguments `object` and ",
+           "`newdata`.", call. = FALSE)
     }
 
-    # Check prediction function arguments
+    # Check metric function arguments
     if (!all(c("actual", "predicted") %in% names(formals(metric)))) {
       stop("`metric()` must be a function with arguments `actual` and ",
            "`predicted`.", call. = FALSE)
@@ -267,32 +271,28 @@ vi_permute.default <- function(
     # train_y <- ifelse(train_y == reference_class, yes = 1, no = 0)
 
     # Performance function
-    perf_fun <- metric
+    mfun <- metric
 
   } else {
 
-    # Performance metric
-    metric <- if (metric == "auto") {
-      get_default_metric(object)
-    } else {
-      tolower(metric)
-    }
+    # Convert metric string to lowercase
+    metric <- tolower(metric)
 
-    # Performance function
-    perf_fun <- switch(metric,
+    # Get corresponding metric/performance function
+    mfun <- switch(metric,
 
       # Classification
-      "auc" = perf_auc,            # requires predicted class probabilities
-      "error" = perf_ce,           # requires predicted class labels
-      "logloss" = perf_logLoss,    # requires predicted class probabilities
-      "mauc" = perf_mauc,          # requires predicted class probabilities
-      "mlogloss" = perf_mlogLoss,  # requires predicted class probabilities
+      "auc" = metric_auc,            # requires predicted class probabilities
+      "error" = metric_ce,           # requires predicted class labels
+      "logloss" = metric_logLoss,    # requires predicted class probabilities
+      "mauc" = metric_mauc,          # requires predicted class probabilities
+      "mlogloss" = metric_mlogLoss,  # requires predicted class probabilities
 
       # Regression
-      "mse" = perf_mse,
-      "r2" = perf_rsquared,
-      "rsquared" = perf_rsquared,
-      "rmse" = perf_rmse,
+      "mse" = metric_mse,
+      "r2" = metric_rsquared,
+      "rsquared" = metric_rsquared,
+      "rmse" = metric_rmse,
 
       # Return informative error
       stop("Metric \"", metric, "\" is not supported.")
@@ -301,8 +301,6 @@ vi_permute.default <- function(
 
     # Is smaller better?
     smaller_is_better <- switch(metric,
-
-      "auto" = TRUE,
 
       # Classification
       "auc" = FALSE,
@@ -322,17 +320,6 @@ vi_permute.default <- function(
 
     )
 
-    # Get prediction function, if not supplied
-    prob_based_metrics <- c("auc", "mauc", "logloss", "mlogloss")
-    if (is.null(pred_wrapper)) {
-      pred_type <- if (metric %in% prob_based_metrics) {
-        "prob"
-      } else {
-        "raw"
-      }
-      pred_wrapper <- get_pfun(object, type = pred_type)
-    }
-
     # Determine reference class (binary classification only)
     if (is.null(reference_class) && metric %in% c("auc", "logloss")) {
       stop("Please specify the reference class via the `reference_class` ",
@@ -345,7 +332,7 @@ vi_permute.default <- function(
   }
 
   # Compute baseline metric for comparison
-  baseline <- perf_fun(
+  baseline <- mfun(
     actual = train_y,
     predicted = pred_wrapper(object, newdata = train_x)
   )
@@ -381,7 +368,7 @@ vi_permute.default <- function(
         # train_x_permuted <- train_x  # make copy
         # train_x_permuted[[x]] <- sample(train_x_permuted[[x]])  # permute values
         train_x_permuted <- permute_columns(train_x, columns = x)
-        permuted <- perf_fun(
+        permuted <- mfun(
           actual = train_y,
           predicted = pred_wrapper(object, newdata = train_x_permuted)
         )

@@ -26,15 +26,15 @@ list_metrics <- function() {
 # Regression -------------------------------------------------------------------
 
 #' @keywords internal
-perf_mse <- ModelMetrics::mse
+metric_mse <- ModelMetrics::mse
 
 
 #' @keywords internal
-perf_rmse <- ModelMetrics::rmse
+metric_rmse <- ModelMetrics::rmse
 
 
 #' @keywords internal
-perf_rsquared <- function(actual, predicted) {
+metric_rsquared <- function(actual, predicted) {
   stats::cor(x = actual, y = predicted) ^ 2
 }
 
@@ -44,11 +44,11 @@ perf_rsquared <- function(actual, predicted) {
 # Binary classification (i.e., 2 classes)
 
 #' @keywords internal
-perf_ce <- ModelMetrics::ce
+metric_ce <- ModelMetrics::ce
 
 
 #' @keywords internal
-perf_auc <- function(actual, predicted) {
+metric_auc <- function(actual, predicted) {
   # if (NCOL(predicted) != 2L) {
   #   stop("Expected a 2 column matrix of predicted class probabilities.")
   # }
@@ -61,7 +61,7 @@ perf_auc <- function(actual, predicted) {
 
 
 #' @keywords internal
-perf_logLoss <- function(actual, predicted) {
+metric_logLoss <- function(actual, predicted) {
   # if (NCOL(predicted) != 2L) {
   #   stop("Expected a 2 column matrix of predicted class probabilities.")
   # }
@@ -76,7 +76,7 @@ perf_logLoss <- function(actual, predicted) {
 # Multiclass classification (i.e., >2 classes)
 
 #' @keywords internal
-perf_mauc <- function(actual, predicted) {
+metric_mauc <- function(actual, predicted) {
   if (NCOL(predicted) <= 2L) {
     stop("Expected a >2 column matrix of predicted class probabilities.")
   }
@@ -88,7 +88,7 @@ perf_mauc <- function(actual, predicted) {
 
 
 #' @keywords internal
-perf_mlogLoss <- function(actual, predicted) {
+metric_mlogLoss <- function(actual, predicted) {
   if (NCOL(predicted) <= 2L) {
     stop("Expected a >2 column matrix of predicted class probabilities.")
   }
@@ -96,51 +96,4 @@ perf_mlogLoss <- function(actual, predicted) {
     actual = actual,
     predicted = predicted
   )
-}
-
-
-# Auto -------------------------------------------------------------------------
-
-#' @keywords internal
-get_default_metric <- function(object) {
-  UseMethod("get_default_metric")
-}
-
-
-#' @keywords internal
-get_default_metric.default <- function(object) {
-  stop("Could not determine a default performance metric to use for computing ",
-       "permutation-based variable importance. Please specify a valid metric ",
-       "via the `metric` argument; see `?vip::vi_permute` for details.",
-       call. = FALSE)
-}
-
-
-# Package: ranger --------------------------------------------------------------
-
-#' @keywords internal
-get_default_metric.ranger <- function(object) {
-  tree_type <- object$treetype
-  switch(tree_type,
-         "Regression" = "rmse",
-         "Classification" = "error",
-         "Probability estimation" = "auc",
-         stop("No support for \"ranger\" objects of type \"", tree_type, "\"."))
-}
-
-
-# Package: stats ---------------------------------------------------------------
-
-#' #' @keywords internal
-#' get_default_metric.lm <- function(object) {
-#'   if (object$family$family == "binomial") {
-#'     "auc"
-#'   } else {
-#'     "rmse"
-#'   }
-#' }
-
-#' @keywords internal
-get_default_metric.ppr <- function(object) {
-  "rmse"
 }
