@@ -124,19 +124,21 @@
 #' vi_scores
 #'
 #' # Permutation scores (barplot w/ raw values and jittering)
+#' pfun <- function(object, newdata) predict(object, newdata = newdata)
 #' vip(model, method = "permute", train = mtcars, target = "mpg", nsim = 10,
-#'     metric = "rmse", aesthetics = list(color = "grey50", fill = "grey50"),
+#'     metric = "rmse", pred_wrapper = pfun,
+#'     aesthetics = list(color = "grey50", fill = "grey50"),
 #'     all_permutations = TRUE, jitter = TRUE)
 #'
 #' # Permutation scores (boxplot)
 #' vip(model, method = "permute", train = mtcars, target = "mpg", nsim = 10,
-#'     metric = "rmse", geom = "boxplot")
+#'     metric = "rmse", pred_wrapper = pfun, geom = "boxplot")
 #'
 #' # Permutation scores (boxplot colored by feature)
 #' library(ggplot2)  # for `aes_string()` function
 #' vip(model, method = "permute", train = mtcars, target = "mpg", nsim = 10,
-#'     metric = "rmse", geom = "boxplot", all_permutations = TRUE,
-#'     mapping = aes_string(fill = "Variable"),
+#'     metric = "rmse", pred_wrapper = pfun, geom = "boxplot",
+#'     all_permutations = TRUE, mapping = aes_string(fill = "Variable"),
 #'     aesthetics = list(color = "grey35", size = 0.8))
 vip <- function(object, ...) {
   UseMethod("vip")
