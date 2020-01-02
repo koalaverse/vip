@@ -73,7 +73,7 @@ Suggests:
     RSNNS,
     sparkline,
     sparklyr (>= 0.8.0),
-    testthat,
+    tinytest,
     varImp,
     xgboost
 RoxygenNote: 7.0.2

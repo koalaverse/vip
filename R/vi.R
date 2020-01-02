@@ -162,7 +162,9 @@ vi.default <- function(
   attr(tib, which = "type") <- vi_type
 
   # Add "vi" class
-  class(tib) <- c("vi", class(tib))
+  if (!inherits(tib, what = "vi")) {  # In case class gets stripped?
+    class(tib) <- c("vi", class(tib))
+  }
 
   # Return results
   tib

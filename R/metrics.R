@@ -108,10 +108,15 @@ get_default_metric <- function(object) {
 
 
 #' @keywords internal
-get_default_metric.ranger <- function(object) {
-  "rmse"
+get_default_metric.default <- function(object) {
+  stop("Could not determine a default performance metric to use for computing ",
+       "permutation-based variable importance. Please specify a valid metric ",
+       "via the `metric` argument; see `?vip::vi_permute` for details.",
+       call. = FALSE)
 }
 
+
+# Package: ranger --------------------------------------------------------------
 
 #' @keywords internal
 get_default_metric.ranger <- function(object) {
@@ -121,4 +126,21 @@ get_default_metric.ranger <- function(object) {
          "Classification" = "error",
          "Probability estimation" = "auc",
          stop("No support for \"ranger\" objects of type \"", tree_type, "\"."))
+}
+
+
+# Package: stats ---------------------------------------------------------------
+
+#' #' @keywords internal
+#' get_default_metric.lm <- function(object) {
+#'   if (object$family$family == "binomial") {
+#'     "auc"
+#'   } else {
+#'     "rmse"
+#'   }
+#' }
+
+#' @keywords internal
+get_default_metric.ppr <- function(object) {
+  "rmse"
 }

@@ -330,7 +330,7 @@ vi_permute.default <- function(
       } else {
         "raw"
       }
-      pred_wrapper <- get_predictions(object, type = pred_type)
+      pred_wrapper <- get_pfun(object, type = pred_type)
     }
 
     # Determine reference class (binary classification only)

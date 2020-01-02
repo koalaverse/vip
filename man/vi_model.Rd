@@ -281,7 +281,8 @@ variable. The difference between the two are then averaged over all trees in
 the forest, and normalized by the standard deviation of the differences. If
 the standard deviation of the differences is equal to 0 for a variable,
 the division is not done (but the average is almost always equal to 0 in that
-case).
+case). See \code{\link[randomForest]{importance}} for details, including
+additional arguments that can be passed via the \code{...} argument.
 
 The second measure is the total decrease in node impurities from splitting on
 the variable, averaged over all trees. For classification, the node impurity

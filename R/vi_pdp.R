@@ -34,7 +34,7 @@
 #' \href{https://arxiv.org/abs/1805.04755}{Greenwell et al. (2018)} for details
 #' and additional examples.
 #'
-#' #' @references
+#' @references
 #' Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J. A Simple
 #' and Effective Model-Based Variable Importance Measure. arXiv preprint
 #' arXiv:1805.04755 (2018).

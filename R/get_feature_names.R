@@ -61,17 +61,36 @@ get_feature_names.formula <- function(object, ...) {
 }
 
 
+# Package: C50 ----------------------------------------------------------------
+
 #' @keywords internal
 get_feature_names.C5.0 <- function(object, ...) {
   object$predictors
 }
 
 
+# Package: caret ---------------------------------------------------------------
+
 #' @keywords internal
-get_feature_names.constparty <- function(object, ...) {
-  get_feature_names(get_formula(object))
+get_feature_names.train <- function(object, ...) {
+  if (!is.null(object$trainingData)) {
+    xn <- names(object$trainingData)
+    xn[xn != ".outcome"]
+  } else {
+    get_feature_names.default(object)
+  }
 }
 
+
+# Package: Cubist --------------------------------------------------------------
+
+#' @keywords internal
+get_feature_names.cubist <- function(object, ...) {
+  object$vars$all
+}
+
+
+# Package: earth ----------------------------------------------------------------
 
 #' @keywords internal
 get_feature_names.earth <- function(object, ...) {
@@ -79,9 +98,19 @@ get_feature_names.earth <- function(object, ...) {
 }
 
 
+# Package: gbm -----------------------------------------------------------------
+
 #' @keywords internal
 get_feature_names.gbm <- function(object, ...) {
   object$var.names
+}
+
+
+# Package: glmnet --------------------------------------------------------------
+
+#' @keywords internal
+get_feature_names.cv.glmnet <- function(object, ...) {
+  object$glmnet.fit$beta@Dimnames[[1]]
 }
 
 
@@ -92,10 +121,57 @@ get_feature_names.glmnet <- function(object, ...) {
 
 
 #' @keywords internal
+get_feature_names.multnet <- function(object, ...) {
+  object$beta[[1L]]@Dimnames[[1L]]
+}
+
+
+# Package: h2o -----------------------------------------------------------------
+
+#' @keywords internal
+get_feature_names.H2OBinomialModel <- function(object, ...) {
+  object@parameters$x
+}
+
+
+#' @keywords internal
+get_feature_names.H2OMultinomialModel <- function(object, ...) {
+  object@parameters$x
+}
+
+
+#' @keywords internal
 get_feature_names.H2ORegressionModel <- function(object, ...) {
   object@parameters$x
 }
 
+
+# Package: neuralnet -----------------------------------------------------------
+
+#' @keywords internal
+get_feature_names.nn <- function(object, ...) {
+  # get_feature_names(get_formula(object))
+  object$model.list$variables
+}
+
+
+# Package: nnet ----------------------------------------------------------------
+
+#' @keywords internal
+get_feature_names.nnet <- function(object, ...) {
+  get_feature_names(get_formula(object))
+}
+
+
+# Package: pls -----------------------------------------------------------------
+
+#' @keywords internal
+get_feature_names.mvr <- function(object, ...) {
+  get_feature_names(get_formula(object))
+}
+
+
+# Package: stats ---------------------------------------------------------------
 
 #' @keywords internal
 get_feature_names.lm <- function(object, ...) {
@@ -111,16 +187,39 @@ get_feature_names.nls <- function(object, ...) {
 
 
 #' @keywords internal
-get_feature_names.nnet <- function(object, ...) {
+get_feature_names.ppr <- function(object, ...) {
+  object$xnames
+}
+
+
+# Package: party ---------------------------------------------------------------
+
+#' @keywords internal
+get_feature_names.BinaryTree <- function(object, ...) {
+  all.vars(object@data@formula$input)
+}
+
+#' @keywords internal
+get_feature_names.RandomForest <- function(object, ...) {
+  all.vars(object@data@formula$input)
+}
+
+
+# Package: partykit ------------------------------------------------------------
+
+#' @keywords internal
+get_feature_names.constparty <- function(object, ...) {
   get_feature_names(get_formula(object))
 }
 
 
 #' @keywords internal
-get_feature_names.ppr <- function(object, ...) {
-  object$xnames
+get_feature_names.cforest <- function(object, ...) {
+  get_feature_names(get_formula(object))
 }
 
+
+# Package: randomForest --------------------------------------------------------
 
 #' @keywords internal
 get_feature_names.randomForest <- function(object, ...) {
@@ -128,11 +227,7 @@ get_feature_names.randomForest <- function(object, ...) {
 }
 
 
-#' @keywords internal
-get_feature_names.RandomForest <- function(object, ...) {
-  all.vars(object@data@formula$input)
-}
-
+# Package: ranger --------------------------------------------------------------
 
 #' @keywords internal
 get_feature_names.ranger <- function(object, ...) {
@@ -147,6 +242,8 @@ get_feature_names.ranger <- function(object, ...) {
 }
 
 
+# Package: rpart ---------------------------------------------------------------
+
 #' @keywords internal
 get_feature_names.rpart <- function(object, ...) {
   # names(object$variable.importance)
@@ -154,12 +251,13 @@ get_feature_names.rpart <- function(object, ...) {
 }
 
 
+# Package: xgboost -------------------------------------------------------------
+
 #' @keywords internal
-get_feature_names.train <- function(object, ...) {
-  if (!is.null(object$trainingData)) {
-    xn <- names(object$trainingData)
-    xn[xn != ".outcome"]
-  } else {
+get_feature_names.xgb.Booster <- function(object, ...) {
+  if (is.null(object$feature_names)) {
     get_feature_names.default(object)
+  } else {
+    object$feature_names
   }
 }

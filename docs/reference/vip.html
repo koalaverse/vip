@@ -181,7 +181,7 @@ scores to plot. Default is <code>10</code>.</p></td>
     <tr>
       <th>geom</th>
       <td><p>Character string specifying which type of plot to construct.
-The currently avilable options are described below.</p>
+The currently available options are described below.</p>
 <p></p><ul>
 <li><p><code>geom = "col"</code> uses <code><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_col</a></code> to construct
  a bar chart of the variable importance scores.</p></li>
@@ -199,13 +199,13 @@ The currently avilable options are described below.</p>
     </tr>
     <tr>
       <th>mapping</th>
-      <td><p>Set of aesthetic mappings created by <code>link[ggplot2]{aes}</code>
-or <code>link[ggplot2]{aes_}</code>. See example usage below.</p></td>
+      <td><p>Set of aesthetic mappings created by <code><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></code>
+or <code><a href='https://ggplot2.tidyverse.org/reference/aes_.html'>aes_</a></code>. See example usage below.</p></td>
     </tr>
     <tr>
       <th>aesthetics</th>
       <td><p>List specifying additional arguments passed on to
-<code>link[ggplot2]{layer}</code>. These are often aesthetics, used to set an
+<code><a href='https://ggplot2.tidyverse.org/reference/layer.html'>layer</a></code>. These are often aesthetics, used to set an
 aesthetic to a fixed value, like <code>colour = "red"</code> or <code>size = 3</code>.
 See example usage below.</p></td>
     </tr>
@@ -251,6 +251,23 @@ arguments. It will be removed in version 0.3.0.</p></td>
 bars (<code>bar = TRUE</code>) or points (<code>bar = FALSE</code>). <strong>WARNING:</strong>
 This argument has been deprecated in favor of the new <code>mapping</code> and
 <code>aesthetics</code> arguments. It will be removed in version 0.3.0.</p></td>
+    </tr>
+    <tr>
+      <th>color</th>
+      <td><p>Character string specifying the color to use for the borders of
+the bars. Could also be a function, such as
+<code><a href='https://rdrr.io/r/grDevices/palettes.html'>heat.colors</a></code>. Default is <code>NULL</code>.
+<strong>WARNING:</strong> This argument has been deprecated in favor of the new
+<code>mapping</code> and <code>aesthetics</code> arguments. It will be removed in version
+0.3.0.</p></td>
+    </tr>
+    <tr>
+      <th>fill</th>
+      <td><p>Character string specifying the color to use to fill the bars.
+Could also be a function, such as <code><a href='https://rdrr.io/r/grDevices/palettes.html'>heat.colors</a></code>.
+Default is <code>NULL</code>. <strong>WARNING:</strong> This argument has been deprecated
+in favor of the new <code>mapping</code> and <code>aesthetics</code> arguments. It will be
+removed in version 0.3.0.</p></td>
     </tr>
     <tr>
       <th>size</th>
@@ -305,16 +322,16 @@ argument has been deprecated in favor of the new <code>mapping</code> and
 <span class='co'># Permutation scores (barplot w/ raw values and jittering)</span>
 <span class='fu'>vip</span>(<span class='no'>model</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"permute"</span>, <span class='kw'>train</span> <span class='kw'>=</span> <span class='no'>mtcars</span>, <span class='kw'>target</span> <span class='kw'>=</span> <span class='st'>"mpg"</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>10</span>,
     <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>, <span class='kw'>aesthetics</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>color</span> <span class='kw'>=</span> <span class='st'>"grey50"</span>, <span class='kw'>fill</span> <span class='kw'>=</span> <span class='st'>"grey50"</span>),
-    <span class='kw'>all_permutations</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>jitter</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='vip-5.png' alt='' width='700' height='433' /></div><div class='input'>
+    <span class='kw'>all_permutations</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>jitter</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='error'>Error: Could not find a suitable prediction function for computing permutation-based variable importance. Please supply a valid function via the `pred_wrapper` argument; see `?vip::vi_permute` for details.</span></div><div class='input'>
 <span class='co'># Permutation scores (boxplot)</span>
 <span class='fu'>vip</span>(<span class='no'>model</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"permute"</span>, <span class='kw'>train</span> <span class='kw'>=</span> <span class='no'>mtcars</span>, <span class='kw'>target</span> <span class='kw'>=</span> <span class='st'>"mpg"</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-    <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>, <span class='kw'>geom</span> <span class='kw'>=</span> <span class='st'>"boxplot"</span>)</div><div class='img'><img src='vip-6.png' alt='' width='700' height='433' /></div><div class='input'>
+    <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>, <span class='kw'>geom</span> <span class='kw'>=</span> <span class='st'>"boxplot"</span>)</div><div class='output co'>#&gt; <span class='error'>Error: Could not find a suitable prediction function for computing permutation-based variable importance. Please supply a valid function via the `pred_wrapper` argument; see `?vip::vi_permute` for details.</span></div><div class='input'>
 <span class='co'># Permutation scores (boxplot colored by feature)</span>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)  <span class='co'># for `aes_string()` function</span>
 <span class='fu'>vip</span>(<span class='no'>model</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"permute"</span>, <span class='kw'>train</span> <span class='kw'>=</span> <span class='no'>mtcars</span>, <span class='kw'>target</span> <span class='kw'>=</span> <span class='st'>"mpg"</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>10</span>,
     <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>, <span class='kw'>geom</span> <span class='kw'>=</span> <span class='st'>"boxplot"</span>, <span class='kw'>all_permutations</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
     <span class='kw'>mapping</span> <span class='kw'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes_.html'>aes_string</a></span>(<span class='kw'>fill</span> <span class='kw'>=</span> <span class='st'>"Variable"</span>),
-    <span class='kw'>aesthetics</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>color</span> <span class='kw'>=</span> <span class='st'>"grey35"</span>, <span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>0.8</span>))</div><div class='img'><img src='vip-7.png' alt='' width='700' height='433' /></div></span></pre>
+    <span class='kw'>aesthetics</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>color</span> <span class='kw'>=</span> <span class='st'>"grey35"</span>, <span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>0.8</span>))</div><div class='output co'>#&gt; <span class='error'>Error: Could not find a suitable prediction function for computing permutation-based variable importance. Please supply a valid function via the `pred_wrapper` argument; see `?vip::vi_permute` for details.</span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

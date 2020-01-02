@@ -143,7 +143,7 @@ model. (This function is meant for internal use only.)</p>
 <span class='fu'>vi_permute</span>(
   <span class='no'>object</span>,
   <span class='kw'>feature_names</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>train</span>,
+  <span class='kw'>train</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='no'>target</span>,
   <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
   <span class='kw'>smaller_is_better</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -176,12 +176,16 @@ model. (This function is meant for internal use only.)</p>
     <tr>
       <th>feature_names</th>
       <td><p>Character string giving the names of the predictor
-variables (i.e., features) of interest.</p></td>
+variables (i.e., features) of interest. If <code>NULL</code> (the default) then the
+internal `get_feature_names()` function will be called to try and extract
+them automatically. It is good practice to always specify this argument.</p></td>
     </tr>
     <tr>
       <th>train</th>
       <td><p>A matrix-like R object (e.g., a data frame or matrix)
-containing the training data.</p></td>
+containing the training data. If <code>NULL</code> (the default) then the
+internal `get_training_data()` function will be called to try and extract it
+automatically. It is good practice to always specify this argument.</p></td>
     </tr>
     <tr>
       <th>target</th>

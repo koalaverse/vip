@@ -180,7 +180,8 @@
 #' the forest, and normalized by the standard deviation of the differences. If
 #' the standard deviation of the differences is equal to 0 for a variable,
 #' the division is not done (but the average is almost always equal to 0 in that
-#' case).
+#' case). See \code{\link[randomForest]{importance}} for details, including
+#' additional arguments that can be passed via the \code{...} argument.
 #'
 #' The second measure is the total decrease in node impurities from splitting on
 #' the variable, averaged over all trees. For classification, the node impurity
@@ -830,10 +831,12 @@ vi_model.randomForest <- function(object, ...) {
 
   # Construct model-specific variable importance scores
   vis <- randomForest::importance(object, ...)
+  matched_cols <- intersect(
+    x = colnames(vis),
+    y = c("MeanDecreaseAccuracy", "MeanDecreaseGini", "%IncMSE", "IncNodePurity")
+  )
+  vis <- vis[, matched_cols, drop = FALSE]
   type <- colnames(vis)[1L]
-  if (dim(vis)[2L] == 0) {  # possible when importance = FALSE in RF call
-    importance_scores <- object$importance
-  }
   vis <- vis[, 1L, drop = TRUE]
   tib <- tibble::tibble(
     "Variable" = names(vis),
