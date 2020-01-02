@@ -6,7 +6,7 @@ fit <- stats::lm(y ~ sin(pi * x1 * x2) + I((x3 - 0.5) ^ 2) + x4 + x5 + x6 + x7 +
                    x8 + x9 + x10, data = friedman1)
 
 # Compute PDP-based importance
-vis <- vi(fit, method = "pdp", feature_names = paste0("x", 1L:10L))
+vis <- vi_pdp(fit, train = friedman1, feature_names = paste0("x", 1L:10L))
 
 # Expectations for `vi_pdp()`
 expect_identical(
