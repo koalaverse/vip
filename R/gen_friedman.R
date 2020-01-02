@@ -26,8 +26,8 @@ bin <- function(x, n_bins) {
 #' @param n_features Integer specifying the number of features to generate.
 #' Default is 10.
 #'
-#' @param n_bins Integer specying the number of (roughly) equal sized bins to
-#' split the response into. Default is \code{NULL} for no binning. Settinig to
+#' @param n_bins Integer specifying the number of (roughly) equal sized bins to
+#' split the response into. Default is \code{NULL} for no binning. Setting to
 #' a positive integer > 1 effectively turns this into a classification problem
 #' where \code{n_bins} gives the number of classes.
 #'

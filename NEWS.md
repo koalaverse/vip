@@ -13,6 +13,8 @@ to use either (1) the raw coefficients if the features were properly standardize
 
 ## User-visible changes
 
+* The `metric` and `pred_wrapper` arguments to `vi_permute()` are no longer optional.
+
 * The `vip()` function gained a new argument, `geom`, for specifying which type of plot to construct. Current options are `geom = "col"` (the default), `geom = "point"`, `geom = "boxplot"`, or `geom = "violin"` (the latter two only work for permutation-based importance with `nsim > 1`) [(#79)](https://github.com/koalaverse/vip/issues/79). Consequently, the `bar` argument has been removed.
 
 * The `vip()` function gained two new arguments for specifying aesthetics: `mapping` and `aesthetics` (for fixed aesthetics like `color = "red"`). Consequently, the arguments `color`, `fill`, etc. have been removed [(#80)](https://github.com/koalaverse/vip/issues/80).
@@ -40,6 +42,8 @@ grid.arrange(p1, p2, p3, p4, nrow = 2)
 * The `vip()` function gained a new argument, `include_type`, which defaults to `FALSE`. If `TRUE`, the type of variable importance that was computed is included in the appropriate axis label. Set `include_type = TRUE` to revert to the old behavior.
 
 ## Miscellaneous
+
+* Switched to the [tinytest](https://cran.r-project.org/package=tinytest) framework.
 
 * Minor documentation improvements.
 

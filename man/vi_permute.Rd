@@ -90,11 +90,9 @@ problems.}
 
 \item{pred_fun}{Deprecated. Use \code{pred_wrapper} instead.}
 
-\item{pred_wrapper}{Optional prediction function that requires two arguments,
-\code{object} and \code{newdata}. Default is \code{NULL}. Must be supplied
-whenever \code{metric} is a custom function. In fact, it is good practice to
-always supply this function! The output of this function should be determined
-by the metric being used:
+\item{pred_wrapper}{Prediction function that requires two arguments,
+\code{object} and \code{newdata}. The output of this function should be
+determined by the \code{metric} being used:
 
 \describe{
   \item{Regression}{A numeric vector of predicted outcomes.}
