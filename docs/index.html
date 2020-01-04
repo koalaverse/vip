@@ -104,7 +104,19 @@
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
-<p><code>vip</code> is an R package for constructing <strong>v</strong>ariable <strong>i</strong>mportance <strong>p</strong>lots (VIPs). VIPs are part of a larger framework referred to as <em>interpretable machine learning</em> (IML), which includes (but not limited to): partial dependence plots (PDPs) and individual conditional expectation (ICE) curves. While PDPs and ICE curves (available in the R package <a href="https://cran.r-project.org/package=pdp">pdp</a>) help visualize feature effects, VIPs help visualize feature impact (either locally or globally). An in-progress, but comprehensive, overview of IML can be found here: <a href="https://github.com/christophM/interpretable-ml-book" class="uri">https://github.com/christophM/interpretable-ml-book</a>.</p>
+<p><a href="https://koalaverse.github.io/vip/index.html"><strong>vip</strong> package website</a> is an R package for constructing <strong>v</strong>ariable <strong>i</strong>mportance <strong>p</strong>lots (VIPs). VIPs are part of a larger framework referred to as <em>interpretable machine learning</em> (IML), which includes (but not limited to): partial dependence plots (PDPs) and individual conditional expectation (ICE) curves. While PDPs and ICE curves (available in the R package <a href="https://cran.r-project.org/package=pdp">pdp</a>) help visualize feature effects, VIPs help visualize feature impact (either locally or globally). An in-progress, but comprehensive, overview of IML can be found here: <a href="https://github.com/christophM/interpretable-ml-book" class="uri">https://github.com/christophM/interpretable-ml-book</a>.</p>
+<p>Many supervised learning algorithms can naturally emit some measure of importance for the features used in the model, and these approaches are embedded in many different packages. The downside, however, is that each package uses a different function and interface and it can be challenging (and distracting) to have to remember each one (e.g., remembering to use <code>xgb.importance()</code> for <a href="https://cran.r-project.org/package=xgboost">xgboost</a> models and <code>gbm.summary()</code> for <a href="https://cran.r-project.org/package=gbm">gbm</a> models). With <a href="https://cran.r-project.org/package=vip">vip</a> you get one consistent interface to computing variable importance for many types of supervised learning models across a number of packages. Additionally, <a href="https://koalaverse.github.io/vip/index.html"><strong>vip</strong> package website</a> offers a number of <em>model-agnostic</em> procedures for computing feature importance (see the next section) as well an experimental function for quantifying the strength of potential interaction effects. For details and example usage, visit the <a href="https://koalaverse.github.io/vip/index.html"><strong>vip</strong> package website</a>.</p>
+<p><img src="reference/figures/one-pkg.png" width="50%" style="display: block; margin: auto;"></p>
+</div>
+<div id="features" class="section level2">
+<h2 class="hasAnchor">
+<a href="#features" class="anchor"></a>Features</h2>
+<ul>
+<li><p><strong>Model-based variable importance</strong> - Compute variable importance specific to a particular model (like a <em>random forest</em>, <em>gradient boosted decision trees</em>, or <em>multivariate adaptive regression splines</em>) from a wide range of package (e.g., <a href="https://cran.r-project.org/package=randomForest">randomForest</a>, <a href="https://cran.r-project.org/package=ranger">ranger</a>, <a href="https://cran.r-project.org/package=xgboost">xgboost</a>, and many more). Also supports the <a href="https://cran.r-project.org/package=caret">caret</a> and <a href="https://cran.r-project.org/package=parsnip">parsnip</a> (starting with version 0.0.4) packages.</p></li>
+<li><p><strong>Permutation-based variable importance</strong> - An efficient implementation of the permutation feature importance algorithm discussed in <a href="https://christophm.github.io/interpretable-ml-book/feature-importance.html">this chapter</a> from <a href="https://christophm.github.io/interpretable-ml-book/">Christoph Molnar’s <em>Interpretable Machine Learning</em> book</a>.</p></li>
+<li><p><strong>SHAP-based variable importance</strong> - An efficient implementation of feature importance based on the popular <a href="https://github.com/slundberg/shap">SHAP values</a> via the <a href="https://cran.r-project.org/package=fastshap">fastshap</a> package.</p></li>
+<li><p><strong>PDP/ICE-based variable importance</strong> - Compute variable importance by quantifying the variability in marginal effect plots like <a href="https://arxiv.org/abs/1805.04755">partial dependence plots and individual conditional expectations</a> via the <a href="https://cran.r-project.org/package=pdp">pdp</a> package.</p></li>
+</ul>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
@@ -117,7 +129,6 @@
 <a class="sourceLine" id="cb1-6" data-line-number="6">  <span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"remotes"</span>)</a>
 <a class="sourceLine" id="cb1-7" data-line-number="7">}</a>
 <a class="sourceLine" id="cb1-8" data-line-number="8">remotes<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/remotes/man/install_github.html">install_github</a></span>(<span class="st">"koalaverse/vip"</span>)</a></code></pre></div>
-<p>For details and example usage, visit the <a href="https://koalaverse.github.io/vip/index.html"><strong>vip</strong> package website</a>.</p>
 </div>
 </div>
   </div>

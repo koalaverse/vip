@@ -146,6 +146,7 @@
 <h2 class="hasAnchor">
 <a href="#user-visible-changes" class="anchor"></a>User-visible changes</h2>
 <ul>
+<li><p>The <code>metric</code> and <code>pred_wrapper</code> arguments to <code><a href="../reference/vi_permute.html">vi_permute()</a></code> are no longer optional.</p></li>
 <li><p>The <code><a href="../reference/vip.html">vip()</a></code> function gained a new argument, <code>geom</code>, for specifying which type of plot to construct. Current options are <code>geom = "col"</code> (the default), <code>geom = "point"</code>, <code>geom = "boxplot"</code>, or <code>geom = "violin"</code> (the latter two only work for permutation-based importance with <code>nsim &gt; 1</code>) <a href="https://github.com/koalaverse/vip/issues/79">(<a href='https://github.com/koalaverse/vip/issues/79'>#79</a>)</a>. Consequently, the <code>bar</code> argument has been removed.</p></li>
 <li><p>The <code><a href="../reference/vip.html">vip()</a></code> function gained two new arguments for specifying aesthetics: <code>mapping</code> and <code>aesthetics</code> (for fixed aesthetics like <code>color = "red"</code>). Consequently, the arguments <code>color</code>, <code>fill</code>, etc. have been removed <a href="https://github.com/koalaverse/vip/issues/80">(<a href='https://github.com/koalaverse/vip/issues/80'>#80</a>)</a>.</p></li>
 </ul>
@@ -174,7 +175,8 @@
 <h2 class="hasAnchor">
 <a href="#miscellaneous" class="anchor"></a>Miscellaneous</h2>
 <ul>
-<li>Minor documentation improvements.</li>
+<li><p>Switched to the <a href="https://cran.r-project.org/package=tinytest">tinytest</a> framework <a href="https://github.com/koalaverse/vip/issues/82">(<a href='https://github.com/koalaverse/vip/issues/82'>#82</a>)</a>.</p></li>
+<li><p>Minor documentation improvements.</p></li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">

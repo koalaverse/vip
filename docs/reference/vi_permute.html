@@ -145,7 +145,7 @@ model. (This function is meant for internal use only.)</p>
   <span class='kw'>feature_names</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>train</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='no'>target</span>,
-  <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"auto"</span>,
+  <span class='kw'>metric</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>smaller_is_better</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"difference"</span>, <span class='st'>"ratio"</span>),
   <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>1</span>,
@@ -255,11 +255,9 @@ problems.</p></td>
     </tr>
     <tr>
       <th>pred_wrapper</th>
-      <td><p>Optional prediction function that requires two arguments,
-<code>object</code> and <code>newdata</code>. Default is <code>NULL</code>. Must be supplied
-whenever <code>metric</code> is a custom function. In fact, it is good practice to
-always supply this function! The output of this function should be determined
-by the metric being used:</p>
+      <td><p>Prediction function that requires two arguments,
+<code>object</code> and <code>newdata</code>. The output of this function should be
+determined by the <code>metric</code> being used:</p>
 <dl class='dl-horizontal'>
   <dt>Regression</dt><dd><p>A numeric vector of predicted outcomes.</p></dd>
   <dt>Binary classification</dt><dd><p>A vector of predicted class labels (e.g., if
