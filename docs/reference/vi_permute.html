@@ -144,7 +144,7 @@ model. (This function is meant for internal use only.)</p>
   <span class='no'>object</span>,
   <span class='kw'>feature_names</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>train</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>target</span>,
+  <span class='kw'>target</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>metric</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>smaller_is_better</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"difference"</span>, <span class='st'>"ratio"</span>),
@@ -201,7 +201,7 @@ regression or accuracy for binary classification). If <code>metric</code> is a
 function, then it requires two arguments, <code>actual</code> and <code>predicted</code>,
 and should return a single, numeric value. Ideally, this should be the same
 metric that was used to train <code>object</code>. See <code><a href='list_metrics.html'>list_metrics</a></code>
-for a list of available metrics.</p></td>
+for a list of built-in metrics.</p></td>
     </tr>
     <tr>
       <th>smaller_is_better</th>

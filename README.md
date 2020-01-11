@@ -13,14 +13,14 @@ maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www
 
 ## Overview
 
-[**vip** package website](https://koalaverse.github.io/vip/index.html)
-is an R package for constructing **v**ariable **i**mportance **p**lots
-(VIPs). VIPs are part of a larger framework referred to as
-*interpretable machine learning* (IML), which includes (but not limited
-to): partial dependence plots (PDPs) and individual conditional
-expectation (ICE) curves. While PDPs and ICE curves (available in the R
-package [pdp](https://cran.r-project.org/package=pdp)) help visualize
-feature effects, VIPs help visualize feature impact (either locally or
+[**vip**](https://koalaverse.github.io/vip/index.html) is an R package
+for constructing **v**ariable **i**mportance **p**lots (VIPs). VIPs are
+part of a larger framework referred to as *interpretable machine
+learning* (IML), which includes (but not limited to): partial dependence
+plots (PDPs) and individual conditional expectation (ICE) curves. While
+PDPs and ICE curves (available in the R package
+[pdp](https://cran.r-project.org/package=pdp)) help visualize feature
+effects, VIPs help visualize feature impact (either locally or
 globally). An in-progress, but comprehensive, overview of IML can be
 found here: <https://github.com/christophM/interpretable-ml-book>.
 

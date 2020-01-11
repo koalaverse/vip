@@ -75,7 +75,7 @@ list_metrics <- function() {
 #' stripped before the computation proceeds.
 #'
 #' @note The \code{metric_auc} and \code{metric_logLoss} functions are based on
-#' code from the \hre{https://cran.r-project.org/package=Metrics}{Metrics}
+#' code from the \href{https://cran.r-project.org/package=Metrics}{Metrics}
 #' package.
 #'
 #' @rdname metrics

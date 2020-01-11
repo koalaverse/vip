@@ -140,18 +140,19 @@
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>(<span class='no'>metrics</span> <span class='kw'>&lt;-</span> <span class='fu'>list_metrics</span>())</div><div class='output co'>#&gt;     Metric                       Description                      Task
-#&gt; 1      auc            Area under (ROC) curve     Binary classification
-#&gt; 2    error           Misclassification error     Binary classification
-#&gt; 3  logloss                          Log loss     Binary classification
-#&gt; 4     mauc Multiclass area under (ROC) curve Multiclass classification
-#&gt; 5 mlogloss               Multiclass log loss Multiclass classification
-#&gt; 6      mse                Mean squared error                Regression
-#&gt; 7       r2                         R squared                Regression
-#&gt; 8 rsquared                         R squared                Regression
-#&gt; 9     rmse           Root mean squared error                Regression</div><div class='input'><span class='no'>metrics</span>[<span class='no'>metrics</span>$<span class='no'>Task</span> <span class='kw'>==</span> <span class='st'>"Multiclass classification"</span>, ]</div><div class='output co'>#&gt;     Metric                       Description                      Task
-#&gt; 4     mauc Multiclass area under (ROC) curve Multiclass classification
-#&gt; 5 mlogloss               Multiclass log loss Multiclass classification</div></pre>
+    <pre class="examples"><div class='input'>(<span class='no'>metrics</span> <span class='kw'>&lt;-</span> <span class='fu'>list_metrics</span>())</div><div class='output co'>#&gt;      Metric                       Description                             Task
+#&gt; 1  accuracy           Classification accuracy Binary/multiclass classification
+#&gt; 2     error           Misclassification error Binary/multiclass classification
+#&gt; 3       auc            Area under (ROC) curve            Binary classification
+#&gt; 4   logloss                          Log loss            Binary classification
+#&gt; 5      mauc Multiclass area under (ROC) curve        Multiclass classification
+#&gt; 6       mae               Mean absolute error                       Regression
+#&gt; 7       mse                Mean squared error                       Regression
+#&gt; 8        r2                         R squared                       Regression
+#&gt; 9  rsquared                         R squared                       Regression
+#&gt; 10     rmse           Root mean squared error                       Regression
+#&gt; 11      sse             Sum of squared errors                       Regression</div><div class='input'><span class='no'>metrics</span>[<span class='no'>metrics</span>$<span class='no'>Task</span> <span class='kw'>==</span> <span class='st'>"Multiclass classification"</span>, ]</div><div class='output co'>#&gt;   Metric                       Description                      Task
+#&gt; 5   mauc Multiclass area under (ROC) curve Multiclass classification</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
