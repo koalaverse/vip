@@ -43,6 +43,8 @@ grid.arrange(p1, p2, p3, p4, nrow = 2)
 
 ## Miscellaneous
 
+* Removed dependency on [ModelMetrics](https://cran.r-project.org/package=ModelMetrics) and the built-in family of performance metrics (`metric_*()`) are now documented and exported. See, for example, `?vip::metric_rmse` [(#93)](https://github.com/koalaverse/vip/issues/93).
+
 * Switched to the [tinytest](https://cran.r-project.org/package=tinytest) framework [(#82)](https://github.com/koalaverse/vip/issues/82).
 
 * Minor documentation improvements.
