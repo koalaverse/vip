@@ -25,7 +25,7 @@
 #' function, then it requires two arguments, \code{actual} and \code{predicted},
 #' and should return a single, numeric value. Ideally, this should be the same
 #' metric that was used to train \code{object}. See \code{\link{list_metrics}}
-#' for a list of available metrics.
+#' for a list of built-in metrics.
 #'
 #' @param smaller_is_better Logical indicating whether or not a smaller value
 #' of \code{metric} is better. Default is \code{NULL}. Must be supplied if
@@ -154,7 +154,7 @@ vi_permute.default <- function(
   object,
   feature_names = NULL,
   train = NULL,
-  target,
+  target = NULL,
   metric = NULL,
   smaller_is_better = NULL,
   type = c("difference", "ratio"),
@@ -280,20 +280,25 @@ vi_permute.default <- function(
     mfun <- switch(metric,
 
       # Classification
+      "accuracy" = metric_accuracy,  # requires predicted class labels
+      "error" = metric_error,        # requires predicted class labels
       "auc" = metric_auc,            # requires predicted class probabilities
-      "error" = metric_ce,           # requires predicted class labels
       "logloss" = metric_logLoss,    # requires predicted class probabilities
       "mauc" = metric_mauc,          # requires predicted class probabilities
-      "mlogloss" = metric_mlogLoss,  # requires predicted class probabilities
+      # "mlogloss" = metric_mlogLoss,  # requires predicted class probabilities
 
       # Regression
+      "mae" = metric_mae,
       "mse" = metric_mse,
       "r2" = metric_rsquared,
       "rsquared" = metric_rsquared,
       "rmse" = metric_rmse,
+      "sse" = metric_sse,
 
       # Return informative error
-      stop("Metric \"", metric, "\" is not supported.")
+      stop("Metric \"", metric, "\" is not supported; use ",
+           "`vip::list_metrics()` to print a list of currently supported ",
+           "metrics.", call. = FALSE)
 
     )
 
@@ -301,17 +306,20 @@ vi_permute.default <- function(
     smaller_is_better <- switch(metric,
 
       # Classification
-      "auc" = FALSE,
+      "accuracy" = FALSE,
       "error" = TRUE,
+      "auc" = FALSE,
       "logloss" = TRUE,
       "mauc" = FALSE,
-      "mlogloss" = TRUE,
+      # "mlogloss" = TRUE,
 
       # Regression
+      "mae" = TRUE,
       "mse" = TRUE,
       "r2" = FALSE,
       "rsquared" = FALSE,
       "rmse" = TRUE,
+      "sse" = TRUE,
 
       # Return informative error
       stop("Metric \"", metric, "\" is not supported.")

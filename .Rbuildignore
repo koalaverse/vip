@@ -11,3 +11,4 @@
 ^codecov\.yml$
 ^logs$
 ^derby.log$
+^rjournal$
