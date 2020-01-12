@@ -33,7 +33,7 @@ knitr::include_graphics("man/figures/one-pkg.png")
 
 ## Features
 
-* **Model-based variable importance** - Compute variable importance specific to a particular model (like a *random forest*, *gradient boosted decision trees*, or *multivariate adaptive regression splines*) from a wide range of package (e.g., [randomForest](https://cran.r-project.org/package=randomForest), [ranger](https://cran.r-project.org/package=ranger), [xgboost](https://cran.r-project.org/package=xgboost), and many more). Also supports the [caret](https://cran.r-project.org/package=caret) and [parsnip](https://cran.r-project.org/package=parsnip) (starting with version 0.0.4) packages.
+* **Model-based variable importance** - Compute variable importance specific to a particular model (like a *random forest*, *gradient boosted decision trees*, or *multivariate adaptive regression splines*) from a wide range of R packages (e.g., [randomForest](https://cran.r-project.org/package=randomForest), [ranger](https://cran.r-project.org/package=ranger), [xgboost](https://cran.r-project.org/package=xgboost), and many more). Also supports the [caret](https://cran.r-project.org/package=caret) and [parsnip](https://cran.r-project.org/package=parsnip) (starting with version 0.0.4) packages.
 
 * **Permutation-based variable importance** - An efficient implementation of the permutation feature importance algorithm discussed in [this chapter](https://christophm.github.io/interpretable-ml-book/feature-importance.html) from [Christoph Molnar's *Interpretable Machine Learning* book](https://christophm.github.io/interpretable-ml-book/).
 

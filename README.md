@@ -49,7 +49,7 @@ website](https://koalaverse.github.io/vip/index.html).
   - **Model-based variable importance** - Compute variable importance
     specific to a particular model (like a *random forest*, *gradient
     boosted decision trees*, or *multivariate adaptive regression
-    splines*) from a wide range of package (e.g.,
+    splines*) from a wide range of R packages (e.g.,
     [randomForest](https://cran.r-project.org/package=randomForest),
     [ranger](https://cran.r-project.org/package=ranger),
     [xgboost](https://cran.r-project.org/package=xgboost), and many
