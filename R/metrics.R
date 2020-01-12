@@ -57,7 +57,7 @@ list_metrics <- function() {
       "Description" = "Sum of squared errors",
       "Task"        = "Regression"
     )
-  ))
+  ), stringsAsFactors = FALSE)
 }
 
 
@@ -88,7 +88,7 @@ list_metrics <- function() {
 #' metric_mse(x, y)
 #' metric_rsquared(x, y)
 metric_mse <- function(actual, predicted, na.rm = FALSE) {
-  mean((predicted - actual)^2, na.rm = na.rm)
+  mean((predicted - actual) ^ 2, na.rm = na.rm)
 }
 
 
@@ -96,7 +96,7 @@ metric_mse <- function(actual, predicted, na.rm = FALSE) {
 #'
 #' @export
 metric_rmse <- function(actual, predicted, na.rm = FALSE) {
-  sqrt(mean((predicted - actual)^2, na.rm = na.rm))
+  sqrt(mean((predicted - actual) ^ 2, na.rm = na.rm))
 }
 
 
@@ -104,7 +104,7 @@ metric_rmse <- function(actual, predicted, na.rm = FALSE) {
 #'
 #' @export
 metric_sse <- function(actual, predicted, na.rm = FALSE) {
-  sum((predicted - actual)^2, na.rm = na.rm)
+  sum((predicted - actual) ^ 2, na.rm = na.rm)
 }
 
 
@@ -171,7 +171,7 @@ metric_logLoss <- function(actual, predicted) {
   score <- -(actual * log(predicted) + (1 - actual) * log(1 - predicted))
   score[actual == predicted] <- 0
   score[is.nan(score)] <- Inf
-  score
+  mean(score)
 }
 
 

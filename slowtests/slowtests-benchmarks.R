@@ -24,10 +24,10 @@ pfun <- function(object, newdata) {
 mfun <- ModelMetrics::rmse
 
 # DALEX wrapper
-imp_dalex <- function() {
+imp_ingredients <- function() {
   explainer <- explain(rfo, data = friedman1, y = friedman1$y)
-  variable_importance(explainer, loss = mfun, type = "difference",
-                      n_sample = -1)
+  feature_importance(explainer, loss = mfun, type = "difference",
+                     n_sample = NULL, B = 1)
 }
 
 # iml wrapper
@@ -46,13 +46,14 @@ imp_vip <- function() {
 # Run benchmark
 set.seed(103)
 mb <- microbenchmark(
-  imp_dalex(),
+  imp_ingredients(),
   imp_iml(),
   imp_vip(),
   times = 100L
 )
 levels(mb$expr) <- c("ingredients", "iml", "vip")
 mb
+saveRDS(mb, file = "rjournal/benchmark.rds")
 
 # # Plot results
 # pdf("figures/benchmark.pdf", width = 7, height = 4.326)
