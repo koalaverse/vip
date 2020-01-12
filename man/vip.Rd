@@ -4,7 +4,7 @@
 \alias{vip}
 \alias{vip.default}
 \alias{vip.model_fit}
-\title{Variable Importance Plots}
+\title{Variable importance plots}
 \usage{
 vip(object, ...)
 
@@ -137,17 +137,17 @@ data(mtcars)
 model <- ppr(mpg ~ ., data = mtcars, nterms = 1)
 
 # Construct variable importance plot
-vip(model, method = "ice")
+vip(model, method = "firm")
 
 # Better yet, store the variable importance scores and then plot
-vi_scores <- vi(model, method = "ice")
+vi_scores <- vi(model, method = "firm")
 vip(vi_scores, geom = "point", horiz = FALSE)
 vip(vi_scores, geom = "point", horiz = FALSE, aesthetics = list(size = 3))
 
 # The `\%T>\\%` operator is imported for convenience; see ?magrittr::`\%T>\%`
 # for details
 vi_scores <- model \%>\%
-  vi(method = "ice") \%T>\%
+  vi(method = "firm") \%T>\%
   {print(vip(.))}
 vi_scores
 

@@ -26,7 +26,7 @@ where \code{n_bins} gives the number of classes.}
 
 \item{sigma}{Numeric specifying the standard deviation of the noise.}
 
-\item{seed}{Integer specying the random seed. If \code{NULL} (the default)
+\item{seed}{Integer specifying the random seed. If \code{NULL} (the default)
 the results will be different each time the function is run.}
 }
 \description{

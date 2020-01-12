@@ -2,7 +2,7 @@
 % Please edit documentation in R/vint.R
 \name{vint}
 \alias{vint}
-\title{Interaction Effects}
+\title{Interaction effects}
 \usage{
 vint(
   object,
@@ -35,8 +35,9 @@ parallel using a backend provided by the \code{foreach} package. Default is
 \code{\link[pdp]{partial}}.}
 }
 \description{
-Compute the strength of two-way interaction effects. For details, see the
-reference below.
+Quantify the strength of two-way interaction effects using a simple
+\emph{feature importance ranking measure} (FIRM) approach. For details, see
+\href{https://arxiv.org/abs/1805.04755}{Greenwell et al. (2018)}.
 }
 \details{
 This function quantifies the strength of interaction between

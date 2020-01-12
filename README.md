@@ -65,16 +65,16 @@ website](https://koalaverse.github.io/vip/index.html).
     from [Christoph Molnar’s *Interpretable Machine Learning*
     book](https://christophm.github.io/interpretable-ml-book/).
 
-  - **SHAP-based variable importance** - An efficient implementation of
-    feature importance based on the popular [SHAP
+  - **Shapley-based variable importance** - An efficient implementation
+    of feature importance based on the popular [Shapley
     values](https://github.com/slundberg/shap) via the
     [fastshap](https://cran.r-project.org/package=fastshap) package.
 
-  - **PDP/ICE-based variable importance** - Compute variable importance
-    by quantifying the variability in marginal effect plots like
-    [partial dependence plots and individual conditional
-    expectations](https://arxiv.org/abs/1805.04755) via the
-    [pdp](https://cran.r-project.org/package=pdp) package.
+  - **Variance-based variable importance** - Compute variable importance
+    using a simple *feature importance ranking measure* (FIRM) approach.
+    For details, see see [Greenwell et al.
+    (2018)](https://arxiv.org/abs/1805.04755) and [Scholbeck et al.
+    (2019)](https://arxiv.org/abs/1904.03959).
 
 ## Installation
 

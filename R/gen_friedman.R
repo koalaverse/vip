@@ -33,7 +33,7 @@ bin <- function(x, n_bins) {
 #'
 #' @param sigma Numeric specifying the standard deviation of the noise.
 #'
-#' @param seed Integer specying the random seed. If \code{NULL} (the default)
+#' @param seed Integer specifying the random seed. If \code{NULL} (the default)
 #' the results will be different each time the function is run.
 #'
 #' @note This function is mostly used for internal testing.

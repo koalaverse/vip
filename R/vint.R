@@ -1,7 +1,8 @@
-#' Interaction Effects
+#' Interaction effects
 #'
-#' Compute the strength of two-way interaction effects. For details, see the
-#' reference below.
+#' Quantify the strength of two-way interaction effects using a simple
+#' \emph{feature importance ranking measure} (FIRM) approach. For details, see
+#' \href{https://arxiv.org/abs/1805.04755}{Greenwell et al. (2018)}.
 #'
 #' @param object A fitted model object (e.g., a \code{"randomForest"} object).
 #'

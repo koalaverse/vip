@@ -11,7 +11,12 @@
 * The `"lm"` method for `vi_model()` gained a new `type` argument that allows users
 to use either (1) the raw coefficients if the features were properly standardized (`type = "raw"`), or (2) the absolute value of the corresponding *t*- or *z*-statistic (`type = "stat"`, the default) [(#77)](https://github.com/koalaverse/vip/issues/77).
 
+* New function `gen_friedman()` for simulating data from the Friedman 1 benchmark problem; see `?vip::gen_friedman` for details.
+
+
 ## User-visible changes
+
+* The `vi_pdp()` and `vi_ice()` functions have been deprecated and merged into a single new function called `vi_firm()`. Consequently, setting `method = "pdp"` and `method = "ice"` has also been deprecated; use `method = "firm"` instead.
 
 * The `metric` and `pred_wrapper` arguments to `vi_permute()` are no longer optional.
 

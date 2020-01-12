@@ -1,7 +1,7 @@
-#' Permutation-Based Variable Importance
+#' Permutation-based variable importance
 #'
 #' Compute permutation-based variable importance scores for the predictors in a
-#' model. (This function is meant for internal use only.)
+#' model.
 #'
 #' @param object A fitted model object (e.g., a \code{"randomForest"} object).
 #'

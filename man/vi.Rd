@@ -10,10 +10,11 @@ vi(object, ...)
 
 \method{vi}{default}(
   object,
-  method = c("model", "pdp", "ice", "permute", "shap"),
+  method = c("model", "firm", "permute", "shap"),
   feature_names = NULL,
   FUN = NULL,
   var_fun = NULL,
+  ice = FALSE,
   abbreviate_feature_names = NULL,
   sort = TRUE,
   decreasing = TRUE,
@@ -29,17 +30,18 @@ vi(object, ...)
 an object that inherits from class \code{"vi"}.}
 
 \item{...}{Additional optional arguments to be passed onto
-\code{\link{vi_model}}, \code{\link{vi_pdp}}, \code{\link{vi_ice}}, or
-\code{\link{vi_permute}}.}
+\code{\link{vi_model}}, \code{\link{vi_firm}}, \code{\link{vi_permute}},
+or \code{\link{vi_shap}}.}
 
 \item{method}{Character string specifying the type of variable importance
-(VI) to compute. Current options are \code{"model"} (the default), for model-specific VI
-scores (see \code{\link{vi_model}} for details), \code{"pdp"}, for PDP-based
-VI scores (see \code{\link{vi_pdp}} for details), \code{"ice"}, for ICE-based
-VI scores (see \code{\link{vi_ice}} for details), \code{"permute"}, for
-permutation-based VI scores (see \code{\link{vi_permute}} for details), or
-\code{"shao"}, for SHAP-based VI scores. For more details on the
-PDP/ICE-based methods, see the reference below.}
+(VI) to compute. Current options are \code{"model"} (the default), for
+model-specific VI scores (see \code{\link{vi_model}} for details),
+\code{"firm"}, for variance-based VI scores (see \code{\link{vi_firm}} for
+details), \code{"permute"}, for permutation-based VI scores (see '
+\code{\link{vi_permute}} for details), or \code{"shap"}, for Shapley-based
+VI scores. For more details on the variance-based methods, see
+\href{https://arxiv.org/abs/1805.04755}{Greenwell et al. (2018)} and
+\href{https://arxiv.org/abs/1904.03959}{Scholbeck et al. (2019)}.}
 
 \item{feature_names}{Character string giving the names of the predictor
 variables (i.e., features) of interest.}
@@ -51,8 +53,13 @@ containing the functions to use to quantify the variability of the feature
 effects (e.g., partial dependence values) for categorical and continuous
 features, respectively. If \code{NULL}, the standard deviation is used for
 continuous features. For categorical features, the range statistic is used
-(i.e., (max - min) / 4). Only used when \code{method = "pdp"} or
-\code{method = "ice"}.}
+(i.e., (max - min) / 4). Only applies when \code{method = "firm"}.}
+
+\item{ice}{Logical indicating whether or not to estimate feature effects
+using \emph{individual conditional expectation} (ICE) curves.
+Only applies when \code{method = "firm"}. Default is \code{FALSE}. Setting
+\code{ice = TRUE} is preferred whenever strong interaction effects are
+potentially present.}
 
 \item{abbreviate_feature_names}{Integer specifying the length at which to
 abbreviate feature names. Default is \code{NULL} which results in no
@@ -97,12 +104,12 @@ data(mtcars)
 mtcars.ppr <- ppr(mpg ~ ., data = mtcars, nterms = 1)
 
 # Compute variable importance scores
-vi(mtcars.ppr, method = "ice")
-vi(mtcars.ppr, method = "ice",
+vi(mtcars.ppr, method = "firm", ice = TRUE)
+vi(mtcars.ppr, method = "firm", ice = TRUE,
    var_fun = list("con" = mad, "cat" = function(x) diff(range(x)) / 4))
 
 # Plot variable importance scores
-vip(mtcars.ppr, method = "ice")
+vip(mtcars.ppr, method = "firm", ice = TRUE)
 }
 \references{
 Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J. A Simple

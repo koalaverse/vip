@@ -232,9 +232,9 @@ classes[classes != "default"]
 [*Model-agnostic interpredibility*](https://arxiv.org/abs/1606.05386) separates interpretation from the model. Compared to model-specific approaches, model-agnostic VI methods are more flexible (since they can be applied to any supervised learning algorithm). In this section, we discuss model-agnostic methods for quantifying global feature importance using three different approaches: 1) PDPs, 2) ICE curves, and 3) permutation. For details on approaches 1)--2), see @greenwell-simple-2018 ([or just click here](https://arxiv.org/abs/1805.04755)).
 
 
-#### PDP method
+#### Variance-based methods
 
-Our first model-agnostic approach is based on quantifying the "flatness" of the PDPs of each feature. PDPs help visualize the effect of low cardinality subsets of the feature space on the estimated prediction surface (e.g., main effects and two/three-way interaction effects.). PDPs provide model-agnostic interpretations and can be constructed in the same way for any supervised learning algorithm. Below, we fit a projection pursuit regression (PPR) model and construct PDPs for each feature using the [pdp](https://cran.r-project.org/package=pdp) package [@pdp-pkg].
+Our first model-agnostic approach is based on a simple *feature importance ranking measure* (FIRM); for details, see [Greenwell et al. (2018)](https://arxiv.org/abs/1805.04755) and [Scholbeck et al. (2019)](https://arxiv.org/abs/1904.03959). The specific approach used here is based on quantifying the "flatness" of the effects of each feature. Feature effects can be assessed using *partial dependence plots* (PDPs) or *individual conditional expectation* (ICE) curves. These approaches are model-agnostic and can be applied to any supervised learning algorithm. PDPs and ICE curves help visualize the effect of low cardinality subsets of the feature space on the estimated prediction surface (e.g., main effects and two/three-way interaction effects.). PDPs and ICE curves provide model-agnostic interpretations and can be constructed in the same way for any supervised learning algorithm. Below, we fit a projection pursuit regression (PPR) model and construct PDPs for each feature using the [pdp](https://cran.r-project.org/package=pdp) package [@pdp-pkg].
 
 ```{r ppr-pdps, fig.width=10, fig.height=4, , out.width="100%"}
 # Load required packages
@@ -263,19 +263,16 @@ Next, we compute PDP-based VI scores for the PPR and NN models. The PDP method c
 pp <- ppr(y ~ ., data = trn, nterms = 11)  
 
 # Plot VI scores
-p1 <- vip(pp, method = "pdp") + ggtitle("PPR")
-p2 <- vip(nn, method = "pdp") + ggtitle("NN")
+p1 <- vip(pp, method = "firm") + ggtitle("PPR")
+p2 <- vip(nn, method = "firm") + ggtitle("NN")
 
 # Display plots side by side
 grid.arrange(p1, p2, ncol = 2)
 ```
 
+To use ICE curves instead of PDPs, just specify `ice = TRUE` in the call to `vip::vi()` or `vip::vi_firm()`. The ICE curve method is similar to the PDP method. The only difference is that we measure the "flatness" of each ICE curve and then aggregate the results (e.g., by averaging)^[There is also the potential to use the individual ICE curves to quantify feature importance at the observation level, thereby providing local VI scores.]. If there are no (substantial) interaction effects, using `ice = TRUE` will produce results similar to using `ice = FALSE`. However, if strong interaction effects are present, they can obfuscate the main effects and render the PDP-based approach less useful (since the PDPs for important features can be relatively flat when certain interactions are present; see @goldstein-peeking-2015 for details). In fact, it is probably safest to always use `ice = TRUE`. 
 
-#### ICE curve method
-
-The ICE curve method is similar to the PDP method. The only difference is that we measure the "flatness" of each ICE curve and then aggregate the results (e.g., by averaging)^[There is also the potential to use the individual ICE curves to quantify feature importance at the observation level, thereby providing local VI scores.]. If there are no (substantial) interaction effects, using `method = "ice"` will produce results similar to using `method = "pdp"`. However, if strong interaction effects are present, they can obfuscate the main effects and render the PDP-based approach less useful (since the PDPs for important features can be relatively flat when certain interactions are present; see @goldstein-peeking-2015 for details). In fact, it is probably safest to always use `method = "ice"`. 
-
-Below, we display the ICE curves for each feature using the same $y$-axis scale. Again, there is a clear difference between the ICE curves for features `x.1`--`x.5` and `x.6`--`x.10`; the later being relatively flat by comparison. Also, notice how the ICE curves within each feature are relatively parallel (if the ICE curves within each feature were perfectly parallel, the standard deviation for each curve would be the same and the results will be identical to the PDP method). In this example, the interaction term between `x.1` and `x.2` does not obfuscate the PDPs for the main effects and the results are not much different. To use the ICE curve method, specify `method = "ice"` in the call to `vi()` or `vip()`.
+Below, we display the ICE curves for each feature using the same $y$-axis scale. Again, there is a clear difference between the ICE curves for features `x.1`--`x.5` and `x.6`--`x.10`; the later being relatively flat by comparison. Also, notice how the ICE curves within each feature are relatively parallel (if the ICE curves within each feature were perfectly parallel, the standard deviation for each curve would be the same and the results will be identical to the PDP method). In this example, the interaction term between `x.1` and `x.2` does not obfuscate the PDPs for the main effects and the results are not much different. To use the ICE curve method, specify `method = "firm"` and `ice = TRUE` in the call to `vip::vi()`, `vip::vi_firm()`, or `vip::vip()`.
 
 ```{r ppr-ice-curves, fig.width=10, fig.height=4, out.width="100%", warning=FALSE}
 # PDPs for all 10 features
@@ -290,8 +287,8 @@ grid.arrange(grobs = ice_curves, ncol = 5)
 
 ```{r ppr-vip-ice, fig.width=7}
 # Plot VI scores
-p1 <- vip(pp, method = "ice") + ggtitle("PPR")
-p2 <- vip(nn, method = "ice") + ggtitle("NN")
+p1 <- vip(pp, method = "firm", ice + TRUE) + ggtitle("PPR")
+p2 <- vip(nn, method = "firm", ice = TRUE) + ggtitle("NN")
 
 # Display plots side by side
 grid.arrange(p1, p2, ncol = 2)

@@ -3,7 +3,7 @@
 \name{vi_permute}
 \alias{vi_permute}
 \alias{vi_permute.default}
-\title{Permutation-Based Variable Importance}
+\title{Permutation-based variable importance}
 \usage{
 vi_permute(object, ...)
 
@@ -125,7 +125,7 @@ A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
 }
 \description{
 Compute permutation-based variable importance scores for the predictors in a
-model. (This function is meant for internal use only.)
+model.
 }
 \details{
 Coming soon!

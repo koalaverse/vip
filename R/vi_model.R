@@ -1,7 +1,7 @@
 #' Model-specific variable importance
 #'
 #' Compute model-specific variable importance scores for the predictors in a
-#' model. (This function is meant for internal use only.)
+#' model.
 #'
 #' @param object A fitted model object (e.g., a \code{"randomForest"} object).
 #'
@@ -86,6 +86,7 @@
 #' three criteria for estimating the variable importance in a MARS model (see
 #' \code{\link[earth]{evimp}} for details):
 #' \itemize{
+#'
 #'   \item The \code{nsubsets} criterion (\code{type = "nsubsets"}) counts the
 #'   number of model subsets that include each feature. Variables that are
 #'   included in more subsets are considered more important. This is the
@@ -115,6 +116,7 @@
 #'   estimated predictive power on unseen data.) If that happens often enough,
 #'   the variable can have a negative total importance, and thus appear less
 #'   important than unused variables.
+#'
 #' }}
 #'
 #' \item{\code{\link[gbm]{gbm}}}{Variable importance is computed using one of
@@ -219,9 +221,22 @@
 #' model, the features need to be on the same scale (which you also would want
 #' to do when using either L1 or L2 regularization). Otherwise, the approach
 #' described in Friedman (2001) for \code{\link[gbm]{gbm}}s is used. See
-#' \code{\link[xgboost]{xgb.importance}} for details. If \code{type = NULL} (the
-#' default), \code{"Gain"} is used. See \code{\link[xgboost]{xgb.importance}}
-#' for details.}
+#' \code{\link[xgboost]{xgb.importance}} for details. For tree models, you can
+#' obtain three different types of variable importance:
+#' \itemize{
+#'
+#'   \item Using \code{type = "gain"} (the default) gives the fractional
+#'   contribution of each feature to the model based on the total gain of the
+#'   corresponding feature's splits.
+#'
+#'   \item Using \code{type = "cover"} gives the number of observations related
+#'   to each feature.
+#'
+#'   \item Using \code{type = "frequency"} gives the percentages representing
+#'   the relative number of times each feature has been used throughout each
+#'   tree in the ensemble.
+#'
+#' }}
 #'
 #' }
 #'
@@ -1267,6 +1282,9 @@ vi_model.xgb.Booster <- function(object, type = c("gain", "cover", "frequency"),
   # Construct model-specific variable importance scores
   imp <- xgboost::xgb.importance(model = object, ...)
   names(imp) <- tolower(names(imp))
+  if ("weight" %in% names(imp)) {
+    type <- "weight"  # gblinear
+  }
   vis <- tibble::as.tibble(imp)[, c("feature", type)]
   tib <- tibble::tibble(
     "Variable" = vis$feature,
