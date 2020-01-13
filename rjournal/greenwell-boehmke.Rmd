@@ -31,10 +31,12 @@ output: rticles::rjournal_article
 ```{r setup, include=FALSE}
 # Set global knitr chunk options
 knitr::opts_chunk$set(
+  cache = TRUE,
   fig.width = 6,
   fig.asp = 0.618,
   out.width = "70%",
   fig.align = "center",
+  fig.pos = "!htb",
   message = FALSE,
   warning = FALSE
 )
@@ -128,7 +130,7 @@ bst <- xgboost(
 )
 ```
 
-Each of the above packages include the ability to compute VI scores for all the features in the model; however, the implementation is rather package specific, as shown in the code chunk below. The results are displayed in Figure~\ref{fig:vi-plots} (the code to reproduce these plots has been omitted but can be made available upon request).
+Each of the above packages include the ability to compute VI scores for all the features in the model; however, the implementation is rather package specific, as shown in the code chunk below. The results are displayed in Figure \ref{fig:vi-plots} (the code to reproduce these plots has been omitted but can be made available upon request).
 
 ```{r trees-vis}
 # Extract VI scores from each model
@@ -174,7 +176,7 @@ vi(rfo)   # RF
 vi(bst)   # GBM
 ```
 
-Notice how the \code{vi()} function always returns a tibble\footnote{Technically, it's a tibble with an additional \code{"vi"} class.} with two columns: \code{Variable} and \code{Importance} (the exceptions are coefficient-based models which also include a \code{Sign} column giving the sign of the corresponding coefficient and permutation importance involving multiple Monte Carlo simulations, but more on that later). Also, by default, \code{vi()} always orders the VI scores from highest to lowest; this, among other options, can be controlled by the user (see \code{?vip::vi} for details). Plotting VI scores with \code{vip()} is just as straightforward. For example, the following code can be used to reproduce Figure~\ref{fig:vi-plots}.
+Notice how the \code{vi()} function always returns a tibble\footnote{Technically, it's a tibble with an additional \code{"vi"} class.} with two columns: \code{Variable} and \code{Importance} (the exceptions are coefficient-based models which also include a \code{Sign} column giving the sign of the corresponding coefficient and permutation importance involving multiple Monte Carlo simulations, but more on that later). Also, by default, \code{vi()} always orders the VI scores from highest to lowest; this, among other options, can be controlled by the user (see \code{?vip::vi} for details). Plotting VI scores with \code{vip()} is just as straightforward. For example, the following code can be used to reproduce Figure \ref{fig:vi-plots}.
 
 ```{r vi-plots-vip, eval=FALSE}
 p1 <- vip(tree) + ggtitle("Single tree")
@@ -185,7 +187,7 @@ p3 <- vip(bst) + ggtitle("Gradient boosting")
 grid.arrange(p1, p2, p3, nrow = 1)
 ```
 
-Notice how the \code{vip()} function always returns a \code{"ggplot"} object (by default, this will be a bar plot). For large models with many features, a Cleveland dot plot is more effective (in fact, a number of useful plotting options can be fiddled with). Below we call \code{vip()} and change a few useful options (the resulting plot is displayed in Figure~\ref{fig:dot-plot}). Note that we can also call \code{vip()} directly on a \code{"vi"} objects if it's already been constructed.
+Notice how the \code{vip()} function always returns a \code{"ggplot"} object (by default, this will be a bar plot). For large models with many features, a Cleveland dot plot is more effective (in fact, a number of useful plotting options can be fiddled with). Below we call \code{vip()} and change a few useful options (the resulting plot is displayed in Figure \ref{fig:dot-plot}). Note that we can also call \code{vip()} directly on a \code{"vi"} objects if it's already been constructed.
 
 ```{r dot-plot, fig.cap="Illustrating various plotting options."}
 # Load required packages
@@ -199,7 +201,7 @@ vip(bst, num_features = 5, geom = "point", horizontal = FALSE,
 
 ## Linear models
 
-In multiple linear regression, or linear models (LMs), the absolute value of the $t$-statistic (or some other scaled variant of the estimated coefficients) is commonly used as a measure of VI. The same idea also extends to generalized linear models (GLMs). In the code chunk below, we fit an LM to the simulated \code{trn} data set allowing for all main effects and two-way interactions, then use the \code{step()} function to perform backward elimination. The resulting VIP is displayed in Figure~\ref{fig:vip-step}.
+In multiple linear regression, or linear models (LMs), the absolute value of the $t$-statistic (or some other scaled variant of the estimated coefficients) is commonly used as a measure of VI. The same idea also extends to generalized linear models (GLMs). In the code chunk below, we fit an LM to the simulated \code{trn} data set allowing for all main effects and two-way interactions, then use the \code{step()} function to perform backward elimination. The resulting VIP is displayed in Figure \ref{fig:vip-step}.
 
 ```{r vip-step, fig.cap="Example VIP from a linear model fit to the simulated Friedman data."}
 # Fit a LM
@@ -216,7 +218,7 @@ vip(vi_backward, num_features = length(coef(backward)),
 
 One issue with computing VI scores for LMs using the $t$-statistic approach is that a score is assigned to each term in the model, rather than to each individual feature! We can solve this problem using one of the model-agnostic approaches discussed later.
 
-Multivariate adaptive regression splines (MARS), which were introduced in \citet{multivariate-friedman-1991}, is an automatic regression technique and can be seen as a generalization of LMs and GLMs. In the MARS algorithm, the contribution (or VI score) for each predictor is determined using a generalized cross-validation (GCV) statistic (though, other statistics can also be used; see \code{?vip::vi\_model} for details). An example using the \CRANpkg{earth} package \citep{earth-pkg} is given below (the results are plotted in Figure~\ref{fig:vip-earth}):
+Multivariate adaptive regression splines (MARS), which were introduced in \citet{multivariate-friedman-1991}, is an automatic regression technique and can be seen as a generalization of LMs and GLMs. In the MARS algorithm, the contribution (or VI score) for each predictor is determined using a generalized cross-validation (GCV) statistic (though, other statistics can also be used; see \code{?vip::vi\_model} for details). An example using the \CRANpkg{earth} package \citep{earth-pkg} is given below (the results are plotted in Figure \ref{fig:vip-earth}):
 
 ```{r vip-earth, fig.cap="Example VIP from a MARS model fit to the simulated Friedman data."}
 # Load required packages
@@ -237,7 +239,7 @@ To access VI scores directly in \pkg{earth}, you can use the \code{earth::evimp(
 
 ## Neural networks
 
-For neural netwroks (NNs), two popular methods for constructing VI scores are the Garson algorithm \citep{interpreting-garson-1991}, later modified by \citet{back-goh-1995}, and the Olden algorithm \citep{accurate-olden-2004}. For both algorithms, the basis of these VI scores is the network’s connection weights. The Garson algorithm determines VI by identifying all weighted connections between the nodes of interest. Olden’s algorithm, on the other hand, uses the products of the raw connection weights between each input and output neuron and sums these products across all hidden neurons. This has been shown to outperform the Garson method in various simulations. For DNNs, a similar method due to \citet{data-gedeon-1997} considers the weights connecting the input features to the first two hidden layers (for simplicity and speed); but this method can be slow for large networks. We illustrate these two methods below using \code{vip()} with the \CRANpkg{nnet} package \citep{nnet-pkg} (see the results in Figure~\ref{fig:vip-nnet}).
+For neural netwroks (NNs), two popular methods for constructing VI scores are the Garson algorithm \citep{interpreting-garson-1991}, later modified by \citet{back-goh-1995}, and the Olden algorithm \citep{accurate-olden-2004}. For both algorithms, the basis of these VI scores is the network’s connection weights. The Garson algorithm determines VI by identifying all weighted connections between the nodes of interest. Olden’s algorithm, on the other hand, uses the products of the raw connection weights between each input and output neuron and sums these products across all hidden neurons. This has been shown to outperform the Garson method in various simulations. For DNNs, a similar method due to \citet{data-gedeon-1997} considers the weights connecting the input features to the first two hidden layers (for simplicity and speed); but this method can be slow for large networks. We illustrate these two methods below using \code{vip()} with the \CRANpkg{nnet} package \citep{nnet-pkg} (see the results in Figure \ref{fig:vip-nnet}).
 
 ```{r vip-nnet, fig.cap="Example VIPs from a single-hidden-layer NN fit to the simulated Friedman data."}
 # Load required packages
@@ -261,11 +263,11 @@ grid.arrange(p1, p2, nrow = 1)
 Model-agnostic interpredibility separates interpretation from the model. Compared to model-specific approaches, model-agnostic VI methods are more flexible and can be applied to any supervised learning algorithm. In this section, we discuss model-agnostic methods for quantifying global feature importance using three different approaches: 1) partial dependence plots (PDPs), 2) \dfn{individual conditional expectation} (ICE) curves, and 3) permutation-based feature importance. For specific details on approaches 1)--2), see \citet{greenwell-simple-2018}.
 
 
-\subsection{PDP method}
+\subsection{FIRM method}
 
-Our first model-agnostic approach is based on quantifying the "flatness" of the PDPs of each feature. PDPs help visualize the effect of low cardinality subsets of the feature space on the estimated prediction surface (e.g., main effects and two/three-way interaction effects.). PDPs provide model-agnostic interpretations and can be constructed in the same way for any supervised learning algorithm; for an overview, see \citet{greenwell-pdp-2017}. Below, we fit a projection pursuit regression (PPR) model and construct PDPs for each feature using the \CRANpkg{pdp} package \citet{greenwell-pdp-2017}. The results are displayed in Figure~\ref{fig:pdp-ppr}. Notice how the PDPs for the uninformative features are relatively flat compared to the PDPs for features \code{x1}--\code{x2}!
+Our first model-agnostic approach is based on a simple *feature importance ranking measure* (FIRM); for details, see \citet{greenwell-simple-2018} and \citet{firm}. The specific approach used here is based on quantifying the "flatness" of the effects of each feature. Feature effects can be assessed using *partial dependence plots* (PDPs) or *individual conditional expectation* (ICE) curves. These approaches are model-agnostic and can be applied to any supervised learning algorithm. PDPs and ICE curves help visualize the effect of low cardinality subsets of the feature space on the estimated prediction surface (e.g., main effects and two/three-way interaction effects.). PDPs and ICE curves provide model-agnostic interpretations and can be constructed in the same way for any supervised learning algorithm. Below, we fit a projection pursuit regression (PPR) model and construct PDPs for each feature using the \CRANpkg{pdp} package \citet{greenwell-pdp-2017}. The results are displayed in Figure \ref{fig:pdp-ppr}. Notice how the PDPs for the uninformative features are relatively flat compared to the PDPs for features \code{x1}--\code{x2}!
 
-```{r pdp-ppr, fig.width=7, fig.asp=0.5, out.width="100%", fig.cap="PDPs of main effects in the PPR model fit to the simulated Friedman data."}
+```{r pdp-ppr, echo=FALSE, fig.width=7, fig.asp=0.5, out.width="100%", fig.cap="PDPs of main effects in the PPR model fit to the simulated Friedman data."}
 # Load required packages
 library(pdp)
 
@@ -284,14 +286,7 @@ pdps <- lapply(features, FUN = function(feature) {
 grid.arrange(grobs = pdps, ncol = 5)
 ```
 
-<!-- \begin{figure}[!htb] -->
-<!--   \centering  -->
-<!--   \includegraphics[width=1\linewidth]{figures/pdp-ppr}  -->
-<!--   \caption{PDPs of main effects in the PPR model fit to the simulated Friedman data.} -->
-<!--   \label{fig:pdp-ppr} -->
-<!-- \end{figure} -->
-
-Next, we compute PDP-based VI scores for the PPR and NN models. The PDP method constructs VI scores that quantify the relative "flatness" of each PDP (by default, this is defined by computing the standard deviation of the $y$-axis values for each PDP). To use the PDP method, specify \code{method = "pdp"} in the call to \code{vi()} or \code{vip()}:
+Next, we compute PDP-based VI scores for the PPR and NN models. The PDP method constructs VI scores that quantify the relative "flatness" of each PDP (by default, this is defined by computing the standard deviation of the $y$-axis values for each PDP). To use the PDP method, specify \code{method = "firm"} in the call to \code{vi()} or \code{vip()} (or just use \code{vi\_firm()} directly):
 
 ```{r pdp-ppr-nn, fig.cap="PDP-based feature importance for the PPR and NN models fit to the simulated Friedman data."}
 # Fit a PPR model (nterms was chosen using the caret package with 5 repeats of 
@@ -299,30 +294,20 @@ Next, we compute PDP-based VI scores for the PPR and NN models. The PDP method c
 pp <- ppr(y ~ ., data = trn, nterms = 11)  
 
 # Plot VI scores
-p1 <- vip(pp, method = "pdp") + ggtitle("PPR")
-p2 <- vip(nn, method = "pdp") + ggtitle("NN")
+p1 <- vip(pp, method = "firm") + ggtitle("PPR")
+p2 <- vip(nn, method = "firm") + ggtitle("NN")
 
 # Figure 7
 grid.arrange(p1, p2, ncol = 2)
 ```
 
-In Figure~\ref{fig:pdp-ppr-nn} we display the PDP-based feature importance for the previously obtained PPR and NN models. These VI scores essentially capture the variability in the partial dependence values for each main effect.
+In Figure \ref{fig:pdp-ppr-nn} we display the PDP-based feature importance for the previously obtained PPR and NN models. These VI scores essentially capture the variability in the partial dependence values for each main effect.
 
-<!-- \begin{figure}[!htb] -->
-<!--   \centering  -->
-<!--   \includegraphics[width=1\linewidth]{figures/vip-ppr-nn}  -->
-<!--   \caption{PDP-based feature importance for the PPR and NN models fit to the simulated Friedman data.} -->
-<!--   \label{fig:pdp-ppr-nn} -->
-<!-- \end{figure} -->
+The ICE curve method is similar to the PDP method. The only difference is that we measure the "flatness" of each ICE curve and then aggregate the results (e.g., by averaging). If there are no (substantial) interaction effects, using \code{ice = TRUE} will produce results similar to using \code{ice = FALSE}. However, if strong interaction effects are present, they can obfuscate the main effects and render the PDP-based approach less useful (since the PDPs for important features can be relatively flat when certain interactions are present; see \citet{goldstein-peeking-2015} for details). In fact, it is probably safest to always use \code{ice = TRUE} when using the FIRM method.
 
+Below, we display the ICE curves for each feature in the PPR model using the same $y$-axis scale; see Figure \ref{fig:ice-ppr}. Again, there is a clear difference between the ICE curves for features \code{x1}--\code{x5} and \code{x6}--\code{x10}; the later being relatively flat by comparison. Also, notice how the ICE curves within each feature are relatively parallel (if the ICE curves within each feature were perfectly parallel, the standard deviation for each curve would be the same and the results will be identical to the PDP method). In this example, the interaction term between \code{x1} and \code{x2} does not obfuscate the PDPs for the main effects and the results are not much different.
 
-\subsection{ICE curve method}
-
-The ICE curve method is similar to the PDP method. The only difference is that we measure the "flatness" of each ICE curve and then aggregate the results (e.g., by averaging). If there are no (substantial) interaction effects, using \code{method = "ice"} will produce results similar to using \code{method = "pdp"}. However, if strong interaction effects are present, they can obfuscate the main effects and render the PDP-based approach less useful (since the PDPs for important features can be relatively flat when certain interactions are present; see \citet{goldstein-peeking-2015} for details). In fact, it is probably safest to always use \code{method = "ice"}.
-
-Below, we display the ICE curves for each feature in the PPR model using the same $y$-axis scale; see Figure~\ref{fig:ice-ppr}. Again, there is a clear difference between the ICE curves for features \code{x1}--\code{x5} and \code{x6}--\code{x10}; the later being relatively flat by comparison. Also, notice how the ICE curves within each feature are relatively parallel (if the ICE curves within each feature were perfectly parallel, the standard deviation for each curve would be the same and the results will be identical to the PDP method). In this example, the interaction term between \code{x1} and \code{x2} does not obfuscate the PDPs for the main effects and the results are not much different.
-
-```{r ice-ppr, fig.width=7, fig.asp=0.5, out.width="100%", fig.cap="ICE curves for each feature in the PPR model fit to the simulated Friedman data. The red curve represents the PDP (i.e., the averaged ICE curves)."}
+```{r ice-ppr, echo=FALSE, fig.width=7, fig.asp=0.5, out.width="100%", fig.cap="ICE curves for each feature in the PPR model fit to the simulated Friedman data. The red curve represents the PDP (i.e., the averaged ICE curves)."}
 # ICE curves for all 10 features
 ice_curves <- lapply(features, FUN = function(feature) {
   ice <- partial(pp, pred.var = feature, ice = TRUE)
@@ -335,56 +320,36 @@ ice_curves <- lapply(features, FUN = function(feature) {
 grid.arrange(grobs = ice_curves, ncol = 5)
 ```
 
-<!-- \begin{figure}[!htb] -->
-<!--   \centering  -->
-<!--   \includegraphics[width=1\linewidth]{figures/ice-ppr}  -->
-<!--   \caption{ICE curves for each feature in the PPR model fit to the simulated Friedman data. The red curve represents the PDP (i.e., the averaged ICE curves).} -->
-<!--   \label{fig:ice-ppr} -->
-<!-- \end{figure} -->
-
-Obtaining the ICE-based feature importance scores is also straightforward, just specify \code{method = "ice"} in the call to \code{vip::vi()} or \code{vip::vip()}. This is illustrated in the code chunk below and the results are Figure~\ref{fig:vip-ice-ppr-nn} are similar to those obtained using the PDP method.
+Obtaining the ICE-based feature importance scores is also straightforward, just specify \code{method = "ice"} in the call to \code{vip::vi()} or \code{vip::vip()}. This is illustrated in the code chunk below and the results are Figure \ref{fig:vip-ice-ppr-nn} are similar to those obtained using the PDP method.
 
 ```{r vip-ice-ppr-nn, fig.cap="ICE-based feature importance for the PPR and NN models fit to the simulated Friedman data."}
 # Plot VI scores
-p1 <- vip(pp, method = "ice") + ggtitle("PPR")
-p2 <- vip(nn, method = "ice") + ggtitle("NN")
+p1 <- vip(pp, method = "firm", ice = TRUE) + ggtitle("PPR")
+p2 <- vip(nn, method = "firm", ice = TRUE) + ggtitle("NN")
 
 # Figure 9
 grid.arrange(p1, p2, ncol = 2)
 ```
 
-<!-- \begin{figure}[!htb] -->
-<!--   \centering  -->
-<!--   \includegraphics[width=1\linewidth]{figures/vip-ice-ppr-nn}  -->
-<!--   \caption{ICE-based feature importance for the PPR and NN models fit to the simulated Friedman data.} -->
-<!--   \label{fig:vip-ice-ppr-nn} -->
-<!-- \end{figure} -->
-
-When using \code{method = "pdp"} or \code{method = "ice"}, the feature effect values are stored as attributes \code{"pdp"} and \code{"ice"}, respectively. This is a convenience so that the feature effect plots (e.g., PDPs and ICE curves) can easily be reconstructed and compared with the VI scores, as demonstrated in the example below (see Figure~\ref{fig:pdp-from-attr}):
+When using \code{method = "firm"}, the feature effect values are stored in an attribute called \code{"effects"}. This is a convenience so that the feature effect plots (e.g., PDPs and ICE curves) can easily be reconstructed and compared with the VI scores, as demonstrated in the example below (see Figure \ref{fig:pdp-from-attr}):
 
 ```{r pdp-from-attr, fig.width=10, fig.asp=0.5, out.width="100%", fig.cap="PDPs for all ten features reconstructed from the \\code{pdp} attribute of the \\code{vis} object."}
 # Construct PDP-based variable importance scores
-(vis <- vi(pp, method = "pdp"))
+(vis <- vi(pp, method = "firm"))
 
 # Reconstruct PDPs for all 10 features
 par(mfrow = c(2, 5))
 for (name in paste0("x", 1:10)) {
-  plot(attr(vis, which = "pdp")[[name]], type = "l", ylim = c(9, 19), las = 1)
+  plot(attr(vis, which = "effects")[[name]], type = "l", ylim = c(9, 19), las = 1)
 }
 ```
 
-<!-- \begin{figure}[!htb] -->
-<!--   \centering  -->
-<!--   \includegraphics[width=1\linewidth]{figures/pdp-from-attr.pdf}  -->
-<!--   \caption{PDPs for all ten features reconstructed from the \code{"pdp"} attribute of the \code{vis} object.} -->
-<!--   \label{fig:pdp-from-attr} -->
-<!-- \end{figure} -->
 
 \subsection{Permutation method}
 
-<!-- The permutation method exists in various forms and was made popular in \citet{random-breiman-2001} for RFs, before being generalized and extended in \citet{fisher-model-2018}. The permutation approach used in \pkg{vip} is quite simple and is outlined in Algorithm~\ref{alg:permute} below. The idea is that if we randomly permute the values of an important feature in the training data, the training performance would degrade (since permuting the values of a feature effectively destroys any relationship between that feature and the target variable). This of course assumes that the model has been properly tuned (e.g., using cross-validation) and is not over fitting. The permutation approach uses the difference between some baseline performance measure (e.g., training $R^2$, AUC, or RMSE) and the same performance measure obtained after permuting the values of a particular feature in the training data (\strong{Note:} the model is NOT refit to the training data after randomly permuting the values of a feature). It is also important to note that this method may not be appropriate when you have, for example, highly correlated features (since permuting one feature at a time may lead to unlikely data instances). -->
+The permutation method exists in various forms and was made popular in \citet{random-breiman-2001} for RFs, before being generalized and extended in \citet{fisher-model-2018}. The permutation approach used in \pkg{vip} is quite simple and is outlined in Algorithm \ref{alg:permute} below. The idea is that if we randomly permute the values of an important feature in the training data, the training performance would degrade (since permuting the values of a feature effectively destroys any relationship between that feature and the target variable). This of course assumes that the model has been properly tuned (e.g., using cross-validation) and is not over fitting. The permutation approach uses the difference between some baseline performance measure (e.g., training $R^2$, AUC, or RMSE) and the same performance measure obtained after permuting the values of a particular feature in the training data (\strong{Note:} the model is NOT refit to the training data after randomly permuting the values of a feature). It is also important to note that this method may not be appropriate when you have, for example, highly correlated features (since permuting one feature at a time may lead to unlikely data instances).
 
-<!-- Let $X_1, X_2, \dots, X_j$ be the features of interest and let $\mathcal{M}_{orig}$ be the baseline performance metric for the trained model; for brevity, we'll assume smaller is better (e.g., classification error or RMSE). The permutation-based importance scores can be computed as follows: -->
+Let $X_1, X_2, \dots, X_j$ be the features of interest and let $\mathcal{M}_{orig}$ be the baseline performance metric for the trained model; for brevity, we'll assume smaller is better (e.g., classification error or RMSE). The permutation-based importance scores can be computed as follows:
 
 \begin{algorithm}
 \begin{enumerate}
@@ -399,266 +364,205 @@ for (name in paste0("x", 1:10)) {
 \caption{A simple algorithm for constructing permutation-based VI scores. \label{alg:permute}}
 \end{algorithm}
 
-<!-- Algorithm~\ref{alg:permute} can be improved or modified in a number of ways. For instance, the process can be repeated several times and the results averaged together. This helps to provide more stable VI scores, and also the opportunity to measure their variability. Rather than taking the difference in step (c), \citet[Chapter 5, Section 5.5.4]{molnar-2019-iml} argues that using the ratio $\mathcal{M}_{perm} / \mathcal{M}_{orig}$ makes the importance scores more comparable across different problems. It's also possible to assign importance scores to groups of features (e.g., by permuting more than one feature at a time); this would be useful if features can be categorized into mutually exclusive groups, for instance, categorical features that have been \dfn{one-hot-encoded}. -->
+Algorithm \ref{alg:permute} can be improved or modified in a number of ways. For instance, the process can be repeated several times and the results averaged together. This helps to provide more stable VI scores, and also the opportunity to measure their variability. Rather than taking the difference in step (c), \citet[Chapter 5, Section 5.5.4]{molnar-2019-iml} argues that using the ratio $\mathcal{M}_{perm} / \mathcal{M}_{orig}$ makes the importance scores more comparable across different problems. It's also possible to assign importance scores to groups of features (e.g., by permuting more than one feature at a time); this would be useful if features can be categorized into mutually exclusive groups, for instance, categorical features that have been \dfn{one-hot-encoded}.
 
-<!-- To use the permutation approach in \pkg{vip}, specify \code{method = "permute"} in the call to \code{vi()} or \code{vip()}. Note that using \code{method = "permute"} requires specifying a few additional arguments (e.g., the training data, target name, etc.); see \code{?vi\_permute} for details. -->
+To use the permutation approach in \pkg{vip}, specify \code{method = "permute"} in the call to \code{vi()} or \code{vip()}. Note that using \code{method = "permute"} requires specifying a few additional arguments (e.g., the training data, target name, a prediction function, etc.); see \code{?vi\_permute} for details.
 
-<!-- An example is given below for the previously fitted PPR and NN models. Here we use $R^2$ (\code{metric = "rsquared"}) as the evaluation metric. The results, which are displayed in Figure~\ref{fig:vip-permute-ppr-nn}, agree with those obtained using the PDP- and ICE-based methods. -->
+An example is given below for the previously fitted PPR and NN models. Here we use $R^2$ (\code{metric = "rsquared"}) as the evaluation metric. The results, which are displayed in Figure \ref{fig:vip-permute-ppr-nn}, agree with those obtained using the PDP- and ICE-based methods.
 
-<!-- ```{r, eval=FALSE} -->
-<!-- # Plot VI scores -->
-<!-- set.seed(2021)  # for reproducibility -->
-<!-- p1 <- vip(pp, method = "permute", target = "y", metric = "rsquared", -->
-<!--           pred_wrapper = predict) + ggtitle("PPR") -->
-<!-- p2 <- vip(nn, method = "permute", target = "y", metric = "rsquared", -->
-<!--           pred_wrapper = predict) + ggtitle("NN") -->
+```{r vip-permute-ppr-nn, fig.cap="Permutation-based feature importance for the PPR and NN models fit to the simulated Friedman data."}
+# Plot VI scores
+set.seed(2021)  # for reproducibility
+p1 <- vip(pp, method = "permute", target = "y", metric = "rsquared",
+          pred_wrapper = predict) + ggtitle("PPR")
+p2 <- vip(nn, method = "permute", target = "y", metric = "rsquared",
+          pred_wrapper = predict) + ggtitle("NN")
 
-<!-- # Figure 11 -->
-<!-- grid.arrange(p1, p2, ncol = 2) -->
-<!-- ``` -->
+# Figure 11
+grid.arrange(p1, p2, ncol = 2)
+```
 
-<!-- <!-- \begin{figure}[!htb] --> -->
-<!-- <!--   \centering  --> -->
-<!-- <!--   \includegraphics[width=1\linewidth]{figures/vip-permute-ppr-nn}  --> -->
-<!-- <!--   \caption{Permutation-based feature importance for the PPR and NN models fit to the simulated Friedman data.} --> -->
-<!-- <!--   \label{fig:vip-permute-ppr-nn} --> -->
-<!-- <!-- \end{figure} --> -->
+The permutation approach introduces randomness into the procedure and therefore should be run more than once if computationally feasible. Fortunately, this also allows us to compute standard errors for the estimated VI scores, as illustrated in the example below where we specify \code{nsim = 10} to request that each feature be permuted 10 times and the results averaged together. (Additionally, if \code{nsim > 1}, you can set \code{geom = "boxplot"} in the call to \code{vip()} to construct boxplots of the raw permutation-based VI scores. This is useful if you want to visualize the variability in each of the VI estimates; see Figure \ref{fig:vip-boxplots} for an example.)
 
-<!-- The permutation approach introduces randomness into the procedure and therefore should be run more than once if computationally feasible. Fortunately, this also allows us to compute standard errors for the estimated VI scores, as illustrated in the example below where we specify \code{nsim = 10} to request that each feature be permuted 10 times and the results averaged together. (Additionally, if \code{nsim > 1}, you can set \code{geom = "boxplot"} in the call to \code{vip()} to construct boxplots of the raw permutation-based VI scores. This is useful if you want to visualize the variability in each of the VI estimates.) -->
+```{r vip-boxplots, fog.cap="Boxplots of variable importance scores using the perm,utaiton method with 15 Monte Carlo repetitions."}
+# Use 10 Monte Carlo reps
+set.seed(403)  # for reproducibility
+vis <- vi(pp, method = "permute", target = "y", metric = "rsquared",
+          pred_wrapper = predict, nsim = 15)
+vip(vis, geom = "boxplot")
+```
 
-<!-- ```{r, eval=FALSE} -->
-<!-- # Use 10 Monte Carlo reps -->
-<!-- set.seed(403)  # for reproducibility -->
-<!-- vi(pp, method = "permute", target = "y", metric = "rsquared", -->
-<!--    pred_wrapper = predict, nsim = 10) -->
+All available performance metrics for regression and classification can be listed using the \code{list\_metrics()} function, for example:
 
-<!-- # A tibble: 10 x 3 -->
-<!-- #>    Variable Importance   StDev -->
-<!-- #>    <chr>         <dbl>   <dbl> -->
-<!-- #>  1 X4           0.586  0.0188  -->
-<!-- #>  2 X2           0.416  0.0184  -->
-<!-- #>  3 X1           0.377  0.0162  -->
-<!-- #>  4 X5           0.222  0.0155  -->
-<!-- #>  5 X3           0.183  0.00936 -->
-<!-- #>  6 X6           0.0620 0.00379 -->
-<!-- #>  7 X8           0.0603 0.00378 -->
-<!-- #>  8 X9           0.0389 0.00417 -->
-<!-- #>  9 X7           0.0373 0.00321 -->
-<!-- #> 10 X10          0.0348 0.00290 -->
-<!-- ``` -->
+```{r list-metrics}
+list_metrics()
+```
 
-<!-- All available performance metrics for regression and classification can be listed using the \code{list\_metrics()} function, for example: -->
+We can also use a custom metric (i.e., loss function). Suppose for example you want to measure importance using the \dfn{mean absolute error} (MAE):
 
-<!-- ```{r, eval=FALSE} -->
-<!-- #>     Metric                       Description                      Task -->
-<!-- #> 1      auc            Area under (ROC) curve     Binary classification -->
-<!-- #> 2    error           Misclassification error     Binary classification -->
-<!-- #> 3  logloss                          Log loss     Binary classification -->
-<!-- #> 4     mauc Multiclass area under (ROC) curve Multiclass classification -->
-<!-- #> 5 mlogloss               Multiclass log loss Multiclass classification -->
-<!-- #> 6      mse                Mean squared error                Regression -->
-<!-- #> 7       r2                         R squared                Regression -->
-<!-- #> 8 rsquared                         R squared                Regression -->
-<!-- #> 9     rmse           Root mean squared error                Regression -->
-<!-- ``` -->
+\begin{equation}
+  MAE = \frac{1}{n}\sum_{i = 1}^n\left|Y_i - \widehat{f}\left(\boldsymbol{X}_i\right)\right|,
+\end{equation}
 
-<!-- We can also use a custom metric (i.e., loss function). Suppose for example you want to measure importance using the \dfn{mean absolute error} (MAE):  -->
+where $\widehat{f}\left(\boldsymbol{X}_i\right)$ is the predicted value of $Y_i$. A simple function implementing this metric is given below (note that, according to the documentation in \code{?vi\_permute}, this function requires two arguments: \code{actual} and \code{predicted}).
 
-<!-- \begin{equation} -->
-<!--   MAE = \frac{1}{n}\sum_{i = 1}^n\left|Y_i - \widehat{f}\left(\boldsymbol{X}_i\right)\right|, -->
-<!-- \end{equation} -->
+```{r mae}
+mae <- function(actual, predicted) {
+  mean(abs(actual - predicted))
+}
+```
 
-<!-- where $\widehat{f}\left(\boldsymbol{X}_i\right)$ is the predicted value of $Y_i$. A simple function implementing this metric is given below (note that, according to the documentation in \code{?vi\_permute}, this function requires two arguments: \code{actual} and \code{predicted}). -->
+To use this for computing permutation-based VI scores just pass it via the \code{metric} argument (be warned, however, that the metric used for computing permutation importance should be the same as the metric used to train and tune the model). Also, since this is a custom metric, we need to specify whether a smaller value indicates better performance by setting \code{smaller\_is\_better = TRUE}. The results, which are displayed in Figure \ref{fig:vip-nn-mae}, are similar to those in Figure \ref{fig:vip-permute-ppr-nn}, albeit a different scale.
 
-<!-- ```{r, eval=FALSE} -->
-<!-- mae <- function(actual, predicted) { -->
-<!--   mean(abs(actual - predicted)) -->
-<!-- } -->
-<!-- ``` -->
+```{r vip-nn-mae, fiig.cap="Permutation-based feature importance for the NN model fit to the simulated Friedman data. In this example, permutation importance is based on the MAE metric."}
+# Figure 12
+set.seed(2321)  # for reproducibility
+pfun <- function(object, newdata)  predict(object, newdata = newdata)
+vip(nn, method = "permute", target = "y", metric = mae,
+    smaller_is_better = TRUE, pred_wrapper = pfun) +
+  ggtitle("Custom loss function: MAE")
+```
 
-<!-- To use this for computing permutation-based VI scores just pass it via the \code{metric} argument (be warned, however, that the metric used for computing permutation importance should be the same as the metric used to train and tune the model). Also, since this is a custom metric, we need to specify whether a smaller value indicates better performance by setting \code{smaller\_is\_better = TRUE}. The results, which are displayed in Figure~\ref{fig:vip-nn-mae}, are similar to those in Figure~\ref{fig:vip-permute-ppr-nn}, albeit a different scale.  -->
+Although permutation importance is most naturally computed on the training data, it may also be useful to do the shuffling and measure performance on new data! This is discussed in depth in \citet{molnar-2019-iml}[Chapter 5, Section 5.2]. For users interested in computing permutation importance using new data, just supply it to the \code{train} argument in the call to \code{vi()}, \code{vip()}, or \code{vi\_permute()}. For instance, suppose we wanted to only use a fraction of the original training data to carry out the computations. In this case, we could simply pass the sampled data to the \code{train} argument as follows:
 
-<!-- ```{r, eval=FALSE} -->
-<!-- # Figure 12 -->
-<!-- set.seed(2321)  # for reproducibility -->
-<!-- vip(nn, method = "permute", target = "y", metric = mae,  -->
-<!--     smaller_is_better = TRUE, pred_wrapper = nnet:::predict.nnet) + -->
-<!--   ggtitle("Custom loss function: MAE") -->
-<!-- ``` -->
+```{r vip-permute-nn-sample, fig.cap="Permutation-based feature importance for the NN model fit to the simulated Friedman data. In this example, permutation importance is based on a random sample of 400 training observations."}
+# Figure 13
+set.seed(2327)  # for reproducibility
+vip(nn, method = "permute", pred_wrapper = pfun, target = "y", metric = "rmse",
+    train = trn[sample(nrow(trn), size = 400), ])  # sample 400 observations
+  ggtitle("Using a random subset of training data")
+```
 
-<!-- <!-- \begin{figure}[!htb] --> -->
-<!-- <!--   \centering --> -->
-<!-- <!--   \includegraphics[width=1\linewidth]{figures/vip-permute-nn-mae} --> -->
-<!-- <!--   \caption{Permutation-based feature importance for the NN model fit to the simulated Friedman data. In this example, permutation importance is based on the MAE metric.} --> -->
-<!-- <!--   \label{fig:vip-nn-mae} --> -->
-<!-- <!-- \end{figure} --> -->
+When using the permutation method with \code{nsim > 1}, the default is to keep all the permutation scores as an attribute called \code{"raw\_scores"}; you can turn this behavior off by setting \code{keep = FALSE} in the call to \code{vi\_permute()}, \code{vi()}, or \code{vip()}. If \code{keep = TRUE} and \code{nsim > 1}, you can request all permutation scores to be plotted by setting \code{all\_permutation = TRUE} in the call to \code{vip()} as demonstrated in the code chunk below (see Figure \ref{fig:vip-nn-mae-all}). This let's you visually inspect the variability in the permutation scores within each feature.
 
-<!-- Although permutation importance is most naturally computed on the training data, it may also be useful to do the shuffling and measure performance on new data! This is discussed in depth in \citet{molnar-2019-iml}[Chapter 5, Section 5.2]. For users interested in computing permutation importance using new data, just supply it to the \code{train} argument in the call to \code{vi()}, \code{vip()}, or \code{vi\_permute()}. For instance, suppose we wanted to only use a fraction of the original training data to carry out the computations. In this case, we could simply pass the sampled data to the \code{train} argument as follows: -->
-
-<!-- ```{r, eval=FALSE} -->
-<!-- # Figure 13 -->
-<!-- set.seed(2327)  # for reproducibility -->
-<!-- vip(nn, method = "permute",  -->
-<!--     train = trn[sample(nrow(trn), size = 400), ],  # sample 400 observations -->
-<!--     target = "y", metric = "rmse") + -->
-<!--   ggtitle("Using a random subset of training data") -->
-<!-- ``` -->
-
-<!-- <!-- \begin{figure}[!htb] --> -->
-<!-- <!--   \centering --> -->
-<!-- <!--   \includegraphics[width=1\linewidth]{figures/vip-permute-nn-sample} --> -->
-<!-- <!--   \caption{Permutation-based feature importance for the NN model fit to the simulated Friedman data. In this example, permutation importance is based on a random sample of 400 training observations.} --> -->
-<!-- <!--   \label{fig:vip-nn-mae} --> -->
-<!-- <!-- \end{figure} --> -->
-
-<!-- When using the permutation method with \code{nsim > 1}, the default is to keep all the permutation scores as an attribute called \code{"raw\_scores"}; you can turn this behavior off by setting \code{keep = FALSE} in the call to \code{vi\_permute()}, \code{vi()}, or \code{vip()}. If \code{keep = TRUE} and \code{nsim > 1}, you can request all permutation scores to be plotted by setting \code{all\_permutation = TRUE} in the call to \code{vip()} as demonstrated in the code chunk below (see Figure~\ref{fig:vip-nn-mae}). This let's you visually inspect the variability in the permutation scores within each feature. -->
-
-<!-- ```{r, eval=FALSE} -->
-<!-- # Figure 14 -->
-<!-- set.seed(8264)  # for reproducibility -->
-<!-- vip(nn, method = "permute", target = "y", metric = "rmse", -->
-<!--     all_permutations = TRUE) + -->
-<!--   ggtitle("Plotting all permutation scores") -->
-<!-- ``` -->
-
-<!-- <!-- \begin{figure}[!htb] --> -->
-<!-- <!--   \centering --> -->
-<!-- <!--   \includegraphics[width=1\linewidth]{figures/vip-permute-nn-all} --> -->
-<!-- <!--   \caption{Permutation-based feature importance for the NN model fit to the simulated Friedman data. In this example, all the permutation importance scores (points) are displayed for each feature along with their average (bars).} --> -->
-<!-- <!--   \label{fig:vip-permute-nn-all} --> -->
-<!-- <!-- \end{figure} --> -->
+```{r vip-nn-mae-all, fig.cap="Permutation-based feature importance for the NN model fit to the simulated Friedman data. In this example, all the permutation importance scores (points) are displayed for each feature along with their average (bars)."}
+# Figure 14
+set.seed(8264)  # for reproducibility
+vip(nn, method = "permute", pred_wrapper = pfun, target = "y", metric = "mae", 
+    geom = "point", all_permutations = TRUE, jitter = TRUE) +
+  ggtitle("Plotting all permutation scores")
+```
 
 
-<!-- \subsection{Benchmarks} -->
+\subsubsection{Benchmarks}
 
-<!-- In this section, we compare the performance of three implementations of permutation-based VI scores: \code{iml::FeatureImp()}, \code{ingredients::feature\_importance()}, and \code{vip::vi()}. -->
+In this section, we compare the performance of three implementations of permutation-based VI scores: \code{iml::FeatureImp()} (version `r packageVersion("iml")`), \code{ingredients::feature\_importance()} (version `r packageVersion("ingredients")`), and \code{vip::vi()} (version `r packageVersion("vip")`).
 
-<!-- We simulated 10,000 training observations from the Friedman 1 benchmark problem and trained a random forest using the \pkg{ranger} package. For each implementation, we computed permutation-based VI scores 100 times using the \CRANpkg{microbenchmark} package \citep{microbenchmark-pkg}. For this benchmark we did not use any of the parallel processing capability available in the \pkg{iml} and \pkg{vip} implementations. The results from \pkg{microbenchmark} are displayed in Figure~\ref{fig:benchmark} and summarized in the output below. In this case, the \pkg{vip} package was the most efficient, followed closely by \pkg{ingredients}. It should be noted, however, that the implementations in \pkg{vip} and \pkg{iml} can be parallelized. To the best of our knowledge, this is not the case for \pkg{ingredients}. -->
+We simulated 10,000 training observations from the Friedman 1 benchmark problem and trained a random forest using the \pkg{ranger} package. For each implementation, we computed permutation-based VI scores 100 times using the \CRANpkg{microbenchmark} package \citep{microbenchmark-pkg}. For this benchmark we did not use any of the parallel processing capability available in the \pkg{iml} and \pkg{vip} implementations. The results from \pkg{microbenchmark} are displayed in Figure \ref{fig:benchmark} and summarized in the output below. In this case, the \pkg{vip} package (version 0.1.4) was the most efficient, followed closely by \pkg{ingredients}. It should be noted, however, that the implementations in \pkg{vip} and \pkg{iml} can be parallelized. To the best of our knowledge, this is not the case for \pkg{ingredients}.
 
-<!-- ```{r, eval=FALSE} -->
-<!-- Unit: seconds -->
-<!--         expr       min        lq      mean    median        uq      max neval cld -->
-<!--  ingredients  4.960832  5.658127  8.103375  5.853441  8.034572 61.61415   100  b  -->
-<!--          iml 10.636616 11.742197 14.760306 12.180391 12.961056 35.28671   100   c -->
-<!--          vip  4.076012  4.729765  5.968943  4.838916  5.745905 20.04089   100 a -->
-<!-- ``` -->
-
-<!-- <!-- \begin{figure}[!htb] --> -->
-<!-- <!--   \centering --> -->
-<!-- <!--   \includegraphics[width=1\linewidth]{figures/benchmark} --> -->
-<!-- <!--   \caption{Violin plots comparing the computation time from three different implementations of permutation-based VI scores across 100 simulations.} --> -->
-<!-- <!--   \label{fig:vip-permute-nn-all} --> -->
-<!-- <!-- \end{figure} --> -->
+```{r benchmark, echo=FALSE, fig.cap="Violin plots comparing the computation time from three different implementations of permutation-based VI scores across 100 simulations."}
+library(microbenchmark)
+mb <- readRDS("benchmark.rds")
+autoplot(mb)
+```
 
 
 \subsection{Shapley method}
 
-Starting with \pkg{vip} 0.1.4 you can now construct VI scores based on \dfn{Shapley values} REF. Suppose we make a prediction for an observation $x\prime$, denoted $f\left(x\prime\right)$. The Shapley values for $f\left(x\prime\right)$...
+Starting with \pkg{vip} 0.1.4 you can now construct VI scores based on the popular \dfn{Shapley values} \citet[Chapter 5, Section 5.9]{molnar-2019-iml}---a method from coalitional game theory. Using Shapley values, the prediction for a single instance $x^\star$ can be explained by assuming that each feature value in $x^\star$ is a "player" in a game with a payout equal to the corresponding prediction $\widehat{f}\left(x^\star\right)$. Shapley values tell us how to fairly distribute the "payout" among the features. The Shapley-based variable importance for a particular feature is computes as the mean of the abosulte value of the iindividual Shapley values across the entire training set. Although Shapley  values can be computationally expensive, the \CRANpkg{fastshap} package \citep{fastshap-pkg} exploits a few computational tricks and also includes the option to perform computations in parallel. Also, fast and exact algorithms \citep{lundberg-explainable-2019} can be exploited for certain classes of models, which is illustrated below using the well-known Boston housing data (Figure \ref{fig:vi-shap}); see \code{?fastshap::explain} for details. (\strong{Note:} specifying `include_type = TRUE` in the call to `vip::vip()` causes the type of variable importance computed to be displayed as part of the axis label.)
 
-<!-- \section{Use sparklines to characterize feature effects} -->
+```{r vi-shap}
+# Load required packages
+library(xgboost)
 
-<!-- Starting with \pkg{vip} 0.1.3, we have included a new function \code{add\_sparklines()} for constructing HTML-based VI tables; however, this feature requires the \CRANpkg{DT} package \citep{DT-pkg}. The primary difference between \code{vi()} and \code{add\_sparklines()} is that the latter includes an \code{Effect} column that displays a sparkline representation of the partial dependence function for each feature. This is a concise way to display both feature importance and feature effect information in a single (interactive) table. See \code{?vip::add\_sparklines} for details. We illustrate the basic use of \code{add\_sparklines()} in the code chunks below. -->
+# Load the Boston housing data
+# install.packages("pdp)
+data(boston, package = "pdp")
+X <- data.matrix(subset(boston, select = -cmedv))  # matrix of feature values
 
-<!-- ```{r, eval=FALSE} -->
-<!-- # First, compute a tibble of variable importance scores using any method -->
-<!-- var_imp <- vi(rfo, method = "permute", metric = "rmse", target = "y") -->
+# Fit a gradient boosted regression tree ensemble; hyperparameters were tuned 
+# using `autoxgb::autoxgb()`
+set.seed(859)  # for reproducibility
+bst <- xgboost(X, label = boston$cmedv, nrounds = 338, max_depth = 3, eta = 0.1,
+               verbose = 0)
 
-<!-- # Next, convert to an html-based data table with sparklines -->
-<!-- add_sparklines(var_imp, fit = rfo) -->
-<!-- ``` -->
-
-<!-- <!-- \begin{figure}[!htb] --> -->
-<!-- <!--   \centering  --> -->
-<!-- <!--   \includegraphics[width=1\linewidth]{figures/sparklines}  --> -->
-<!-- <!--   \caption{VIP with sparkline representation of feature effects fit to the simulated Friedman data.} --> -->
-<!-- <!--   \label{fig:sparklines} --> -->
-<!-- <!-- \end{figure} --> -->
-
-
-<!-- \section{Ames housing example} -->
-
-<!-- For illustration, we'll use the Ames housing data which are available in the \CRANpkg{AmesHousing} package \citep{AmesHousing-pkg}. These data describe the sale of individual residential properties in Ames, Iowa from 2006--2010. The data set contains 2930 observations, 80 features (23 nominal, 23 ordinal, 14 discrete, and 20 continuous), and a continuous target giving the sale price of the home. The version we'll load is a cleaned up version of the original data set and treats all categorical variables as nominal (see \code{?AmesHousing::make\_ames} for details). -->
-
-<!-- Using the R package \CRANpkg{SuperLearner} \citep{SuperLearner-pkg}, we trained five models using 5-fold cross-validation: a GBM using the \CRANpkg{xgboost} package \citep{xgboost-pkg}, an RF using the \CRANpkg{ranger} package \citep{ranger-pkg}, a MARS model using the \pkg{earth} package, a GLMNET model using the \CRANpkg{glmnet} package \citep{glmnet-pkg}, and a support vector regression model using the \CRANpkg{kernlab} package \citep{kernlab-pkg}. The coefficients from the meta learner indicate that the GBM contributes the most to new predictions, followed by the MARS model, RF, and the GLMNET. The support vector regression model did not contribute to the ensemble. -->
-
-<!-- ```{r, eval=FALSE} -->
-<!-- # Load the Ames housing data -->
-<!-- ames <- AmesHousing::make_ames() -->
-<!-- X <- subset(ames, select = -Sale_Price) -->
-<!-- y <- ames$Sale_Price -->
-
-<!-- # Load required packages -->
-<!-- library(SuperLearner) -->
-
-<!-- # List of base learners -->
-<!-- learners <- c("SL.xgboost", "SL.ranger", "SL.earth", "SL.glmnet", "SL.ksvm") -->
-
-<!-- # Stack models -->
-<!-- set.seed(840) -->
-<!-- ctrl <- SuperLearner.CV.control(V = 5L, shuffle = TRUE) -->
-<!-- sl <- SuperLearner(Y = y, X = X, SL.library = learners, verbose = TRUE, -->
-<!--                    cvControl = ctrl) -->
-<!-- sl -->
-<!-- #>  Call:   -->
-<!-- #> SuperLearner(Y = y, X = X, SL.library = learners, verbose = TRUE,   -->
-<!-- #>     cvControl = ctrl)  -->
-<!-- #>  -->
-<!-- #>  -->
-<!-- #>                      Risk        Coef -->
-<!-- #> SL.xgboost_All  527111540 0.603160823 -->
-<!-- #> SL.ranger_All   658707534 0.111650583 -->
-<!-- #> SL.earth_All    731657510 0.276895806 -->
-<!-- #> SL.glmnet_All   884821443 0.008292788 -->
-<!-- #> SL.ksvm_All    6782709110 0.000000000 -->
-<!-- ``` -->
-
-<!-- In the code chunks below we request permutation-based VI scores and add sparkline representations of the PDPs for the top ten features. For this we need to define a couple of wrapper functions. One for computing predictions (for the permutation VI scores) and one for computing averaged predictions (for the PDPs): -->
-
-<!-- ```{r, eval=FALSE} -->
-<!-- # Prediction wrapper functions -->
-<!-- imp_fun <- function(object, newdata) {  # for permutation-based VI scores -->
-<!--   predict(object, newdata = newdata)$pred -->
-<!-- } -->
-<!-- par_fun <- function(object, newdata) {  # for PDPs -->
-<!--   mean(predict(object, newdata = newdata)$pred) -->
-<!-- } -->
-<!-- ``` -->
-
-<!-- To speed up the process, we perform the computations in parallel by setting \code{parallel = TRUE} in the call to \code{vi()} and \code{add\_sparklines()}. Note that we first need to set up a parallel backend for this to work. Both \pkg{vip} and \pkg{pdp} use \CRANpkg{plyr} \citep{plyr-pkg}---which relies on \CRANpkg{foreach} \citep{foreach-pkg}---so any parallel backend supported by the \pkg{foreach} package should work. Below we use a \dfn{socket} approach with the \CRANpkg{doParallel} backend \citep{doParallel-pkg} using a cluster of size five. -->
-
-<!-- ```{r, eval=FALSE} -->
-<!-- # Setup parallel backend -->
-<!-- library(doParallel) # load the parallel backend -->
-<!-- cl <- makeCluster(5) # use 5 workers -->
-<!-- registerDoParallel(cl) # register the parallel backend -->
-
-<!-- # Permutation-based feature importance -->
-<!-- set.seed(278) -->
-<!-- var_imp <- vi(sl, method = "permute", train = X, target = y, metric = "rmse", -->
-<!--               pred_wrapper = imp_fun, nsim = 5, parallel = TRUE) -->
-
-<!-- # Add sparkline representation of feature effects -->
-<!-- add_sparklines(var_imp[1L:10L, ], fit = sl, pred.fun = par_fun, train = X,  -->
-<!--                digits = 2, verbose = TRUE, trim.outliers = TRUE,  -->
-<!--                grid.resolution = 20, parallel = TRUE) -->
-
-<!-- # Shut down cluster -->
-<!-- stopCluster(cl) -->
-<!-- ``` -->
-
-<!-- <!-- \begin{figure}[!htb] --> -->
-<!-- <!--   \centering  --> -->
-<!-- <!--   \includegraphics[width=1\linewidth]{figures/ames-sparklines}  --> -->
-<!-- <!--   \caption{VIP with sparkline representation of feature effects for the top ten features from a Super Learner fit to the Ames housing data.} --> -->
-<!-- <!--   \label{fig:sparklines} --> -->
-<!-- <!-- \end{figure} --> -->
+# Construct Shapley-based variable importance plot
+vip(bst, method = "shap", train = X, exact = TRUE, include_type = TRUE)
+```
 
 
-<!-- \section{Summary} -->
+\section{Use sparklines to characterize feature effects}
 
-<!-- VIPs help to visualize the strength of the relationship between each feature and the response, while accounting for all the other features in the model. We've discussed two types of VI: model-specific and model-agnostic, as well as some of their strengths and weaknesses. In this paper, we showed how to construct VIPs for various types of "black box" models in R using the \pkg{vip} package. We also briefly discussed related approaches available in other R packages. Suggestions to avoid high execution times were discussed and demonstrated via examples. This paper is based on \pkg{vip} version 0.1.3. For updates that have occurred since then, see the package’s \href{https://cran.r-project.org/web/packages/vip/news/news.html}{NEWS file}. In terms of future development, \pkg{vip} can be expanded in a number of ways. For example, we plan to incorporate the option to compute group-based permutation scores. We're also working on including a new option for efficiently computing Shapley-based VI scores via the new \href{https://github.com/bgreenwell/fastshap}{fastshap} package. Although not discussed in this paper, the package also includes a promising statistic (similar to the PDP- and ICE-based VI scores previously discussed) for measuring the relative strength of interaction between features.  -->
+Starting with \pkg{vip} 0.1.3, we have included a new function \code{add\_sparklines()} for constructing HTML-based VI tables; however, this feature requires the \CRANpkg{DT} package \citep{DT-pkg}. The primary difference between \code{vi()} and \code{add\_sparklines()} is that the latter includes an \code{Effect} column that displays a sparkline representation of the partial dependence function for each feature. This is a concise way to display both feature importance and feature effect information in a single (interactive) table. See \code{?vip::add\_sparklines} for details. We illustrate the basic use of \code{add\_sparklines()} in the code chunks below. 
+
+```{r sparklines, out.width="100%", fig.cap="Variable importance scores along with a sparkline representation of feature effects."}
+# First, compute a tibble of variable importance scores using any method
+var_imp <- vi(rfo)
+
+# Next, convert to an html-based data table with sparklines
+add_sparklines(var_imp, fit = rfo)
+```
+
+
+\section{Ames housing example}
+
+For illustration, we'll use the Ames housing data which are available in the \CRANpkg{AmesHousing} package \citep{AmesHousing-pkg}. These data describe the sale of individual residential properties in Ames, Iowa from 2006--2010. The data set contains 2930 observations, 80 features (23 nominal, 23 ordinal, 14 discrete, and 20 continuous), and a continuous target giving the sale price of the home. The version we'll load is a cleaned up version of the original data set and treats all categorical variables as nominal (see \code{?AmesHousing::make\_ames} for details).
+
+Using the R package \CRANpkg{SuperLearner} \citep{SuperLearner-pkg}, we trained five models using 5-fold cross-validation: a GBM using the \CRANpkg{xgboost} package \citep{xgboost-pkg}, an RF using the \CRANpkg{ranger} package \citep{ranger-pkg}, a MARS model using the \pkg{earth} package, a GLMNET model using the \CRANpkg{glmnet} package \citep{glmnet-pkg}, and a support vector regression model using the \CRANpkg{kernlab} package \citep{kernlab-pkg}. The coefficients from the meta learner indicate that the GBM contributes the most to new predictions, followed by the MARS model, RF, and the GLMNET. The support vector regression model did not contribute to the ensemble.
+
+```{r ames-super-learner}
+# Load the Ames housing data
+ames <- AmesHousing::make_ames()
+X <- subset(ames, select = -Sale_Price)
+y <- ames$Sale_Price
+
+# Load required packages
+library(SuperLearner)
+
+# List of base learners
+learners <- c("SL.xgboost", "SL.ranger", "SL.earth", "SL.glmnet", "SL.ksvm")
+
+# Stack models
+set.seed(840)
+ctrl <- SuperLearner.CV.control(V = 5L, shuffle = TRUE)
+sl <- SuperLearner(Y = y, X = X, SL.library = learners, verbose = TRUE,
+                   cvControl = ctrl)
+sl
+```
+
+In the code chunks below we request permutation-based VI scores and add sparkline representations of the PDPs for the top ten features. For this we need to define a couple of wrapper functions. One for computing predictions (for the permutation VI scores) and one for computing averaged predictions (for the PDPs):
+
+```{r ames-super-learner-setup}
+# Prediction wrapper functions
+imp_fun <- function(object, newdata) {  # for permutation-based VI scores
+  predict(object, newdata = newdata)$pred
+}
+par_fun <- function(object, newdata) {  # for PDPs
+  mean(predict(object, newdata = newdata)$pred)
+}
+```
+
+To speed up the process, we perform the computations in parallel by setting \code{parallel = TRUE} in the call to \code{vi()} and \code{add\_sparklines()}. Note that we first need to set up a parallel backend for this to work. Both \pkg{vip} and \pkg{pdp} use \CRANpkg{plyr} \citep{plyr-pkg}---which relies on \CRANpkg{foreach} \citep{foreach-pkg}---so any parallel backend supported by the \pkg{foreach} package should work. Below we use a \dfn{socket} approach with the \CRANpkg{doParallel} backend \citep{doParallel-pkg} using a cluster of size five.
+
+```{r ames-sparklines, out.width="100%", fig.cap="VIP with sparkline representation of feature effects for the top ten features from a Super Learner fit to the Ames housing data."}
+# Setup parallel backend
+library(doParallel) # load the parallel backend
+cl <- makeCluster(5) # use 5 workers
+registerDoParallel(cl) # register the parallel backend
+
+# Permutation-based feature importance
+set.seed(278)
+var_imp <- vi(sl, method = "permute", train = X, target = y, metric = "rmse",
+              pred_wrapper = imp_fun, nsim = 5, parallel = TRUE)
+
+# Add sparkline representation of feature effects
+add_sparklines(var_imp[1L:10L, ], fit = sl, pred.fun = par_fun, train = X,
+               digits = 2, verbose = TRUE, trim.outliers = TRUE,
+               grid.resolution = 20, parallel = TRUE)
+
+# Shut down cluster
+stopCluster(cl)
+```
+
+
+\section{Summary}
+
+VIPs help to visualize the strength of the relationship between each feature and the response, while accounting for all the other features in the model. We've discussed two types of VI: model-specific and model-agnostic, as well as some of their strengths and weaknesses. In this paper, we showed how to construct VIPs for various types of "black box" models in R using the \pkg{vip} package. We also briefly discussed related approaches available in other R packages. Suggestions to avoid high execution times were discussed and demonstrated via examples. This paper is based on \pkg{vip} version 0.1.3. For updates that have occurred since then, see the package’s \href{https://cran.r-project.org/web/packages/vip/news/news.html}{NEWS file}. In terms of future development, \pkg{vip} can be expanded in a number of ways. For example, we plan to incorporate the option to compute group-based permutation scores. We're also working on including a new option for efficiently computing Shapley-based VI scores via the new \href{https://github.com/bgreenwell/fastshap}{fastshap} package. Although not discussed in this paper, the package also includes a promising statistic (similar to the PDP- and ICE-based VI scores previously discussed) for measuring the relative strength of interaction between features.
 
 
 \section{Acknowledgments}
+
+TBD.
+
 
 \bibliography{greenwell-boehmke}

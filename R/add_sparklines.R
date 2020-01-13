@@ -7,7 +7,7 @@
 #' @param object An object that inherits from class \code{"vi"}.
 #'
 #' @param fit The original fitted model. Only needed if `vi()` was not called
-#' with `method = "pdp"` or `method = "ice"`.
+#' with `method = "firm"`.
 #'
 #' @param digits Integer specifying the minimal number of significant digits to
 #' use for displaying importance scores and, if available, their standard
@@ -69,12 +69,16 @@ add_sparklines.vi <- function(object, fit, digits = 3, free_y = FALSE,
   object <- stats::na.omit(object)
 
   # Get partial dependence functions
-  if (vi_type == "pdp") {
-    pd <- attr(object, which = "pdp")
-  } else if (vi_type == "ice") {
-    ice <- attr(object, which = "ice")
-    pd <- lapply(ice, FUN = average_ice_curves.ice)
+  if (vi_type == "firm") {
+    pd <- attr(object, which = "effects")
+    if ("yhat.id" %in% names(pd)) {
+      pd <- lapply(pd, FUN = average_ice_curves.ice)
+    }
   } else {  # compute partial dependence
+    if (!requireNamespace("pdp", quietly = TRUE)) {
+      stop("Package \"pdp\" needed for this function to work. Please ",
+           "install it.", call. = FALSE)
+    }
     if (verbose) {
       message("Computing partial dependence...")
     }

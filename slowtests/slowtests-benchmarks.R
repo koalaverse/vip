@@ -10,6 +10,7 @@ library(vip)
 # Friedman 1 benchmark data
 set.seed(101)
 friedman1 <- as.data.frame(mlbench::mlbench.friedman1(10000, sd = 0.1))
+X <- subset(friedman1, select = -y)
 
 # Random forest
 set.seed(102)
@@ -21,11 +22,11 @@ pfun <- function(object, newdata) {
 }
 
 # Metric/loss function
-mfun <- ModelMetrics::rmse
+mfun <- metric_rmse
 
-# DALEX wrapper
+# DALEX/ingredients wrapper
 imp_ingredients <- function() {
-  explainer <- explain(rfo, data = friedman1, y = friedman1$y)
+  explainer <- explain(rfo, data = X, y = friedman1$y, verbose = FALSE)
   feature_importance(explainer, loss = mfun, type = "difference",
                      n_sample = NULL, B = 1)
 }
@@ -39,7 +40,7 @@ imp_iml <- function() {
 
 # vip wrapper
 imp_vip <- function() {
-  vi_permute(rfo, train = friedman1, target = "y", metric = "rmse",
+  vi_permute(rfo, train = X, target = friedman1$y, metric = "rmse",
              pred_wrapper = pfun, nsim = 1)
 }
 
