@@ -46,6 +46,18 @@ library(dplyr)
 library(vip)
 ```
 
+## TODO
+
+* Formally define "interpretabile" and "important". The second edition of H2O's MLI book provides a useful citation and additional sources. Further, I think it's important in defining "important" to mean relative. These procedures can be applied to any model, so it's important to note that just because a feature appears more important relative to other features, it does not imply the feature is predictive (depends heavily on the usefulness of the model). The original scale of the importance scores is important to consider in this regard.
+
+* Take a hard look at the **mmpf** package which includes the ability to construct permutation importance. Additionally, use **pkgsearch** to hunt down more alternatives.
+
+* Discuss additional alternatives?
+
+* Discuss drawbacks of various methods in a single section. Maybe even show some examples? (e.g., high dimensional feature space, correlated features, etc.). Discuss ways to improve each procedure (e.g., permuting within groups or using ALE/stratx plots instead and discuss plans to incorporate these into the package.)
+
+* Shapley section: Aggregating local measures (like Shapley explanations) has become popular (cite H2O book).
+
 
 ## Introduction
 
