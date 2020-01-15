@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  13 JAN 2020 15:39
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  15 JAN 2020 11:43
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -979,30 +979,26 @@ LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <10> not available
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
 (hyperref)                than one, level fixed on input line 28.
 
-LaTeX Font Info:    Try loading font information for TS1+ppl on input line 32.
-(/usr/local/texlive/2018/texmf-dist/tex/latex/psnfss/ts1ppl.fd
-File: ts1ppl.fd 2001/06/04 font definitions for TS1/ppl.
-)
-LaTeX Font Info:    Try loading font information for OT1+ppl on input line 51.
+LaTeX Font Info:    Try loading font information for OT1+ppl on input line 36.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/psnfss/ot1ppl.fd
 File: ot1ppl.fd 2001/06/04 font definitions for OT1/ppl.
 )
-LaTeX Font Info:    Try loading font information for OML+zplm on input line 51.
+LaTeX Font Info:    Try loading font information for OML+zplm on input line 36.
 
 (/usr/local/texlive/2018/texmf-dist/tex/latex/psnfss/omlzplm.fd
 File: omlzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OML/zplm.
 )
-LaTeX Font Info:    Try loading font information for OMS+zplm on input line 51.
+LaTeX Font Info:    Try loading font information for OMS+zplm on input line 36.
 
 (/usr/local/texlive/2018/texmf-dist/tex/latex/psnfss/omszplm.fd
 File: omszplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMS/zplm.
 )
-LaTeX Font Info:    Try loading font information for OMX+zplm on input line 51.
+LaTeX Font Info:    Try loading font information for OMX+zplm on input line 36.
 
 (/usr/local/texlive/2018/texmf-dist/tex/latex/psnfss/omxzplm.fd
 File: omxzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMX/zplm.
 )
-LaTeX Font Info:    Try loading font information for OT1+zplm on input line 51.
+LaTeX Font Info:    Try loading font information for OT1+zplm on input line 36.
 
 (/usr/local/texlive/2018/texmf-dist/tex/latex/psnfss/ot1zplm.fd
 File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
@@ -1012,37 +1008,37 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 9.37807pt on input line 51.
+(Font)              scaled to size 9.37807pt on input line 36.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 7.29405pt on input line 51.
+(Font)              scaled to size 7.29405pt on input line 36.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 5.21004pt on input line 51.
+(Font)              scaled to size 5.21004pt on input line 36.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 9.37807pt on input line 51.
+(Font)              scaled to size 9.37807pt on input line 36.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 7.29405pt on input line 51.
+(Font)              scaled to size 7.29405pt on input line 36.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 5.21004pt on input line 51.
+(Font)              scaled to size 5.21004pt on input line 36.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 8.33606pt on input line 55.
+(Font)              scaled to size 8.33606pt on input line 40.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 55.
+(Font)              scaled to size 6.25204pt on input line 40.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 8.33606pt on input line 55.
+(Font)              scaled to size 8.33606pt on input line 40.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 55.
-LaTeX Font Info:    Try loading font information for T1+zi4 on input line 77.
+(Font)              scaled to size 6.25204pt on input line 40.
+LaTeX Font Info:    Try loading font information for T1+zi4 on input line 62.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/inconsolata/t1zi4.fd
 File: t1zi4.fd 2018/01/14 T1/zi4 (Inconsolata)
 )
 LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
-(Font)              scaled to size 9.18004pt on input line 77.
+(Font)              scaled to size 9.18004pt on input line 62.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `zi4' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
@@ -1053,21 +1049,12 @@ Package microtype Info: Character `textendash ' is missing
 Package microtype Info: Character `textemdash ' is missing
 (microtype)             in font `T1/zi4/m/n/9'.
 (microtype)             Ignoring protrusion settings for this character.
-[1{/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
-]
-Overfull \hbox (69.31142pt too wide) in paragraph at lines 99--104
-[]\T1/ppl/m/n/9 (-20) The [][]\T1/ppl/b/n/9 mmpf[][] \T1/ppl/m/n/9 (-20) pack-a
-ge ([][][]Jones[][], [][]2018[][]) also pro-vides permutation-based VI scores v
-ia the \T1/zi4/m/n/9 mmpf::permutationImportance()
- []
-
-
-Package natbib Warning: Citation `R-measures' on page 2 undefined on input line
- 108.
+Package natbib Warning: Citation `R-measures' on page 1 undefined on input line
+ 93.
 
 LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
-(Font)              scaled to size 8.16003pt on input line 119.
+(Font)              scaled to size 8.16003pt on input line 104.
 Package microtype Info: Character `textendash ' is missing
 (microtype)             in font `T1/zi4/m/n/8'.
 (microtype)             Ignoring protrusion settings for this character.
@@ -1075,22 +1062,29 @@ Package microtype Info: Character `textemdash ' is missing
 (microtype)             in font `T1/zi4/m/n/8'.
 (microtype)             Ignoring protrusion settings for this character.
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <8> not available
-(Font)              Font shape `T1/ppl/b/n' tried instead on input line 119.
+(Font)              Font shape `T1/ppl/b/n' tried instead on input line 104.
 
-Package natbib Warning: Citation `R-pkgsearch' on page 2 undefined on input lin
-e 119.
+Package natbib Warning: Citation `R-pkgsearch' on page 1 undefined on input lin
+e 104.
 
 
-Overfull \hbox (1.06769pt too wide) in paragraph at lines 119--119
+Overfull \hbox (1.06769pt too wide) in paragraph at lines 104--104
 [][]\T1/ppl/m/n/8 (-20) These packages were discovered using [][]\T1/ppl/b/n/8 
 pkgsearch[][]\T1/ppl/m/n/8 (-20) 's \T1/zi4/m/n/8 ps() \T1/ppl/m/n/8 (-20) func
 tion (\T1/ppl/b/n/8 ?\T1/ppl/m/n/8 (-20) ) with the key phrases ``variable impo
 rtance''
  []
 
-[2]
+[1{/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+
+]
+LaTeX Font Info:    Try loading font information for TS1+ppl on input line 150.
+
+(/usr/local/texlive/2018/texmf-dist/tex/latex/psnfss/ts1ppl.fd
+File: ts1ppl.fd 2001/06/04 font definitions for TS1/ppl.
+) [2]
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <12> not available
-(Font)              Font shape `T1/ppl/b/n' tried instead on input line 238.
+(Font)              Font shape `T1/ppl/b/n' tried instead on input line 223.
 [3]
 <greenwell-boehmke_files/figure-latex/vi-plots-1.pdf, id=218, 627.34375pt x 392
 .46625pt>
@@ -1098,7 +1092,7 @@ File: greenwell-boehmke_files/figure-latex/vi-plots-1.pdf Graphic file (type pd
 f)
 <use greenwell-boehmke_files/figure-latex/vi-plots-1.pdf>
 Package pdftex.def Info: greenwell-boehmke_files/figure-latex/vi-plots-1.pdf  u
-sed on input line 323.
+sed on input line 316.
 (pdftex.def)             Requested size: 398.33858pt x 249.20729pt.
 [4 <./greenwell-boehmke_files/figure-latex/vi-plots-1.pdf>] [5]
 <greenwell-boehmke_files/figure-latex/dot-plot-1.pdf, id=240, 423.5825pt x 242.
@@ -1107,113 +1101,121 @@ File: greenwell-boehmke_files/figure-latex/dot-plot-1.pdf Graphic file (type pd
 f)
 <use greenwell-boehmke_files/figure-latex/dot-plot-1.pdf>
 Package pdftex.def Info: greenwell-boehmke_files/figure-latex/dot-plot-1.pdf  u
-sed on input line 442.
+sed on input line 435.
 (pdftex.def)             Requested size: 278.83578pt x 159.908pt.
-LaTeX Font Info:    Try loading font information for TS1+zi4 on input line 488.
+LaTeX Font Info:    Try loading font information for TS1+zi4 on input line 484.
 
 (/usr/local/texlive/2018/texmf-dist/tex/latex/inconsolata/ts1zi4.fd
 File: ts1zi4.fd 2018/01/14 TS1/zi4 (Inconsolata)
 )
 LaTeX Font Info:    Font shape `TS1/zi4/m/n' will be
-(Font)              scaled to size 9.18004pt on input line 488.
+(Font)              scaled to size 9.18004pt on input line 484.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `zi4' (encoding: TS1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-<greenwell-boehmke_files/figure-latex/vip-step-1.pdf, id=242, 423.5825pt x 242.
+<greenwell-boehmke_files/figure-latex/vip-step-1.pdf, id=243, 423.5825pt x 242.
 9075pt>
 File: greenwell-boehmke_files/figure-latex/vip-step-1.pdf Graphic file (type pd
 f)
 <use greenwell-boehmke_files/figure-latex/vip-step-1.pdf>
 Package pdftex.def Info: greenwell-boehmke_files/figure-latex/vip-step-1.pdf  u
-sed on input line 494.
+sed on input line 490.
 (pdftex.def)             Requested size: 278.83578pt x 159.908pt.
 [6 <./greenwell-boehmke_files/figure-latex/dot-plot-1.pdf>]
-<greenwell-boehmke_files/figure-latex/vip-earth-1.pdf, id=263, 410.53375pt x 25
+<greenwell-boehmke_files/figure-latex/vip-earth-1.pdf, id=265, 410.53375pt x 25
 7.96375pt>
 File: greenwell-boehmke_files/figure-latex/vip-earth-1.pdf Graphic file (type p
 df)
 <use greenwell-boehmke_files/figure-latex/vip-earth-1.pdf>
 Package pdftex.def Info: greenwell-boehmke_files/figure-latex/vip-earth-1.pdf  
-used on input line 548.
+used on input line 544.
 (pdftex.def)             Requested size: 278.83578pt x 175.20833pt.
 [7 <./greenwell-boehmke_files/figure-latex/vip-step-1.pdf>]
-<greenwell-boehmke_files/figure-latex/vip-nnet-1.pdf, id=298, 414.54875pt x 257
+<greenwell-boehmke_files/figure-latex/vip-nnet-1.pdf, id=300, 414.54875pt x 257
 .96375pt>
 File: greenwell-boehmke_files/figure-latex/vip-nnet-1.pdf Graphic file (type pd
 f)
 <use greenwell-boehmke_files/figure-latex/vip-nnet-1.pdf>
 Package pdftex.def Info: greenwell-boehmke_files/figure-latex/vip-nnet-1.pdf  u
-sed on input line 613.
+sed on input line 609.
 (pdftex.def)             Requested size: 278.83578pt x 173.5197pt.
+
+Package natbib Warning: Citation `zien-2009-feature' on page 8 undefined on inp
+ut line 632.
+
+
+Package natbib Warning: Citation `scholbeck-2019-sampling' on page 8 undefined 
+on input line 633.
+
 [8 <./greenwell-boehmke_files/figure-latex/vip-earth-1.pdf>]
-<greenwell-boehmke_files/figure-latex/pdp-ppr-1.pdf, id=330, 500.87125pt x 240.
+<greenwell-boehmke_files/figure-latex/pdp-ppr-1.pdf, id=329, 500.87125pt x 240.
 9pt>
 File: greenwell-boehmke_files/figure-latex/pdp-ppr-1.pdf Graphic file (type pdf
 )
 <use greenwell-boehmke_files/figure-latex/pdp-ppr-1.pdf>
 Package pdftex.def Info: greenwell-boehmke_files/figure-latex/pdp-ppr-1.pdf  us
-ed on input line 658.
+ed on input line 655.
 (pdftex.def)             Requested size: 398.33858pt x 191.59544pt.
 [9 <./greenwell-boehmke_files/figure-latex/vip-nnet-1.pdf> <./greenwell-boehmke
 _files/figure-latex/pdp-ppr-1.pdf>]
-<greenwell-boehmke_files/figure-latex/pdp-ppr-nn-1.pdf, id=355, 410.53375pt x 2
+<greenwell-boehmke_files/figure-latex/pdp-ppr-nn-1.pdf, id=354, 410.53375pt x 2
 57.96375pt>
 File: greenwell-boehmke_files/figure-latex/pdp-ppr-nn-1.pdf Graphic file (type 
 pdf)
 <use greenwell-boehmke_files/figure-latex/pdp-ppr-nn-1.pdf>
 Package pdftex.def Info: greenwell-boehmke_files/figure-latex/pdp-ppr-nn-1.pdf 
- used on input line 688.
+ used on input line 685.
 (pdftex.def)             Requested size: 278.83578pt x 175.20833pt.
-<greenwell-boehmke_files/figure-latex/ice-ppr-1.pdf, id=360, 500.87125pt x 240.
+<greenwell-boehmke_files/figure-latex/ice-ppr-1.pdf, id=359, 500.87125pt x 240.
 9pt>
 File: greenwell-boehmke_files/figure-latex/ice-ppr-1.pdf Graphic file (type pdf
 )
 <use greenwell-boehmke_files/figure-latex/ice-ppr-1.pdf>
 Package pdftex.def Info: greenwell-boehmke_files/figure-latex/ice-ppr-1.pdf  us
-ed on input line 727.
+ed on input line 724.
 (pdftex.def)             Requested size: 398.33858pt x 191.59544pt.
 [10 <./greenwell-boehmke_files/figure-latex/pdp-ppr-nn-1.pdf> <./greenwell-boeh
 mke_files/figure-latex/ice-ppr-1.pdf>]
-<greenwell-boehmke_files/figure-latex/vip-ice-ppr-nn-1.pdf, id=385, 410.53375pt
+<greenwell-boehmke_files/figure-latex/vip-ice-ppr-nn-1.pdf, id=384, 410.53375pt
  x 257.96375pt>
 File: greenwell-boehmke_files/figure-latex/vip-ice-ppr-nn-1.pdf Graphic file (t
 ype pdf)
 <use greenwell-boehmke_files/figure-latex/vip-ice-ppr-nn-1.pdf>
 Package pdftex.def Info: greenwell-boehmke_files/figure-latex/vip-ice-ppr-nn-1.
-pdf  used on input line 752.
+pdf  used on input line 749.
 (pdftex.def)             Requested size: 278.83578pt x 175.20833pt.
-<greenwell-boehmke_files/figure-latex/pdp-from-attr-1.pdf, id=387, 701.62125pt 
+<greenwell-boehmke_files/figure-latex/pdp-from-attr-1.pdf, id=386, 701.62125pt 
 x 311.1625pt>
 File: greenwell-boehmke_files/figure-latex/pdp-from-attr-1.pdf Graphic file (ty
 pe pdf)
 <use greenwell-boehmke_files/figure-latex/pdp-from-attr-1.pdf>
 Package pdftex.def Info: greenwell-boehmke_files/figure-latex/pdp-from-attr-1.p
-df  used on input line 795.
+df  used on input line 792.
 (pdftex.def)             Requested size: 398.33858pt x 176.66177pt.
 [11 <./greenwell-boehmke_files/figure-latex/vip-ice-ppr-nn-1.pdf>]
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 10.42007pt on input line 832.
+(Font)              scaled to size 10.42007pt on input line 829.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 7.91925pt on input line 832.
+(Font)              scaled to size 7.91925pt on input line 829.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 10.42007pt on input line 832.
+(Font)              scaled to size 10.42007pt on input line 829.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 7.91925pt on input line 832.
+(Font)              scaled to size 7.91925pt on input line 829.
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 840.
+put line 837.
 [12 <./greenwell-boehmke_files/figure-latex/pdp-from-attr-1.pdf>]
-<greenwell-boehmke_files/figure-latex/vip-permute-ppr-nn-1.pdf, id=430, 410.533
+<greenwell-boehmke_files/figure-latex/vip-permute-ppr-nn-1.pdf, id=429, 410.533
 75pt x 257.96375pt>
 File: greenwell-boehmke_files/figure-latex/vip-permute-ppr-nn-1.pdf Graphic fil
 e (type pdf)
 <use greenwell-boehmke_files/figure-latex/vip-permute-ppr-nn-1.pdf>
 Package pdftex.def Info: greenwell-boehmke_files/figure-latex/vip-permute-ppr-n
-n-1.pdf  used on input line 881.
+n-1.pdf  used on input line 878.
 (pdftex.def)             Requested size: 278.83578pt x 175.20833pt.
 
 LaTeX Warning: Reference `fig:vip-boxplots' on page 13 undefined on input line 
-898.
+896.
 
 <greenwell-boehmke_files/figure-latex/vip-boxplots-1.pdf, id=431, 410.53375pt x
  257.96375pt>
@@ -1221,10 +1223,10 @@ File: greenwell-boehmke_files/figure-latex/vip-boxplots-1.pdf Graphic file (typ
 e pdf)
 <use greenwell-boehmke_files/figure-latex/vip-boxplots-1.pdf>
 Package pdftex.def Info: greenwell-boehmke_files/figure-latex/vip-boxplots-1.pd
-f  used on input line 910.
+f  used on input line 908.
 (pdftex.def)             Requested size: 278.83578pt x 175.20833pt.
 
-Overfull \hbox (21.52464pt too wide) in paragraph at lines 914--916
+Overfull \hbox (21.52464pt too wide) in paragraph at lines 912--914
 []\T1/ppl/m/n/9 (-20) All avail-able per-for-mance met-rics for re-gres-sion an
 d clas-si-fi-ca-tion can be listed us-ing the \T1/zi4/m/n/9 list_metrics()
  []
@@ -1233,7 +1235,7 @@ d clas-si-fi-ca-tion can be listed us-ing the \T1/zi4/m/n/9 list_metrics()
 ell-boehmke_files/figure-latex/vip-boxplots-1.pdf>]
 
 LaTeX Warning: Reference `fig:vip-nn-mae' on page 14 undefined on input line 96
-5.
+3.
 
 <greenwell-boehmke_files/figure-latex/vip-nn-mae-1.pdf, id=453, 410.53375pt x 2
 57.96375pt>
@@ -1241,7 +1243,7 @@ File: greenwell-boehmke_files/figure-latex/vip-nn-mae-1.pdf Graphic file (type
 pdf)
 <use greenwell-boehmke_files/figure-latex/vip-nn-mae-1.pdf>
 Package pdftex.def Info: greenwell-boehmke_files/figure-latex/vip-nn-mae-1.pdf 
- used on input line 979.
+ used on input line 977.
 (pdftex.def)             Requested size: 278.83578pt x 175.20833pt.
 <greenwell-boehmke_files/figure-latex/vip-permute-nn-sample-1.pdf, id=456, 410.
 53375pt x 257.96375pt>
@@ -1249,7 +1251,7 @@ File: greenwell-boehmke_files/figure-latex/vip-permute-nn-sample-1.pdf Graphic
 file (type pdf)
 <use greenwell-boehmke_files/figure-latex/vip-permute-nn-sample-1.pdf>
 Package pdftex.def Info: greenwell-boehmke_files/figure-latex/vip-permute-nn-sa
-mple-1.pdf  used on input line 1003.
+mple-1.pdf  used on input line 1001.
 (pdftex.def)             Requested size: 278.83578pt x 175.20833pt.
 [14 <./greenwell-boehmke_files/figure-latex/vip-nn-mae-1.pdf>]
 <greenwell-boehmke_files/figure-latex/vip-nn-mae-all-1.pdf, id=472, 410.53375pt
@@ -1258,11 +1260,18 @@ File: greenwell-boehmke_files/figure-latex/vip-nn-mae-all-1.pdf Graphic file (t
 ype pdf)
 <use greenwell-boehmke_files/figure-latex/vip-nn-mae-all-1.pdf>
 Package pdftex.def Info: greenwell-boehmke_files/figure-latex/vip-nn-mae-all-1.
-pdf  used on input line 1042.
+pdf  used on input line 1040.
 (pdftex.def)             Requested size: 278.83578pt x 175.20833pt.
+
+Overfull \hbox (74.9002pt too wide) in paragraph at lines 1050--1055
+\T1/zi4/m/n/9 iml::FeatureImp() \T1/ppl/m/n/9 (-20) (ver-sion 0.9.0), \T1/zi4/m
+/n/9 ingredients::feature_importance() \T1/ppl/m/n/9 (-20) (ver-sion 0.5.0), \T
+1/zi4/m/n/9 mmpf::permutationImportance
+ []
+
 [15 <./greenwell-boehmke_files/figure-latex/vip-permute-nn-sample-1.pdf> <./gre
 enwell-boehmke_files/figure-latex/vip-nn-mae-all-1.pdf>]
-<greenwell-boehmke_files/figure-latex/benchmark-1.pdf, id=497, 409.53pt x 258.9
+<greenwell-boehmke_files/figure-latex/benchmark-1.pdf, id=498, 409.53pt x 258.9
 675pt>
 File: greenwell-boehmke_files/figure-latex/benchmark-1.pdf Graphic file (type p
 df)
@@ -1271,47 +1280,54 @@ Package pdftex.def Info: greenwell-boehmke_files/figure-latex/benchmark-1.pdf
 used on input line 1073.
 (pdftex.def)             Requested size: 278.83578pt x 176.33264pt.
 
-LaTeX Warning: Reference `vi-shap' on page 16 undefined on input line 1103.
+Package natbib Warning: Citation `strumbelj-2014-explaining' on page 16 undefin
+ed on input line 1086.
+
+
+Package natbib Warning: Citation `R-iBreakDown' on page 16 undefined on input l
+ine 1098.
+
+
+LaTeX Warning: Reference `vi-shap' on page 16 undefined on input line 1120.
 
 [16 <./greenwell-boehmke_files/figure-latex/benchmark-1.pdf>]
-<greenwell-boehmke_files/figure-latex/vi-shap-1.pdf, id=526, 410.53375pt x 258.
+<greenwell-boehmke_files/figure-latex/vi-shap-1.pdf, id=532, 410.53375pt x 258.
 9675pt>
 File: greenwell-boehmke_files/figure-latex/vi-shap-1.pdf Graphic file (type pdf
 )
 <use greenwell-boehmke_files/figure-latex/vi-shap-1.pdf>
 Package pdftex.def Info: greenwell-boehmke_files/figure-latex/vi-shap-1.pdf  us
-ed on input line 1129.
+ed on input line 1148.
 (pdftex.def)             Requested size: 278.83578pt x 175.89008pt.
-<greenwell-boehmke_files/figure-latex/sparklines-1.pdf, id=544, 965.6075pt x 43
+[17 <./greenwell-boehmke_files/figure-latex/vi-shap-1.pdf>]
+<greenwell-boehmke_files/figure-latex/sparklines-1.pdf, id=566, 965.6075pt x 43
 2.61626pt>
 File: greenwell-boehmke_files/figure-latex/sparklines-1.pdf Graphic file (type 
 pdf)
 <use greenwell-boehmke_files/figure-latex/sparklines-1.pdf>
 Package pdftex.def Info: greenwell-boehmke_files/figure-latex/sparklines-1.pdf 
- used on input line 1188.
+ used on input line 1207.
 (pdftex.def)             Requested size: 398.33858pt x 178.46301pt.
-[17 <./greenwell-boehmke_files/figure-latex/vi-shap-1.pdf>] [18 <./greenwell-bo
-ehmke_files/figure-latex/sparklines-1.pdf>]
-<greenwell-boehmke_files/figure-latex/ames-sparklines-1.pdf, id=659, 965.6075pt
+[18 <./greenwell-boehmke_files/figure-latex/sparklines-1.pdf>]
+<greenwell-boehmke_files/figure-latex/ames-sparklines-1.pdf, id=664, 965.6075pt
  x 432.61626pt>
 File: greenwell-boehmke_files/figure-latex/ames-sparklines-1.pdf Graphic file (
 type pdf)
 <use greenwell-boehmke_files/figure-latex/ames-sparklines-1.pdf>
 Package pdftex.def Info: greenwell-boehmke_files/figure-latex/ames-sparklines-1
-.pdf  used on input line 1302.
+.pdf  used on input line 1321.
 (pdftex.def)             Requested size: 398.33858pt x 178.46301pt.
-[19 <./greenwell-boehmke_files/figure-latex/ames-sparklines-1.pdf>] (./RJwrappe
-r.bbl (./RJwrapper.brf)
+[19] (./RJwrapper.bbl (./RJwrapper.brf)
 \tf@brf=\write6
 \openout6 = `RJwrapper.brf'.
 
-[20]
+[20 <./greenwell-boehmke_files/figure-latex/ames-sparklines-1.pdf>]
 Underfull \hbox (badness 10000) in paragraph at lines 192--192
 []\T1/ppl/m/n/9 (+20) B. Green-well, B. Boehmke, and B. Gray.  \T1/ppl/m/it/9 (
 +20) vip: Vari-able Im-por-tance Plots\T1/ppl/m/n/9 (+20) , 2019b.
  []
 
-[21]) [22])
+[21] [22]))
 
 Package natbib Warning: There were undefined citations.
 
@@ -1322,24 +1338,33 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 30.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 30.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 30.
 Package rerunfilecheck Info: File `RJwrapper.out' has not changed.
-(rerunfilecheck)             Checksum: 85864456CFED178DB57AB4E21FD07AD9;1215.
+(rerunfilecheck)             Checksum: 9E46C82942647FD252DE5B9089C11EC0;1163.
 Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
-(rerunfilecheck)             Checksum: C9690BC851F80C7F125FEA2EB1794291;3779.
+(rerunfilecheck)             Checksum: 2E46F7ADA66419EF668A712047C61BCE;3870.
 
 LaTeX Warning: There were undefined references.
 
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 30.
  ) 
 Here is how much of TeX's memory you used:
- 22680 strings out of 492649
- 409949 string characters out of 6129622
- 509303 words of memory out of 5000000
- 25670 multiletter control sequences out of 15000+600000
- 75195 words of font info for 307 fonts, out of 8000000 for 9000
+ 22694 strings out of 492649
+ 410238 string characters out of 6129622
+ 510287 words of memory out of 5000000
+ 25674 multiletter control sequences out of 15000+600000
+ 75807 words of font info for 313 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 62i,12n,94p,425b,705s stack positions out of 5000i,500n,10000p,200000b,80000s
-pdfTeX warning (dest): name{Hfootnote.5} has been referenced but does not exi
+ 62i,11n,94p,425b,734s stack positions out of 5000i,500n,10000p,200000b,80000s
+pdfTeX warning (dest): name{Hfootnote.8} has been referenced but does not exi
 st, replaced by a fixed one
+
+pdfTeX warning (dest): name{Hfootnote.7} has been referenced but does not exist
+, replaced by a fixed one
+
+pdfTeX warning (dest): name{Hfootnote.6} has been referenced but does not exist
+, replaced by a fixed one
+
+pdfTeX warning (dest): name{Hfootnote.5} has been referenced but does not exist
+, replaced by a fixed one
 
 pdfTeX warning (dest): name{Hfootnote.4} has been referenced but does not exist
 , replaced by a fixed one
@@ -1368,10 +1393,10 @@ t/fonts/type1/urw/palatino/uplbi8a.pfb></usr/local/texlive/2018/texmf-dist/font
 s/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1
 /urw/palatino/uplr8a.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/urw/pa
 latino/uplri8a.pfb>
-Output written on RJwrapper.pdf (23 pages, 1433303 bytes).
+Output written on RJwrapper.pdf (23 pages, 1437157 bytes).
 PDF statistics:
- 962 PDF objects out of 1000 (max. 8388607)
- 801 compressed objects within 9 object streams
- 135 named destinations out of 1000 (max. 500000)
- 54004 words of extra memory for PDF output out of 61914 (max. 10000000)
+ 968 PDF objects out of 1000 (max. 8388607)
+ 807 compressed objects within 9 object streams
+ 137 named destinations out of 1000 (max. 500000)
+ 53996 words of extra memory for PDF output out of 61914 (max. 10000000)
 

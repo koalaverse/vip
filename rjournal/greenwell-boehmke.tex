@@ -24,21 +24,6 @@ conveying the general shape or variation in some feature that can be
 directly embedded in text or tables.
 }
 
-\hypertarget{todo}{%
-\subsection{TODO}\label{todo}}
-
-\begin{itemize}
-\item
-  Discuss drawbacks of various methods in a single section. Maybe even
-  show some examples? (e.g., high dimensional feature space, correlated
-  features, etc.). Discuss ways to improve each procedure (e.g.,
-  permuting within groups or using ALE/stratx plots instead and discuss
-  plans to incorporate these into the package.)
-\item
-  Shapley section: Aggregating local measures (like Shapley
-  explanations) has become popular (cite H2O book).
-\end{itemize}
-
 \hypertarget{introduction}{%
 \subsection{Introduction}\label{introduction}}
 
@@ -55,8 +40,8 @@ the fundamental idea of the emerging field of
   understandable terms to a human.''}. For an in-depth discussion on
 IML, see \citet{molnar-2019-iml} In this paper, we focus on
 \dfn{global methods} for quantifying the importance of features in an ML
-model; that is, methods that help us understand the importance of each
-feature across the entire training set.\footnote{In this context
+model; that is, methods that help us understand the global contribution
+each feature has to a model's predictions.\footnote{In this context
   ``importance'' can be measured in a number of different ways. In
   general, we can describe it as
   \dfn{the extent to which a feature has a "meaningful" impact on the predicted outcome}.}
@@ -97,10 +82,10 @@ sample the training data before shuffling the data to compute importance
 computation.
 
 The \CRANpkg{mmpf} package \citep{R-mmpf} also provides
-permutation-based VI scores via the \code{mmpf::permutationImportance()}
-function. Similar to the \pkg{iml} and \pkg{ingredients} implementation,
-this function is flexible enough to be applied to any class of ML models
-in R.
+permutation-based VI scores via the
+\newline \code{mmpf::permutationImportance()} function. Similar to the
+\pkg{iml} and \pkg{ingredients} implementation, this function is
+flexible enough to be applied to any class of ML models in R.
 
 The \CRANpkg{varImp} package \citep{R-varImp} extends the
 permutation-based method for RFs in packages \CRANpkg{party}
@@ -238,11 +223,13 @@ suppress the variable's influence over its observed range (i.e., 0--1).
 \section{Model-specific VI}
 
 Some machine learning algorithms have their own way of quantifying the
-importance of each feature. We describe some of these in the subsections
-that follow. The issue with model-specific VI scores is that they are
-not necessarily comparable across different types of models. For
-example, directly comparing the impurity-based VI scores from tree-based
-models to the \(t\)-statistic from linear models.
+importance of each feature, which we refer to as
+\dfn{model-specific VI}. We describe some of these in the subsections
+that follow. One particular issue with model-specific VI scores is that
+they are not necessarily comparable across different types of models.
+For example, directly comparing the impurity-based VI scores from
+tree-based models to the the absolute value of the \(t\)-statistic in
+linear models.
 
 \subsection{Decision trees and tree ensembles}
 
@@ -260,14 +247,20 @@ averaged across all the trees in the ensemble. Fortunately, due to the
 stabilizing effect of averaging, the improvement-based VI metric is
 often more reliable in large ensembles; see
 \citet[p. 368]{hastie-elements-2009}. RFs offer an additional method for
-computing VI scores. The idea is to use the leftover out-of-bag (OOB)
-data to construct validation-set errors for each tree. Then, each
+computing VI scores. The idea is to use the leftover \dfn{out-of-bag}
+(OOB) data to construct validation-set errors for each tree. Then, each
 predictor is randomly shuffled in the OOB data and the error is computed
 again. The idea is that if variable \(X\) is important, then the
 validation error will go up when \(X\) is perturbed in the OOB data. The
 difference in the two errors is recorded for the OOB data then averaged
-across all trees in the forest. Later on, we'll discuss a more general
-permutation method that can be applied to any supervised learning model.
+across all trees in the forest. Note that both methods for constructing
+VI scores can be unreliable in certain situations; for example, when the
+predictor variables vary in their scale of measurement or their number
+of categories \citep{party2007a}, or when the predictors are highly
+correlated \citep{strobl-2019-conditional}. The \pkg{varImp} package
+discussed earlier provides methods to address these concerns for random
+forests. Later on, we'll discuss a more general permutation method that
+can be applied to any supervised learning model.
 
 To illustrate, we fit a CART-like regression tree, RF, and GBM to the
 simulated training data. (Note: there are a number of different packages
@@ -452,12 +445,15 @@ vip(bst, num_features = 5, geom = "point", horizontal = FALSE,
 
 In multiple linear regression, or linear models (LMs), the absolute
 value of the \(t\)-statistic (or some other scaled variant of the
-estimated coefficients) is commonly used as a measure of VI. The same
-idea also extends to generalized linear models (GLMs). In the code chunk
-below, we fit an LM to the simulated \code{trn} data set allowing for
-all main effects and two-way interactions, then use the \code{step()}
-function to perform backward elimination. The resulting VIP is displayed
-in Figure \ref{fig:vip-step}.
+estimated coefficients) is commonly used as a measure of VI.\footnote{Since
+  this approach is biased towards large-scale features it is important
+  to properly standardize the predictors (before fitting the model) or
+  the estimated coefficients.} The same idea also extends to generalized
+linear models (GLMs). In the code chunk below, we fit an LM to the
+simulated \code{trn} data set allowing for all main effects and two-way
+interactions, then use the \code{step()} function to perform backward
+elimination. The resulting VIP is displayed in Figure
+\ref{fig:vip-step}.
 
 \begin{Schunk}
 \begin{Sinput}
@@ -499,10 +495,10 @@ vip(vi_backward, num_features = length(coef(backward)),
 \end{figure}
 \end{Schunk}
 
-One issue with computing VI scores for LMs using the \(t\)-statistic
-approach is that a score is assigned to each term in the model, rather
-than to each individual feature! We can solve this problem using one of
-the model-agnostic approaches discussed later.
+A major limitation of this approach is that a VI score is assigned to
+each term in the model, rather than to each individual feature! We can
+solve this problem using one of the model-agnostic approaches discussed
+later.
 
 Multivariate adaptive regression splines (MARS), which were introduced
 in \citet{multivariate-friedman-1991}, is an automatic regression
@@ -629,13 +625,14 @@ dependence plots (PDPs), 2) \dfn{individual conditional expectation}
 (ICE) curves, and 3) permutation-based feature importance. For specific
 details on approaches 1)--2), see \citet{greenwell-simple-2018}.
 
-\subsection{FIRM method}
+\subsection{Variance-based methods}
 
 Our first model-agnostic approach is based on a simple \emph{feature
 importance ranking measure} (FIRM); for details, see
-\citet{greenwell-simple-2018} and \citet{firm}. The specific approach
-used here is based on quantifying the ``flatness'' of the effects of
-each feature.\footnote{A similar approach is taken in the \CRANpkg{vivo}
+\citet{greenwell-simple-2018}, \citet{zien-2009-feature}, and
+\citet{scholbeck-2019-sampling}. The specific approach used here is
+based on quantifying the ``flatness'' of the effects of each
+feature.\footnote{A similar approach is taken in the \CRANpkg{vivo}
   package \citep{R-vivo}.} Feature effects can be assessed using
 \emph{partial dependence plots} (PDPs) \citep{friedman-2001-greedy} or
 \emph{individual conditional expectation} (ICE) curves
@@ -887,10 +884,11 @@ grid.arrange(p1, p2, ncol = 2)
 \end{Schunk}
 
 The permutation approach introduces randomness into the procedure and
-therefore should be run more than once if computationally feasible.
-Fortunately, this also allows us to compute standard errors for the
-estimated VI scores, as illustrated in the example below where we
-specify \code{nsim = 10} to request that each feature be permuted 10
+therefore should be run more than once if computationally feasible. The
+upside to performing multiple runs of Algorithm \ref{alg:permute} is
+that it allows us to compute standard errors (among other metrics) for
+the estimated VI scores, as illustrated in the example below; here where
+we specify \code{nsim = 10} to request that each feature be permuted 10
 times and the results averaged together. (Additionally, if
 \code{nsim > 1}, you can set \code{geom = "boxplot"} in the call to
 \code{vip()} to construct boxplots of the raw permutation-based VI
@@ -1051,8 +1049,9 @@ vip(nn, method = "permute", pred_wrapper = pfun, target = "y", metric = "mae",
 
 In this section, we compare the performance of three implementations of
 permutation-based VI scores: \code{iml::FeatureImp()} (version 0.9.0),
-\code{ingredients::feature\_importance()} (version 0.5.0), and
-\code{vip::vi()} (version 0.1.3.9000).
+\code{ingredients::feature\_importance()} (version 0.5.0),
+\code{mmpf::permutationImportance} (version 0.0.5), and \code{vip::vi()}
+(version 0.1.3.9000).
 
 We simulated 10,000 training observations from the Friedman 1 benchmark
 problem and trained a random forest using the \pkg{ranger} package. For
@@ -1065,7 +1064,8 @@ and summarized in the output below. In this case, the \pkg{vip} package
 (version 0.1.4) was the most efficient, followed closely by
 \pkg{ingredients}. It should be noted, however, that the implementations
 in \pkg{vip} and \pkg{iml} can be parallelized. To the best of our
-knowledge, this is not the case for \pkg{ingredients}.
+knowledge, this is not the case for \pkg{ingredients}. The code used to
+generate these benchmarks can be found at \url{http://bit.ly/2TogXrq}.
 
 \begin{Schunk}
 \begin{figure}[!htb]
@@ -1080,27 +1080,46 @@ knowledge, this is not the case for \pkg{ingredients}.
 
 \subsection{Shapley method}
 
-Starting with \pkg{vip} 0.1.4 you can now construct VI scores based on
-the popular \dfn{Shapley values} \citet[sec. 5.9]{molnar-2019-iml}---a
-method from coalitional game theory. Using Shapley values, the
-prediction for a single instance \(x^\star\) can be explained by
-assuming that each feature value in \(x^\star\) is a ``player'' in a
-game with a payout equal to the corresponding prediction
-\(\widehat{f}\left(x^\star\right)\). Shapley values tell us how to
-fairly distribute the ``payout'' (i.e., prediction) among the features.
+Although \pkg{vip} focuses on global VI methods, it is becoming
+increasing popular to asses global importance by aggregating local VI
+measures; in particular, \dfn{Shapley explanations}
+\citep{strumbelj-2014-explaining}. Using \dfn{Shapley values} (a method
+from coalitional game theory), the prediction for a single instance
+\(x^\star\) can be explained by assuming that each feature value in
+\(x^\star\) is a ``player'' in a game with a payout equal to the
+corresponding prediction \(\widehat{f}\left(x^\star\right)\). Shapley
+values tell us how to fairly distribute the ``payout'' (i.e.,
+prediction) among the features. Shapley values have become popular due
+to a number of fairness properties they posses
+\citep{lundberg_unified_2017}. The most popular implementation is
+available in the Python \pkg{shap} package
+\citep{lundberg_unified_2017}; although a number of implementations are
+now available in R; for example, \pkg{iml}, \CRANpkg{iBreakDown}
+\citep{R-iBreakDown}, and \CRANpkg{fastshap} \citep{R-fastshap}.
 
-Shapley values provide importance scores at the individual prediction
-level (generally referred to as \dfn{prediction explanations}. However,
-they can be aggregated to obtain global importance scores by taking the
-mean of the absolute value of the individual Shapley values across the
-entire training set. Although Shapley values can be computationally
-expensive, the \CRANpkg{fastshap} package \citep{R-fastshap} exploits a
-few computational tricks and also includes the option to perform
-computations in parallel (see \code{?fastshap::explain} for details).
-Also, fast and exact algorithms \citep{lundberg-explainable-2019} can be
-exploited for certain classes of models, which is illustrated below
-using the \CRANpkg{xgboost} package \citep{R-xgboost}; see Figure
-\ref{vi-shap}. (\strong{Note:} specifying
+Obtaining a global VI score from Shapley values requires aggregating the
+Shapley values for each feature across the entire training set (or at
+least a reasonable sample thereof). In particular, we use the mean of
+the absolute value of the individual Shapley values for each feature.
+Unfortunately, Shapley values can be computationally expensive, and
+therefore this approach may not be feasible for large training sets
+(say, \textgreater{}3,000 observations). The \pkg{fastshap} package
+provides some relief by exploiting a few computational tricks, including
+the option to perform computations in parallel (see
+\code{?fastshap::explain} for details). Also, fast and exact algorithms
+\citep{lundberg-explainable-2019} can be exploited for certain classes
+of models.
+
+Starting with \pkg{vip} version 0.0.4 you can now use
+\texttt{method\ =\ "shap"} (or \texttt{vip::vi\_shap()}) to compute
+global Shapley-based VI scores using the method described above
+(provided you have the \pkg{fastshap} package installed)---see
+\texttt{?vip::vi\_shap} for details. To illustrate, we compute
+Shapley-based VI scores from an \CRANpkg{xgboost} model
+\citep{R-xgboost} using the Friedman data from earlier; the results are
+displayed in Figure \ref{vi-shap}.\footnote{Note that the
+  \texttt{exact\ =\ TRUE} option is only available if you have
+  \pkg{fastshap} version 0.0.4 or later} (\strong{Note:} specifying
 \texttt{include\_type\ =\ TRUE} in the call to \texttt{vip::vip()}
 causes the type of variable importance computed to be displayed as part
 of the axis label.)
@@ -1132,35 +1151,35 @@ vip(bst, method = "shap", train = X, exact = TRUE, include_type = TRUE)
 
 \section{Drawbacks of existing methods}
 
-As discussed in \citet{hooker-2019-stop} and
-\citet[chap. 5]{molnar-2019-iml}, model-agnostic approaches---like PDPs,
-ICE curves, and per,utation importance---tend to use predictions from
-unlikely data instances (i.e., extrapolating). For example, the standard
-approach to computing permutation importance VI scores involves
-independently permuting individual features. This implicitly makes the
-assumption that the observed features are statistically independent. In
-practice, however, features are often not independent which can lead to
+As discussed in \citet{hooker-2019-stop} \dfn{permute-and-predict}
+methods---like PDPs, ICE curves, and permutation importance---can
+produce results that are highly misleading. For example, the standard
+approach to computing permutation-based VI scores involves independently
+permuting individual features. This implicitly makes the assumption that
+the observed features are statistically independent. In practice,
+however, features are often not independent which can lead to
 nonsensical VI scores. One way to mitigate this issue is to use the
 conditional approach described in\citet{strobl-2019-conditional}.
 Unfortunately, this approach is not yet available for general purpose. A
-similar modification can be made when constructing PDPs and is described
-in \citet{parr-2019-technical}; a basic R implementation is available at
-\url{https://github.com/bgreenwell/rstratx}.
+similar modification can be applied to PDPs
+\citet{parr-2019-technical}\footnote{A basic R implementation is
+  available at \url{https://github.com/bgreenwell/rstratx}.} which seems
+reasonable to use in the FIRM approach when strong dependencies among
+the features are present (though, we have not given this much thought or
+consideration).
 
 We already mentioned that PDPs can be misleading in the presence of
-strong interaction effects. This drawback of course equally applies to
-the FIRM method when based on PDPs. As discussed earlier, this can be
-mitigated by using ICE curves instead. Another alternative would be to
-use \dfn{accumulated local effect} (ALE) plots
-\citep{apley-2016-visualizing}. Compared to PDPs, ALE plots have the
-advantage of being faster to compute and less affected by strong
-dependencies among the features. The downside, however, is that ALE
-plots are more complicated to implement (hence, they are not currently
-available when using \code{method = "firm"}). Further, since the
-\(y\)-axis scale for ALE plots is not on the same scale as the predicted
-outcome (e.g., probability scale for classification), it makes any FIRM
-based VI scores more difficult to interpret. ALE plots are available in
-the \CRANpkg{ALEPlot} \citep{R-ALEPlot} and \pkg{iml} packages.
+strong interaction effects. This drawback, of course, equally applies to
+the FIRM approach using PDPs for computing VI scores. As discussed
+earlier, this can be mitigated by using ICE curves instead. Another
+alternative would be to use \dfn{accumulated local effect} (ALE) plots
+\citep{apley-2016-visualizing} (though we haven't really tested this
+idea). Compared to PDPs, ALE plots have the advantage of being faster to
+compute and less affected by strong dependencies among the features. The
+downside, however, is that ALE plots are more complicated to implement
+(hence, they are not currently available when using
+\code{method = "firm"}). ALE plots are available in the
+\CRANpkg{ALEPlot} \citep{R-ALEPlot} and \pkg{iml} packages.
 
 \section{Use sparklines to characterize feature effects}
 
@@ -1319,24 +1338,28 @@ the model. We've discussed two types of VI: model-specific and
 model-agnostic, as well as some of their strengths and weaknesses. In
 this paper, we showed how to construct VIPs for various types of ``black
 box'' models in R using the \pkg{vip} package. We also briefly discussed
-related approaches available in other R packages. Suggestions to avoid
-high execution times were discussed and demonstrated via examples. This
-paper is based on \pkg{vip} version 0.1.3. For updates that have
-occurred since then, see the package's
-\href{https://cran.r-project.org/web/packages/vip/news/news.html}{NEWS file}.
-In terms of future development, \pkg{vip} can be expanded in a number of
-ways. For example, we plan to incorporate the option to compute
-group-based permutation scores. We're also working on including a new
-option for efficiently computing Shapley-based VI scores via the new
-\href{https://github.com/bgreenwell/fastshap}{fastshap} package.
-Although not discussed in this paper, the package also includes a
-promising statistic (similar to the PDP- and ICE-based VI scores
-previously discussed) for measuring the relative strength of interaction
-between features.
+related approaches available in a number of other R packages.
+Suggestions to avoid high execution times were discussed and
+demonstrated via examples. This paper is based on \pkg{vip} version
+0.1.3.9000. In terms of future development, \pkg{vip} can be expanded in
+a number of ways. For example, we plan to incorporate the option to
+compute group-based and conditional permutation scores. Although not
+discussed in this paper, the package also includes a promising statistic
+(similar to the variance-based VI scores previously discussed) for
+measuring the relative strength of interaction between features.
+Although VIPs are useful, ML practitioners should be cognizant of the
+fact that none of the methods discussed in this paper are uniformly best
+across all situations; they require an accurate model that has been
+properly tuned and should be checked for consistency with human domain
+knowledge.
 
 \section{Acknowledgments}
 
-TBD.
+The authors would like to the anonymous reviewers and the Editor for
+their helpful comments and suggestions. We would also like to thank the
+members of the 84.51\(^{\circ}\) Interpretable Machine Learning Special
+Interest Group for their thoughtful discussions on the topics discussed
+herein.
 
 \bibliography{greenwell-boehmke}
 
