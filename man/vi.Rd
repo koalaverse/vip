@@ -4,6 +4,8 @@
 \alias{vi}
 \alias{vi.default}
 \alias{vi.model_fit}
+\alias{vi.WrappedModel}
+\alias{vi.Learner}
 \title{Variable importance}
 \usage{
 vi(object, ...)
@@ -24,6 +26,10 @@ vi(object, ...)
 )
 
 \method{vi}{model_fit}(object, ...)
+
+\method{vi}{WrappedModel}(object, ...)
+
+\method{vi}{Learner}(object, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object) or

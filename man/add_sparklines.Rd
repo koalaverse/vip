@@ -13,7 +13,7 @@ add_sparklines(object, fit, digits = 3, free_y = FALSE, verbose = FALSE, ...)
 \item{object}{An object that inherits from class \code{"vi"}.}
 
 \item{fit}{The original fitted model. Only needed if `vi()` was not called
-with `method = "pdp"` or `method = "ice"`.}
+with `method = "firm"`.}
 
 \item{digits}{Integer specifying the minimal number of significant digits to
 use for displaying importance scores and, if available, their standard

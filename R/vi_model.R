@@ -604,6 +604,31 @@ vi_model.H2ORegressionModel <- function(object, ...) {
 }
 
 
+# Package: mlr -----------------------------------------------------------------
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.WrappedModel <- function(object, ...) {  # package: mlr
+  vi_model(object$learner.model, ...)
+}
+
+
+# Package: mlr3 ----------------------------------------------------------------
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.Learner <- function(object, ...) {  # package: mlr3
+  if (is.null(object$model)) {
+    stop("No fitted model found. Did you forget to call ",
+         deparse(substitute(object)), "$train()?",
+         call. = FALSE)
+  }
+  vi_model(object$model, ...)
+}
+
+
 # Package: neuralnet -----------------------------------------------------------
 
 #' @rdname vi_model
@@ -687,6 +712,16 @@ vi_model.nnet <- function(object, type = c("olden", "garson"), ...) {
   # Return results
   tib
 
+}
+
+
+# Package: parsnip -------------------------------------------------------------
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.model_fit <- function(object, ...) {  # package: parsnip
+  vi_model(object$fit, ...)
 }
 
 

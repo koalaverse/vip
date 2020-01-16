@@ -1211,15 +1211,30 @@ representation of the partial dependence function for each feature. This
 is a concise way to display both feature importance and feature effect
 information in a single (interactive) table. See
 \code{?vip::add\_sparklines} for details. We illustrate the basic use of
-\code{add\_sparklines()} in the code chunk below.
+\code{add\_sparklines()} in the code chunk below where we fit a
+\pkg{ranger}-based random forest using the \CRANpkg{mlr3} package
+\citep{R-mlr3}.\footnote{\textbf{Note:} Here we use the \texttt{...}
+  argument to pass the original training to \texttt{pdp::partial()};
+  this is to avoid conflicts caused by \pkg{mlr3}'s \CRANpkg{data.table}
+  backend \citep{R-data.table}.}
 
 \begin{Schunk}
 \begin{Sinput}
+# Load required packages
+library(mlr3)
+library(mlr3learners)
+
+# Fit a ranger-based random forest using the mlr3 package
+set.seed(101)
+task <- TaskRegr$new("friedman", backend = trn, target = "y")
+lrnr <- lrn("regr.ranger", importance = "impurity")
+lrnr$train(task)
+
 # First, compute a tibble of VI scores using any method
-var_imp <- vi(rfo)
+var_imp <- vi(lrnr)
 
 # Next, convert to an HTML-based data table with sparklines
-add_sparklines(var_imp, fit = rfo)  # Figure 18
+add_sparklines(var_imp, fit = lrnr$model, train = trn)  # Figure 18
 \end{Sinput}
 \begin{figure}[!htb]
 

@@ -6,6 +6,8 @@
 
 * Added support for `"model_fit"` objects from the [parsnip](https://cran.r-project.org/package=parsnip) package.
 
+* Added support for the [parsnip](https://cran.r-project.org/package=parsnip), [mlr](https://cran.r-project.org/package=mlr), and [mlr3](https://cran.r-project.org/package=mlr3) packages.
+
 * Added support for `"mvr"` objects from the [pls](https://cran.r-project.org/package=pls) package (currently just calls `caret::varImp()`) [(#35)](https://github.com/koalaverse/vip/issues/35).
 
 * The `"lm"` method for `vi_model()` gained a new `type` argument that allows users

@@ -146,6 +146,27 @@ get_feature_names.H2ORegressionModel <- function(object, ...) {
 }
 
 
+# Package: mlr -----------------------------------------------------------------
+
+#' @keywords internal
+get_feature_names.WrappedModel <- function(object, ...) {
+  object$features
+}
+
+
+# Package: mlr3 ----------------------------------------------------------------
+
+#' @keywords internal
+get_feature_names.Learner <- function(object, ...) {
+  if (is.null(object$model)) {
+    stop("No fitted model found. Did you forget to call ",
+         deparse(substitute(object)), "$train()?",
+         call. = FALSE)
+  }
+  get_feature_names(object$model, ...)
+}
+
+
 # Package: neuralnet -----------------------------------------------------------
 
 #' @keywords internal

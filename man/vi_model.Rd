@@ -13,8 +13,11 @@
 \alias{vi_model.H2OBinomialModel}
 \alias{vi_model.H2OMultinomialModel}
 \alias{vi_model.H2ORegressionModel}
+\alias{vi_model.WrappedModel}
+\alias{vi_model.Learner}
 \alias{vi_model.nn}
 \alias{vi_model.nnet}
+\alias{vi_model.model_fit}
 \alias{vi_model.RandomForest}
 \alias{vi_model.constparty}
 \alias{vi_model.cforest}
@@ -59,9 +62,15 @@ vi_model(object, ...)
 
 \method{vi_model}{H2ORegressionModel}(object, ...)
 
+\method{vi_model}{WrappedModel}(object, ...)
+
+\method{vi_model}{Learner}(object, ...)
+
 \method{vi_model}{nn}(object, type = c("olden", "garson"), ...)
 
 \method{vi_model}{nnet}(object, type = c("olden", "garson"), ...)
+
+\method{vi_model}{model_fit}(object, ...)
 
 \method{vi_model}{RandomForest}(object, type = c("accuracy", "auc"), ...)
 

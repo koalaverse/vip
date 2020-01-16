@@ -18,3 +18,5 @@ SuperLearner
 foreach
 iterators
 doParallel
+mlr3
+mlr3learners
