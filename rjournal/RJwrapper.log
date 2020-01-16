@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  16 JAN 2020 12:10
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  16 JAN 2020 16:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1252,23 +1252,23 @@ ed on input line 1159.
 (pdftex.def)             Requested size: 278.83578pt x 175.89008pt.
 [17 <./greenwell-boehmke_files/figure-latex/vi-shap-1.pdf>]
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <8> not available
-(Font)              Font shape `T1/ppl/b/n' tried instead on input line 1219.
-<greenwell-boehmke_files/figure-latex/sparklines-1.pdf, id=603, 965.6075pt x 43
+(Font)              Font shape `T1/ppl/b/n' tried instead on input line 1226.
+<greenwell-boehmke_files/figure-latex/sparklines-1.pdf, id=605, 965.6075pt x 43
 2.61626pt>
 File: greenwell-boehmke_files/figure-latex/sparklines-1.pdf Graphic file (type 
 pdf)
 <use greenwell-boehmke_files/figure-latex/sparklines-1.pdf>
 Package pdftex.def Info: greenwell-boehmke_files/figure-latex/sparklines-1.pdf 
- used on input line 1241.
+ used on input line 1248.
 (pdftex.def)             Requested size: 398.33858pt x 178.46301pt.
 [18 <./greenwell-boehmke_files/figure-latex/sparklines-1.pdf>] [19]
-<greenwell-boehmke_files/figure-latex/ames-sparklines-1.pdf, id=710, 965.6075pt
+<greenwell-boehmke_files/figure-latex/ames-sparklines-1.pdf, id=713, 965.6075pt
  x 432.61626pt>
 File: greenwell-boehmke_files/figure-latex/ames-sparklines-1.pdf Graphic file (
 type pdf)
 <use greenwell-boehmke_files/figure-latex/ames-sparklines-1.pdf>
 Package pdftex.def Info: greenwell-boehmke_files/figure-latex/ames-sparklines-1
-.pdf  used on input line 1352.
+.pdf  used on input line 1359.
 (pdftex.def)             Requested size: 398.33858pt x 178.46301pt.
 (./RJwrapper.bbl (./RJwrapper.brf)
 \tf@brf=\write6
@@ -1280,7 +1280,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 204--204
 +20) vip: Vari-able Im-por-tance Plots\T1/ppl/m/n/9 (+20) , 2019.
  []
 
-[22]) [23]) [24]
+[22] [23])) [24]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 30.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 30.
 (./RJwrapper.aux)
@@ -1289,20 +1289,20 @@ Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 30.
 Package rerunfilecheck Info: File `RJwrapper.out' has not changed.
 (rerunfilecheck)             Checksum: 9E46C82942647FD252DE5B9089C11EC0;1163.
 Package rerunfilecheck Info: File `RJwrapper.brf' has not changed.
-(rerunfilecheck)             Checksum: A0397AF91F9AB0F85D9A0B31CB817DF7;4387.
+(rerunfilecheck)             Checksum: 5D362A025F0517548F04C8082F6DCC6D;4447.
 
 LaTeX Warning: There were undefined references.
 
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 30.
  ) 
 Here is how much of TeX's memory you used:
- 22785 strings out of 492649
- 411960 string characters out of 6129622
- 511104 words of memory out of 5000000
- 25729 multiletter control sequences out of 15000+600000
- 77196 words of font info for 327 fonts, out of 8000000 for 9000
+ 22798 strings out of 492649
+ 412216 string characters out of 6129622
+ 512130 words of memory out of 5000000
+ 25735 multiletter control sequences out of 15000+600000
+ 77581 words of font info for 331 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 62i,12n,94p,425b,718s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 62i,12n,94p,425b,754s stack positions out of 5000i,500n,10000p,200000b,80000s
 pdfTeX warning (dest): name{Hfootnote.10} has been referenced but does not ex
 ist, replaced by a fixed one
 
@@ -1348,10 +1348,10 @@ t/fonts/type1/urw/palatino/uplbi8a.pfb></usr/local/texlive/2018/texmf-dist/font
 s/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1
 /urw/palatino/uplr8a.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/urw/pa
 latino/uplri8a.pfb>
-Output written on RJwrapper.pdf (24 pages, 1507866 bytes).
+Output written on RJwrapper.pdf (24 pages, 1509784 bytes).
 PDF statistics:
- 1033 PDF objects out of 1200 (max. 8388607)
- 871 compressed objects within 9 object streams
- 152 named destinations out of 1000 (max. 500000)
+ 1043 PDF objects out of 1200 (max. 8388607)
+ 881 compressed objects within 9 object streams
+ 153 named destinations out of 1000 (max. 500000)
  53996 words of extra memory for PDF output out of 61914 (max. 10000000)
 

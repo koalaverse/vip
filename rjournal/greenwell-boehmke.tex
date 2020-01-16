@@ -1200,6 +1200,13 @@ downside, however, is that ALE plots are more complicated to implement
 \code{method = "firm"}). ALE plots are available in the
 \CRANpkg{ALEPlot} \citep{R-ALEPlot} and \pkg{iml} packages.
 
+\citet{hooker-2007-generalized} also argues that feature importance
+(which concern only \dfn{main effects}) can be misleading in high
+dimensional settings, especially when there are strong dependencies and
+interaction effects among the features, and suggests an approach based
+on a \dfn{generalized functional ANOVA decomposition}---though, to our
+knowledge, this approach is not widely implemented in open source.
+
 \section{Use sparklines to characterize feature effects}
 
 Starting with \pkg{vip} 0.1.3, we have included a new function

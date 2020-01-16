@@ -497,6 +497,8 @@ As discussed in \citet{hooker-2019-stop}, \dfn{permute-and-predict} methods---li
 
 We already mentioned that PDPs can be misleading in the presence of strong interaction effects. This drawback, of course, equally applies to the FIRM approach using PDPs for computing VI scores. As discussed earlier, this can be mitigated by using ICE curves instead. Another alternative would be to use \dfn{accumulated local effect} (ALE) plots \citep{apley-2016-visualizing} (though we haven't really tested this idea). Compared to PDPs, ALE plots have the advantage of being faster to compute and less affected by strong dependencies among the features. The downside, however, is that ALE plots are more complicated to implement (hence, they are not currently available when using \code{method = "firm"}). ALE plots are available in the \CRANpkg{ALEPlot} \citep{R-ALEPlot} and \pkg{iml} packages.
 
+\citet{hooker-2007-generalized} also argues that feature importance (which concern only \dfn{main effects}) can be misleading in high dimensional settings, especially when there are strong dependencies and interaction effects among the features, and suggests an approach based on a \dfn{generalized functional ANOVA decomposition}---though, to our knowledge, this approach is not widely implemented in open source.
+
 
 \section{Use sparklines to characterize feature effects}
 
