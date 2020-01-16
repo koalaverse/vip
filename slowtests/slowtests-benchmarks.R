@@ -57,15 +57,15 @@ imp_vip <- function() {
 # Run benchmark
 set.seed(103)
 mb <- microbenchmark(
-  imp_ingredients(),
   imp_iml(),
-  imp_vip(),
+  imp_ingredients(),
   imp_mmpf(),
+  imp_vip(),
   times = 100L
 )
-levels(mb$expr) <- c("ingredients", "iml", "vip", "mmpf")
+levels(mb$expr) <- c("iml", "ingredients", "mmpf", "vip")
 mb
-saveRDS(mb, file = "rjournal/benchmark-mmpf.rds")
+saveRDS(mb, file = "rjournal/benchmark.rds")
 
 # # Plot results
 # pdf("figures/benchmark.pdf", width = 7, height = 4.326)
