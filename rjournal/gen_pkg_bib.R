@@ -41,6 +41,7 @@ pkgs <- c(
   "mmpf",
   "nnet",
   "party",
+  "partykit",
   "pdp",
   "pkgsearch",
   "plyr",

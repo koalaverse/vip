@@ -1,7 +1,7 @@
 Package: vip
 Type: Package
 Title: Variable Importance Plots
-Version: 0.1.3.9000
+Version: 0.1.4
 Authors@R: c(
   person("Brandon", "Greenwell", 
           email = "greenwell.brandon@gmail.com",
@@ -27,7 +27,7 @@ Description: A general framework for constructing variable importance plots from
   quantifying the relative strength of interaction effects is also included (see 
   the previous reference for details).
 License: GPL (>= 2)
-URL: https://koalaverse.github.io/vip/index.html, https://github.com/koalaverse/vip/
+URL: https://github.com/koalaverse/vip/
 BugReports: https://github.com/koalaverse/vip/issues
 Encoding: UTF-8
 LazyData: true
@@ -58,9 +58,12 @@ Suggests:
     knitr,
     lattice,
     mlbench,
+    mlr,
+    mlr3,
     neuralnet,
     NeuralNetTools,
     nnet,
+    parsnip,
     party,
     partykit,
     pdp,

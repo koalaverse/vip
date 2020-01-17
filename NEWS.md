@@ -4,9 +4,7 @@
 
 * Added support for SHAP-based feature importance which makes use of the recent [fastshap](https://cran.r-project.org/package=fastshap) package on CRAN. To use, simply call `vi_shap()` or `vi()` and specify `method = "shap"` [(#87)](https://github.com/koalaverse/vip/issues/87).
 
-* Added support for `"model_fit"` objects from the [parsnip](https://cran.r-project.org/package=parsnip) package.
-
-* Added support for the [parsnip](https://cran.r-project.org/package=parsnip), [mlr](https://cran.r-project.org/package=mlr), and [mlr3](https://cran.r-project.org/package=mlr3) packages.
+* Added support for the [parsnip](https://cran.r-project.org/package=parsnip), [mlr](https://cran.r-project.org/package=mlr), and [mlr3](https://cran.r-project.org/package=mlr3) packages [(#94)](https://github.com/koalaverse/vip/issues/94).
 
 * Added support for `"mvr"` objects from the [pls](https://cran.r-project.org/package=pls) package (currently just calls `caret::varImp()`) [(#35)](https://github.com/koalaverse/vip/issues/35).
 

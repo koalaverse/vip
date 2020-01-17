@@ -91,20 +91,20 @@ permutation-based VI scores via the
 flexible enough to be applied to any class of ML models in R.
 
 The \CRANpkg{varImp} package \citep{R-varImp} extends the
-permutation-based method for RFs in packages \CRANpkg{party}
-\citep{R-party} and \CRANpkg{ranger} \citep{R-ranger} to arbitrary
-measures from the \CRANpkg{measures} package \citep{R-measures}.
-Additionally, the functions in \pkg{varImp} include the option of using
-the conditional approach described in \citet{strobl-2019-conditional}
-which is more reliable in the presence of correlated features. A number
-of other RF-specific VI packages exist on CRAN which include, but are
-not limited to, the following: \CRANpkg{vita} \citep{R-vita},
-\CRANpkg{rfVarImpOOB} \citep{R-rfVarImpOOB},
-\CRANpkg{randomForestExplainer} \citep{R-randomForestExplainer}, and
-\CRANpkg{tree.interpreter} \citep{R-tree.interpreter}.\footnote{These
-  packages were discovered using \CRANpkg{pkgsearch}'s \code{ps()}
-  function \citep{R-pkgsearch} with the key phrases ``variable
-  importance'' and ``feature importance''.}.
+permutation-based method for RFs in package \CRANpkg{party}
+\citep{R-party} to arbitrary measures from the \CRANpkg{measures}
+package \citep{R-measures}. Additionally, the functions in \pkg{varImp}
+include the option of using the conditional approach described in
+\citet{strobl-2019-conditional} which is more reliable in the presence
+of correlated features. A number of other RF-specific VI packages exist
+on CRAN which include, but are not limited to, the following:
+\CRANpkg{vita} \citep{R-vita}, \CRANpkg{rfVarImpOOB}
+\citep{R-rfVarImpOOB}, \CRANpkg{randomForestExplainer}
+\citep{R-randomForestExplainer}, and \CRANpkg{tree.interpreter}
+\citep{R-tree.interpreter}.\footnote{These packages were discovered
+  using \CRANpkg{pkgsearch}'s \code{ps()} function \citep{R-pkgsearch}
+  with the key phrases ``variable importance'' and ``feature
+  importance''.}.
 
 The \CRANpkg{caret} package \citep{R-caret} includes a general
 \code{varImp()} function for computing model-specific and
@@ -134,8 +134,8 @@ If you use the \CRANpkg{mlr} interface for fitting ML models
 function to extract model-specific VI scores from various tree-based
 models (e.g., RFs and GBMs). Unlike \pkg{caret}, the model needs to be
 fit via the \pkg{mlr} interface; for instance, you cannot use
-\code{getFeatureImportance()} on a \pkg{ranger} model unless it was fit
-using \pkg{mlr}.
+\code{getFeatureImportance()} on a \CRANpkg{ranger} \citep{R-ranger}
+model unless it was fit using \pkg{mlr}.
 
 While the \pkg{iml} and \pkg{DALEX} packages provide model-agnostic
 approaches to computing VI, \pkg{caret}, and to some extent \pkg{mlr},
@@ -263,7 +263,12 @@ situations; for example, when the predictor variables vary in their
 scale of measurement or their number of categories \citep{party2007a},
 or when the predictors are highly correlated
 \citep{strobl-2019-conditional}. The \pkg{varImp} package discussed
-earlier provides methods to address these concerns for random forests.
+earlier provides methods to address these concerns for random forests in
+package \pkg{party}, with similar functionality also built into the
+\CRANpkg{partykit} package \citep{R-partykit}. The \pkg{vip} package
+also supports the conditional importance described in
+\citep{strobl-2019-conditional} for both \pkg{party}- and
+\pkg{partykit}-based RFs; see \texttt{?vip::vi\_model} for details.
 Later on, we'll discuss a more general permutation method that can be
 applied to any supervised learning model.
 
@@ -291,7 +296,7 @@ set.seed(102)  # for reproducibility
 bst <- xgboost(
   data = data.matrix(subset(trn, select = -y)),
   label = trn$y, 
-  objective = "reg:linear",
+  objective = "reg:squarederror",
   nrounds = 100, 
   max_depth = 5, 
   eta = 0.3,
