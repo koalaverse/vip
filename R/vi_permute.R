@@ -90,7 +90,7 @@
 #' is \code{FALSE}. If \code{TRUE}, an appropriate backend must be provided by
 #' \code{foreach}.
 #'
-#' @param paropts List containing additional options to be passed onto
+#' @param paropts List containing additional options to be passed on to
 #' \code{foreach} when \code{parallel = TRUE}.
 #'
 #' @param ... Additional optional arguments. (Currently ignored.)

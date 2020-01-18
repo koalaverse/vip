@@ -25,7 +25,7 @@ be allowed to vary for each sparkline. Default is \code{FALSE}.}
 \item{verbose}{Logical indicating whether or not to print progress. Default
 is \code{FALSE}.}
 
-\item{...}{Additional optional arguments to be passed onto
+\item{...}{Additional optional arguments to be passed on to
 \code{\link[pdp]{partial}}.}
 }
 \value{

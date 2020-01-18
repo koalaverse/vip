@@ -28,7 +28,7 @@ while constructing the interaction statistics. See
 parallel using a backend provided by the \code{foreach} package. Default is
 \code{FALSE}.}
 
-\item{paropts}{List containing additional options to be passed onto
+\item{paropts}{List containing additional options to be passed on to
 \code{\link[foreach]{foreach}} when \code{parallel = TRUE}.}
 
 \item{...}{Additional optional arguments to be passed on to

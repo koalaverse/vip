@@ -52,7 +52,7 @@
 #' Potentially useful when comparing variable importance scores across different
 #' models using different methods.
 #'
-#' @param ... Additional optional arguments to be passed onto
+#' @param ... Additional optional arguments to be passed on to
 #' \code{\link{vi_model}}, \code{\link{vi_firm}}, \code{\link{vi_permute}},
 #' or \code{\link{vi_shap}}.
 #'

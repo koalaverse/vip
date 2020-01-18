@@ -18,7 +18,7 @@
 #' parallel using a backend provided by the \code{foreach} package. Default is
 #' \code{FALSE}.
 #'
-#' @param paropts List containing additional options to be passed onto
+#' @param paropts List containing additional options to be passed on to
 #' \code{\link[foreach]{foreach}} when \code{parallel = TRUE}.
 #'
 #' @param ... Additional optional arguments to be passed on to

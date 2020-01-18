@@ -35,7 +35,7 @@ vi(object, ...)
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object) or
 an object that inherits from class \code{"vi"}.}
 
-\item{...}{Additional optional arguments to be passed onto
+\item{...}{Additional optional arguments to be passed on to
 \code{\link{vi_model}}, \code{\link{vi_firm}}, \code{\link{vi_permute}},
 or \code{\link{vi_shap}}.}
 

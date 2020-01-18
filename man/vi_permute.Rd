@@ -116,7 +116,7 @@ in parallel (using a backend provided by the \code{foreach} package). Default
 is \code{FALSE}. If \code{TRUE}, an appropriate backend must be provided by
 \code{foreach}.}
 
-\item{paropts}{List containing additional options to be passed onto
+\item{paropts}{List containing additional options to be passed on to
 \code{foreach} when \code{parallel = TRUE}.}
 }
 \value{

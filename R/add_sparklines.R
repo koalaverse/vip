@@ -19,7 +19,7 @@
 #' @param verbose Logical indicating whether or not to print progress. Default
 #' is \code{FALSE}.
 #'
-#' @param ... Additional optional arguments to be passed onto
+#' @param ... Additional optional arguments to be passed on to
 #' \code{\link[pdp]{partial}}.
 #'
 #' @return An object of class \code{c("datatables", "htmlwidget")}; essentially,
