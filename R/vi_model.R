@@ -9,7 +9,7 @@
 #' return (only used for some models). See details for which methods this
 #' argument applies to.
 #'
-#' @param ... Additional optional arguments.
+#' @param ... Additional optional arguments to be passed on to other methods.
 #'
 #' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
 #' \code{Variable} and \code{Importance}. For \code{"lm"/"glm"}-like object, an

@@ -16,25 +16,31 @@ expect_identical(  # check dot expansion
   target = c("x1", "x2")
 )
 
-# A neural network example based on Issue #84
-if (require(nnet, quietly = TRUE)) {
-
-  # Formula interface
-  fit1 <- nnet::nnet(Sepal.Length ~ . + I(Petal.Width^2), size = 2, data = iris,
-                     linout = TRUE, verbose = 0)
-
-  # Matrix interface
-  mm <- model.matrix(Sepal.Length ~ . - 1, data = iris)
-  fit2 <- nnet::nnet(x = mm, y = iris$Sepal.Length, size = 2, data = iris,
-                     linout = TRUE, verbose = 0)
-
-  # Expectations
-  expect_identical(
-    current = vip:::get_feature_names.nnet(fit1),
-    target = setdiff(x = names(iris), y = "Sepal.Length")
-  )
-  expect_error(
-    current = vip:::get_feature_names.nnet(fit2)
-  )
-
+# Exits
+if (!requireNamespace("nnet", quietly = TRUE)) {
+  exit_file("Package nnet missing")
 }
+
+# Load required packages
+suppressMessages({
+  library(nnet)
+})
+
+# Formula interface
+fit1 <- nnet::nnet(Sepal.Length ~ . + I(Petal.Width^2), size = 2, data = iris,
+                   linout = TRUE, trace = FALSE)
+
+# Matrix interface
+mm <- model.matrix(Sepal.Length ~ . - 1, data = iris)
+fit2 <- nnet::nnet(x = mm, y = iris$Sepal.Length, size = 2, data = iris,
+                   linout = TRUE, trace = FALSE)
+
+# Expectations
+expect_identical(
+  current = vip:::get_feature_names.nnet(fit1),
+  target = setdiff(x = names(iris), y = "Sepal.Length")
+)
+expect_error(
+  current = vip:::get_feature_names.nnet(fit2)
+)
+

@@ -25,7 +25,7 @@
 #' \code{ice = TRUE} is preferred whenever strong interaction effects are
 #' potentially present.
 #'
-#' @param ... Additional optional arguments to be passed onto
+#' @param ... Additional optional arguments to be passed on to
 #' \code{\link[pdp]{partial}}.
 #'
 #' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns,
@@ -156,3 +156,31 @@ firm <- function(object, feature_name, var_fun, ice = FALSE, ...) {
   res
 
 }
+
+
+#' Deprecated
+#'
+#' These functions have been deprecated and should not be used. They will be
+#' removed in the next release.
+#'
+#' @param ... Arguments passed on to \code{\link{vi_firm}}.
+#'
+#' @rdname deprecated
+#'
+#' @export
+vi_pdp <- function(...) {
+  warning("Function `vi_pdp()` is deprecated; please use `vi_firm()` instead.",
+          call. = FALSE)
+  vi_firm(..., ice = FALSE)
+}
+
+
+#' @rdname deprecated
+#'
+#' @export
+vi_ice <- function(...) {
+  warning("Function `vi_ice()` is deprecated; please use `vi_firm()` instead.",
+          call. = FALSE)
+  vi_firm(..., ice = TRUE)
+}
+

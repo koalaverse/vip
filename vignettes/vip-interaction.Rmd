@@ -31,7 +31,6 @@ library(dplyr)           # for data wrangling
 library(gbm)             # for fitting generalized boosted models
 library(ggplot2)         # for general visualization
 library(lattice)         # for general visualization
-library(mlbench)         # for machine learning benchmark data sets
 library(NeuralNetTools)  # for various tools for neural networks
 library(nnet)            # for fitting neural networks w/ a single hidden layer
 library(vip)             # for visualizing feature importance
@@ -50,8 +49,7 @@ VIPs for the fitted network are displayed in **Figure 1**. Notice how the Garson
 
 ```{r network-vip, echo=TRUE, fig.width = 6, fig.asp = 0.618, out.width="70%", fig.cap="**Figure 1** VIPs for the NN fit to Friedman's regression data. *Left:* Model-agnostic: partial dependence. *Middle:* Model-specific: Garson's method. *Right:* Model-specific: Olden's method."}
 # Simulate data
-set.seed(101)  # for reproducibility
-trn <- as.data.frame(mlbench.friedman1(n = 500, sd = 1))
+trn <- gen_friedman(500, seed = 101)
 
 # Fit a neural network to simulated data
 set.seed(103)

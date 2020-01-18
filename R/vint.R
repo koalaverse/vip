@@ -21,7 +21,7 @@
 #' @param paropts List containing additional options to be passed onto
 #' \code{\link[foreach]{foreach}} when \code{parallel = TRUE}.
 #'
-#' @param ... Additional optional arguments to be passed onto
+#' @param ... Additional optional arguments to be passed on to
 #' \code{\link[pdp]{partial}}.
 #'
 #' @details This function quantifies the strength of interaction between
@@ -48,9 +48,8 @@
 #' library(ggplot2)
 #' library(mlbench)
 #'
-#' # Generate training data
-#' set.seed(101)  # for reproducibility
-#' friedman1 <- as.data.frame(mlbench.friedman1(500, sd = 0.1))
+#' # Simulate training data
+#' trn <- gen_friedman(500, seed = 101)  # ?vip::gen_friedman
 #'
 #' #
 #' # NOTE: The only interaction that actually occurs in the model from which
@@ -59,9 +58,9 @@
 #'
 #' # Fit a GBM to the training data
 #' set.seed(102)  # for reproducibility
-#' fit <- gbm(y ~ ., data = friedman1, distribution = "gaussian",
-#'            n.trees = 1000, interaction.depth = 2, shrinkage = 0.01,
-#'            bag.fraction = 0.8, cv.folds = 5)
+#' fit <- gbm(y ~ ., data = trn, distribution = "gaussian", n.trees = 1000,
+#'            interaction.depth = 2, shrinkage = 0.01, bag.fraction = 0.8,
+#'            cv.folds = 5)
 #' best_iter <- gbm.perf(fit, plot.it = FALSE, method = "cv")
 #'
 #' # Quantify relative interaction strength
@@ -73,7 +72,7 @@
 #' }
 #'
 #' # Plot top 20 results
-#' top_20 <- res[1:20, ]
+#' top_20 <- res[1L:20L, ]
 #' ggplot(top_20, aes(x = reorder(Variables, Interaction), y = Interaction)) +
 #'   geom_col() +
 #'   coord_flip() +

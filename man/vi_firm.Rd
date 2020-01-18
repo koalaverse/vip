@@ -12,7 +12,7 @@ vi_firm(object, ...)
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
 
-\item{...}{Additional optional arguments to be passed onto
+\item{...}{Additional optional arguments to be passed on to
 \code{\link[pdp]{partial}}.}
 
 \item{feature_names}{Character string giving the names of the predictor

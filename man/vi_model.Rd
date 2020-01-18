@@ -111,7 +111,7 @@ vi_model(object, ...)
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
 
-\item{...}{Additional optional arguments.}
+\item{...}{Additional optional arguments to be passed on to other methods.}
 
 \item{type}{Character string specifying the type of variable importance to
 return (only used for some models). See details for which methods this

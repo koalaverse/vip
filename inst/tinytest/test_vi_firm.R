@@ -49,8 +49,15 @@ vis_firm_ice_mad <- vi(fit, method = "firm", ice = TRUE, train = friedman1,
                        feature_names = paste0("x", 1L:10L), var_fun = vfuns)
 expectations(vis_firm_ice_mad)
 
-# Load requiuired packages
-library(ggplot2)
+# Exits
+if (!requireNamespace("ggplot2", quietly = TRUE)) {
+  exit_file("Package ggplot2 missing")
+}
+
+# Load required packages
+suppressMessages({
+  library(ggplot2)
+})
 
 # Display VIPs
 grid.arrange(

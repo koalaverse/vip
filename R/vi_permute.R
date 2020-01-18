@@ -105,12 +105,10 @@
 #' \dontrun{
 #' # Load required packages
 #' library(ggplot2)  # for ggtitle() function
-#' library(mlbench)  # for ML benchmark data sets
 #' library(nnet)     # for fitting neural networks
 #'
 #' # Simulate training data
-#' set.seed(101)  # for reproducibility
-#' trn <- as.data.frame(mlbench.friedman1(500))  # ?mlbench.friedman1
+#' trn <- gen_friedman(500, seed = 101)  # ?vip::gen_friedman
 #'
 #' # Inspect data
 #' tibble::as.tibble(trn)

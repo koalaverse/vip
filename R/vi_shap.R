@@ -15,7 +15,7 @@
 #' internal `get_training_data()` function will be called to try and extract it
 #' automatically. It is good practice to always specify this argument.
 #'
-#' @param ... Additional optional arguments to be passed onto
+#' @param ... Additional optional arguments to be passed on to
 #' \code{\link[fastshap]{explain}}.
 #'
 #' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns,

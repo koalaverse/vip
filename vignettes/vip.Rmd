@@ -34,12 +34,11 @@ remotes::install_github("koalaverse/vip")
 
 ## Example usage
 
-For illustration, we use one of the regression problems described in Friedman (1991) and @breiman-bagging-1996. These data are available in the [mlbench](https://CRAN.R-project.org/package=mlbench) package. The inputs consist of 10 independent variables uniformly distributed on the interval $\left[0, 1\right]$; however, only 5 out of these 10 are actually used in the true model. Outputs are created according to the formula described in `?mlbench::mlbench.friedman1`. The code chunk below simulates 500 observations from the model default standard deviation.
+For illustration, we use one of the regression problems described in Friedman (1991) and @breiman-bagging-1996. These data are available in the `vip::gen_friedman()` function. The inputs consist of 10 independent variables uniformly distributed on the interval $\left[0, 1\right]$; however, only 5 out of these 10 are actually used in the true model. The code chunk below simulates 500 observations from the model default standard deviation.
 
 ```{r simulate-data, fig.width=7, fig.height=7, out.width="100%"}
 # Simulate training data
-set.seed(101)  # for reproducibility
-trn <- as.data.frame(mlbench::mlbench.friedman1(500))  # ?mlbench.friedman1
+trn <- gen_friedman(500, seed = 101)  # ?vip::gen_friedman
 
 # Inspect data
 tibble::as.tibble(trn)

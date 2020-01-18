@@ -221,33 +221,39 @@ expect_error(
 
 # Classification (multiclass) --------------------------------------------------
 
-if (require(ranger, quietly = TRUE)) {
-
-  # Fit a (default) random forest
-  set.seed(928)  # for reproducibility
-  fit3 <- ranger::ranger(y ~ ., data = friedman3, probability = TRUE,
-                         importance = "impurity")
-
-  # Prediction wrapper
-  pred_multi_prob <- function(object, newdata) {
-    predict(object, data = newdata)$predictions
-  }
-
-  # Compute permutation-based importance using mauc metric
-  set.seed(932)  # for reproducibility
-  vis_mauc <- vi_permute(
-    object = fit3,
-    train = friedman3,
-    target = "y",
-    metric = "mauc",
-    pred_wrapper = pred_multi_prob,
-    reference_class = "class1",
-    nsim = 10
-  )
-  expectations(vis_mauc)
-
-  # Display VIP
-  vip(vis_mauc, geom = "boxplot")
-  sort(fit3$variable.importance)
-
+# Exits
+if (!requireNamespace("ranger", quietly = TRUE)) {
+  exit_file("Package ranger missing")
 }
+
+# # Load required packages
+# suppressMessages({
+#   library(ranger)
+# })
+
+# Fit a (default) random forest
+set.seed(928)  # for reproducibility
+fit3 <- ranger::ranger(y ~ ., data = friedman3, probability = TRUE,
+                       importance = "impurity")
+
+# Prediction wrapper
+pred_multi_prob <- function(object, newdata) {
+  predict(object, data = newdata)$predictions
+}
+
+# Compute permutation-based importance using mauc metric
+set.seed(932)  # for reproducibility
+vis_mauc <- vi_permute(
+  object = fit3,
+  train = friedman3,
+  target = "y",
+  metric = "mauc",
+  pred_wrapper = pred_multi_prob,
+  reference_class = "class1",
+  nsim = 10
+)
+expectations(vis_mauc)
+
+# Display VIP
+vip(vis_mauc, geom = "boxplot")
+sort(fit3$variable.importance)
