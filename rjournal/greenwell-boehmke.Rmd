@@ -160,7 +160,7 @@ vi_rfo <- rfo$importance %>%
   tibble::rownames_to_column("Feature")
 
 # VI plot for GMB
-vi_bst <- bst %>%
+vi_bst <- bst %>%  #
   xgb.importance(model = .) %>%
   as.data.frame() %>%
   select(Feature, Importance = Gain)
@@ -475,7 +475,7 @@ Although \pkg{vip} focuses on global VI methods, it is becoming increasing popul
 
 Obtaining a global VI score from Shapley values requires aggregating the Shapley values for each feature across the entire training set (or at least a reasonable sample thereof). In particular, we use the mean of the absolute value of the individual Shapley values for each feature. Unfortunately, Shapley values can be computationally expensive, and therefore this approach may not be feasible for large training sets (say, >3000 observations). The \pkg{fastshap} package provides some relief by exploiting a few computational tricks, including the option to perform computations in parallel (see \code{?fastshap::explain} for details). Also, fast and exact algorithms \citep{lundberg-explainable-2019} can be exploited for certain classes of models.
 
-Starting with \pkg{vip} version 0.0.4 you can now use `method = "shap"` in the call to `vi()` (or use `vi_shap()` directly) to compute global Shapley-based VI scores using the method described above (provided you have the \pkg{fastshap} package installed)---see `?vip::vi_shap` for details. To illustrate, we compute Shapley-based VI scores from an \CRANpkg{xgboost} model \citep{R-xgboost} using the Friedman data from earlier; the results are displayed in Figure \ref{vi-shap}.^[Note that the `exact = TRUE` option is only available if you have \pkg{fastshap} version 0.0.4 or later] (\strong{Note:} specifying `include_type = TRUE` in the call to `vip()` causes the type of VI computed to be displayed as part of the axis label.)
+Starting with \pkg{vip} version 0.0.4 you can now use `method = "shap"` in the call to `vi()` (or use `vi_shap()` directly) to compute global Shapley-based VI scores using the method described above (provided you have the \pkg{fastshap} package installed)---see `?vip::vi_shap` for details. To illustrate, we compute Shapley-based VI scores from an \CRANpkg{xgboost} model \citep{R-xgboost} using the Friedman data from earlier; the results are displayed in Figure \ref{fig:vi-shap}.^[Note that the `exact = TRUE` option is only available if you have \pkg{fastshap} version 0.0.4 or later] (\strong{Note:} specifying `include_type = TRUE` in the call to `vip()` causes the type of VI computed to be displayed as part of the axis label.)
 
 ```{r vi-shap, fig.cap="Shapley-based VI scores from an XGBoost model fit to the simulated Friedman data."}
 # Load required packages
