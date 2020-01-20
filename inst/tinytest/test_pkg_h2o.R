@@ -2,6 +2,9 @@
 if (!requireNamespace("h2o", quietly = TRUE)) {
   exit_file("Package h2o missing")
 }
+if (Sys.info()[["sysname"]] == "SunOS") {  # avoid h2o/Java issues
+  exit_file("Skipping Solaris")
+}
 
 # Load required packages
 suppressMessages({
