@@ -450,11 +450,8 @@ directly on a \code{"vi"} object if it's already been constructed.
 library(ggplot2)  # for theme_light() function
 theme_set(theme_light())  # set theme for all ggplot2-based plots
 vip(bst, num_features = 5, geom = "point", horizontal = FALSE, 
-    aesthetics = list(color = "red", shape = 17, size = 4)) 
+    aesthetics = list(color = "red", shape = 17, size = 5)) 
 \end{Sinput}
-\begin{Soutput}
-#> [19:03:32] WARNING: amalgamation/../src/objective/regression_obj.cu:152: reg:linear is now deprecated in favor of reg:squarederror.
-\end{Soutput}
 \begin{figure}[!htb]
 
 {\centering \includegraphics[width=0.7\linewidth]{greenwell-boehmke_files/figure-latex/dot-plot-1} 
