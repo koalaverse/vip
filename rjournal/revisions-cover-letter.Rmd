@@ -9,7 +9,7 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-We wish to express our thanks to the anonymous reviewer who provided a thoughtful analysis of our work. We believe the changes we made, based on their suggestions, have resulted in a much better presentation of the **vip** package, and the general topic of *variable importance*. Below we outline the changes we've made in regards to the reviewer's suggestions.
+We wish to express our thanks to the anonymous reviewer who provided a thoughtful analysis of our work. We believe the changes we made, based on their suggestions, have resulted in a much better presentation of the **vip** package, and the general topic of *variable importance*. Below we outline the changes we've made in regards to the reviewer's comments.
 
 
 ## Summary of overall changes
@@ -35,7 +35,16 @@ We wish to express our thanks to the anonymous reviewer who provided a thoughtfu
 
 **Reviewer:** Another thing I think that is really missing is a discussion of the concept of faithfulness (to the data generating process? the learning process? the fitted model?) which speaks to what the purpose of doing this sort of analysis is.
 
-**Authors:** TBD.
+**Authors:** We think of "faithfulness" as it pertains to prediction explanations and to what degree they accurately represent the underlying "truth" of the data generating process, or "true" underlying mechanisms driving the outcomes. To us, this seems to be a two step process:
+
+(1) Understand what features are driving our model's predictions and how it is doing so across the input space.
+(2) Determining how well this relates to the "true" underlying mechanisms.
+
+Our paper addresses (1). We even state "While many of the procedures discussed in this paper apply to any model that makes predictions, it should be noted these methods heavily depend on the accuracy and usefulness of the fitted model; hence, unimportant features may appear relatively important (albeit not predictive) in comparison to the other included features."
+
+We then go on to state: "For this reason, we stress the usefulness of understanding the scale on which VI scores are calculated and take that into account when assessing the importance of each feature and communicating the results to others."
+
+Although we believe (2) distracts too much from the main points of this paper, we have briefly expanded this part of the discussion (e.g., in the discussion on drawbacks of existing methods) and added references to more in-depth treatments.
 
 **Reviewer:** Related, the author(s) don't really ever go into detail about what 'interpretable' or 'important' mean: which is related to the question of faithfulness. These are important definitions that I don't think can be safely ignored, especially without much theoretical literature to reference.
 
@@ -44,3 +53,9 @@ We wish to express our thanks to the anonymous reviewer who provided a thoughtfu
 **Reviewer:** I hasten to add that the authors missed some of the theoretical literature on the performance of some of these methods. I don't recall of the top of my head but I know there has been work done on the RF OOB permutation methods by the authors of the party package, as well as one of the authors of the PDP module of scikit-learn. It is not important but they also missed my work published here (mmpf).
 
 **Authors:** This is a good point. We are very aware of the work of Carolin Strobl (w/ others) on conditional permutation-based variable importance in RFs (which was always built into **vip**). We mistakenly omitted such work in our initial draft but have added it in the relevant sections. We'd also like to thank the reviewer for pointing us to their own work on **mmpf**, which we were previously unaware of. We included it in our discussion and also found it useful to add to our benchmark of permutation-based methods. 
+
+Thank you again for your time and response.
+
+Best,
+
+Brandon G. & Bradley B.

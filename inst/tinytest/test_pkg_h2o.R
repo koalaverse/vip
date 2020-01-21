@@ -2,8 +2,8 @@
 if (!requireNamespace("h2o", quietly = TRUE)) {
   exit_file("Package h2o missing")
 }
-if (Sys.info()[["sysname"]] == "SunOS") {  # avoid h2o/Java issues
-  exit_file("Skipping Solaris")
+if (length(unclass(packageVersion("vip"))[[1L]]) == 3) {
+  exit_file("Skip h2o tests for CRAN releases")
 }
 
 # Load required packages
