@@ -279,7 +279,7 @@ vi_model.C5.0 <- function(object, type = c("usage", "splits"), ...) {
   vis <- C50::C5imp(object, metric = type, ...)
   tib <- tibble::tibble(
     "Variable" = rownames(vis),
-    "Importance" = vis$Overall
+    "Importance" = vis[["Overall"]]
   )
 
   # Add variable importance type attribute
@@ -314,7 +314,7 @@ vi_model.train <- function(object, ...) {
   }
   tib <- tibble::tibble(
     "Variable" = rownames(vis),
-    "Importance" = vis$Overall
+    "Importance" = vis[["Overall"]]
   )
 
   # Add variable importance type attribute
@@ -346,7 +346,7 @@ vi_model.cubist <- function(object, ...) {
   vis <- caret::varImp(object, ...)
   tib <- tibble::tibble(
     "Variable" = rownames(vis),
-    "Importance" = vis$Overall
+    "Importance" = vis[["Overall"]]
   )
 
   # Add variable importance type attribute
@@ -381,7 +381,7 @@ vi_model.earth <- function(object, type = c("nsubsets", "rss", "gcv"), ...) {
   vis <- earth::evimp(object, trim = FALSE, ...)[, type, drop = TRUE]
   tib <- tibble::tibble(
     "Variable" = names(vis),
-    "Importance" = vis
+    "Importance" = unname(vis)  # per tibble 3.0.0
   )
   tib$Variable <- gsub("-unused$", replacement = "", x = tib$Variable)
 
@@ -465,7 +465,7 @@ vi_model.glmnet <- function(object, ...) {
   # Construct model-specific variable importance scores
   tib <- tibble::tibble(
     "Variable" = names(coefs),
-    "Importance" = coefs,
+    "Importance" = unname(coefs),  # per tibble 3.0.0
     "Sign" = ifelse(sign(coefs) == 1, yes = "POS", no = "NEG")
   )
 
@@ -505,7 +505,7 @@ vi_model.cv.glmnet <- function(object, ...) {
   # Construct model-specific variable importance scores
   tib <- tibble::tibble(
     "Variable" = names(coefs),
-    "Importance" = coefs,
+    "Importance" = unname(coefs),
     "Sign" = ifelse(sign(coefs) == 1, yes = "POS", no = "NEG")
   )
 
@@ -754,7 +754,7 @@ vi_model.RandomForest <- function(object, type = c("accuracy", "auc"), ...) {
   }
   tib <- tibble::tibble(
     "Variable" = names(vis),
-    "Importance" = vis
+    "Importance" = unname(vis)  # per tibble 3.0.0
   )
 
   # Add variable importance type attribute
@@ -790,7 +790,7 @@ vi_model.constparty <- function(object, ...) {
   vis <- c(vis, unused)
   tib <- tibble::tibble(
     "Variable" = names(vis),
-    "Importance" = vis
+    "Importance" = unname(vis)  # per tibble 3.0.0
   )
 
   # Add variable importance type attribute
@@ -820,7 +820,7 @@ vi_model.cforest <- function(object, ...) {
   vis <- partykit::varimp(object, ...)
   tib <- tibble::tibble(
     "Variable" = names(vis),
-    "Importance" = vis
+    "Importance" = unname(vis)  # per tibble 3.0.0
   )
 
   # Add variable importance type attribute
@@ -890,7 +890,7 @@ vi_model.randomForest <- function(object, ...) {
   vis <- vis[, 1L, drop = TRUE]
   tib <- tibble::tibble(
     "Variable" = names(vis),
-    "Importance" = vis
+    "Importance" = unname(vis)  # per tibble 3.0.0
   )
 
   # Add variable importance type attribute
@@ -922,7 +922,7 @@ vi_model.ranger <- function(object, ...) {
   vis <- ranger::importance(object)
   tib <- tibble::tibble(
     "Variable" = names(vis),
-    "Importance" = vis
+    "Importance" = unname(vis)  # per tibble 3.0.0
   )
 
   # Add variable importance type attribute
@@ -950,13 +950,12 @@ vi_model.rpart <- function(object, ...) {
     stop("Cannot extract variable importance scores from a tree with no ",
          "splits.", call. = FALSE)
   }
-  feature_names <- names(importance_scores)
 
   # Place variable importance scores in a tibble (the first and second columns
   # should always be labelled "Variable" and "Importance", respectively)
   tib <- tibble::tibble(
-    "Variable" = feature_names,
-    "Importance" = importance_scores
+    "Variable" = names(importance_scores),
+    "Importance" = unname(importance_scores)
   )
 
   # Add variable importance type attribute
@@ -1275,7 +1274,7 @@ vi_model.lm <- function(object, type = c("stat", "raw"), ...) {
   pos <- grep(type_pattern, x = colnames(coefs))
   tib <- tibble::tibble(
     "Variable" = rownames(coefs),
-    "Importance" = abs(coefs[, pos]),
+    "Importance" = unname(abs(coefs[, pos])),
     "Sign" = ifelse(sign(coefs[, "Estimate"]) == 1, yes = "POS", no = "NEG")
   )
 

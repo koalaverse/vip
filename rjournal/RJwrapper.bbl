@@ -1,0 +1,513 @@
+\begin{thebibliography}{75}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Apley(2018)]{R-ALEPlot}
+D.~Apley.
+\newblock \emph{ALEPlot: Accumulated Local Effects (ALE) Plots and Partial
+  Dependence (PD) Plots}, 2018.
+\newblock URL \url{https://CRAN.R-project.org/package=ALEPlot}.
+\newblock R package version 1.1.
+
+\bibitem[Apley and Zhu(2016)]{apley-2016-visualizing}
+D.~W. Apley and J.~Zhu.
+\newblock Visualizing the effects of predictor variables in black box
+  supervised learning models, 2016.
+
+\bibitem[Bau et~al.(2017)Bau, Zhou, Khosla, Oliva, and
+  Torralba]{bau-2017-network}
+D.~Bau, B.~Zhou, A.~Khosla, A.~Oliva, and A.~Torralba.
+\newblock Network dissection: Quantifying interpretability of deep visual
+  representations.
+\newblock In \emph{The IEEE Conference on Computer Vision and Pattern
+  Recognition (CVPR)}, July 2017.
+
+\bibitem[Bibal and Fr{\'e}nay(2016)]{bibal-2016-intterpretability}
+A.~Bibal and B.~Fr{\'e}nay.
+\newblock Interpretability of machine learning models and representations: an
+  introduction.
+\newblock In \emph{ESANN}, 2016.
+
+\bibitem[Biecek(2019)]{R-DALEX}
+P.~Biecek.
+\newblock \emph{DALEX: Descriptive mAchine Learning EXplanations}, 2019.
+\newblock URL \url{https://CRAN.R-project.org/package=DALEX}.
+\newblock R package version 0.4.9.
+
+\bibitem[Biecek et~al.(2019{\natexlab{a}})Biecek, Baniecki, and
+  Izdebski]{R-ingredients}
+P.~Biecek, H.~Baniecki, and A.~Izdebski.
+\newblock \emph{ingredients: Effects and Importances of Model Ingredients},
+  2019{\natexlab{a}}.
+\newblock URL \url{https://CRAN.R-project.org/package=ingredients}.
+\newblock R package version 0.5.0.
+
+\bibitem[Biecek et~al.(2019{\natexlab{b}})Biecek, Gosiewska, Baniecki, and
+  Izdebski]{R-iBreakDown}
+P.~Biecek, A.~Gosiewska, H.~Baniecki, and A.~Izdebski.
+\newblock \emph{iBreakDown: Model Agnostic Instance Level Variable
+  Attributions}, 2019{\natexlab{b}}.
+\newblock URL \url{https://CRAN.R-project.org/package=iBreakDown}.
+\newblock R package version 0.9.9.
+
+\bibitem[Bischl et~al.(2020)Bischl, Lang, Kotthoff, Schiffner, Richter, Jones,
+  Casalicchio, Gallo, and Schratz]{R-mlr}
+B.~Bischl, M.~Lang, L.~Kotthoff, J.~Schiffner, J.~Richter, Z.~Jones,
+  G.~Casalicchio, M.~Gallo, and P.~Schratz.
+\newblock \emph{mlr: Machine Learning in R}, 2020.
+\newblock URL \url{https://CRAN.R-project.org/package=mlr}.
+\newblock R package version 2.17.0.
+
+\bibitem[Breiman(1996)]{bagging-breiman-1996}
+L.~Breiman.
+\newblock Bagging predictors.
+\newblock \emph{Machine Learning}, 8\penalty0 (2):\penalty0 209--218, 1996.
+\newblock URL \url{https://doi.org/10.1023/A:1018054314350}.
+
+\bibitem[Breiman(2001)]{random-breiman-2001}
+L.~Breiman.
+\newblock Random forests.
+\newblock \emph{Machine Learning}, 45\penalty0 (1):\penalty0 5--32, 2001.
+\newblock URL \url{https://doi.org/10.1023/A:1010933404324}.
+
+\bibitem[Breiman et~al.(1984)Breiman, Friedman, and Charles
+  J.~Stone]{classification-breiman-1984}
+L.~Breiman, J.~Friedman, and R.~A.~O. Charles J.~Stone.
+\newblock \emph{Classification and Regression Trees}.
+\newblock The Wadsworth and Brooks-Cole statistics-probability series. Taylor
+  \& Francis, 1984.
+\newblock ISBN 9780412048418.
+
+\bibitem[Caruana et~al.(2015)Caruana, Lou, Gehrke, Koch, Sturm, and
+  Elhadad]{caruana-2015-intelligible}
+R.~Caruana, Y.~Lou, J.~Gehrke, P.~Koch, M.~Sturm, and N.~Elhadad.
+\newblock Intelligible models for healthcare: Predicting pneumonia risk and
+  hospital 30-day readmission.
+\newblock In \emph{Proceedings of the 21th ACM SIGKDD International Conference
+  on Knowledge Discovery and Data Mining}, KDD '15, pages 1721--1730, New York,
+  NY, USA, 2015. Association for Computing Machinery.
+\newblock ISBN 9781450336642.
+\newblock URL \url{https://doi.org/10.1145/2783258.2788613}.
+
+\bibitem[Celik(2015)]{R-vita}
+E.~Celik.
+\newblock \emph{vita: Variable Importance Testing Approaches}, 2015.
+\newblock URL \url{https://CRAN.R-project.org/package=vita}.
+\newblock R package version 1.0.0.
+
+\bibitem[Chang(2019)]{R-R6}
+W.~Chang.
+\newblock \emph{R6: Encapsulated Classes with Reference Semantics}, 2019.
+\newblock URL \url{https://CRAN.R-project.org/package=R6}.
+\newblock R package version 2.4.1.
+
+\bibitem[Chen et~al.(2019)Chen, He, Benesty, Khotilovich, Tang, Cho, Chen,
+  Mitchell, Cano, Zhou, Li, Xie, Lin, Geng, and Li]{R-xgboost}
+T.~Chen, T.~He, M.~Benesty, V.~Khotilovich, Y.~Tang, H.~Cho, K.~Chen,
+  R.~Mitchell, I.~Cano, T.~Zhou, M.~Li, J.~Xie, M.~Lin, Y.~Geng, and Y.~Li.
+\newblock \emph{xgboost: Extreme Gradient Boosting}, 2019.
+\newblock URL \url{https://CRAN.R-project.org/package=xgboost}.
+\newblock R package version 0.90.0.2.
+
+\bibitem[Cleveland(1979)]{robust-cleveland-1979}
+W.~S. Cleveland.
+\newblock Robust locally weighted regression and smoothing scatterplots.
+\newblock \emph{Journal of the American Statistical Association}, 74\penalty0
+  (368):\penalty0 829--836, 1979.
+\newblock \doi{https://doi.org/10.1080/01621459.1979.10481038}.
+
+\bibitem[Cock(2011)]{ames-cock-2011}
+D.~D. Cock.
+\newblock Ames, iowa: Alternative to the boston housing data as an end of
+  semester regression project.
+\newblock \emph{Journal of Statistics Education}, 19\penalty0 (3):\penalty0
+  1--15, 2011.
+\newblock URL \url{https://doi.org/10.1080/10691898.2011.11889627}.
+
+\bibitem[Corporation and Weston(2019)]{R-doParallel}
+M.~Corporation and S.~Weston.
+\newblock \emph{doParallel: Foreach Parallel Adaptor for the 'parallel'
+  Package}, 2019.
+\newblock URL \url{https://CRAN.R-project.org/package=doParallel}.
+\newblock R package version 1.0.15.
+
+\bibitem[Csárdi and Salmon(2019)]{R-pkgsearch}
+G.~Csárdi and M.~Salmon.
+\newblock \emph{pkgsearch: Search and Query CRAN R Packages}, 2019.
+\newblock URL \url{https://CRAN.R-project.org/package=pkgsearch}.
+\newblock R package version 3.0.2.
+
+\bibitem[Doshi-Velez and Kim(2017)]{doshivelez-2017-rigorous}
+F.~Doshi-Velez and B.~Kim.
+\newblock Towards a rigorous science of interpretable machine learning, 2017.
+
+\bibitem[Dowle and Srinivasan(2019)]{R-data.table}
+M.~Dowle and A.~Srinivasan.
+\newblock \emph{data.table: Extension of `data.frame`}, 2019.
+\newblock URL \url{https://CRAN.R-project.org/package=data.table}.
+\newblock R package version 1.12.8.
+
+\bibitem[Fisher et~al.(2018)Fisher, Rudin, and Dominici]{fisher-model-2018}
+A.~Fisher, C.~Rudin, and F.~Dominici.
+\newblock Model class reliance: Variable importance measures for any machine
+  learning model class, from the "rashomon" perspective.
+\newblock \emph{arXiv preprint arXiv:1801.01489}, 2018.
+
+\bibitem[Friedman et~al.(2019)Friedman, Hastie, Tibshirani, Narasimhan, and
+  Simon]{R-glmnet}
+J.~Friedman, T.~Hastie, R.~Tibshirani, B.~Narasimhan, and N.~Simon.
+\newblock \emph{glmnet: Lasso and Elastic-Net Regularized Generalized Linear
+  Models}, 2019.
+\newblock URL \url{https://CRAN.R-project.org/package=glmnet}.
+\newblock R package version 3.0-2.
+
+\bibitem[Friedman(1991)]{multivariate-friedman-1991}
+J.~H. Friedman.
+\newblock Multivariate adaptive regression splines.
+\newblock \emph{The Annals of Statistics}, 19\penalty0 (1):\penalty0 1--67,
+  1991.
+\newblock URL \url{https://doi.org/10.1214/aos/1176347963}.
+
+\bibitem[Friedman(2001)]{friedman-2001-greedy}
+J.~H. Friedman.
+\newblock Greedy function approximation: A gradient boosting machine.
+\newblock \emph{The Annals of Statistics}, 29\penalty0 (5):\penalty0
+  1189--1232, 2001.
+\newblock URL \url{https://doi.org/10.1214/aos/1013203451}.
+
+\bibitem[Garson(1991)]{interpreting-garson-1991}
+D.~G. Garson.
+\newblock Interpreting neural-network connection weights.
+\newblock \emph{Artificial Intelligence Expert}, 6\penalty0 (4):\penalty0
+  46--51, 1991.
+
+\bibitem[Gedeon(1997)]{data-gedeon-1997}
+T.~Gedeon.
+\newblock Data mining of inputs: Analysing magnitude and functional measures.
+\newblock \emph{International Journal of Neural Systems}, 24\penalty0
+  (2):\penalty0 123--140, 1997.
+\newblock URL \url{https://doi.org/10.1007/s10994-006-6226-1}.
+
+\bibitem[Goh(1995)]{back-goh-1995}
+A.~Goh.
+\newblock Back-propagation neural networks for modeling complex systems.
+\newblock \emph{Artificial Intelligence in Engineering}, 9\penalty0
+  (3):\penalty0 143--151, 1995.
+\newblock URL \url{https://dx.doi.org/10.1016/0954-1810(94)00011-S}.
+
+\bibitem[Goldstein et~al.(2015)Goldstein, Kapelner, Bleich, and
+  Pitkin]{goldstein-peeking-2015}
+A.~Goldstein, A.~Kapelner, J.~Bleich, and E.~Pitkin.
+\newblock Peeking inside the black box: Visualizing statistical learning with
+  plots of individual conditional expectation.
+\newblock \emph{Journal of Computational and Graphical Statistics}, 24\penalty0
+  (1):\penalty0 44--65, 2015.
+\newblock URL \url{https://doi.org/10.1080/10618600.2014.907095}.
+
+\bibitem[Greenwell(2019)]{R-fastshap}
+B.~Greenwell.
+\newblock \emph{fastshap: Fast Approximate Shapley Values}, 2019.
+\newblock URL \url{https://github.com/bgreenwell/fastshap}.
+\newblock R package version 0.0.3.9000.
+
+\bibitem[Greenwell et~al.(2019)Greenwell, Boehmke, and Gray]{R-vip}
+B.~Greenwell, B.~Boehmke, and B.~Gray.
+\newblock \emph{vip: Variable Importance Plots}, 2019.
+\newblock URL \url{https://github.com/koalaverse/vip/}.
+\newblock R package version 0.2.1.
+
+\bibitem[Greenwell(2017)]{pdp2017}
+B.~M. Greenwell.
+\newblock pdp: An r package for constructing partial dependence plots.
+\newblock \emph{The R Journal}, 9\penalty0 (1):\penalty0 421--436, 2017.
+\newblock URL
+  \url{https://journal.r-project.org/archive/2017/RJ-2017-016/index.html}.
+
+\bibitem[Greenwell et~al.(2018)Greenwell, Boehmke, and
+  McCarthy]{greenwell-simple-2018}
+B.~M. Greenwell, B.~C. Boehmke, and A.~J. McCarthy.
+\newblock A simple and effective model-based variable importance measure.
+\newblock \emph{arXiv preprint arXiv:1805.04755}, 2018.
+
+\bibitem[Hastie et~al.(2009)Hastie, Tibshirani, and
+  Friedman]{hastie-elements-2009}
+T.~Hastie, R.~Tibshirani, and J.~Friedman.
+\newblock \emph{The Elements of Statistical Learning: Data Mining, Inference,
+  and Prediction, Second Edition}.
+\newblock Springer Series in Statistics. Springer-Verlag, 2009.
+
+\bibitem[Hooker(2007)]{hooker-2007-generalized}
+G.~Hooker.
+\newblock Generalized functional anova diagnostics for high-dimensional
+  functions of dependent variables.
+\newblock \emph{Journal of Computational and Graphical Statistics}, 16\penalty0
+  (3):\penalty0 709--732, 2007.
+\newblock URL \url{https://doi.org/10.1198/106186007X237892}.
+
+\bibitem[Hooker and Mentch(2019)]{hooker-2019-stop}
+G.~Hooker and L.~Mentch.
+\newblock Please stop permuting features: An explanation and alternatives,
+  2019.
+
+\bibitem[Hothorn and Zeileis(2019)]{R-partykit}
+T.~Hothorn and A.~Zeileis.
+\newblock \emph{partykit: A Toolkit for Recursive Partytioning}, 2019.
+\newblock URL \url{https://CRAN.R-project.org/package=partykit}.
+\newblock R package version 1.2-5.
+
+\bibitem[Hothorn et~al.(2019)Hothorn, Hornik, Strobl, and Zeileis]{R-party}
+T.~Hothorn, K.~Hornik, C.~Strobl, and A.~Zeileis.
+\newblock \emph{party: A Laboratory for Recursive Partytioning}, 2019.
+\newblock URL \url{https://CRAN.R-project.org/package=party}.
+\newblock R package version 1.3-3.
+
+\bibitem[Janzing et~al.(2019)Janzing, Minorics, and
+  Blöbaum]{janzing-2019-feature}
+D.~Janzing, L.~Minorics, and P.~Blöbaum.
+\newblock Feature relevance quantification in explainable ai: A causal problem,
+  2019.
+
+\bibitem[Jones(2018)]{R-mmpf}
+Z.~Jones.
+\newblock \emph{mmpf: Monte-Carlo Methods for Prediction Functions}, 2018.
+\newblock URL \url{https://CRAN.R-project.org/package=mmpf}.
+\newblock R package version 0.0.5.
+
+\bibitem[Karatzoglou et~al.(2019)Karatzoglou, Smola, and Hornik]{R-kernlab}
+A.~Karatzoglou, A.~Smola, and K.~Hornik.
+\newblock \emph{kernlab: Kernel-Based Machine Learning Lab}, 2019.
+\newblock URL \url{https://CRAN.R-project.org/package=kernlab}.
+\newblock R package version 0.9-29.
+
+\bibitem[Kozak and Biecek(2019)]{R-vivo}
+A.~Kozak and P.~Biecek.
+\newblock \emph{vivo: Local Variable Importance via Oscillations of Ceteris
+  Paribus Profiles}, 2019.
+\newblock URL \url{https://CRAN.R-project.org/package=vivo}.
+\newblock R package version 0.1.1.
+
+\bibitem[Kuhn(2017)]{R-AmesHousing}
+M.~Kuhn.
+\newblock \emph{AmesHousing: The Ames Iowa Housing Data}, 2017.
+\newblock URL \url{https://CRAN.R-project.org/package=AmesHousing}.
+\newblock R package version 0.0.3.
+
+\bibitem[Kuhn(2020)]{R-caret}
+M.~Kuhn.
+\newblock \emph{caret: Classification and Regression Training}, 2020.
+\newblock URL \url{https://CRAN.R-project.org/package=caret}.
+\newblock R package version 6.0-85.
+
+\bibitem[Kuhn and Johnson(2013)]{applied-kuhn-2013}
+M.~Kuhn and K.~Johnson.
+\newblock \emph{Applied Predictive Modeling}.
+\newblock SpringerLink : B{\"u}cher. Springer New York, 2013.
+\newblock ISBN 9781461468493.
+
+\bibitem[Lang et~al.(2019)Lang, Bischl, Richter, Schratz, and Binder]{R-mlr3}
+M.~Lang, B.~Bischl, J.~Richter, P.~Schratz, and M.~Binder.
+\newblock \emph{mlr3: Machine Learning in R - Next Generation}, 2019.
+\newblock URL \url{https://CRAN.R-project.org/package=mlr3}.
+\newblock R package version 0.1.6.
+
+\bibitem[Loecher(2019)]{R-rfVarImpOOB}
+M.~Loecher.
+\newblock \emph{rfVarImpOOB: Unbiased Variable Importance for Random Forests},
+  2019.
+\newblock URL \url{https://CRAN.R-project.org/package=rfVarImpOOB}.
+\newblock R package version 1.0.
+
+\bibitem[Lundberg and Lee(2017)]{lundberg_unified_2017}
+S.~M. Lundberg and S.-I. Lee.
+\newblock A unified approach to interpreting model predictions.
+\newblock In \emph{Advances in Neural Information Processing Systems 30}, pages
+  4765--4774. Curran Associates, Inc., 2017.
+\newblock URL
+  \url{http://papers.nips.cc/paper/7062-a-unified-approach-to-interpreting-model-predictions.pdf}.
+
+\bibitem[Lundberg et~al.(2019)Lundberg, Erion, Chen, DeGrave, Prutkin, Nair,
+  Katz, Himmelfarb, Bansal, and Lee]{lundberg-explainable-2019}
+S.~M. Lundberg, G.~Erion, H.~Chen, A.~DeGrave, J.~M. Prutkin, B.~Nair, R.~Katz,
+  J.~Himmelfarb, N.~Bansal, and S.-I. Lee.
+\newblock Explainable ai for trees: From local explanations to global
+  understanding.
+\newblock \emph{arXiv preprint arXiv:1905.04610}, 2019.
+
+\bibitem[Mersmann(2019)]{R-microbenchmark}
+O.~Mersmann.
+\newblock \emph{microbenchmark: Accurate Timing Functions}, 2019.
+\newblock URL \url{https://CRAN.R-project.org/package=microbenchmark}.
+\newblock R package version 1.4-7.
+
+\bibitem[Milborrow(2019)]{R-earth-fixed}
+S.~Milborrow.
+\newblock \emph{earth: Multivariate Adaptive Regression Splines}, 2019.
+\newblock URL \url{https://CRAN.R-project.org/package=earth}.
+\newblock R package version 5.1.2.
+
+\bibitem[Molnar(2019{\natexlab{a}})]{R-iml}
+C.~Molnar.
+\newblock \emph{iml: Interpretable Machine Learning}, 2019{\natexlab{a}}.
+\newblock URL \url{https://CRAN.R-project.org/package=iml}.
+\newblock R package version 0.9.0.
+
+\bibitem[Molnar(2019{\natexlab{b}})]{molnar-2019-iml}
+C.~Molnar.
+\newblock \emph{Interpretable Machine Learning}.
+\newblock 2019{\natexlab{b}}.
+\newblock \url{https://christophm.github.io/interpretable-ml-book/}.
+
+\bibitem[Montavon et~al.(2018)Montavon, Samek, and
+  Müller]{montavon-2018-methods}
+G.~Montavon, W.~Samek, and K.-R. Müller.
+\newblock Methods for interpreting and understanding deep neural networks.
+\newblock \emph{Digital Signal Processing}, 73:\penalty0 1--15, 2018.
+\newblock URL \url{https://doi.org/10.1016/j.dsp.2017.10.011}.
+
+\bibitem[Müller and Wickham(2019)]{R-tibble}
+K.~Müller and H.~Wickham.
+\newblock \emph{tibble: Simple Data Frames}, 2019.
+\newblock URL \url{https://CRAN.R-project.org/package=tibble}.
+\newblock R package version 2.1.3.
+
+\bibitem[Olden et~al.(2004)Olden, Joy, and Death]{accurate-olden-2004}
+J.~D. Olden, M.~K. Joy, and R.~G. Death.
+\newblock An accurate comparison of methods for quantifying variable importance
+  in artificial neural networks using simulated data.
+\newblock \emph{Ecological Modelling}, 178\penalty0 (3):\penalty0 389--397,
+  2004.
+\newblock URL \url{https://dx.doi.org/10.1016/j.ecolmodel.2004.03.013}.
+
+\bibitem[Paluszynska et~al.(2019)Paluszynska, Biecek, and
+  Jiang]{R-randomForestExplainer}
+A.~Paluszynska, P.~Biecek, and Y.~Jiang.
+\newblock \emph{randomForestExplainer: Explaining and Visualizing Random
+  Forests in Terms of Variable Importance}, 2019.
+\newblock URL \url{https://CRAN.R-project.org/package=randomForestExplainer}.
+\newblock R package version 0.10.0.
+
+\bibitem[Parr and Wilson(2019)]{parr-2019-technical}
+T.~Parr and J.~D. Wilson.
+\newblock Technical report: A stratification approach to partial dependence for
+  codependent variables, 2019.
+
+\bibitem[Polley et~al.(2019)Polley, LeDell, Kennedy, and {van der
+  Laan}]{R-SuperLearner}
+E.~Polley, E.~LeDell, C.~Kennedy, and M.~{van der Laan}.
+\newblock \emph{SuperLearner: Super Learner Prediction}, 2019.
+\newblock URL \url{https://CRAN.R-project.org/package=SuperLearner}.
+\newblock R package version 2.0-26.
+
+\bibitem[Poulin et~al.(2006)Poulin, Eisner, Szafron, Lu, Greiner, Wishart,
+  Fyshe, Pearcy, MacDonell, and Anvik]{poulin-2006-visual}
+B.~Poulin, R.~Eisner, D.~Szafron, P.~Lu, R.~Greiner, D.~S. Wishart, A.~Fyshe,
+  B.~Pearcy, C.~MacDonell, and J.~Anvik.
+\newblock Visual explanation of evidence in additive classifiers.
+\newblock In \emph{Proceedings of the 18th Conference on Innovative
+  Applications of Artificial Intelligence - Volume 2}, IAAI’06, pages
+  1822--1829. AAAI Press, 2006.
+
+\bibitem[Probst(2018)]{R-measures}
+P.~Probst.
+\newblock \emph{measures: Performance Measures for Statistical Learning}, 2018.
+\newblock URL \url{https://CRAN.R-project.org/package=measures}.
+\newblock R package version 0.2.
+
+\bibitem[Probst(2019)]{R-varImp}
+P.~Probst.
+\newblock \emph{varImp: RF Variable Importance for Arbitrary Measures}, 2019.
+\newblock URL \url{https://CRAN.R-project.org/package=varImp}.
+\newblock R package version 0.3.
+
+\bibitem[{Revolution Analytics} and Weston()]{R-foreach}
+{Revolution Analytics} and S.~Weston.
+\newblock \emph{foreach: Provides Foreach Looping Construct}.
+
+\bibitem[Ripley(2016)]{R-nnet}
+B.~Ripley.
+\newblock \emph{nnet: Feed-Forward Neural Networks and Multinomial Log-Linear
+  Models}, 2016.
+\newblock URL \url{https://CRAN.R-project.org/package=nnet}.
+\newblock R package version 7.3-12.
+
+\bibitem[Scholbeck et~al.(2019)Scholbeck, Molnar, Heumann, Bischl, and
+  Casalicchio]{scholbeck-2019-sampling}
+C.~A. Scholbeck, C.~Molnar, C.~Heumann, B.~Bischl, and G.~Casalicchio.
+\newblock Sampling, intervention, prediction, aggregation: {A} generalized
+  framework for model agnostic interpretations.
+\newblock \emph{CoRR}, abs/1904.03959, 2019.
+\newblock URL \url{http://arxiv.org/abs/1904.03959}.
+
+\bibitem[Strobl et~al.(2007)Strobl, Boulesteix, Zeileis, and
+  Hothorn]{party2007a}
+C.~Strobl, A.-L. Boulesteix, A.~Zeileis, and T.~Hothorn.
+\newblock Bias in random forest variable importance measures: Illustrations,
+  sources and a solution.
+\newblock \emph{BMC Bioinformatics}, 8\penalty0 (25), 2007.
+\newblock URL \url{http://www.biomedcentral.com/1471-2105/8/25}.
+
+\bibitem[Strobl et~al.(2008)Strobl, Boulesteix, Kneib, Augustin, and
+  Zeileis]{strobl-2019-conditional}
+C.~Strobl, A.-L. Boulesteix, T.~Kneib, T.~Augustin, and A.~Zeileis.
+\newblock Conditional variable importance for random forests.
+\newblock \emph{BMC Bioinformatics}, 9\penalty0 (1):\penalty0 307, 2008.
+\newblock URL \url{https://doi.org/10.1186/1471-2105-9-307}.
+
+\bibitem[Sun(2019)]{R-tree.interpreter}
+Q.~Sun.
+\newblock \emph{tree.interpreter: Random Forest Prediction Decomposition and
+  Feature Importance Measure}, 2019.
+\newblock URL \url{https://CRAN.R-project.org/package=tree.interpreter}.
+\newblock R package version 0.1.0.
+
+\bibitem[van~der Laan(2006)]{laan-2006-statistical}
+M.~van~der Laan.
+\newblock Statistical inference for variable importance.
+\newblock \emph{The International Journal of Biostatistics}, 2\penalty0 (1),
+  2006.
+\newblock URL \url{https://doi.org/10.2202/1557-4679.1008}.
+
+\bibitem[Wickham(2019)]{R-plyr}
+H.~Wickham.
+\newblock \emph{plyr: Tools for Splitting, Applying and Combining Data}, 2019.
+\newblock URL \url{https://CRAN.R-project.org/package=plyr}.
+\newblock R package version 1.8.5.
+
+\bibitem[Wickham et~al.(2019)Wickham, Chang, Henry, Pedersen, Takahashi, Wilke,
+  Woo, and Yutani]{R-ggplot2}
+H.~Wickham, W.~Chang, L.~Henry, T.~L. Pedersen, K.~Takahashi, C.~Wilke, K.~Woo,
+  and H.~Yutani.
+\newblock \emph{ggplot2: Create Elegant Data Visualisations Using the Grammar
+  of Graphics}, 2019.
+\newblock URL \url{https://CRAN.R-project.org/package=ggplot2}.
+\newblock R package version 3.2.1.
+
+\bibitem[Wright et~al.(2020)Wright, Wager, and Probst]{R-ranger}
+M.~N. Wright, S.~Wager, and P.~Probst.
+\newblock \emph{ranger: A Fast Implementation of Random Forests}, 2020.
+\newblock URL \url{https://CRAN.R-project.org/package=ranger}.
+\newblock R package version 0.12.1.
+
+\bibitem[Xie et~al.(2019)Xie, Cheng, and Tan]{R-DT}
+Y.~Xie, J.~Cheng, and X.~Tan.
+\newblock \emph{DT: A Wrapper of the JavaScript Library 'DataTables'}, 2019.
+\newblock URL \url{https://CRAN.R-project.org/package=DT}.
+\newblock R package version 0.11.
+
+\bibitem[Zien et~al.(2009)Zien, Kraemer, Sonnenburg, and
+  Raetsch]{zien-2009-feature}
+A.~Zien, N.~Kraemer, S.~Sonnenburg, and G.~Raetsch.
+\newblock The feature importance ranking measure, 2009.
+
+\bibitem[{Š}trumbelj and Kononenko(2014)]{strumbelj-2014-explaining}
+E.~{Š}trumbelj and I.~Kononenko.
+\newblock Explaining prediction models and individual predictions with feature
+  contributions.
+\newblock \emph{Knowledge and Information Systems}, 31\penalty0 (3):\penalty0
+  647--665, 2014.
+\newblock URL \url{https://doi.org/10.1007/s10115-013-0679-x}.
+
+\end{thebibliography}

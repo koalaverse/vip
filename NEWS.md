@@ -1,8 +1,14 @@
-# vip 0.1.3.9000
+# vip 0.2.1.9000
+
+## User-visible changes
+
+* The `Importance` column from `vi_model()` no longer contains "inner" names; in accordance with breaking changes in [tibble](https://github.com/tidyverse/tibble) 3.0.0.
+
+# vip 0.2.1
 
 ## Enhancements
 
-* Added support for SHAP-based feature importance which makes use of the recent [fastshap](https://cran.r-project.org/package=fastshap) package on CRAN. To use, simply call `vi_shap()` or `vi()` and specify `method = "shap"` [(#87)](https://github.com/koalaverse/vip/issues/87).
+* Added support for SHAP-based feature importance which makes use of the recent [fastshap](https://cran.r-project.org/package=fastshap) package on CRAN. To use, simply call `vi()` or `vip()` and specify `method = "shap"`, or you can just call `vi_shap()` directly [(#87)](https://github.com/koalaverse/vip/issues/87).
 
 * Added support for the [parsnip](https://cran.r-project.org/package=parsnip), [mlr](https://cran.r-project.org/package=mlr), and [mlr3](https://cran.r-project.org/package=mlr3) packages [(#94)](https://github.com/koalaverse/vip/issues/94).
 

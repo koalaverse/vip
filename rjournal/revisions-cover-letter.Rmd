@@ -20,14 +20,14 @@ We wish to express our thanks to the anonymous reviewer who provided a thoughtfu
 
 * We've slightly restructured the terminology of the section on PDP- and ICE-based VI scores. We've recently found that this method falls as a special case of the *feature importance ranking measure* discussed in Alexander Zien, et al. (2009). The only difference in this section is the terminology, additional references, and changes in the code to reflect changes in the package (which is now on CRAN).
 
-* Since our initial submission, we've expanded the functionality of **vip** to include Shapley-based importance scores (these are important enough that the methodology should've been discussed more in depth anyway). We figured this was important enough to be added to the paper. This is a minor section (with relevant references) with one example. If the reviewer, or editors, find this to be unnecessary, we're happy to remove it (but we strongly think its a useful contribution).
+* Since our initial submission, we've expanded the functionality of **vip** to include Shapley-based importance scores (these are important enough that the methodology should've been discussed more in depth anyway). We figured this was important enough to be added to the paper. This is a minor section (with relevant references) with one example. If the reviewer, or editors, find this to be unnecessary, we're happy to remove it (but we strongly think it's a useful contribution).
 
 
 ## Response to reviewer
 
 **Reviewer:** The authors miss some important literature I think. most especially the functional ANOVA as developed by Giles Hooker. this is important work (though he doesn't have a working software implementation last I checked) which discusses what I think are some of the shortcomings of this work.
 
-**Authors:** Thank you for pointing us to Hooker's work. We actually found his more recent work, "Please Stop Permuting Features: An Explanation and Alternatives", to be more relevant. Nonetheless, we still found Hooker's general functional ANOVA work relevant (in particular, to the FIRM-based approach described in our paper) and have included a brief discussion and references to both in our paper.
+**Authors:** Thank you for pointing us to Hooker's work. We actually found his more recent work, "Please Stop Permuting Features: An Explanation and Alternatives", to be more relevant. Nonetheless, we still found Hooker's general functional ANOVA work relatable to the FIRM-based approach described in our paper and have included a brief discussion and references to both in our paper.
 
 **Reviewer:** These methods don't generally do well when the function that maps the features to the outcome, as learned by whatever ML model used, is actually high dimensional, non-additive, etc. this I think warrants a bunch of big caveats as this is the situation where ml really does well relative to other methods. I'd love to see a section where you show how to break all these methods.
 
