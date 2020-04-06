@@ -1,4 +1,4 @@
-# vip 0.2.1.9000
+# vip 0.2.2
 
 ## User-visible changes
 
