@@ -308,7 +308,6 @@ vip.default <- function(
 
 }
 
-
 #' @rdname vip
 #'
 #' @export
@@ -316,3 +315,9 @@ vip.model_fit <- function(object, ...) {
   vip(object$fit, ...)
 }
 
+#' @rdname vip
+#'
+#' @export
+vip.workflow <- function(object, ...) {
+  vip(object$fit$fit$fit, ...)
+}
