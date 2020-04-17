@@ -4,6 +4,7 @@
 \alias{vip}
 \alias{vip.default}
 \alias{vip.model_fit}
+\alias{vip.workflow}
 \title{Variable importance plots}
 \usage{
 vip(object, ...)
@@ -29,6 +30,8 @@ vip(object, ...)
 )
 
 \method{vip}{model_fit}(object, ...)
+
+\method{vip}{workflow}(object, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object) or
