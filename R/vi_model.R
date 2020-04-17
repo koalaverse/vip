@@ -724,6 +724,14 @@ vi_model.model_fit <- function(object, ...) {  # package: parsnip
   vi_model(object$fit, ...)
 }
 
+# Package: parsnip -------------------------------------------------------------
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.workflow <- function(object, ...) {  # package: workflows
+  vi_model(object$fit$fit$fit, ...)
+}
 
 # Package: party ---------------------------------------------------------------
 
