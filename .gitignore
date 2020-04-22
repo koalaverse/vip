@@ -7,3 +7,4 @@ inst/doc
 .DS_Store
 logs
 derby.log
+catboost_info
