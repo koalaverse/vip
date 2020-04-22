@@ -77,5 +77,6 @@ Suggests:
     sparklyr (>= 0.8.0),
     tinytest,
     varImp,
-    xgboost
+    xgboost,
+    catboost
 RoxygenNote: 7.1.0
