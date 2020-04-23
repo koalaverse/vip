@@ -1353,7 +1353,7 @@ vi_model.xgb.Booster <- function(object, type = c("gain", "cover", "frequency"),
 #' @rdname vi_model
 #'
 #' @export
-vi_model.catboost.Model <- function(object, type = c("FeatureImportance", "PredictionValuesChange", "LossFunctionChange", "Interaction", "ShapValues"), ...) {
+vi_model.catboost.Model <- function(object, type = c("FeatureImportance", "PredictionValuesChange", "LossFunctionChange", "Interaction"), ...) {
 
   # Determine which type of variable importance to compute
   type <- match.arg(type)
@@ -1369,9 +1369,6 @@ vi_model.catboost.Model <- function(object, type = c("FeatureImportance", "Predi
     tib <- setNames(tib, c("Variable1", "Variable2", "Importance"))
     tib$Variable1 <- var_names[tib$Variable1 + 1]
     tib$Variable2 <- var_names[tib$Variable2 + 1]
-  } else if(type == "ShapValues") {
-    tib <- tibble::as_tibble(imp)
-    tib <- setNames(tib, c(var_names, ".pred"))
   }
 
   # Add variable importance type attribute

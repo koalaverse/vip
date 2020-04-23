@@ -85,3 +85,19 @@ vi_shap.default <- function(object, feature_names = NULL, train = NULL, ...) {
   tib
 
 }
+
+#' @rdname vi_shap
+#'
+#' @export
+vi_shap.catboost.Model <- function(object, feature_names = NULL, train = NULL, ...) {
+  # Try to extract feature names if not supplied
+  if (is.null(feature_names)) {
+    feature_names <- get_feature_names(object)
+  }
+
+  # catboost do not give access to the training data directly from the model object.
+  if (is.null(train)) {
+    stop("Please provide a `catboost.Pool` object to the train argument. See `catboost::catboost.load_pool()`.")
+  }
+
+}
