@@ -37,6 +37,7 @@
 \alias{vi_model.ml_model_random_forest_classification}
 \alias{vi_model.lm}
 \alias{vi_model.xgb.Booster}
+\alias{vi_model.catboost.Model}
 \title{Model-specific variable importance}
 \usage{
 vi_model(object, ...)
@@ -110,6 +111,13 @@ vi_model(object, ...)
 \method{vi_model}{lm}(object, type = c("stat", "raw"), ...)
 
 \method{vi_model}{xgb.Booster}(object, type = c("gain", "cover", "frequency"), ...)
+
+\method{vi_model}{catboost.Model}(
+  object,
+  type = c("FeatureImportance", "PredictionValuesChange", "LossFunctionChange",
+    "Interaction", "ShapValues"),
+  ...
+)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
