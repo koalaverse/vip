@@ -238,6 +238,10 @@
 #'
 #' }}
 #'
+#' \item{\code{\link[catboost]{catboost}}}{See \code{\link[catboost]{catboost.get_feature_importance}} or visit
+#' \url{https://catboost.ai/docs/concepts/r-reference_catboost-get_feature_importance.html}
+#' for details.}
+#'
 #' }
 #'
 #' @note Inspired by the \code{\link[caret]{varImp}} function.
@@ -1356,7 +1360,7 @@ vi_model.catboost.Model <- function(object, type = c("FeatureImportance", "Predi
 
   # Construct model-specific variable importance scores
   imp <- catboost::catboost.get_feature_importance(model = object, type = type, ...)
-  var_names <- rownames(object$feature_importances)
+  var_names <- get_feature_names.catboost.Model(object)
 
   if(type %in% c("LossFunctionChange", "FeatureImportance", "PredictionValuesChange")) {
     tib <- tibble::enframe(imp[,1], name = "Variable", value = "Importance")

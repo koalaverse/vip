@@ -132,7 +132,9 @@ argument applies to.}
 A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
 \code{Variable} and \code{Importance}. For \code{"lm"/"glm"}-like object, an
 additional column, called \code{Sign}, is also included which includes the
-sign (i.e., POS/NEG) of the original coefficient.
+sign (i.e., POS/NEG) of the original coefficient. For \code{"catboost.Model"}
+object, type \code{Interaction} returns two Variable columns ("Variable1",
+"Variable2").
 }
 \description{
 Compute model-specific variable importance scores for the predictors in a
@@ -358,6 +360,10 @@ obtain three different types of variable importance:
   tree in the ensemble.
 
 }}
+
+\item{\code{\link[catboost]{catboost}}}{See \code{\link[catboost]{catboost.get_feature_importance}} or visit
+\url{https://catboost.ai/docs/concepts/r-reference_catboost-get_feature_importance.html}
+for details.}
 
 }
 }
