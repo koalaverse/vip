@@ -529,7 +529,7 @@ vi_model.cv.glmnet <- function(object, ...) {
 vi_model.H2OBinomialModel <- function(object, ...) {
 
   # Construct model-specific variable importance scores
-  tib <- tibble::as.tibble(h2o::h2o.varimp(object))
+  tib <- tibble::as_tibble(h2o::h2o.varimp(object))
   if (object@algorithm == "glm") {
     names(tib) <- c("Variable", "Importance", "Sign")
     # FIXME: Extra row at the bottom?
@@ -556,7 +556,7 @@ vi_model.H2OBinomialModel <- function(object, ...) {
 vi_model.H2OMultinomialModel <- function(object, ...) {
 
   # Construct model-specific variable importance scores
-  tib <- tibble::as.tibble(h2o::h2o.varimp(object))
+  tib <- tibble::as_tibble(h2o::h2o.varimp(object))
   if (object@algorithm == "glm") {
     names(tib) <- c("Variable", "Importance", "Sign")
     # FIXME: Extra row at the bottom?
@@ -583,7 +583,7 @@ vi_model.H2OMultinomialModel <- function(object, ...) {
 vi_model.H2ORegressionModel <- function(object, ...) {
 
   # Construct model-specific variable importance scores
-  tib <- tibble::as.tibble(h2o::h2o.varimp(object))
+  tib <- tibble::as_tibble(h2o::h2o.varimp(object))
   if (object@algorithm == "glm") {
     names(tib) <- c("Variable", "Importance", "Sign")
     # FIXME: Extra row at the bottom?
@@ -1319,7 +1319,7 @@ vi_model.xgb.Booster <- function(object, type = c("gain", "cover", "frequency"),
   if ("weight" %in% names(imp)) {
     type <- "weight"  # gblinear
   }
-  vis <- tibble::as.tibble(imp)[, c("feature", type)]
+  vis <- tibble::as_tibble(imp)[, c("feature", type)]
   tib <- tibble::tibble(
     "Variable" = vis$feature,
     "Importance" = vis[[2L]]

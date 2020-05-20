@@ -41,7 +41,7 @@ For illustration, we use one of the regression problems described in Friedman (1
 trn <- gen_friedman(500, seed = 101)  # ?vip::gen_friedman
 
 # Inspect data
-tibble::as.tibble(trn)
+tibble::as_tibble(trn)
 ```
 
 

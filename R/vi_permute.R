@@ -111,7 +111,7 @@
 #' trn <- gen_friedman(500, seed = 101)  # ?vip::gen_friedman
 #'
 #' # Inspect data
-#' tibble::as.tibble(trn)
+#' tibble::as_tibble(trn)
 #'
 #' # Fit PPR and NN models (hyperparameters were chosen using the caret package
 #' # with 5 repeats of 5-fold cross-validation)
