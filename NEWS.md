@@ -1,5 +1,9 @@
 # vip 0.2.2.9000
 
+## Miscellaneous
+
+* Switch from `tibble::as.tibble()`---which was deprecated in [tibble](https://github.com/tidyverse/tibble) 2.0.0---to `tibble::as_tibble()` in a few function calls [(#101)](https://github.com/koalaverse/vip/issues/101).
+
 # vip 0.2.2
 
 ## User-visible changes
