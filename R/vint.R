@@ -99,5 +99,5 @@ vint <- function(object, feature_names, progress = "none", parallel = FALSE,
     "Interaction" = ints
   )
   ints <- ints[order(ints["Interaction"], decreasing = TRUE), ]
-  tibble::as.tibble(ints)
+  tibble::as_tibble(ints)
 }
