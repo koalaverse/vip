@@ -13,12 +13,12 @@ maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www
 
 ## Overview
 
-[**vip**](https://koalaverse.github.io/vip/index.html) is an R package
-for constructing **v**ariable **i**mportance **p**lots (VIPs). VIPs are
-part of a larger framework referred to as *interpretable machine
-learning* (IML), which includes (but not limited to): partial dependence
-plots (PDPs) and individual conditional expectation (ICE) curves. While
-PDPs and ICE curves (available in the R package
+[vip](https://koalaverse.github.io/vip/index.html) is an R package for
+constructing **v**ariable **i**mportance **p**lots (VIPs). VIPs are part
+of a larger framework referred to as *interpretable machine learning*
+(IML), which includes (but not limited to): partial dependence plots
+(PDPs) and individual conditional expectation (ICE) curves. While PDPs
+and ICE curves (available in the R package
 [pdp](https://cran.r-project.org/package=pdp)) help visualize feature
 effects, VIPs help visualize feature impact (either locally or
 globally). An in-progress, but comprehensive, overview of IML can be
@@ -35,11 +35,11 @@ remembering to use `xgb.importance()` for
 models). With [vip](https://cran.r-project.org/package=vip) you get one
 consistent interface to computing variable importance for many types of
 supervised learning models across a number of packages. Additionally,
-[**vip** package website](https://koalaverse.github.io/vip/index.html)
-offers a number of *model-agnostic* procedures for computing feature
-importance (see the next section) as well an experimental function for
-quantifying the strength of potential interaction effects. For details
-and example usage, visit the [**vip** package
+[vip](https://koalaverse.github.io/vip/index.html) offers a number of
+*model-agnostic* procedures for computing feature importance (see the
+next section) as well an experimental function for quantifying the
+strength of potential interaction effects. For details and example
+usage, visit the [vip package
 website](https://koalaverse.github.io/vip/index.html).
 
 <img src="man/figures/one-pkg.png" width="50%" style="display: block; margin: auto;" />
