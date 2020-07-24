@@ -282,3 +282,14 @@ get_feature_names.xgb.Booster <- function(object, ...) {
     object$feature_names
   }
 }
+
+# Package: catboost -------------------------------------------------------------
+
+#' @keywords internal
+get_feature_names.catboost.Model <- function(object, ...) {
+  if (is.null(rownames(fit$feature_importances))) {
+    get_feature_names.default(object)
+  } else {
+    rownames(fit$feature_importances)
+  }
+}

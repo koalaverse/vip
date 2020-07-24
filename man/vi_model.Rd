@@ -18,6 +18,7 @@
 \alias{vi_model.nn}
 \alias{vi_model.nnet}
 \alias{vi_model.model_fit}
+\alias{vi_model.workflow}
 \alias{vi_model.RandomForest}
 \alias{vi_model.constparty}
 \alias{vi_model.cforest}
@@ -36,6 +37,7 @@
 \alias{vi_model.ml_model_random_forest_classification}
 \alias{vi_model.lm}
 \alias{vi_model.xgb.Booster}
+\alias{vi_model.catboost.Model}
 \title{Model-specific variable importance}
 \usage{
 vi_model(object, ...)
@@ -72,6 +74,8 @@ vi_model(object, ...)
 
 \method{vi_model}{model_fit}(object, ...)
 
+\method{vi_model}{workflow}(object, ...)
+
 \method{vi_model}{RandomForest}(object, type = c("accuracy", "auc"), ...)
 
 \method{vi_model}{constparty}(object, ...)
@@ -107,6 +111,13 @@ vi_model(object, ...)
 \method{vi_model}{lm}(object, type = c("stat", "raw"), ...)
 
 \method{vi_model}{xgb.Booster}(object, type = c("gain", "cover", "frequency"), ...)
+
+\method{vi_model}{catboost.Model}(
+  object,
+  type = c("FeatureImportance", "PredictionValuesChange", "LossFunctionChange",
+    "Interaction", "ShapValues"),
+  ...
+)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
@@ -121,7 +132,9 @@ argument applies to.}
 A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
 \code{Variable} and \code{Importance}. For \code{"lm"/"glm"}-like object, an
 additional column, called \code{Sign}, is also included which includes the
-sign (i.e., POS/NEG) of the original coefficient.
+sign (i.e., POS/NEG) of the original coefficient. For \code{"catboost.Model"}
+object, type \code{Interaction} returns two Variable columns ("Variable1",
+"Variable2").
 }
 \description{
 Compute model-specific variable importance scores for the predictors in a
@@ -347,6 +360,10 @@ obtain three different types of variable importance:
   tree in the ensemble.
 
 }}
+
+\item{\code{\link[catboost]{catboost}}}{See \code{\link[catboost]{catboost.get_feature_importance}} or visit
+\url{https://catboost.ai/docs/concepts/r-reference_catboost-get_feature_importance.html}
+for details.}
 
 }
 }

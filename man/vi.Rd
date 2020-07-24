@@ -4,6 +4,7 @@
 \alias{vi}
 \alias{vi.default}
 \alias{vi.model_fit}
+\alias{vi.workflow}
 \alias{vi.WrappedModel}
 \alias{vi.Learner}
 \title{Variable importance}
@@ -26,6 +27,8 @@ vi(object, ...)
 )
 
 \method{vi}{model_fit}(object, ...)
+
+\method{vi}{workflow}(object, ...)
 
 \method{vi}{WrappedModel}(object, ...)
 
