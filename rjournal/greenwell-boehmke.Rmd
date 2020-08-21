@@ -26,6 +26,7 @@ preamble: |
   \newfloat{algorithm}{hbt}{lop}
   \floatname{algorithm}{Algorithm}
 output: rticles::rjournal_article
+always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
@@ -177,7 +178,7 @@ p3 <- vip(bst) + ggtitle("Gradient boosting")
 grid.arrange(p1, p2, p3, nrow = 1)  # display plots in a grid
 ```
 
-As we would expect, all three methods rank the variables \code{x1}--\code{x5} as more important than the others. While this is good news, it is unfortunate that we have to remember the different functions and ways of extracting and plotting VI scores from various model fitting functions. This is one place where \pkg{vip} can help...one function to rule them all! Once \pkg{vip} is loaded, we can use \code{vi()} to extract a tibble of VI scores.
+As we would expect, all three methods rank the variables \code{x1}--\code{x5} as more important than the others. While this is good news, it is unfortunate that we have to remember the different functions and ways of extracting and plotting VI scores from various model fitting functions. This is one place where \pkg{vip} can help...one function to rule them all! Once \pkg{vip} is loaded, we can use \code{vi()} to extract a tibble of VI scores.\footnote{In order to avoid deprecation warnings due to recent updates to \pkg{tibble} and \pkg{ggplot2}, the code examples in this article are based on the latest development versions of both \pkg{vip} (version 0.2.2.9000) and \pkg{pdp} (version 0.7.0.9000); the URL to the development version of each package is available on its associated CRAN landing page.}
 
 ```{r trees-vis-vip}
 # Load required packages
@@ -224,8 +225,11 @@ backward <- step(linmod, direction = "backward", trace = 0)
 (vi_backward <- vi(backward))
 
 # Plot VI scores; by default, `vip()` displays the top ten features
-vip(vi_backward, num_features = length(coef(backward)),  # Figure 3 
+pal <- palette.colors(2, palette = "Okabe-Ito")  # colorblind friendly palette 
+vip(vi_backward, num_features = length(coef(backward)),  # Figure 3
     geom = "point", horizontal = FALSE, mapping = aes(color = Sign)) +
+  scale_color_manual(values = unname(pal)) +
+  theme_light() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
@@ -599,8 +603,7 @@ VIPs help to visualize the strength of the relationship between each feature and
 
 \section{Acknowledgments}
 
-The authors would like to thank the anonymous reviewers and the Editor for their helpful comments
-and suggestions. We would also like to thank the members of the 84.51$^{\circ}$ Interpretable Machine Learning Special Interest Group for their thoughtful discussions on the topics discussed herein.
+The authors would like to thank the anonymous reviewers and the Editor for their helpful comments and suggestions. We would also like to thank the members of the 84.51$^{\circ}$ Interpretable Machine Learning Special Interest Group for their thoughtful discussions on the topics discussed herein.
 
 
 \bibliography{greenwell-boehmke}

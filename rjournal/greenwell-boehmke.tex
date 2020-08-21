@@ -36,7 +36,7 @@ build trust in the model and is the fundamental idea of the emerging
 field of \dfn{interpretable machine learning} (IML).\footnote{Although
   ``interpretability'' is difficult to formally define in the context of
   ML, we follow \citet{doshivelez-2017-rigorous} and describe
-  ``interpretable'' as the ``\ldots{}ability to explain or to present in
+  ``interpretable'' as the ``\ldots ability to explain or to present in
   understandable terms to a human.''} For an in-depth discussion on IML,
 see \citet{molnar-2019-iml}. In this paper, we focus on
 \dfn{global methods} for quantifying the importance\footnote{In this
@@ -348,8 +348,9 @@ As we would expect, all three methods rank the variables
 good news, it is unfortunate that we have to remember the different
 functions and ways of extracting and plotting VI scores from various
 model fitting functions. This is one place where \pkg{vip} can
-help\ldots{}one function to rule them all! Once \pkg{vip} is loaded, we
-can use \code{vi()} to extract a tibble of VI scores.
+help\ldots one function to rule them all! Once \pkg{vip} is loaded, we
+can use \code{vi()} to extract a tibble of VI
+scores.\footnote{In order to avoid deprecation warnings due to recent updates to \pkg{tibble} and \pkg{ggplot2}, the code examples in this article are based on the latest development versions of both \pkg{vip} (version 0.2.2.9000) and \pkg{pdp} (version 0.7.0.9000); the URL to the development version of each package is available on its associated CRAN landing page.}
 
 \begin{Schunk}
 \begin{Sinput}
@@ -503,8 +504,11 @@ backward <- step(linmod, direction = "backward", trace = 0)
 \end{Soutput}
 \begin{Sinput}
 # Plot VI scores; by default, `vip()` displays the top ten features
+pal <- palette.colors(2, palette = "Okabe-Ito")  # colorblind friendly palette
 vip(vi_backward, num_features = length(coef(backward)),  # Figure 3
     geom = "point", horizontal = FALSE, mapping = aes(color = Sign)) +
+  scale_color_manual(values = unname(pal)) +
+  theme_light() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 \end{Sinput}
 \begin{figure}[!htb]
@@ -1053,10 +1057,10 @@ vip(nn, method = "permute", pred_wrapper = pfun, target = "y", metric = "mae",
 \subsubsection{Benchmarks}
 
 In this section, we compare the performance of four implementations of
-permutation-based VI scores: \code{iml::FeatureImp()} (version 0.9.0),
-\code{ingredients::feature\_importance()} (version 0.5.0),
+permutation-based VI scores: \code{iml::FeatureImp()} (version 0.10.0),
+\code{ingredients::feature\_importance()} (version 1.3.1),
 \newline \code{mmpf::permutationImportance} (version 0.0.5), and
-\code{vip::vi()} (version 0.2.1).
+\code{vip::vi()} (version 0.2.2.9000).
 
 We simulated 10,000 training observations from the Friedman 1 benchmark
 problem and trained a random forest using the \pkg{ranger} package. For
@@ -1066,13 +1070,13 @@ this benchmark we did not use any of the parallel processing capability
 available in the \pkg{iml} and \pkg{vip} implementations. The results
 from \pkg{microbenchmark} are displayed in Figure \ref{fig:benchmark}
 and summarized in the output below. In this case, the \pkg{vip} package
-(version 0.2.1) was the fastest, followed closely by \pkg{ingredients}
-and \pkg{mmpf}. It should be noted, however, that the implementations in
-\pkg{vip} and \pkg{iml} can be parallelized. To the best of our
-knowledge, this is not the case for \pkg{ingredients} or \pkg{mmpf}
-(although it would not be difficult to write a simple parallel wrapper
-for either). The code used to generate these benchmarks can be found at
-\url{http://bit.ly/2TogXrq}.
+(version 0.2.2.9000) was the fastest, followed closely by
+\pkg{ingredients} and \pkg{mmpf}. It should be noted, however, that the
+implementations in \pkg{vip} and \pkg{iml} can be parallelized. To the
+best of our knowledge, this is not the case for \pkg{ingredients} or
+\pkg{mmpf} (although it would not be difficult to write a simple
+parallel wrapper for either). The code used to generate these benchmarks
+can be found at \url{http://bit.ly/2TogXrq}.
 
 \begin{Schunk}
 \begin{figure}[!htb]
@@ -1110,14 +1114,14 @@ least a reasonable sample thereof). In particular, we use the mean of
 the absolute value of the individual Shapley values for each feature.
 Unfortunately, Shapley values can be computationally expensive, and
 therefore this approach may not be feasible for large training sets
-(say, \textgreater{}3000 observations). The \pkg{fastshap} package
+(say, \textgreater3000 observations). The \pkg{fastshap} package
 provides some relief by exploiting a few computational tricks, including
 the option to perform computations in parallel (see
 \code{?fastshap::explain} for details). Also, fast and exact algorithms
 \citep{lundberg-explainable-2019} can be exploited for certain classes
 of models.
 
-Starting with \pkg{vip} version 0.2.1 you can now use
+Starting with \pkg{vip} version 0.2.2.9000 you can now use
 \texttt{method\ =\ "shap"} in the call to \texttt{vi()} (or use
 \texttt{vi\_shap()} directly) to compute global Shapley-based VI scores
 using the method described above (provided you have the \pkg{fastshap}
@@ -1294,9 +1298,9 @@ sl
 #>
 #>
 #>                      Risk       Coef
-#> SL.xgboost_All  569646381 0.43455425
-#> SL.ranger_All   666208088 0.06970309
-#> SL.earth_All    553872844 0.49574265
+#> SL.xgboost_All  580713682 0.41384425
+#> SL.ranger_All   666208088 0.08083034
+#> SL.earth_All    553872844 0.50532541
 #> SL.glmnet_All   908881559 0.00000000
 #> SL.ksvm_All    6784289108 0.00000000
 \end{Soutput}
@@ -1371,8 +1375,8 @@ In this paper, we showed how to construct VIPs for various types of
 discussed related approaches available in a number of other R packages.
 Suggestions to avoid high execution times were discussed and
 demonstrated via examples. This paper is based on \pkg{vip} version
-0.2.1. In terms of future development, \pkg{vip} can be expanded in a
-number of ways. For example, we plan to incorporate the option to
+0.2.2.9000. In terms of future development, \pkg{vip} can be expanded in
+a number of ways. For example, we plan to incorporate the option to
 compute group-based and conditional permutation scores. Although not
 discussed in this paper, \pkg{vip} also includes a promising statistic
 (similar to the variance-based VI scores previously discussed) for

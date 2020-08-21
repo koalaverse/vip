@@ -36,10 +36,10 @@ rfo <- randomForest(y ~ ., data = trn, importance = TRUE)
 set.seed(102)  # for reproducibility
 bst <- xgboost(
   data = data.matrix(subset(trn, select = -y)),
-  label = trn$y, 
+  label = trn$y,
   objective = "reg:squarederror",
-  nrounds = 100, 
-  max_depth = 5, 
+  nrounds = 100,
+  max_depth = 5,
   eta = 0.3,
   verbose = 0  # suppress printing
 )
@@ -51,12 +51,12 @@ vi_bst <- xgb.importance(model = bst)
 
 # VI plot for single regression tree
 vi_tree <- tree$variable.importance %>%
-  data.frame("Importance" = .) %>% 
+  data.frame("Importance" = .) %>%
   tibble::rownames_to_column("Feature")
 
 # VI plot for RF
 vi_rfo <- rfo$importance %>%
-  data.frame("Importance" = .) %>% 
+  data.frame("Importance" = .) %>%
   tibble::rownames_to_column("Feature")
 
 # VI plot for GMB
@@ -83,13 +83,13 @@ vi(bst)   # GBM
 ## p1 <- vip(tree) + ggtitle("Single tree")
 ## p2 <- vip(rfo) + ggtitle("Random forest")
 ## p3 <- vip(bst) + ggtitle("Gradient boosting")
-## 
+##
 ## # Display plots in a grid (Figure 1)
 ## grid.arrange(p1, p2, p3, nrow = 1)
 
 # Construct VIP (Figure 2)
 library(ggplot2)  # for theme_light() function
-vip(bst, num_features = 5, geom = "point", horizontal = FALSE, 
+vip(bst, num_features = 5, geom = "point", horizontal = FALSE,
     aesthetics = list(color = "red", shape = 17, size = 5)) +
   theme_light()
 
@@ -101,8 +101,10 @@ backward <- step(linmod, direction = "backward", trace = 0)
 (vi_backward <- vi(backward))
 
 # Plot VI scores; by default, `vip()` displays the top ten features
-vip(vi_backward, num_features = length(coef(backward)),  # Figure 3 
+pal <- palette.colors(2, palette = "Okabe-Ito")  # colorblind friendly
+vip(vi_backward, num_features = length(coef(backward)),  # Figure 3
     geom = "point", horizontal = FALSE, mapping = aes(color = Sign)) +
+  scale_color_manual(values = unname(pal)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 # Load required packages
@@ -122,7 +124,7 @@ library(nnet)
 
 # Fit a neural network
 set.seed(0803)  # for reproducibility
-nn <- nnet(y ~ ., data = trn, size = 7, decay = 0.1, 
+nn <- nnet(y ~ ., data = trn, size = 7, decay = 0.1,
            linout = TRUE, trace = FALSE)
 
 # Construct VIPs
@@ -135,25 +137,25 @@ grid.arrange(p1, p2, nrow = 1)
 # Load required packages
 library(pdp)
 
-# Fit a PPR model (nterms was chosen using the caret package with 5 repeats of 
+# Fit a PPR model (nterms was chosen using the caret package with 5 repeats of
 # 5-fold cross-validation)
-pp <- ppr(y ~ ., data = trn, nterms = 11)  
+pp <- ppr(y ~ ., data = trn, nterms = 11)
 
 # PDPs for all 10 features
 features <- paste0("x", 1:10)
 pdps <- lapply(features, FUN = function(feature) {
   pd <- partial(pp, pred.var = feature)
-  autoplot(pd) + 
-    ylim(range(trn$y)) + 
+  autoplot(pd) +
+    ylim(range(trn$y)) +
     theme_light()
 })
 
 # Display plots in a grid
 grid.arrange(grobs = pdps, ncol = 5)
 
-# Fit a PPR model (nterms was chosen using the caret package with 5 repeats of 
+# Fit a PPR model (nterms was chosen using the caret package with 5 repeats of
 # 5-fold cross-validation)
-pp <- ppr(y ~ ., data = trn, nterms = 11)  
+pp <- ppr(y ~ ., data = trn, nterms = 11)
 
 # Construct VIPs
 p1 <- vip(pp, method = "firm") + ggtitle("PPR")
@@ -226,13 +228,13 @@ vip(nn, method = "permute", pred_wrapper = pfun, target = "y", metric = "rmse",
 
 # Construct VIP (Figure 15)
 set.seed(8264)  # for reproducibility
-vip(nn, method = "permute", pred_wrapper = pfun, target = "y", metric = "mae", 
+vip(nn, method = "permute", pred_wrapper = pfun, target = "y", metric = "mae",
     nsim = 10, geom = "point", all_permutations = TRUE, jitter = TRUE) +
   ggtitle("Plotting all permutation scores")
 
 # Load required packages
 library(microbenchmark)
-mb <- readRDS("benchmark.rds")
+mb <- readRDS("rjournal/benchmark.rds")
 autoplot(mb)  # Figure 16
 
 # Load required packages
