@@ -7,7 +7,6 @@
 ^slowtests
 ^_pkgdown\.yml$
 ^docs$
-^vignettes$
 ^codecov\.yml$
 ^logs$
 ^derby.log$
