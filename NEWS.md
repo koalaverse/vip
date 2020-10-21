@@ -2,6 +2,8 @@
 
 ## Miscellaneous
 
+* Added a CITATION file and PDF-based vignette based off of the published article in [The R Journal](https://journal.r-project.org/archive/2020/RJ-2020-013/index.html) [(#109)](https://github.com/koalaverse/vip/issues/109).
+
 * Switch from `tibble::as.tibble()`---which was deprecated in [tibble](https://github.com/tidyverse/tibble) 2.0.0---to `tibble::as_tibble()` in a few function calls [(#101)](https://github.com/koalaverse/vip/issues/101).
 
 # vip 0.2.2
@@ -24,7 +26,6 @@
 to use either (1) the raw coefficients if the features were properly standardized (`type = "raw"`), or (2) the absolute value of the corresponding *t*- or *z*-statistic (`type = "stat"`, the default) [(#77)](https://github.com/koalaverse/vip/issues/77).
 
 * New function `gen_friedman()` for simulating data from the Friedman 1 benchmark problem; see `?vip::gen_friedman` for details.
-
 
 ## User-visible changes
 
