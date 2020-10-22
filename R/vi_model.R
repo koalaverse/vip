@@ -9,6 +9,11 @@
 #' return (only used for some models). See details for which methods this
 #' argument applies to.
 #'
+#' @param lambda Numeric value for the penalty parameter of a
+#' \code{\link[glmnet]{glmnet}} model (this is equivalent to the \code{s}
+#' argument in \code{\link[glmnet]{coef.glmnet}}). See the section on
+#' \code{\link[glmnet]{glmnet}} in the details below.
+#'
 #' @param ... Additional optional arguments to be passed on to other methods.
 #'
 #' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
@@ -56,13 +61,14 @@
 #' It is important that the features  (and hence, the estimated coefficients) be
 #' standardized prior to fitting the model. You can specify which coefficients
 #' to return by passing the specific value of the penalty parameter via the
-#' \code{...} argument. See \code{\link[glmnet]{coef.glmnet}} for details. By
-#' default, the coefficients corresponding to the final penalty value in the
-#' sequence is returned; in other words, you should ALWAYS SPECIFY THIS VALUE!
-#' For \code{"cv.glmnet"} objects, the largest value of lambda such that error
-#' is within one standard error of the minimum is used by default. For
-#' \code{"multnet"} objects, the coefficients corresponding to the first class
-#' are used; that is, the fist component of \code{\link[glmnet]{coef.glmnet}}.}
+#' \code{lambda} argument (this is equivalent to the \code{s} argument in
+#' \code{\link[glmnet]{coef.glmnet}}). By default, \code{lambda = NULL} and the coefficients
+#' corresponding to the final penalty value in the sequence are returned; in
+#' other words, you should ALWAYS SPECIFY \code{lambda}! For \code{"cv.glmnet"}
+#' objects, the largest value of lambda such that the error is within one standard
+#' error of the minimum is used by default. For \code{"multnet"} objects, the
+#' coefficients corresponding to the first class are used; that is, the first
+#' component of \code{\link[glmnet]{coef.glmnet}}.}
 #'
 #' \item{\code{\link[partykit]{cforest}}}{Variable importance is measured in a
 #' way similar to those computed by \code{\link[randomForest]{importance}}.
@@ -444,14 +450,14 @@ vi_model.gbm <- function(object, type = c("relative.influence", "permutation"),
 #' @rdname vi_model
 #'
 #' @export
-vi_model.glmnet <- function(object, ...) {
+vi_model.glmnet <- function(object, lambda = NULL, ...) {
 
   # Extract coefficients
-  s <- list(...)$s
-  if (is.null(s)) {
-    s <- min(object$lambda)
+  #s <- list(...)$s
+  if (is.null(lambda)) {
+    lambda <- min(object$lambda)
   }
-  coefs <- stats::coef(object, s = s)
+  coefs <- stats::coef(object, s = lambda)
   if (inherits(coefs, what = "list")) {  # "multnet" objects
     coefs <- coefs[[1L]]
   }
@@ -465,7 +471,7 @@ vi_model.glmnet <- function(object, ...) {
   # Construct model-specific variable importance scores
   tib <- tibble::tibble(
     "Variable" = names(coefs),
-    "Importance" = unname(coefs),  # per tibble 3.0.0
+    "Importance" = unname(abs(coefs)),  # per tibble 3.0.0
     "Sign" = ifelse(sign(coefs) == 1, yes = "POS", no = "NEG")
   )
 
@@ -484,14 +490,14 @@ vi_model.glmnet <- function(object, ...) {
 #' @rdname vi_model
 #'
 #' @export
-vi_model.cv.glmnet <- function(object, ...) {
+vi_model.cv.glmnet <- function(object, lambda = NULL, ...) {
 
   # Extract coefficients
-  s <- list(...)$s
-  if (is.null(s)) {
-    s <- "lambda.1se"
+  #s <- list(...)$s
+  if (is.null(lambda)) {
+    lambda <- "lambda.1se"
   }
-  coefs <- stats::coef(object, s = s)
+  coefs <- stats::coef(object, s = lambda)
   if (inherits(coefs, what = "list")) {  # "multnet" objects
     coefs <- coefs[[1L]]
   }
@@ -505,7 +511,7 @@ vi_model.cv.glmnet <- function(object, ...) {
   # Construct model-specific variable importance scores
   tib <- tibble::tibble(
     "Variable" = names(coefs),
-    "Importance" = unname(coefs),
+    "Importance" = unname(abs(coefs)),
     "Sign" = ifelse(sign(coefs) == 1, yes = "POS", no = "NEG")
   )
 

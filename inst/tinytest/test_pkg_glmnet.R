@@ -35,15 +35,27 @@ vis3 <- vi_model(fit3)
 # Expectations for `vi_model()`
 expect_identical(
   current = vis1$Importance,
-  target = coef(fit1, s = min(fit1$lambda))[-1L]
+  target = abs(coef(fit1, s = min(fit1$lambda))[-1L])
 )
 expect_identical(
   current = vis2$Importance,
-  target = coef(fit2, s = "lambda.1se")[-1L]
+  target = abs(coef(fit2, s = "lambda.1se")[-1L])
 )
 expect_identical(
   current = vis3$Importance,
-  target = coef(fit3, s = min(fit3$lambda))[[1L]][-1L]
+  target = abs(coef(fit3, s = min(fit3$lambda))[[1L]][-1L])
+)
+expect_identical(
+  current = vi_model(fit1, lambda = fit1$lambda[5L])$Importance,
+  target = abs(coef(fit1, s = fit1$lambda[5L])[-1L])
+)
+expect_identical(
+  current = vi_model(fit2, lambda = fit2$lambda[5L])$Importance,
+  target = abs(coef(fit2, s = fit2$lambda[5L])[-1L])
+)
+expect_identical(
+  current = vi_model(fit3, lambda = fit3$lambda[5L])$Importance,
+  target = abs(coef(fit3, s = fit3$lambda[5L])[[1L]][-1L])
 )
 
 # # Expectations for `get_training_data()`

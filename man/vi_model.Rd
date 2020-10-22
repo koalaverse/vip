@@ -52,9 +52,9 @@ vi_model(object, ...)
 
 \method{vi_model}{gbm}(object, type = c("relative.influence", "permutation"), ...)
 
-\method{vi_model}{glmnet}(object, ...)
+\method{vi_model}{glmnet}(object, lambda = NULL, ...)
 
-\method{vi_model}{cv.glmnet}(object, ...)
+\method{vi_model}{cv.glmnet}(object, lambda = NULL, ...)
 
 \method{vi_model}{H2OBinomialModel}(object, ...)
 
@@ -116,6 +116,11 @@ vi_model(object, ...)
 \item{type}{Character string specifying the type of variable importance to
 return (only used for some models). See details for which methods this
 argument applies to.}
+
+\item{lambda}{Numeric value for the penalty parameter of a
+\code{\link[glmnet]{glmnet}} model (this is equivalent to the \code{s}
+argument in \code{\link[glmnet]{coef.glmnet}}). See the section on
+\code{\link[glmnet]{glmnet}} in the details below.}
 }
 \value{
 A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
@@ -166,13 +171,14 @@ the absolute value of the coefficients are returned for a specific model.
 It is important that the features  (and hence, the estimated coefficients) be
 standardized prior to fitting the model. You can specify which coefficients
 to return by passing the specific value of the penalty parameter via the
-\code{...} argument. See \code{\link[glmnet]{coef.glmnet}} for details. By
-default, the coefficients corresponding to the final penalty value in the
-sequence is returned; in other words, you should ALWAYS SPECIFY THIS VALUE!
-For \code{"cv.glmnet"} objects, the largest value of lambda such that error
-is within one standard error of the minimum is used by default. For
-\code{"multnet"} objects, the coefficients corresponding to the first class
-are used; that is, the fist component of \code{\link[glmnet]{coef.glmnet}}.}
+\code{lambda} argument (this is equivalent to the \code{s} argument in
+\code{\link[glmnet]{coef.glmnet}}). By default, \code{lambda = NULL} and the coefficients
+corresponding to the final penalty value in the sequence are returned; in
+other words, you should ALWAYS SPECIFY \code{lambda}! For \code{"cv.glmnet"}
+objects, the largest value of lambda such that the error is within one standard
+error of the minimum is used by default. For \code{"multnet"} objects, the
+coefficients corresponding to the first class are used; that is, the first
+component of \code{\link[glmnet]{coef.glmnet}}.}
 
 \item{\code{\link[partykit]{cforest}}}{Variable importance is measured in a
 way similar to those computed by \code{\link[randomForest]{importance}}.
