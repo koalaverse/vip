@@ -1,5 +1,9 @@
 # vip 0.2.2.9000
 
+## User-visable changes
+
+* Removed deprecated arguments from `vip()`; in particular, `bar`, `width`, `alpha`, `color`, `fill`, `size`, and `shape`. Users should instead rely on the `mapping` and `aesthetics` arguments; see `?vip::vip` for details.
+
 ## Bug fixes
 
 * Fixed a couple bugs that occurred when using `vi_model()` with the [glmnet](https://cran.r-project.org/package=glmnet) package. In particular, we added a new `lamnda` parameter for specifying the value of the penalty term to use when extracting the estimated coefficients. This is equivalent to the `s` argument in `glmnet::coef()`; the name `lambda` was chosen to not conflict with other arguments in `vi()`. Additionally, `vi_model()` did not return the absolute value of the estimated coefficients for [glmnet](https://cran.r-project.org/package=glmnet) models like advertised, but is now fixed in this version.

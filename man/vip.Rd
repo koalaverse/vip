@@ -18,14 +18,7 @@ vip(object, ...)
   all_permutations = FALSE,
   jitter = FALSE,
   include_type = FALSE,
-  ...,
-  bar = NULL,
-  width = NULL,
-  alpha = NULL,
-  color = NULL,
-  fill = NULL,
-  size = NULL,
-  shape = NULL
+  ...
 )
 
 \method{vip}{model_fit}(object, ...)
@@ -44,7 +37,7 @@ The currently available options are described below.
 
  \itemize{
 
- \item \code{geom = "col"} uses \code{\link[ggplot2]{geom_col}} to construct
+ \item \code{geom = "col"} uses \code{\link[ggplot2:geom_bar]{geom_col}} to construct
  a bar chart of the variable importance scores.
 
  \item \code{geom = "point"} uses \code{\link[ggplot2]{geom_point}} to
@@ -83,44 +76,6 @@ scores. Default is \code{FALSE}. (Only used when
 
 \item{include_type}{Logical indicating whether or not to include the type of
 variable importance computed in the axis label. Default is \code{FALSE}.}
-
-\item{bar}{Logical indicating whether or not to produce a barplot. Default is
-\code{NULL}. \strong{WARNING:} This argument has been deprecated in favor of
-the new \code{mapping} and \code{aesthetics} arguments. It will be removed in
-version 0.3.0.}
-
-\item{width}{Numeric value specifying the width of the bars when
-\code{bar = TRUE}. Default is \code{NULL}. \strong{WARNING:} This argument
-has been deprecated in favor of the new \code{mapping} and \code{aesthetics}
-arguments. It will be removed in version 0.3.0.}
-
-\item{alpha}{Numeric value between 0 and 1 giving the transparency of the
-bars (\code{bar = TRUE}) or points (\code{bar = FALSE}). \strong{WARNING:}
-This argument has been deprecated in favor of the new \code{mapping} and
-\code{aesthetics} arguments. It will be removed in version 0.3.0.}
-
-\item{color}{Character string specifying the color to use for the borders of
-the bars. Could also be a function, such as
-\code{\link[grDevices]{heat.colors}}. Default is \code{NULL}.
-\strong{WARNING:} This argument has been deprecated in favor of the new
-\code{mapping} and \code{aesthetics} arguments. It will be removed in version
-0.3.0.}
-
-\item{fill}{Character string specifying the color to use to fill the bars.
-Could also be a function, such as \code{\link[grDevices]{heat.colors}}.
-Default is \code{NULL}. \strong{WARNING:} This argument has been deprecated
-in favor of the new \code{mapping} and \code{aesthetics} arguments. It will be
-removed in version 0.3.0.}
-
-\item{size}{Numeric value indicating the size to use for the points whenever
-\code{bar = FALSE}. Default is \code{NULL}. \strong{WARNING:} This argument
-has been deprecated in favor of the new \code{mapping} and \code{aesthetics}
-arguments. It will be removed in version 0.3.0.}
-
-\item{shape}{Numeric value indicating the shape to use for the points
-whenever \code{bar = FALSE}. Default is \code{NULL}. \strong{WARNING:} This
-argument has been deprecated in favor of the new \code{mapping} and
-\code{aesthetics} arguments. It will be removed in version 0.3.0.}
 }
 \description{
 Plot variable importance scores for the predictors in a model.

@@ -13,7 +13,7 @@
 #'
 #'  \itemize{
 #'
-#'  \item \code{geom = "col"} uses \code{\link[ggplot2]{geom_col}} to construct
+#'  \item \code{geom = "col"} uses \code{\link[ggplot2:geom_bar]{geom_col}} to construct
 #'  a bar chart of the variable importance scores.
 #'
 #'  \item \code{geom = "point"} uses \code{\link[ggplot2]{geom_point}} to
@@ -54,44 +54,6 @@
 #' variable importance computed in the axis label. Default is \code{FALSE}.
 #'
 #' @param ... Additional optional arguments to be passed on to \code{\link{vi}}.
-#'
-#' @param bar Logical indicating whether or not to produce a barplot. Default is
-#' \code{NULL}. \strong{WARNING:} This argument has been deprecated in favor of
-#' the new \code{mapping} and \code{aesthetics} arguments. It will be removed in
-#' version 0.3.0.
-#'
-#' @param width Numeric value specifying the width of the bars when
-#' \code{bar = TRUE}. Default is \code{NULL}. \strong{WARNING:} This argument
-#' has been deprecated in favor of the new \code{mapping} and \code{aesthetics}
-#' arguments. It will be removed in version 0.3.0.
-#'
-#' @param alpha Numeric value between 0 and 1 giving the transparency of the
-#' bars (\code{bar = TRUE}) or points (\code{bar = FALSE}). \strong{WARNING:}
-#' This argument has been deprecated in favor of the new \code{mapping} and
-#' \code{aesthetics} arguments. It will be removed in version 0.3.0.
-#'
-#' @param color Character string specifying the color to use for the borders of
-#' the bars. Could also be a function, such as
-#' \code{\link[grDevices]{heat.colors}}. Default is \code{NULL}.
-#' \strong{WARNING:} This argument has been deprecated in favor of the new
-#' \code{mapping} and \code{aesthetics} arguments. It will be removed in version
-#' 0.3.0.
-#'
-#' @param fill Character string specifying the color to use to fill the bars.
-#' Could also be a function, such as \code{\link[grDevices]{heat.colors}}.
-#' Default is \code{NULL}. \strong{WARNING:} This argument has been deprecated
-#' in favor of the new \code{mapping} and \code{aesthetics} arguments. It will be
-#' removed in version 0.3.0.
-#'
-#' @param size Numeric value indicating the size to use for the points whenever
-#' \code{bar = FALSE}. Default is \code{NULL}. \strong{WARNING:} This argument
-#' has been deprecated in favor of the new \code{mapping} and \code{aesthetics}
-#' arguments. It will be removed in version 0.3.0.
-#'
-#' @param shape Numeric value indicating the shape to use for the points
-#' whenever \code{bar = FALSE}. Default is \code{NULL}. \strong{WARNING:} This
-#' argument has been deprecated in favor of the new \code{mapping} and
-#' \code{aesthetics} arguments. It will be removed in version 0.3.0.
 #'
 #' @rdname vip
 #'
@@ -158,50 +120,11 @@ vip.default <- function(
   all_permutations = FALSE,
   jitter = FALSE,
   include_type = FALSE,
-  ...,
-  bar = NULL,    # deprecated
-  width = NULL,  # deprecated
-  alpha = NULL,  # deprecated
-  color = NULL,  # deprecated
-  fill = NULL,   # deprecated
-  size = NULL,   # deprecated
-  shape = NULL   # deprecated
+  ...
 ) {
 
-  # Deal with deprecated arguments
-  if (!is.null(bar)) {
-    warning("The `bar` argument has been deprecated in favor of the new ",
-            "`geom` argument. It will be removed in version 0.3.0.")
-    geom <- if (isTRUE(bar)) "col" else "point"
-  } else {
-    # Character string specifying which type of plot to construct
-    geom <- match.arg(geom, several.ok = FALSE)
-  }
-  if (!(is.null(width) && is.null(alpha) && is.null(color) && is.null(fill) &&
-        is.null(size) && is.null(shape))) {
-    warning("Arguments `width`, `alpha`, `color`, `fill`, `size`, and `shape` ",
-            "have all been deprecated in favor of the new `mapping` and ",
-            "`aesthetics` arguments. They will be removed in version 0.3.0.")
-    aesthetics <- list()
-    if (!is.null(width)) {
-      aesthetics <- c(aesthetics, list(width = width))
-    }
-    if (!is.null(alpha)) {
-      aesthetics <- c(aesthetics, list(alpha = alpha))
-    }
-    if (!is.null(color)) {
-      aesthetics <- c(aesthetics, list(color = color))
-    }
-    if (!is.null(fill)) {
-      aesthetics <- c(aesthetics, list(fill = fill))
-    }
-    if (!is.null(size)) {
-      aesthetics <- c(aesthetics, list(size = size))
-    }
-    if (!is.null(shape)) {
-      aesthetics <- c(aesthetics, list(shape = shape))
-    }
-  }
+  # Character string specifying which type of plot to construct
+  geom <- match.arg(geom, several.ok = FALSE)
 
   # Extract or compute importance scores
   imp <- if (inherits(object, what = "vi")) {

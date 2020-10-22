@@ -6,5 +6,5 @@
 %\VignetteEncoding{UTF-8}
 
 \begin{document}
-\includepdf[pages=-, fitpaper=true]{pdf/vip-intro.pdf}
+\includepdf[pages=-, fitpaper=true]{pdf/vip-introduction.pdf}
 \end{document}

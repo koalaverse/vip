@@ -11,7 +11,7 @@
 #'
 #' @param lambda Numeric value for the penalty parameter of a
 #' \code{\link[glmnet]{glmnet}} model (this is equivalent to the \code{s}
-#' argument in \code{\link[glmnet]{coef.glmnet}}). See the section on
+#' argument in \code{\link[glmnet:predict.glmnet]{coef.glmnet}}). See the section on
 #' \code{\link[glmnet]{glmnet}} in the details below.
 #'
 #' @param ... Additional optional arguments to be passed on to other methods.
@@ -40,7 +40,7 @@
 #' the option \code{metric = "usage"}. See \code{\link[C50]{C5imp}} for
 #' details.}
 #'
-#' \item{\code{\link[Cubist]{cubist}}}{The Cubist output contains variable usage
+#' \item{\code{\link[Cubist:cubist.default]{cubist}}}{The Cubist output contains variable usage
 #' statistics. It gives the percentage of times where each variable was used in
 #' a condition and/or a linear model. Note that this output will probably be
 #' inconsistent with the rules shown in the output from summary.cubist. At each
@@ -54,7 +54,7 @@
 #' to the terminal models shown in the output). The variable importance used
 #' here is a linear combination of the usage in the rule conditions and the
 #' model. See \code{\link[Cubist]{summary.cubist}} and
-#' \code{\link[caret]{varImp.cubist}} for details.}
+#' \code{\link[caret:varImp]{varImp.cubist}} for details.}
 #'
 #' \item{\code{\link[glmnet]{glmnet}}}{Similar to (generalized) linear models,
 #' the absolute value of the coefficients are returned for a specific model.
@@ -62,13 +62,13 @@
 #' standardized prior to fitting the model. You can specify which coefficients
 #' to return by passing the specific value of the penalty parameter via the
 #' \code{lambda} argument (this is equivalent to the \code{s} argument in
-#' \code{\link[glmnet]{coef.glmnet}}). By default, \code{lambda = NULL} and the coefficients
+#' \code{\link[glmnet:predict.glmnet]{coef.glmnet}}). By default, \code{lambda = NULL} and the coefficients
 #' corresponding to the final penalty value in the sequence are returned; in
 #' other words, you should ALWAYS SPECIFY \code{lambda}! For \code{"cv.glmnet"}
 #' objects, the largest value of lambda such that the error is within one standard
 #' error of the minimum is used by default. For \code{"multnet"} objects, the
 #' coefficients corresponding to the first class are used; that is, the first
-#' component of \code{\link[glmnet]{coef.glmnet}}.}
+#' component of \code{\link[glmnet:predict.glmnet]{coef.glmnet}}.}
 #'
 #' \item{\code{\link[partykit]{cforest}}}{Variable importance is measured in a
 #' way similar to those computed by \code{\link[randomForest]{importance}}.
@@ -146,7 +146,7 @@
 #'
 #' }}
 #'
-#' \item{\code{\link[h2o]{H2OModel}}}{See \code{\link[h2o]{h2o.varimp}} or visit
+#' \item{\code{\link[h2o:H2OModel-class]{H2OModel}}}{See \code{\link[h2o]{h2o.varimp}} or visit
 #' \url{http://docs.h2o.ai/h2o/latest-stable/h2o-docs/variable-importance.html}
 #' for details.}
 #'
@@ -198,13 +198,13 @@
 #'
 #' \item{\code{\link[party]{cforest}}}{Same approach described in
 #' \code{\link[partykit]{cforest}} above. See \code{\link[party]{varimp}} and
-#' \code{\link[party]{varimpAUC}} (if \code{type = "auc"}) for details.}
+#' \code{\link[party:varimp]{varimpAUC}} (if \code{type = "auc"}) for details.}
 #'
 #' \item{\code{\link[ranger]{ranger}}}{Variable importance for
 #' \code{\link[ranger]{ranger}} objects is computed in the usual way for random
 #' forests. The approach used depends on the \code{importance} argument provided
 #' in the initial call to \code{\link[ranger]{ranger}}. See
-#' \code{\link[ranger]{importance}} for details.}
+#' \code{\link[ranger:importance.ranger]{importance}} for details.}
 #'
 #' \item{\code{\link[rpart]{rpart}}}{As stated in one of the \strong{rpart}
 #' vignettes. A variable may appear in the tree many times, either as a primary
@@ -221,13 +221,13 @@
 #' call to \code{\link[caret]{train}}. See \code{\link[caret]{varImp}} for
 #' details.}
 #'
-#' \item{\code{\link[xgboost]{xgboost}}}{For linear models, the variable
+#' \item{\code{\link[xgboost:xgb.train]{xgboost}}}{For linear models, the variable
 #' importance is the absolute magnitude of the estimated coefficients. For that
 #' reason, in order to obtain a meaningful ranking by importance for a linear
 #' model, the features need to be on the same scale (which you also would want
 #' to do when using either L1 or L2 regularization). Otherwise, the approach
 #' described in Friedman (2001) for \code{\link[gbm]{gbm}}s is used. See
-#' \code{\link[xgboost]{xgb.importance}} for details. For tree models, you can
+#' \code{\link[xgboost:xgb.train]{xgb.importance}} for details. For tree models, you can
 #' obtain three different types of variable importance:
 #' \itemize{
 #'

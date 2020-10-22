@@ -1,32 +1,16 @@
-#' Pipe operator
-#'
-#' See \code{\link[magrittr]{\%T>\%}} for more details.
-#'
-#' @name %T>%
-#' @rdname pipe
-#' @keywords internal
-#' @export
 #' @importFrom magrittr %T>%
-#' @usage lhs \%T>\% rhs
-NULL
-
-
-#' Pipe operator
-#'
-#' See \code{\link[magrittr]{\%>\%}} for more details.
-#'
-#' @name %>%
-#' @rdname pipe
-#' @keywords internal
 #' @export
+magrittr::`%T>%`
+
+
 #' @importFrom magrittr %>%
-#' @usage lhs \%>\% rhs
-NULL
+#' @export
+magrittr::`%>%`
 
 
 #' Arrange multiple grobs on a page
 #'
-#' See \code{\link[gridExtra]{grid.arrange}} for more details.
+#' See \code{\link[gridExtra:arrangeGrob]{grid.arrange}} for more details.
 #'
 #' @name grid.arrange
 #' @rdname grid.arrange
