@@ -6,7 +6,7 @@
 
 ## Bug fixes
 
-* Fixed a couple bugs that occurred when using `vi_model()` with the [glmnet](https://cran.r-project.org/package=glmnet) package. In particular, we added a new `lamnda` parameter for specifying the value of the penalty term to use when extracting the estimated coefficients. This is equivalent to the `s` argument in `glmnet::coef()`; the name `lambda` was chosen to not conflict with other arguments in `vi()`. Additionally, `vi_model()` did not return the absolute value of the estimated coefficients for [glmnet](https://cran.r-project.org/package=glmnet) models like advertised, but is now fixed in this version.
+* Fixed a couple bugs that occurred when using `vi_model()` with the [glmnet](https://cran.r-project.org/package=glmnet) package. In particular, we added a new `lamnda` parameter for specifying the value of the penalty term to use when extracting the estimated coefficients. This is equivalent to the `s` argument in `glmnet::coef()`; the name `lambda` was chosen to not conflict with other arguments in `vi()`. Additionally, `vi_model()` did not return the absolute value of the estimated coefficients for [glmnet](https://cran.r-project.org/package=glmnet) models like advertised, but is now fixed in this version [(#103)](https://github.com/koalaverse/vip/issues/103).
 
 ## Miscellaneous
 
