@@ -70,6 +70,7 @@ jobs:
         run: |
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
+          remotes::install_cran("h2o")
           tinytex::parse_install(text = "! LaTeX Error: File `pdfpages.sty' not found.")
           tinytex::parse_install(text = "! LaTeX Error: File `ae.sty' not found.")
           tinytex::parse_install(text = "! LaTeX Error: File `pdflscape.sty' not found.")
