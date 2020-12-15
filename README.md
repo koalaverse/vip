@@ -2,10 +2,8 @@
 # vip: Variable Importance Plots <img src="man/figures/logo-vip.png" align="right" width="130" height="150" />
 
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vip)](https://cran.r-project.org/package=vip)
-[![Travis-CI Build
-Status](https://travis-ci.org/koalaverse/vip.svg?branch=master)](https://travis-ci.org/koalaverse/vip)
-[![AppVeyor Build
-Status](https://ci.appveyor.com/api/projects/status/github/koalaverse/vip?branch=master&svg=true)](https://ci.appveyor.com/project/koalaverse/vip)
+[![R build
+status](https://github.com/koalaverse/vip/workflows/R-CMD-check/badge.svg)](https://github.com/koalaverse/vip/actions)
 [![Coverage
 Status](https://img.shields.io/codecov/c/github/koalaverse/vip/master.svg)](https://codecov.io/github/koalaverse/vip?branch=master)
 [![Lifecycle:
@@ -72,9 +70,9 @@ website](https://koalaverse.github.io/vip/index.html).
 
   - **Variance-based variable importance** - Compute variable importance
     using a simple *feature importance ranking measure* (FIRM) approach.
-    For details, see see [Greenwell et al.
-    (2018)](https://arxiv.org/abs/1805.04755) and [Scholbeck et al.
-    (2019)](https://arxiv.org/abs/1904.03959).
+    For details, see see [Greenwell et
+    al. (2018)](https://arxiv.org/abs/1805.04755) and [Scholbeck et
+    al. (2019)](https://arxiv.org/abs/1904.03959).
 
 ## Installation
 

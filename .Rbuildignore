@@ -11,3 +11,4 @@
 ^logs$
 ^derby.log$
 ^rjournal$
+^\.github$
