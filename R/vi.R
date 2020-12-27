@@ -188,6 +188,12 @@ vi.model_fit <- function(object, ...) {  # package: parsnip
   vi(object$fit, ...)
 }
 
+#' @rdname vi
+#'
+#' @export
+vi.workflow <- function(object, ...) {  # package: workflows
+  vi(object$fit$fit$fit, ...)
+}
 
 #' @rdname vi
 #'

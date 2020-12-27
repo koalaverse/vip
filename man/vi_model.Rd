@@ -18,6 +18,7 @@
 \alias{vi_model.nn}
 \alias{vi_model.nnet}
 \alias{vi_model.model_fit}
+\alias{vi_model.workflow}
 \alias{vi_model.RandomForest}
 \alias{vi_model.constparty}
 \alias{vi_model.cforest}
@@ -71,6 +72,8 @@ vi_model(object, ...)
 \method{vi_model}{nnet}(object, type = c("olden", "garson"), ...)
 
 \method{vi_model}{model_fit}(object, ...)
+
+\method{vi_model}{workflow}(object, ...)
 
 \method{vi_model}{RandomForest}(object, type = c("accuracy", "auc"), ...)
 
