@@ -336,10 +336,17 @@ vi_permute.default <- function(
   }
 
   # Compute baseline metric for comparison
-  baseline <- mfun(
-    actual = train_y,
-    predicted = pred_wrapper(object, newdata = train_x)
-  )
+  if (all(grepl('glmnet', class(object)))) {
+    baseline <- mfun(
+      actual = train_y,
+      predicted = pred_wrapper(object, newx = train_x)
+    )
+  } else {
+    baseline <- mfun(
+      actual = train_y,
+      predicted = pred_wrapper(object, newdata = train_x)
+    )
+  }
 
   # Type of comparison
   type <- match.arg(type)
@@ -372,10 +379,19 @@ vi_permute.default <- function(
         # train_x_permuted <- train_x  # make copy
         # train_x_permuted[[x]] <- sample(train_x_permuted[[x]])  # permute values
         train_x_permuted <- permute_columns(train_x, columns = x)
-        permuted <- mfun(
-          actual = train_y,
-          predicted = pred_wrapper(object, newdata = train_x_permuted)
-        )
+
+        if (all(grepl('glmnet', class(object)))) {
+          permuted <- mfun(
+            actual = train_y,
+            predicted = pred_wrapper(object, newx = train_x_permuted)
+          )
+        } else {
+          permuted <- mfun(
+            actual = train_y,
+            predicted = pred_wrapper(object, newdata = train_x_permuted)
+          )
+        }
+
         if (smaller_is_better) {
           permuted %compare% baseline  # e.g., RMSE
         } else {
