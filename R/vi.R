@@ -185,7 +185,12 @@ vi.default <- function(
 #'
 #' @export
 vi.model_fit <- function(object, ...) {  # package: parsnip
-  vi(object$fit, ...)
+  vi(parsnip::extract_fit_engine(object), ...)
+}
+
+#' @export
+vi.workflow <- function(object, ...) {  # package: workflows
+  vi(workflows::extract_fit_engine(object), ...)
 }
 
 
