@@ -236,6 +236,10 @@ vip.default <- function(
 #'
 #' @export
 vip.model_fit <- function(object, ...) {
-  vip(object$fit, ...)
+  vip(parsnip::extract_fit_engine(object), ...)
 }
 
+#' @export
+vip.workflow <- function(object, ...) {
+  vip(workflows::extract_fit_engine(object), ...)
+}

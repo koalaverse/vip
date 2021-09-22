@@ -727,7 +727,12 @@ vi_model.nnet <- function(object, type = c("olden", "garson"), ...) {
 #'
 #' @export
 vi_model.model_fit <- function(object, ...) {  # package: parsnip
-  vi_model(object$fit, ...)
+  vi_model(parsnip::extract_fit_engine(object), ...)
+}
+
+#' @export
+vi_model.workflow <- function(object, ...) {  # package: workflows
+  vi_model(workflows::extract_fit_engine(object), ...)
 }
 
 
