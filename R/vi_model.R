@@ -14,6 +14,10 @@
 #' argument in \code{\link[glmnet:predict.glmnet]{coef.glmnet}}). See the section on
 #' \code{\link[glmnet]{glmnet}} in the details below.
 #'
+#' @param ncomp An integer for the number of partial least squares components
+#' to be used in the importance calculations. If more components are requested
+#' than were used in the model, all of the model's components are used.
+#'
 #' @param ... Additional optional arguments to be passed on to other methods.
 #'
 #' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
@@ -876,6 +880,56 @@ vi_model.mvr <- function(object, ...) {
 
 }
 
+# Package: mixOmics  -----------------------------------------------------------
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.mixo_pls <- function(object, ncomp = NULL, ...) {
+
+  # Check for dependency
+  if (!requireNamespace("mixOmics", quietly = TRUE)) {
+    stop("Bioconductor package \"mixOmics\" needed for this function to work. ",
+         "Please install it.", call. = FALSE)
+  }
+  if (is.null(ncomp)) {
+    ncomp <- object$ncomp
+  } else {
+    if (length(ncomp) != 1) {
+      stop("'ncomp' should be a single integer.")
+    }
+    if (!is.integer(ncomp)) {
+      ncomp <- as.integer(ncomp)
+    }
+  }
+
+  vis <- mixOmics::vip(object)
+  if (ncomp > ncol(vis)) {
+    warning(ncomp, " components were requested but only ", ncol(vis),
+            " are available. Results are for ", ncol(vis), ".")
+    ncomp <- ncol(vis)
+  }
+
+  tib <- tibble::tibble(
+    "Variable" = rownames(vis),
+    "Importance" = vis[,ncomp]
+  )
+
+  # Add variable importance type attribute
+  attr(tib, which = "type") <- "mixOmics"
+
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
+  # Return results
+  tib
+
+}
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.mixo_spls <- vi_model.mixo_pls
 
 # Package: randomForest --------------------------------------------------------
 

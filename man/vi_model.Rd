@@ -22,6 +22,8 @@
 \alias{vi_model.constparty}
 \alias{vi_model.cforest}
 \alias{vi_model.mvr}
+\alias{vi_model.mixo_pls}
+\alias{vi_model.mixo_spls}
 \alias{vi_model.randomForest}
 \alias{vi_model.ranger}
 \alias{vi_model.rpart}
@@ -80,6 +82,10 @@ vi_model(object, ...)
 
 \method{vi_model}{mvr}(object, ...)
 
+\method{vi_model}{mixo_pls}(object, ncomp = NULL, ...)
+
+\method{vi_model}{mixo_spls}(object, ncomp = NULL, ...)
+
 \method{vi_model}{randomForest}(object, ...)
 
 \method{vi_model}{ranger}(object, ...)
@@ -121,6 +127,10 @@ argument applies to.}
 \code{\link[glmnet]{glmnet}} model (this is equivalent to the \code{s}
 argument in \code{\link[glmnet:predict.glmnet]{coef.glmnet}}). See the section on
 \code{\link[glmnet]{glmnet}} in the details below.}
+
+\item{ncomp}{An integer for the number of partial least squares components
+to be used in the importance calculations. If more components are requested
+than were used in the model, all of the model's components are used.}
 }
 \value{
 A tidy data frame (i.e., a \code{"tibble"} object) with two columns:

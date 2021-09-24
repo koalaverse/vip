@@ -32,6 +32,7 @@ BugReports: https://github.com/koalaverse/vip/issues
 Encoding: UTF-8
 VignetteBuilder: knitr
 LazyData: true
+biocViews: mixOmics
 Imports: 
     ggplot2 (>= 0.9.0),
     gridExtra,
@@ -58,6 +59,7 @@ Suggests:
     keras,
     knitr,
     lattice,
+    mixOmics,
     mlbench,
     mlr,
     mlr3,
