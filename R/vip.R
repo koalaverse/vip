@@ -61,7 +61,7 @@
 #'
 #' @examples
 #' #
-#' # A projection pursuit regression example
+#' # A projection pursuit regression example using permutation-based importance
 #' #
 #'
 #' # Load the sample data
@@ -70,38 +70,69 @@
 #' # Fit a projection pursuit regression model
 #' model <- ppr(mpg ~ ., data = mtcars, nterms = 1)
 #'
-#' # Construct variable importance plot
-#' vip(model, method = "firm")
+#' # Construct variable importance plot (permutation importance, in this case)
+#' set.seed(825)  # for reproducibility
+#' pfun <- function(object, newdata) predict(object, newdata = newdata)
+#' vip(model, method = "permute", train = mtcars, target = "mpg", nsim = 10,
+#'     metric = "rmse", pred_wrapper = pfun)
 #'
 #' # Better yet, store the variable importance scores and then plot
-#' vi_scores <- vi(model, method = "firm")
-#' vip(vi_scores, geom = "point", horiz = FALSE)
-#' vip(vi_scores, geom = "point", horiz = FALSE, aesthetics = list(size = 3))
+#' set.seed(825)  # for reproducibility
+#' vis <- vi(model, method = "permute", train = mtcars, target = "mpg",
+#'           nsim = 10, metric = "rmse", pred_wrapper = pfun)
+#' vip(vis, geom = "point", horiz = FALSE)
+#' vip(vis, geom = "point", horiz = FALSE, aesthetics = list(size = 3))
 #'
 #' # The `%T>\%` operator is imported for convenience; see ?magrittr::`%T>%`
 #' # for details
-#' vi_scores <- model %>%
-#'   vi(method = "firm") %T>%
+#' vis<- model %>%
+#'   vi(method = "permute", train = mtcars, target = "mpg",
+#'      nsim = 10, metric = "rmse", pred_wrapper = pfun) %T>%
 #'   {print(vip(.))}
-#' vi_scores
+#' vis
 #'
-#' # Permutation scores (barplot w/ raw values and jittering)
-#' pfun <- function(object, newdata) predict(object, newdata = newdata)
-#' vip(model, method = "permute", train = mtcars, target = "mpg", nsim = 10,
-#'     metric = "rmse", pred_wrapper = pfun,
-#'     aesthetics = list(color = "grey50", fill = "grey50"),
-#'     all_permutations = TRUE, jitter = TRUE)
-#'
-#' # Permutation scores (boxplot)
-#' vip(model, method = "permute", train = mtcars, target = "mpg", nsim = 10,
-#'     metric = "rmse", pred_wrapper = pfun, geom = "boxplot")
-#'
-#' # Permutation scores (boxplot colored by feature)
+#' # Plot unaggregated permutation scores (boxplot colored by feature)
 #' library(ggplot2)  # for `aes_string()` function
-#' vip(model, method = "permute", train = mtcars, target = "mpg", nsim = 10,
-#'     metric = "rmse", pred_wrapper = pfun, geom = "boxplot",
-#'     all_permutations = TRUE, mapping = aes_string(fill = "Variable"),
+#' vip(vis, geom = "boxplot", all_permutations = TRUE, jitter = TRUE,
+#'     mapping = aes_string(fill = "Variable"),
 #'     aesthetics = list(color = "grey35", size = 0.8))
+#'
+#' #
+#' # A binary classification example
+#' #
+#' \dontrun{
+#' library(rpart)  # for classification and regression trees
+#'
+#' # Load Wisconsin breast cancer data; see ?mlbench::BreastCancer for details
+#' data(BreastCancer, package = "mlbench")
+#' bc <- subset(BreastCancer, select = -Id)  # for brevity
+#'
+#' # Fit a standard classification tree
+#' set.seed(1032)  # for reproducibility
+#' tree <- rpart(Class ~ ., data = bc, cp = 0)
+#'
+#' # Prune using 1-SE rule (e.g., use `plotcp(tree)` for guidance)
+#' cp <- tree$cptable
+#' cp <- cp[cp[, "nsplit"] == 2L, "CP"]
+#' tree2 <- prune(tree, cp = cp)  # tree with three splits
+#'
+#' # Default tree-based VIP
+#' vip(tree2)
+#'
+#' # Computing permutation importance requires a prediction wrapper. For
+#' # classification, the return value depends on the chosen metric; see
+#' # `?vip::vi_permute` for details.
+#' pfun <- function(object, newdata) {
+#'   # Need vector of predicted class probabilities when using  log-loss metric
+#'   predict(object, newdata = newdata, type = "prob")[, "malignant"]
+#' }
+#'
+#' # Permutation-based importance (note that only the predictors that show up
+#' # in the final tree have non-zero importance)
+#' set.seed(1046)  # for reproducibility
+#' vip(tree2, method = "permute", nsim = 10, target = "Class",
+#'     metric = "logloss", pred_wrapper = pfun, reference_class = "malignant")
+#' }
 vip <- function(object, ...) {
   UseMethod("vip")
 }
@@ -239,7 +270,30 @@ vip.model_fit <- function(object, ...) {
   vip(parsnip::extract_fit_engine(object), ...)
 }
 
+
+#' @rdname vip
+#'
 #' @export
 vip.workflow <- function(object, ...) {
   vip(workflows::extract_fit_engine(object), ...)
+}
+
+#' @rdname vip
+#'
+#' @export
+vip.WrappedModel <- function(object, ...) {  # package: mlr
+  vip(object$learner.model, ...)
+}
+
+
+#' @rdname vip
+#'
+#' @export
+vip.Learner <- function(object, ...) {  # package: mlr3
+  if (is.null(object$model)) {
+    stop("No fitted model found. Did you forget to call ",
+         deparse(substitute(object)), "$train()?",
+         call. = FALSE)
+  }
+  vip(object$model, ...)
 }

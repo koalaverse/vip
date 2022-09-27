@@ -1,6 +1,6 @@
 # Exits
 if (!requireNamespace("partykit", quietly = TRUE)) {
-  exit_file("Package partykit missing")
+  exit_file("Package 'partykit' missing")
 }
 
 # Load required packages
@@ -56,21 +56,4 @@ expect_identical(
 expect_identical(
   current = vip:::get_feature_names.cforest(fit2),
   target = paste0("x", 1L:10L)
-)
-
-# Call `vip::vip()` directly
-p <- vip(fit2, method = "model", include_type = TRUE)
-
-# Expect `p` to be a `"gg" "ggplot"` object
-expect_identical(
-  current = class(p),
-  target = c("gg", "ggplot")
-)
-
-# Display VIPs side by side
-grid.arrange(
-  vip(vis1, include_type = TRUE),
-  vip(vis2, include_type = TRUE),
-  p,
-  nrow = 1
 )

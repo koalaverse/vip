@@ -37,6 +37,7 @@
 \alias{vi_model.ml_model_random_forest_regression}
 \alias{vi_model.ml_model_random_forest_classification}
 \alias{vi_model.lm}
+\alias{vi_model.workflow}
 \alias{vi_model.xgb.Booster}
 \title{Model-specific variable importance}
 \usage{
@@ -86,6 +87,10 @@ vi_model(object, ...)
 
 \method{vi_model}{mixo_spls}(object, ncomp = NULL, ...)
 
+\method{vi_model}{WrappedModel}(object, ...)
+
+\method{vi_model}{Learner}(object, ...)
+
 \method{vi_model}{randomForest}(object, ...)
 
 \method{vi_model}{ranger}(object, ...)
@@ -111,6 +116,10 @@ vi_model(object, ...)
 \method{vi_model}{ml_model_random_forest_classification}(object, ...)
 
 \method{vi_model}{lm}(object, type = c("stat", "raw"), ...)
+
+\method{vi_model}{model_fit}(object, ...)
+
+\method{vi_model}{workflow}(object, ...)
 
 \method{vi_model}{xgb.Booster}(object, type = c("gain", "cover", "frequency"), ...)
 }
@@ -267,7 +276,7 @@ two approaches (See \code{\link[gbm]{summary.gbm}} for details):
 }}
 
 \item{\code{\link[h2o:H2OModel-class]{H2OModel}}}{See \code{\link[h2o]{h2o.varimp}} or visit
-\url{http://docs.h2o.ai/h2o/latest-stable/h2o-docs/variable-importance.html}
+\url{https://docs.h2o.ai/h2o/latest-stable/h2o-docs/variable-importance.html}
 for details.}
 
 \item{\code{\link[nnet]{nnet}}}{Two popular methods for constructing variable

@@ -1,9 +1,9 @@
 # Exits
 if (!requireNamespace("party", quietly = TRUE)) {
-  exit_file("Package party missing")
+  exit_file("Package 'party' missing")
 }
 if (!requireNamespace("varImp", quietly = TRUE)) {
-  exit_file("Package varImp missing")
+  exit_file("Package 'varImp' missing")
 }
 
 # Load required packages
@@ -60,21 +60,4 @@ expect_identical(
 expect_identical(
   current = vip:::get_feature_names.BinaryTree(fit2),
   target = paste0("x", 1L:10L)
-)
-
-# Call `vip::vip()` directly
-p <- vip(fit1, method = "model", include_type = TRUE)
-
-# Expect `p` to be a `"gg" "ggplot"` object
-expect_identical(
-  current = class(p),
-  target = c("gg", "ggplot")
-)
-
-# Display VIPs side by side
-grid.arrange(
-  vip(vis1, include_type = TRUE),
-  vip(vis2, include_type = TRUE),
-  p,
-  nrow = 1
 )

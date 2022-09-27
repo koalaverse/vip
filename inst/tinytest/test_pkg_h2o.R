@@ -1,6 +1,6 @@
 # Exits
 if (!requireNamespace("h2o", quietly = TRUE)) {
-  exit_file("Package h2o missing")
+  exit_file("Package 'h2o' missing")
 }
 if (length(unclass(packageVersion("vip"))[[1L]]) == 3) {
   exit_file("Skip h2o tests for CRAN releases")
@@ -86,25 +86,6 @@ expect_identical(
 expect_identical(
   current = vip:::get_feature_names.H2OMultinomialModel(fit3),
   target = paste0("x", 1L:10L)
-)
-
-# Call `vip::vip()` directly
-p <- vip(fit1, method = "model", include_type = TRUE,
-         mapping = ggplot2::aes(fill = Sign))
-
-# Expect `p` to be a `"gg" "ggplot"` object
-expect_identical(
-  current = class(p),
-  target = c("gg", "ggplot")
-)
-
-# Display VIPs side by side
-grid.arrange(
-  vip(vis1, include_type = TRUE),
-  vip(vis2, include_type = TRUE),
-  vip(vis3, include_type = TRUE),
-  p,
-  nrow = 1
 )
 
 # Shutdown H2O connection

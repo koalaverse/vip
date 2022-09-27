@@ -48,36 +48,3 @@ expectations(vis_firm_mad)
 vis_firm_ice_mad <- vi(fit, method = "firm", ice = TRUE, train = friedman1,
                        feature_names = paste0("x", 1L:10L), var_fun = vfuns)
 expectations(vis_firm_ice_mad)
-
-# Exits
-if (!requireNamespace("ggplot2", quietly = TRUE)) {
-  exit_file("Package ggplot2 missing")
-}
-
-# Load required packages
-suppressMessages({
-  library(ggplot2)
-})
-
-# Display VIPs
-grid.arrange(
-  vip(vis_firm, include_type = TRUE) + ggtitle("`ice = FALSE`"),
-  vip(vis_firm_ice, include_type = TRUE) + ggtitle("`ice = TRUE`"),
-  nrow = 1
-)
-
-# Displayy PDPs in a grid
-grid.arrange(
-  grobs = lapply(attr(vis_firm, which = "effects"), FUN = function(x) {
-    autoplot(x) + ylim(0, 30)
-  }),
-  nrow = 2
-)
-
-# Displayy ICE curves in a grid
-grid.arrange(
-  grobs = lapply(attr(vis_firm_ice, which = "effects"), FUN = function(x) {
-    autoplot(x, alpha = 0.1) + ylim(0, 30)
-  }),
-  nrow = 2
-)

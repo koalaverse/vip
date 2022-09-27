@@ -12,3 +12,4 @@
 ^derby.log$
 ^rjournal$
 ^\.github$
+^tools$

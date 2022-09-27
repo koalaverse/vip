@@ -1,7 +1,7 @@
 citHeader("To cite vip in publications use:")
 
 citEntry(entry = "Article",
-  title        = "Variable Importance Plots—An Introduction to the vip Package",
+  title        = "Variable Importance Plots---An Introduction to the vip Package",
   author       = personList(as.person("Brandon M. Greenwell"), as.person("Bradley C. Boehmke")),
   journal      = "The R Journal",
   year         = "2020",

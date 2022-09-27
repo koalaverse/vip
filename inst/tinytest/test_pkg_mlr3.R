@@ -47,19 +47,3 @@ expect_identical(
   current = sort(vip:::get_feature_names.Learner(lrnr)),
   target = sort(paste0("x", 1L:10L))
 )
-
-# Call `vip::vip()` directly
-p <- vip(lrnr, method = "model", include_type = TRUE)
-
-# Expect `p` to be a `"gg" "ggplot"` object
-expect_identical(
-  current = class(p),
-  target = c("gg", "ggplot")
-)
-
-# Display VIPs side by side
-grid.arrange(
-  vip(vis, include_type = TRUE),
-  p,
-  nrow = 1
-)

@@ -151,7 +151,7 @@
 #' }}
 #'
 #' \item{\code{\link[h2o:H2OModel-class]{H2OModel}}}{See \code{\link[h2o]{h2o.varimp}} or visit
-#' \url{http://docs.h2o.ai/h2o/latest-stable/h2o-docs/variable-importance.html}
+#' \url{https://docs.h2o.ai/h2o/latest-stable/h2o-docs/variable-importance.html}
 #' for details.}
 #'
 #' \item{\code{\link[nnet]{nnet}}}{Two popular methods for constructing variable
@@ -931,6 +931,32 @@ vi_model.mixo_pls <- function(object, ncomp = NULL, ...) {
 #' @export
 vi_model.mixo_spls <- vi_model.mixo_pls
 
+
+# Package: mlr -----------------------------------------------------------------
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.WrappedModel <- function(object, ...) {  # package: mlr
+  vi_model(object$learner.model, ...)
+}
+
+
+# Package: mlr3 ----------------------------------------------------------------
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.Learner <- function(object, ...) {  # package: mlr3
+  if (is.null(object$model)) {
+    stop("No fitted model found. Did you forget to call ",
+         deparse(substitute(object)), "$train()?",
+         call. = FALSE)
+  }
+  vi_model(object$model, ...)
+}
+
+
 # Package: randomForest --------------------------------------------------------
 
 #' @rdname vi_model
@@ -1359,6 +1385,29 @@ vi_model.lm <- function(object, type = c("stat", "raw"), ...) {
   tib
 
 }
+
+# Package: tidymodels ==========================================================
+
+# Package: parsnip -------------------------------------------------------------
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.model_fit <- function(object, ...) {  # package: parsnip
+  vi_model(parsnip::extract_fit_engine(object), ...)
+}
+
+
+# Package: workflows -----------------------------------------------------------
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.workflow <- function(object, ...) {
+  vi_model(workflows::extract_fit_engine(object), ...)
+}
+
+#===============================================================================
 
 
 # Package: xgboost -------------------------------------------------------------

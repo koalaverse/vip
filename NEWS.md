@@ -1,3 +1,39 @@
+# vip 0.3.3
+
+## Enhancements
+
+* Added support for partial least squares via the [mixOmics](https://bioconductor.org/packages/mixOmics/) package [(PR #129)](https://github.com/koalaverse/vip/pull/129); thanks to @topedo.
+
+* Added support for the [workflows](https://cran.r-project.org/package=workflows) and [parsnip](https://cran.r-project.org/package=parsnip) packages from the [tidymodels](https://www.tidymodels.org/) ecosystem [(PR #128)](https://github.com/koalaverse/vip/pull/128); thanks to @topedo.
+
+## Miscellaneous
+
+* Tweaked examples.
+
+* Tests based on [fastshap](https://cran.r-project.org/package=fastshap) now check to make sure it's available.
+
+* Suppress loading of [mixOmics](https://bioconductor.org/packages/mixOmics/) in tests.
+
+* Switched lifecycle badge from "maturing", which has been superseded, to "experimental".
+
+* Fixed [H2O URL](https://docs.h2o.ai/h2o/latest-stable/h2o-docs/variable-importance.html) in `vi_model.R`.
+
+* Removed the unnecessary `LazyData: true` line from the `DESCRIPTION` file.
+
+# vip 0.3.2
+
+## Miscellaneous
+
+* Add tools/ to .Rbuildignore.
+
+# vip 0.3.1
+
+## Miscellaneous
+
+* Change http://spark.rstudio.com/mlib/ to https://spark.rstudio.com/mlib/ in NEWS.md.
+
+* Remove unnecessary codecov.yml file.
+
 # vip 0.3.0
 
 ## User-visable changes
@@ -155,7 +191,7 @@ grid.arrange(p1, p2, p3, p4, nrow = 2)
 
 * New vignette on using `vip` with unsupported models (using the Keras API to TensorFlow as an example).
 
-* Added basic [sparklyr](http://spark.rstudio.com/mlib/) support.
+* Added basic [sparklyr](https://spark.rstudio.com/mlib/) support.
 
 
 # vip 0.1.0

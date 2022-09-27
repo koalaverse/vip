@@ -7,7 +7,8 @@ status](https://github.com/koalaverse/vip/workflows/R-CMD-check/badge.svg)](http
 [![Coverage
 Status](https://img.shields.io/codecov/c/github/koalaverse/vip/master.svg)](https://codecov.io/github/koalaverse/vip?branch=master)
 [![Lifecycle:
-maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+<!-- badges: end -->
 
 ## Overview
 
@@ -44,7 +45,7 @@ website](https://koalaverse.github.io/vip/index.html).
 
 ## Features
 
-  - **Model-based variable importance** - Compute variable importance
+-   **Model-based variable importance** - Compute variable importance
     specific to a particular model (like a *random forest*, *gradient
     boosted decision trees*, or *multivariate adaptive regression
     splines*) from a wide range of R packages (e.g.,
@@ -56,19 +57,19 @@ website](https://koalaverse.github.io/vip/index.html).
     [parsnip](https://cran.r-project.org/package=parsnip) (starting with
     version 0.0.4) packages.
 
-  - **Permutation-based variable importance** - An efficient
+-   **Permutation-based variable importance** - An efficient
     implementation of the permutation feature importance algorithm
     discussed in [this
     chapter](https://christophm.github.io/interpretable-ml-book/feature-importance.html)
     from [Christoph Molnar’s *Interpretable Machine Learning*
     book](https://christophm.github.io/interpretable-ml-book/).
 
-  - **Shapley-based variable importance** - An efficient implementation
+-   **Shapley-based variable importance** - An efficient implementation
     of feature importance based on the popular [Shapley
     values](https://github.com/slundberg/shap) via the
     [fastshap](https://cran.r-project.org/package=fastshap) package.
 
-  - **Variance-based variable importance** - Compute variable importance
+-   **Variance-based variable importance** - Compute variable importance
     using a simple *feature importance ranking measure* (FIRM) approach.
     For details, see see [Greenwell et
     al. (2018)](https://arxiv.org/abs/1805.04755) and [Scholbeck et
