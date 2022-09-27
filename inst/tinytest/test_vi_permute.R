@@ -40,10 +40,6 @@ vis <- lapply(regression_metrics, FUN = function(x) {
   vi(fit1, method = "permute", target = "y", metric = x, pred_wrapper = pfun,
      nsim = 10)
 })
-lapply(vis, FUN = expectations)
-grid.arrange(nrow = 2, grobs = lapply(vis, FUN = function(x) {
-  vip(x, geom = "boxplot")
-}))
 
 # Use a custom metric
 rsquared <- function(actual, predicted) {
@@ -201,11 +197,6 @@ vis_error <- vi_permute(
 )
 expectations(vis_error)
 
-# Display VIPs in a grid
-grid.arrange(
-  vip(vis_auc), vip(vis_logloss), vip(vis_accuracy), vip(vis_error), nrow = 2
-)
-
 # Expect error if using AUC (or logLoss) with no reference class
 expect_error(
   vi_permute(
@@ -253,7 +244,3 @@ vis_mauc <- vi_permute(
   nsim = 10
 )
 expectations(vis_mauc)
-
-# Display VIP
-vip(vis_mauc, geom = "boxplot")
-sort(fit3$variable.importance)

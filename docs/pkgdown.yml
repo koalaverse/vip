@@ -1,8 +1,0 @@
-pandoc: 2.3.1
-pkgdown: 1.4.1
-pkgdown_sha: ~
-articles:
-  vip-interaction: vip-interaction.html
-  vip-tensorflow: vip-tensorflow.html
-  vip: vip.html
-

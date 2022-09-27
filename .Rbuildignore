@@ -2,13 +2,9 @@
 ^\.Rproj\.user$
 ^README\.Rmd$
 ^README_cache
-^appveyor\.yml$
-^\.travis\.yml$
 ^slowtests
-^_pkgdown\.yml$
 ^docs$
 ^codecov\.yml$
-^logs$
-^derby.log$
 ^rjournal$
+^tools$
 ^\.github$

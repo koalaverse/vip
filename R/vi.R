@@ -179,32 +179,3 @@ vi.default <- function(
   tib
 
 }
-
-
-#' @rdname vi
-#'
-#' @export
-vi.model_fit <- function(object, ...) {  # package: parsnip
-  vi(object$fit, ...)
-}
-
-
-#' @rdname vi
-#'
-#' @export
-vi.WrappedModel <- function(object, ...) {  # package: mlr
-  vi(object$learner.model, ...)
-}
-
-
-#' @rdname vi
-#'
-#' @export
-vi.Learner <- function(object, ...) {  # package: mlr3
-  if (is.null(object$model)) {
-    stop("No fitted model found. Did you forget to call ",
-         deparse(substitute(object)), "$train()?",
-         call. = FALSE)
-  }
-  vi(object$model, ...)
-}

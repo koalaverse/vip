@@ -1,7 +1,7 @@
 Package: vip
 Type: Package
 Title: Variable Importance Plots
-Version: 0.3.0
+Version: 0.3.2.9000
 Authors@R: c(
   person("Brandon", "Greenwell", 
           email = "greenwell.brandon@gmail.com",
@@ -32,9 +32,9 @@ BugReports: https://github.com/koalaverse/vip/issues
 Encoding: UTF-8
 VignetteBuilder: knitr
 LazyData: true
+biocViews: mixOmics
 Imports: 
     ggplot2 (>= 0.9.0),
-    gridExtra,
     magrittr,
     plyr,
     stats,
@@ -58,13 +58,14 @@ Suggests:
     keras,
     knitr,
     lattice,
+    mixOmics,
     mlbench,
     mlr,
     mlr3,
     neuralnet,
     NeuralNetTools,
     nnet,
-    parsnip,
+    parsnip (>= 0.1.7),
     party,
     partykit,
     pdp,
@@ -76,7 +77,9 @@ Suggests:
     RSNNS,
     sparkline,
     sparklyr (>= 0.8.0),
+    tidymodels,
     tinytest,
     varImp,
+    workflows (>= 0.2.3),
     xgboost
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.1

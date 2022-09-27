@@ -13,11 +13,12 @@
 \alias{vi_model.H2OBinomialModel}
 \alias{vi_model.H2OMultinomialModel}
 \alias{vi_model.H2ORegressionModel}
+\alias{vi_model.mixo_pls}
+\alias{vi_model.mixo_spls}
 \alias{vi_model.WrappedModel}
 \alias{vi_model.Learner}
 \alias{vi_model.nn}
 \alias{vi_model.nnet}
-\alias{vi_model.model_fit}
 \alias{vi_model.RandomForest}
 \alias{vi_model.constparty}
 \alias{vi_model.cforest}
@@ -35,6 +36,8 @@
 \alias{vi_model.ml_model_random_forest_regression}
 \alias{vi_model.ml_model_random_forest_classification}
 \alias{vi_model.lm}
+\alias{vi_model.model_fit}
+\alias{vi_model.workflow}
 \alias{vi_model.xgb.Booster}
 \title{Model-specific variable importance}
 \usage{
@@ -62,6 +65,10 @@ vi_model(object, ...)
 
 \method{vi_model}{H2ORegressionModel}(object, ...)
 
+\method{vi_model}{mixo_pls}(object, ncomp = NULL, ...)
+
+\method{vi_model}{mixo_spls}(object, ncomp = NULL, ...)
+
 \method{vi_model}{WrappedModel}(object, ...)
 
 \method{vi_model}{Learner}(object, ...)
@@ -69,8 +76,6 @@ vi_model(object, ...)
 \method{vi_model}{nn}(object, type = c("olden", "garson"), ...)
 
 \method{vi_model}{nnet}(object, type = c("olden", "garson"), ...)
-
-\method{vi_model}{model_fit}(object, ...)
 
 \method{vi_model}{RandomForest}(object, type = c("accuracy", "auc"), ...)
 
@@ -106,6 +111,10 @@ vi_model(object, ...)
 
 \method{vi_model}{lm}(object, type = c("stat", "raw"), ...)
 
+\method{vi_model}{model_fit}(object, ...)
+
+\method{vi_model}{workflow}(object, ...)
+
 \method{vi_model}{xgb.Booster}(object, type = c("gain", "cover", "frequency"), ...)
 }
 \arguments{
@@ -121,6 +130,10 @@ argument applies to.}
 \code{\link[glmnet]{glmnet}} model (this is equivalent to the \code{s}
 argument in \code{\link[glmnet:predict.glmnet]{coef.glmnet}}). See the section on
 \code{\link[glmnet]{glmnet}} in the details below.}
+
+\item{ncomp}{An integer for the number of partial least squares components
+to be used in the importance calculations. If more components are requested
+than were used in the model, all of the model's components are used.}
 }
 \value{
 A tidy data frame (i.e., a \code{"tibble"} object) with two columns:

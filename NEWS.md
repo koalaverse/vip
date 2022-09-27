@@ -1,3 +1,23 @@
+# vip 0.3.3
+
+## Bug fixes
+
+* Fix model-based VI support for [mlr](https://cran.r-project.org/package=mlr), [mlr3](https://cran.r-project.org/package=mlr3), [parsnip](https://cran.r-project.org/package=parsnip), and [workflows](https://cran.r-project.org/package=workflows) model fits.
+
+# vip 0.3.2
+
+## Miscellaneous
+
+* Add `tools/` to .Rbuildignore.
+
+# vip 0.3.1
+
+## Miscellaneous
+
+* Change http://spark.rstudio.com/mlib/ to https://spark.rstudio.com/mlib/ in NEWS.md.
+
+* Remove unnecessary codecov.yml file.
+
 # vip 0.3.0
 
 ## User-visable changes

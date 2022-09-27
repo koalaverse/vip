@@ -1,14 +1,14 @@
 # Exits
 if (!requireNamespace("mlr", quietly = TRUE)) {
-  exit_file("Package mlr missing")
+  exit_file("Package 'mlr' missing")
 }
 if (!requireNamespace("ranger", quietly = TRUE)) {
-  exit_file("Package ranger missing")
+  exit_file("Package 'ranger' missing")
 }
 
 # Load required packages
 suppressMessages({
-  library(mlr)
+  # library(mlr)
   library(ranger)
 })
 
@@ -17,8 +17,8 @@ friedman1 <- gen_friedman(seed = 101)
 
 # Fit model(s)
 set.seed(101)
-task <- makeRegrTask("friedman", data = friedman1, target = "y")
-lrnr <- makeLearner("regr.ranger", importance = "impurity")
+task <- mlr::makeRegrTask("friedman", data = friedman1, target = "y")
+lrnr <- mlr::makeLearner("regr.ranger", importance = "impurity")
 fit <- mlr::train(lrnr, task = task)
 
 # Compute model-based VI scores
@@ -40,20 +40,4 @@ expect_identical(
 expect_identical(
   current = vip:::get_feature_names.WrappedModel(fit),
   target = paste0("x", 1L:10L)
-)
-
-# Call `vip::vip()` directly
-p <- vip(fit, method = "model", include_type = TRUE)
-
-# Expect `p` to be a `"gg" "ggplot"` object
-expect_identical(
-  current = class(p),
-  target = c("gg", "ggplot")
-)
-
-# Display VIPs side by side
-grid.arrange(
-  vip(vis, include_type = TRUE),
-  p,
-  nrow = 1
 )
