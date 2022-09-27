@@ -73,7 +73,7 @@ pfun <- function(object, newdata) {
 }
 
 # Compute permutation-based VI scores using AUC metric
-set.seed(912)  # for reproduicbility
+set.seed(912)  # for reproducibility
 vi_auc <- ranger_fit_workflow %>%
   vi(method = "permute",
      target = "Class",

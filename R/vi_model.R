@@ -1356,7 +1356,7 @@ vi_model.lm <- function(object, type = c("stat", "raw"), ...) {
 #'
 #' @export
 vi_model.model_fit <- function(object, ...) {
-  vi(parsnip::extract_fit_engine(object), ...)
+  vi_model(parsnip::extract_fit_engine(object), ...)
 }
 
 # Package: workflows -----------------------------------------------------------
@@ -1365,7 +1365,7 @@ vi_model.model_fit <- function(object, ...) {
 #'
 #' @export
 vi_model.workflow <- function(object, ...) {
-  vi(workflows::extract_fit_engine(object), ...)
+  vi_model(workflows::extract_fit_engine(object), ...)
 }
 
 #===============================================================================
