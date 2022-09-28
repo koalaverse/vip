@@ -143,7 +143,7 @@ sign (i.e., POS/NEG) of the original coefficient.
 }
 \description{
 Compute model-specific variable importance scores for the predictors in a
-model.
+fitted model.
 }
 \details{
 Computes model-specific variable importance scores depending on the class of

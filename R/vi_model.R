@@ -1,7 +1,7 @@
 #' Model-specific variable importance
 #'
 #' Compute model-specific variable importance scores for the predictors in a
-#' model.
+#' fitted model.
 #'
 #' @param object A fitted model object (e.g., a \code{"randomForest"} object).
 #'
