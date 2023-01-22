@@ -34,9 +34,9 @@ VignetteBuilder: knitr
 LazyData: true
 biocViews: mixOmics
 Imports: 
+    foreach,
     ggplot2 (>= 0.9.0),
     magrittr,
-    plyr,
     stats,
     tibble,
     utils
@@ -82,4 +82,5 @@ Suggests:
     varImp,
     workflows (>= 0.2.3),
     xgboost
-RoxygenNote: 7.2.1
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3

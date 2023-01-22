@@ -87,13 +87,16 @@
 #'
 #' @param parallel Logical indicating whether or not to run \code{vi_permute()}
 #' in parallel (using a backend provided by the \code{foreach} package). Default
-#' is \code{FALSE}. If \code{TRUE}, an appropriate backend must be provided by
-#' \code{foreach}.
+#' is \code{FALSE}. If \code{TRUE}, a \code{\link[foreach]{foreach}}-compatible
+#' backend must be provided by must be provided.
 #'
-#' @param paropts List containing additional options to be passed on to
-#' \code{foreach} when \code{parallel = TRUE}.
+#' @param Character string specifying whether to parallelize across features
+#' (\code{parallelize_by = "features"}) or repetitions
+#' (\code{parallelize_by = "reps"}); the latter is only useful whenever
+#' \code{nsim > 1}. Default is \code{"features"}.
 #'
-#' @param ... Additional optional arguments. (Currently ignored.)
+#' @param ... Additional optional arguments to be passed on to
+#' \code{\link[foreach]{foreach}}.
 #'
 #' @details Coming soon!
 #'
@@ -166,7 +169,7 @@ vi_permute.default <- function(
   verbose = FALSE,
   progress = "none",
   parallel = FALSE,
-  paropts = NULL,
+  parallelize_by = c("features", "repetitions"),
   ...
 ) {
 
@@ -349,6 +352,22 @@ vi_permute.default <- function(
     `/`
   }
 
+  # Define ".do" operator
+  `%do.reps%` <- `%do.features%` <- `%do%`
+  if (isTRUE(parallel)) {
+    parallelize_by <- match.arg(parallelize_by)
+    if (parallelize_by == "reps") {
+      if (nsim == 1) {
+        warning("Parallelizing across repititions only works when `nsim > 1`.",
+                call. = FALSE)
+      } else{
+        `%do.reps%` <- `%dopar%`
+      }
+    } else {
+      `%do.features%` <- `%dopar%`
+    }
+  }
+
   # Construct VI scores
   #
   # Loop through each feature and do the following:
@@ -357,32 +376,32 @@ vi_permute.default <- function(
   #   2. permute the values of the original feature;
   #   3. get new predictions based on permuted data set;
   #   4. record difference in accuracy.
-  vis <- replicate(nsim,
-    unlist(plyr::llply(feature_names, .progress = progress,
-      .parallel = parallel, .paropts = paropts,
-      .fun = function(x) {
-        if (verbose && !parallel) {
-          message("Computing variable importance for ", x, "...")
-        }
-        if (!is.null(sample_size)) {
-          ids <- sample(length(train_y), size = sample_size, replace = FALSE)
-          train_x <- train_x[ids, ]
-          train_y <- train_y[ids]
-        }
-        # train_x_permuted <- train_x  # make copy
-        # train_x_permuted[[x]] <- sample(train_x_permuted[[x]])  # permute values
-        train_x_permuted <- permute_columns(train_x, columns = x)
-        permuted <- mfun(
-          actual = train_y,
-          predicted = pred_wrapper(object, newdata = train_x_permuted)
-        )
-        if (smaller_is_better) {
-          permuted %compare% baseline  # e.g., RMSE
-        } else {
-          baseline %compare% permuted  # e.g., R-squared
-        }
-      })
-  ))
+
+  vis <- foreach(i = seq_len(nsim), .combine = "cbind") %do.reps% {
+    res <- foreach(j = seq_along(feature_names),
+                   .combine = "rbind", ...) %do.features% {
+      # if (verbose && !parallel) {
+      #   message("Computing variable importance for ", x, "...")
+      # }
+      if (!is.null(sample_size)) {
+        ids <- sample(length(train_y), size = sample_size, replace = FALSE)
+        train_x <- train_x[ids, ]
+        train_y <- train_y[ids]
+      }
+      permx <- train_x
+      permx[, feature_names[j]] <- permx[sample(nrow(permx)), feature_names[j]]
+      # train_x_permuted <- permute_columns(train_x, columns = feature_names[j])
+      permuted <- mfun(
+        actual = train_y,
+        predicted = pred_wrapper(object, newdata = permx)
+      )
+      if (smaller_is_better) {
+        permuted %compare% baseline  # e.g., RMSE
+      } else {
+        baseline %compare% permuted  # e.g., R-squared
+      }
+    }
+  }
 
   # Construct tibble of variable importance scores
   tib <- tibble::tibble(

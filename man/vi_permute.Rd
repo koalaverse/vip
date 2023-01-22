@@ -25,23 +25,24 @@ vi_permute(object, ...)
   verbose = FALSE,
   progress = "none",
   parallel = FALSE,
-  paropts = NULL,
+  parallelize_by = c("features", "repetitions"),
   ...
 )
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
 
-\item{...}{Additional optional arguments. (Currently ignored.)}
+\item{...}{Additional optional arguments to be passed on to
+\code{\link[foreach]{foreach}}.}
 
 \item{feature_names}{Character string giving the names of the predictor
 variables (i.e., features) of interest. If \code{NULL} (the default) then the
-internal `get_feature_names()` function will be called to try and extract
+internal \code{get_feature_names()} function will be called to try and extract
 them automatically. It is good practice to always specify this argument.}
 
 \item{train}{A matrix-like R object (e.g., a data frame or matrix)
 containing the training data. If \code{NULL} (the default) then the
-internal `get_training_data()` function will be called to try and extract it
+internal \code{get_training_data()} function will be called to try and extract it
 automatically. It is good practice to always specify this argument.}
 
 \item{target}{Either a character string giving the name (or position) of the
@@ -95,13 +96,13 @@ problems.}
 determined by the \code{metric} being used:
 
 \describe{
-  \item{Regression}{A numeric vector of predicted outcomes.}
-  \item{Binary classification}{A vector of predicted class labels (e.g., if
-  using misclassification error) or a vector of predicted class probabilities
-  for the reference class (e.g., if using log loss or AUC).}
-  \item{Multiclass classification}{A vector of predicted class labels (e.g.,
-  if using misclassification error) or a A matrix/data frame of predicted
-  class probabilities for each class (e.g., if using log loss or AUC).}
+\item{Regression}{A numeric vector of predicted outcomes.}
+\item{Binary classification}{A vector of predicted class labels (e.g., if
+using misclassification error) or a vector of predicted class probabilities
+for the reference class (e.g., if using log loss or AUC).}
+\item{Multiclass classification}{A vector of predicted class labels (e.g.,
+if using misclassification error) or a A matrix/data frame of predicted
+class probabilities for each class (e.g., if using log loss or AUC).}
 }}
 
 \item{verbose}{Logical indicating whether or not to print information during
@@ -113,11 +114,13 @@ See \code{\link[plyr]{create_progress_bar}} for details. Default is
 
 \item{parallel}{Logical indicating whether or not to run \code{vi_permute()}
 in parallel (using a backend provided by the \code{foreach} package). Default
-is \code{FALSE}. If \code{TRUE}, an appropriate backend must be provided by
-\code{foreach}.}
+is \code{FALSE}. If \code{TRUE}, a \code{\link[foreach]{foreach}}-compatible
+backend must be provided by must be provided.}
 
-\item{paropts}{List containing additional options to be passed on to
-\code{foreach} when \code{parallel = TRUE}.}
+\item{Character}{string specifying whether to parallelize across features
+(\code{parallelize_by = "features"}) or repetitions
+(\code{parallelize_by = "reps"}); the latter is only useful whenever
+\code{nsim > 1}. Default is \code{"features"}.}
 }
 \value{
 A tidy data frame (i.e., a \code{"tibble"} object) with two columns:

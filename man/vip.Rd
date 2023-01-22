@@ -35,25 +35,25 @@ scores to plot. Default is \code{10}.}
 \item{geom}{Character string specifying which type of plot to construct.
 The currently available options are described below.
 
- \itemize{
+\itemize{
 
- \item \code{geom = "col"} uses \code{\link[ggplot2:geom_bar]{geom_col}} to construct
- a bar chart of the variable importance scores.
+\item \code{geom = "col"} uses \code{\link[ggplot2:geom_bar]{geom_col}} to construct
+a bar chart of the variable importance scores.
 
- \item \code{geom = "point"} uses \code{\link[ggplot2]{geom_point}} to
- construct a Cleveland dot plot of the variable importance scores.
+\item \code{geom = "point"} uses \code{\link[ggplot2]{geom_point}} to
+construct a Cleveland dot plot of the variable importance scores.
 
- \item \code{geom = "boxplot"} uses \code{\link[ggplot2]{geom_boxplot}} to
- construct a boxplot plot of the variable importance scores. This option can
- only for the permutation-based importance method with \code{nsim > 1} and
- \code{keep = TRUE}; see \code{\link{vi_permute}} for details.
+\item \code{geom = "boxplot"} uses \code{\link[ggplot2]{geom_boxplot}} to
+construct a boxplot plot of the variable importance scores. This option can
+only for the permutation-based importance method with \code{nsim > 1} and
+\code{keep = TRUE}; see \code{\link{vi_permute}} for details.
 
- \item \code{geom = "violin"} uses \code{\link[ggplot2]{geom_violin}} to
- construct a violin plot of the variable importance scores. This option can
- only for the permutation-based importance method with \code{nsim > 1} and
- \code{keep = TRUE}; see \code{\link{vi_permute}} for details.
+\item \code{geom = "violin"} uses \code{\link[ggplot2]{geom_violin}} to
+construct a violin plot of the variable importance scores. This option can
+only for the permutation-based importance method with \code{nsim > 1} and
+\code{keep = TRUE}; see \code{\link{vi_permute}} for details.
 
- }}
+}}
 
 \item{mapping}{Set of aesthetic mappings created by \code{\link[ggplot2]{aes}}
 or \code{\link[ggplot2]{aes_}}. See example usage below.}

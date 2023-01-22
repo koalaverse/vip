@@ -1,5 +1,13 @@
 # vip 0.3.3
 
+## User-visible changes
+
+* `list_metrics()` gained an additional `smaller_is_better` column indicating whether or not the corresponding metric should be minimized (`smaller_is_better = TRUE`) or maximized (`smaller_is_better = FALSE`). Additionally, all the column names are now in lower case. (Suggested by @topedo.)
+
+## Miscellaneous
+
+* Switched to using markdown syntax in `roxygen2` comments.
+
 ## Bug fixes
 
 * Fix model-based VI support for [mlr](https://cran.r-project.org/package=mlr), [mlr3](https://cran.r-project.org/package=mlr3), [parsnip](https://cran.r-project.org/package=parsnip), and [workflows](https://cran.r-project.org/package=workflows) model fits.
