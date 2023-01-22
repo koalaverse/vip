@@ -84,13 +84,60 @@
 #' # Fit a projection pursuit regression model
 #' mtcars.ppr <- ppr(mpg ~ ., data = mtcars, nterms = 1)
 #'
-#' # Compute variable importance scores
-#' vi(mtcars.ppr, method = "firm", ice = TRUE)
-#' vi(mtcars.ppr, method = "firm", ice = TRUE,
-#'    var_fun = list("con" = mad, "cat" = function(x) diff(range(x)) / 4))
+#' # Prediction wrapper that tells vi() how to obtain new predictions from your
+#' # fitted model
+#' pfun <- function(object, newdata) predict(object, newdata = newdata)
+#'
+#' # Compute permutation-based variable importance scores
+#' set.seed(1434)  # for reproducibility
+#' (vis <- vi(mtcars.ppr, method = "permute", target = "mpg", nsim = 10,
+#'            metric = "rmse", pred_wrapper = pfun))
 #'
 #' # Plot variable importance scores
-#' vip(mtcars.ppr, method = "firm", ice = TRUE)
+#' vip(vis, include_type = TRUE, all_permutations = TRUE,
+#'     geom = "point", aesthetics = list(color = "forestgreen", size = 3))
+#'
+#' #
+#' # A binary classification example
+#' #
+#' \dontrun{
+#' library(rpart)  # for classification and regression trees
+#'
+#' # Load Wisconsin breast cancer data; see ?mlbench::BreastCancer for details
+#' data(BreastCancer, package = "mlbench")
+#' bc <- subset(BreastCancer, select = -Id)  # for brevity
+#'
+#' # Fit a standard classification tree
+#' set.seed(1032)  # for reproducibility
+#' tree <- rpart(Class ~ ., data = bc, cp = 0)
+#'
+#' # Prune using 1-SE rule (e.g., use `plotcp(tree)` for guidance)
+#' cp <- tree$cptable
+#' cp <- cp[cp[, "nsplit"] == 2L, "CP"]
+#' tree2 <- prune(tree, cp = cp)  # tree with three splits
+#'
+#' # Default tree-based VIP
+#' vip(tree2)
+#'
+#' # Computing permutation importance requires a prediction wrapper. For
+#' # classification, the return value depends on the chosen metric; see
+#' # `?vip::vi_permute` for details.
+#' pfun <- function(object, newdata) {
+#'   # Need vector of predicted class probabilities when using  log-loss metric
+#'   predict(object, newdata = newdata, type = "prob")[, "malignant"]
+#' }
+#'
+#' # Permutation-based importance (note that only the predictors that show up
+#' # in the final tree have non-zero importance)
+#' set.seed(1046)  # for reproducibility
+#' vi(tree2, method = "permute", nsim = 10, target = "Class",
+#'    metric = "logloss", pred_wrapper = pfun, reference_class = "malignant")
+#'
+#' # Equivalent (but not sorted)
+#' set.seed(1046)  # for reproducibility
+#' vi_permute(tree2, nsim = 10, target = "Class", metric = "logloss",
+#'            pred_wrapper = pfun, reference_class = "malignant")
+#' }
 vi <- function(object, ...) {
   UseMethod("vi")
 }

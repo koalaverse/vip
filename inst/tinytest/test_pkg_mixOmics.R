@@ -1,6 +1,6 @@
 # Exits
 if (!requireNamespace("mixOmics", quietly = TRUE)) {
-  exit_file("Bioconductor package mixOmics missing")
+  exit_file("Bioconductor package 'mixOmics' missing")
 }
 
 # # Load required packages
@@ -13,17 +13,17 @@ friedman1 <- gen_friedman(seed = 101)
 friedman3 <- gen_friedman(seed = 101, n_bins = 3)
 
 # univariate regression
-pls_mo    <- mixOmics::pls(friedman1[, -1], friedman1[, 1, drop = FALSE], ncomp = 3)
-spls_mo   <- mixOmics::spls(friedman1[, -1], friedman1[, 1, drop = FALSE],  ncomp = 3)
+pls_mo <- mixOmics::pls(friedman1[, -1], friedman1[, 1, drop = FALSE], ncomp = 3)
+spls_mo <- mixOmics::spls(friedman1[, -1], friedman1[, 1, drop = FALSE],  ncomp = 3)
 
-pls_mo_imp    <- mixOmics::vip(pls_mo)
-spls_mo_imp   <- mixOmics::vip(spls_mo)
+pls_mo_imp <- mixOmics::vip(pls_mo)
+spls_mo_imp <- mixOmics::vip(spls_mo)
 
 # classification
-plsda_mo    <- mixOmics::plsda(friedman3[, -1], friedman3$y, ncomp = 3)
-splsda_mo   <- mixOmics::splsda(friedman3[, -1], friedman3$y, ncomp = 3)
+plsda_mo <- mixOmics::plsda(friedman3[, -1], friedman3$y, ncomp = 3)
+splsda_mo <- mixOmics::splsda(friedman3[, -1], friedman3$y, ncomp = 3)
 
-plsda_mo_imp  <- mixOmics::vip(plsda_mo)
+plsda_mo_imp <- mixOmics::vip(plsda_mo)
 splsda_mo_imp <- mixOmics::vip(splsda_mo)
 
 # Expectations for `vi_model()`
@@ -84,7 +84,6 @@ expect_error(
   vi_model(pls_mo, ncomp = 1:3),
   "should be a single integer"
 )
-
 
 expect_warning(
   too_many <- vi_model(pls_mo, ncomp = 300),

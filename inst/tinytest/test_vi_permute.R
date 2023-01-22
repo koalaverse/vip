@@ -40,6 +40,7 @@ vis <- lapply(regression_metrics, FUN = function(x) {
   vi(fit1, method = "permute", target = "y", metric = x, pred_wrapper = pfun,
      nsim = 10)
 })
+lapply(vis, FUN = expectations)
 
 # Use a custom metric
 rsquared <- function(actual, predicted) {

@@ -3,10 +3,10 @@ Type: Package
 Title: Variable Importance Plots
 Version: 0.3.2.9000
 Authors@R: c(
-  person("Brandon", "Greenwell", 
-          email = "greenwell.brandon@gmail.com",
-          role = c("aut", "cre"), 
-          comment = c(ORCID = "0000-0002-8120-0084")),
+  person(c("Brandon", "M."), family = "Greenwell", 
+         email = "greenwell.brandon@gmail.com",
+         role = c("aut", "cre"), 
+         comment = c(ORCID = "0000-0002-8120-0084")),
   person("Brad", "Boehmke",
          email = "bradleyboehmke@gmail.com",
          role = c("aut"),
@@ -31,8 +31,6 @@ URL: https://github.com/koalaverse/vip/
 BugReports: https://github.com/koalaverse/vip/issues
 Encoding: UTF-8
 VignetteBuilder: knitr
-LazyData: true
-biocViews: mixOmics
 Imports: 
     foreach,
     ggplot2 (>= 0.9.0),
@@ -51,6 +49,7 @@ Suggests:
     dplyr,
     earth,
     fastshap,
+    foreach,
     gbm,
     glmnet,
     h2o,
@@ -82,5 +81,5 @@ Suggests:
     varImp,
     workflows (>= 0.2.3),
     xgboost
-Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+Roxygen: list(markdown = TRUE)

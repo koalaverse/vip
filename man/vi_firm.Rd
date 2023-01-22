@@ -57,6 +57,27 @@ changed via the \code{var_fun} argument. See
 \href{https://arxiv.org/abs/1805.04755}{Greenwell et al. (2018)} for details
 and additional examples.
 }
+\examples{
+\dontrun{
+#
+# A projection pursuit regression example
+#
+
+# Load the sample data
+data(mtcars)
+
+# Fit a projection pursuit regression model
+mtcars.ppr <- ppr(mpg ~ ., data = mtcars, nterms = 1)
+
+# Compute variable importance scores using the FIRM method
+vi(mtcars.ppr, method = "firm", ice = TRUE)
+vi(mtcars.ppr, method = "firm", ice = TRUE,
+   var_fun = list("con" = mad, "cat" = function(x) diff(range(x)) / 4))
+
+# Plot variable importance scores
+vip(mtcars.ppr, method = "firm", ice = TRUE)
+}
+}
 \references{
 Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J. A Simple
 and Effective Model-Based Variable Importance Measure. arXiv preprint

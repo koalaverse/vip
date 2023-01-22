@@ -57,6 +57,27 @@
 #' @rdname vi_firm
 #'
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' #
+#' # A projection pursuit regression example
+#' #
+#'
+#' # Load the sample data
+#' data(mtcars)
+#'
+#' # Fit a projection pursuit regression model
+#' mtcars.ppr <- ppr(mpg ~ ., data = mtcars, nterms = 1)
+#'
+#' # Compute variable importance scores using the FIRM method
+#' vi(mtcars.ppr, method = "firm", ice = TRUE)
+#' vi(mtcars.ppr, method = "firm", ice = TRUE,
+#'    var_fun = list("con" = mad, "cat" = function(x) diff(range(x)) / 4))
+#'
+#' # Plot variable importance scores
+#' vip(mtcars.ppr, method = "firm", ice = TRUE)
+#' }
 vi_firm <- function(object, ...) {
   UseMethod("vi_firm")
 }

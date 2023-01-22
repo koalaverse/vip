@@ -41,3 +41,30 @@ expect_identical(
   current = vis_frequency$Importance,
   target = vis_xgboost$Frequency
 )
+
+# Expectations for `get_training_data()`
+expect_error(vip:::get_training_data.default(fit))
+
+# Expectations for `get_feature_names()`
+expect_identical(
+  current = vip:::get_feature_names.xgb.Booster(fit),
+  target = paste0("x", 1L:10L)
+)
+
+# Call `vip::vip()` directly
+p <- vip(fit, method = "model", include_type = TRUE)
+
+# Expect `p` to be a `"gg" "ggplot"` object
+expect_identical(
+  current = class(p),
+  target = c("gg", "ggplot")
+)
+
+# Display VIPs side by side
+grid.arrange(
+  vip(vis_gain, include_type = TRUE),
+  vip(vis_cover, include_type = TRUE),
+  vip(vis_frequency, include_type = TRUE),
+  p,
+  nrow = 1
+)

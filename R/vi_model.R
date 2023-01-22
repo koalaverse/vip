@@ -151,7 +151,7 @@
 #' }}
 #'
 #' \item{\code{\link[h2o:H2OModel-class]{H2OModel}}}{See \code{\link[h2o]{h2o.varimp}} or visit
-#' \url{http://docs.h2o.ai/h2o/latest-stable/h2o-docs/variable-importance.html}
+#' \url{https://docs.h2o.ai/h2o/latest-stable/h2o-docs/variable-importance.html}
 #' for details.}
 #'
 #' \item{\code{\link[nnet]{nnet}}}{Two popular methods for constructing variable
@@ -917,6 +917,82 @@ vi_model.mvr <- function(object, ...) {
 
 }
 
+# Package: mixOmics  -----------------------------------------------------------
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.mixo_pls <- function(object, ncomp = NULL, ...) {
+
+  # Check for dependency
+  if (!requireNamespace("mixOmics", quietly = TRUE)) {
+    stop("Bioconductor package \"mixOmics\" needed for this function to work. ",
+         "Please install it.", call. = FALSE)
+  }
+  if (is.null(ncomp)) {
+    ncomp <- object$ncomp
+  } else {
+    if (length(ncomp) != 1) {
+      stop("'ncomp' should be a single integer.")
+    }
+    if (!is.integer(ncomp)) {
+      ncomp <- as.integer(ncomp)
+    }
+  }
+
+  vis <- mixOmics::vip(object)
+  if (ncomp > ncol(vis)) {
+    warning(ncomp, " components were requested but only ", ncol(vis),
+            " are available. Results are for ", ncol(vis), ".")
+    ncomp <- ncol(vis)
+  }
+
+  tib <- tibble::tibble(
+    "Variable" = rownames(vis),
+    "Importance" = vis[,ncomp]
+  )
+
+  # Add variable importance type attribute
+  attr(tib, which = "type") <- "mixOmics"
+
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
+  # Return results
+  tib
+
+}
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.mixo_spls <- vi_model.mixo_pls
+
+
+# Package: mlr -----------------------------------------------------------------
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.WrappedModel <- function(object, ...) {  # package: mlr
+  vi_model(object$learner.model, ...)
+}
+
+
+# Package: mlr3 ----------------------------------------------------------------
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.Learner <- function(object, ...) {  # package: mlr3
+  if (is.null(object$model)) {
+    stop("No fitted model found. Did you forget to call ",
+         deparse(substitute(object)), "$train()?",
+         call. = FALSE)
+  }
+  vi_model(object$model, ...)
+}
+
 
 # Package: randomForest --------------------------------------------------------
 
@@ -1348,7 +1424,7 @@ vi_model.lm <- function(object, type = c("stat", "raw"), ...) {
 }
 
 
-# Package: tidymodels ==========================================================
+# tidymodels ===================================================================
 
 # Package: parsnip -------------------------------------------------------------
 
@@ -1369,6 +1445,7 @@ vi_model.workflow <- function(object, ...) {
 }
 
 #===============================================================================
+
 
 # Package: xgboost -------------------------------------------------------------
 
