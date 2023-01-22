@@ -24,12 +24,6 @@ expect_identical(
   target = vis2$importance[vis1$Variable, , drop = TRUE]
 )
 
-# Expectations for `get_training_data()`
-expect_identical(
-  current = vip:::get_training_data.train(fit),
-  target = subset(friedman1, select = -y)
-)
-
 # Expectations for `get_feature_names()`
 expect_identical(
   current = vip:::get_feature_names.train(fit),

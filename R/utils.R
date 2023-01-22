@@ -8,19 +8,6 @@ magrittr::`%T>%`
 magrittr::`%>%`
 
 
-#' Arrange multiple grobs on a page
-#'
-#' See \code{\link[gridExtra:arrangeGrob]{grid.arrange}} for more details.
-#'
-#' @name grid.arrange
-#' @rdname grid.arrange
-#' @keywords internal
-#' @export
-#' @importFrom gridExtra grid.arrange
-#' @usage grid.arrange(..., newpage = TRUE)
-NULL
-
-
 #' @keywords internal
 abbreviate_names <- function(x, minlength) {
   x$Variable <- abbreviate(x$Variable, minlength = minlength)
@@ -47,14 +34,14 @@ check_var_fun <- function(x) {
 }
 
 
-#' @keywords internal
-permute_columns <- function(x, columns = NULL) {
-  if (is.null(columns)) {
-    stop("No columns specified for permutation.")
-  }
-  x[, columns] <- x[sample(nrow(x)), columns]
-  x
-}
+#' #' @keywords internal
+#' permute_columns <- function(x, columns = NULL) {
+#'   if (is.null(columns)) {
+#'     stop("No columns specified for permutation.")
+#'   }
+#'   x[, columns] <- x[sample(nrow(x)), columns]
+#'   x
+#' }
 
 
 #' @keywords internal

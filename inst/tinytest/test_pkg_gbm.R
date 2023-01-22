@@ -1,6 +1,6 @@
 # Exits
 if (!requireNamespace("gbm", quietly = TRUE)) {
-  exit_file("Package gbm missing")
+  exit_file("Package 'gbm' missing")
 }
 
 # # Load required packages

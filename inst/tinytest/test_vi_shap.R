@@ -1,6 +1,6 @@
-# Check dependencies
-if (!require(fastshap, quietly = TRUE)) {
-  exit_file("R package 'fastshap' not available.")
+# Exits
+if (!requireNamespace("fastshap", quietly = TRUE)) {
+  exit_file("Package 'fastshap' missing")
 }
 
 # Simulate Friedman benchmark data

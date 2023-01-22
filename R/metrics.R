@@ -1,61 +1,79 @@
 #' List metrics
 #'
 #' List all available performance metrics.
+#' 
+#' @return A data frame with the following columns:
+#' * `metric` - the optimization or tuning metric;
+#' * `description` - a brief description about the metric;
+#' * `task` - whether the metric is suitable for regression or classification;
+#' * `smaller_is_better` - logical indicating whether or not a smaller value of the metric is considered better.
 #'
 #' @export
 #'
 #' @examples
 #' (metrics <- list_metrics())
-#' metrics[metrics$Task == "Multiclass classification", ]
+#' metrics[metrics$task == "Multiclass classification", ]
 list_metrics <- function() {
   data.frame(rbind(
-    c("Metric"      = "accuracy",
-      "Description" = "Classification accuracy",
-      "Task"        = "Binary/multiclass classification"
+    c("metric"      = "accuracy",
+      "description" = "Classification accuracy",
+      "task"        = "Binary/multiclass classification",
+      "smaller_is_better" = FALSE
     ),
-    c("Metric"      = "error",
-      "Description" = "Misclassification error",
-      "Task"        = "Binary/multiclass classification"
+    c("metric"      = "error",
+      "description" = "Misclassification error",
+      "task"        = "Binary/multiclass classification",
+      "smaller_is_better" = TRUE
     ),
-    c("Metric"      = "auc",
-      "Description" = "Area under (ROC) curve",
-      "Task"        = "Binary classification"
+    c("metric"      = "auc",
+      "description" = "Area under (ROC) curve",
+      "task"        = "Binary classification",
+      "smaller_is_better" = FALSE
     ),
-    c("Metric"      = "logloss",
-      "Description" = "Log loss",
-      "Task"        = "Binary classification"
+    c("metric"      = "logloss",
+      "description" = "Log loss",
+      "task"        = "Binary classification",
+      "smaller_is_better" = TRUE
     ),
-    c("Metric"      = "mauc",
-      "Description" = "Multiclass area under (ROC) curve",
-      "Task"        = "Multiclass classification"
+    c("metric"      = "mauc",
+      "description" = "Multiclass area under (ROC) curve",
+      "task"        = "Multiclass classification",
+      "smaller_is_better" = FALSE
     ),
-    # c("Metric"      = "mlogloss",
-    #   "Description" = "Multiclass log loss",
-    #   "Task"        = "Multiclass classification"
+    # c("metric"      = "mlogloss",
+    #   "description" = "Multiclass log loss",
+    #   "task"        = "Multiclass classification",
+    #   "smaller_is_better" = TRUE
     # ),
-    c("Metric"      = "mae",
-      "Description" = "Mean absolute error",
-      "Task"        = "Regression"
+    c("metric"      = "mae",
+      "description" = "Mean absolute error",
+      "task"        = "Regression",
+      "smaller_is_better" = TRUE
     ),
-    c("Metric"      = "mse",
-      "Description" = "Mean squared error",
-      "Task"        = "Regression"
+    c("metric"      = "mse",
+      "description" = "Mean squared error",
+      "task"        = "Regression",
+      "smaller_is_better" = TRUE
     ),
-    c("Metric"      = "r2",
-      "Description" = "R squared",
-      "Task"        = "Regression"
+    c("metric"      = "r2",
+      "description" = "R squared",
+      "task"        = "Regression",
+      "smaller_is_better" = FALSE
     ),
-    c("Metric"      = "rsquared",
-      "Description" = "R squared",
-      "Task"        = "Regression"
+    c("metric"      = "rsquared",
+      "description" = "R squared",
+      "task"        = "Regression",
+      "smaller_is_better" = FALSE
     ),
-    c("Metric"      = "rmse",
-      "Description" = "Root mean squared error",
-      "Task"        = "Regression"
+    c("metric"      = "rmse",
+      "description" = "Root mean squared error",
+      "task"        = "Regression",
+      "smaller_is_better" = TRUE
     ),
-    c("Metric"      = "sse",
-      "Description" = "Sum of squared errors",
-      "Task"        = "Regression"
+    c("metric"      = "sse",
+      "description" = "Sum of squared errors",
+      "task"        = "Regression",
+      "smaller_is_better" = TRUE
     )
   ), stringsAsFactors = FALSE)
 }

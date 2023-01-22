@@ -53,7 +53,7 @@ model-agnostic and can be applied to any supervised learning algorithm. By
 default, relative "flatness" is defined by computing the standard deviation
 of the y-axis values for each feature effect plot for numeric features; for
 categorical features, the default is to use range divided by 4. This can be
-changed via the `var_fun` argument. See
+changed via the \code{var_fun} argument. See
 \href{https://arxiv.org/abs/1805.04755}{Greenwell et al. (2018)} for details
 and additional examples.
 }

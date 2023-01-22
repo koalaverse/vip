@@ -1,6 +1,6 @@
 # Exits
 if (!requireNamespace("earth", quietly = TRUE)) {
-  exit_file("Package earth missing")
+  exit_file("Package 'earth' missing")
 }
 
 # Load required packages

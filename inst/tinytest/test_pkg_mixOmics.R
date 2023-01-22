@@ -3,6 +3,11 @@ if (!requireNamespace("mixOmics", quietly = TRUE)) {
   exit_file("Bioconductor package 'mixOmics' missing")
 }
 
+# # Load required packages
+# suppressMessages({
+#   library(mixOmics)
+# })
+
 # Generate Friedman benchmark data
 friedman1 <- gen_friedman(seed = 101)
 friedman3 <- gen_friedman(seed = 101, n_bins = 3)

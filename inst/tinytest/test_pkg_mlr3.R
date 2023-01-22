@@ -1,12 +1,12 @@
 # Exits
 if (!requireNamespace("mlr3", quietly = TRUE)) {
-  exit_file("Package mlr3 missing")
+  exit_file("Package 'mlr3' missing")
 }
 if (!requireNamespace("mlr3learners", quietly = TRUE)) {
-  exit_file("Package mlr3learners missing")
+  exit_file("Package 'mlr3learners' missing")
 }
 if (!requireNamespace("ranger", quietly = TRUE)) {
-  exit_file("Package ranger missing")
+  exit_file("Package 'ranger' missing")
 }
 
 # Load required packages

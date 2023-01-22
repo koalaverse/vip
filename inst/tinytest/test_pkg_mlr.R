@@ -1,13 +1,14 @@
 # Exits
 if (!requireNamespace("mlr", quietly = TRUE)) {
-  exit_file("Package mlr missing")
+  exit_file("Package 'mlr' missing")
 }
 if (!requireNamespace("ranger", quietly = TRUE)) {
-  exit_file("Package ranger missing")
+  exit_file("Package 'ranger' missing")
 }
 
 # Load required packages
 suppressMessages({
+  # library(mlr)
   library(ranger)
 })
 

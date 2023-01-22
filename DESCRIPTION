@@ -1,7 +1,7 @@
 Package: vip
 Type: Package
 Title: Variable Importance Plots
-Version: 0.3.3
+Version: 0.3.2.9000
 Authors@R: c(
   person(c("Brandon", "M."), family = "Greenwell", 
          email = "greenwell.brandon@gmail.com",
@@ -31,12 +31,10 @@ URL: https://github.com/koalaverse/vip/
 BugReports: https://github.com/koalaverse/vip/issues
 Encoding: UTF-8
 VignetteBuilder: knitr
-biocViews:
 Imports: 
+    foreach,
     ggplot2 (>= 0.9.0),
-    gridExtra,
     magrittr,
-    plyr,
     stats,
     tibble,
     utils
@@ -78,8 +76,10 @@ Suggests:
     RSNNS,
     sparkline,
     sparklyr (>= 0.8.0),
+    tidymodels,
     tinytest,
     varImp,
     workflows (>= 0.2.3),
     xgboost
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
+Roxygen: list(markdown = TRUE)
