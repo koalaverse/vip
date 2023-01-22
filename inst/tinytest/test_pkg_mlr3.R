@@ -10,19 +10,19 @@ if (!requireNamespace("ranger", quietly = TRUE)) {
 }
 
 # Load required packages
-suppressMessages({
-  library(mlr3)
-  library(mlr3learners)
-  library(ranger)
-})
+#suppressMessages({
+#  library(mlr3)
+#  library(mlr3learners)
+#  library(ranger)
+#})
 
 # Generate Friedman benchmark data
 friedman1 <- gen_friedman(seed = 101)
 
 # Fit model(s)
 set.seed(101)
-task <- TaskRegr$new("friedman", backend = friedman1, target = "y")
-lrnr <- lrn("regr.ranger", importance = "impurity")
+task <- mlr3::TaskRegr$new("friedman", backend = friedman1, target = "y")
+lrnr <- mlr3::lrn("regr.ranger", importance = "impurity")
 expect_error(vi(lrnr))  # did not call `$traini()` yet
 expect_error(vi_model(lrnr))  # did not call `$traini()` yet
 lrnr$train(task)  # `vi()`, etc. should now work

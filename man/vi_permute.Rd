@@ -117,8 +117,8 @@ in parallel (using a backend provided by the \code{foreach} package). Default
 is \code{FALSE}. If \code{TRUE}, a \code{\link[foreach]{foreach}}-compatible
 backend must be provided by must be provided.}
 
-\item{Character}{string specifying whether to parallelize across features
-(\code{parallelize_by = "features"}) or repetitions
+\item{parallelize_by}{Character string specifying whether to parallelize
+across features (\code{parallelize_by = "features"}) or repetitions
 (\code{parallelize_by = "reps"}); the latter is only useful whenever
 \code{nsim > 1}. Default is \code{"features"}.}
 }
@@ -128,10 +128,7 @@ A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
 }
 \description{
 Compute permutation-based variable importance scores for the predictors in a
-model.
-}
-\details{
-Coming soon!
+model; for details on the algorithm, see Greenwell and Boehmke (2020).
 }
 \examples{
 \dontrun{
@@ -172,4 +169,8 @@ vip(pp, method = "permute", target = "y", metric = mae,
     pred_wrapper = function(object, newdata) predict(object, newdata)
 ) + ggtitle("PPR")
 }
+}
+\references{
+Brandon M. Greenwell and Bradley C. Boehmke, The R Journal (2020) 12:1,
+pages 343-366.
 }

@@ -23,8 +23,6 @@
 \alias{vi_model.constparty}
 \alias{vi_model.cforest}
 \alias{vi_model.mvr}
-\alias{vi_model.mixo_pls}
-\alias{vi_model.mixo_spls}
 \alias{vi_model.randomForest}
 \alias{vi_model.ranger}
 \alias{vi_model.rpart}
@@ -38,10 +36,7 @@
 \alias{vi_model.ml_model_random_forest_regression}
 \alias{vi_model.ml_model_random_forest_classification}
 \alias{vi_model.lm}
-<<<<<<< HEAD
-=======
 \alias{vi_model.model_fit}
->>>>>>> master
 \alias{vi_model.workflow}
 \alias{vi_model.xgb.Booster}
 \title{Model-specific variable importance}

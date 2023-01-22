@@ -1,5 +1,3 @@
-library(vip)
-
 # Exits
 if (!requireNamespace("ranger", quietly = TRUE)) {
   exit_file("Package 'ranger' missing")
@@ -9,38 +7,38 @@ if (!requireNamespace("tidymodels", quietly = TRUE)) {
 }
 
 # Load required packages
-suppressMessages({
-  library(ranger)
-  library(tidymodels)
-})
+#suppressMessages({
+#  library(ranger)
+#  library(tidymodels)
+#})
+
 
 # FIXME: Switch to data set where we know the actual ranking of the features in
 # terms of predictive performance.
-
 
 ################################################################################
 # Fit a random forest to some sample data
 ################################################################################
 
 # Load sample data from 'modeldata' package
-data("bivariate")
+data("bivariate", package = "modeldata")
 
 # Define a 'ranger'-based random forest model
-ranger_spec <- rand_forest(trees = 1e3, mode = "classification") %>%
-  set_engine("ranger", importance = "impurity")
+ranger_spec <- parsnip::rand_forest(trees = 1e3, mode = "classification") %>%
+  parsnip::set_engine("ranger", importance = "impurity")
 
 # Fit models
 set.seed(421)  # for reproduicbility
 ranger_fit_workflow <-  # worflows
-  workflow(Class ~ ., ranger_spec) %>%
-  fit(bivariate_train)
+  workflows::workflow(Class ~ ., ranger_spec) %>%
+  parsnip::fit(bivariate_train)
 ranger_fit_parsnip <-  # parsnip
   ranger_spec %>%
-  fit(Class ~ ., data = bivariate_train)
+  parsnip::fit(Class ~ ., data = bivariate_train)
 
 # Extract underlying 'ranger' fits
-fit_workflow <- extract_fit_engine(ranger_fit_workflow)
-fit_parsnip <- extract_fit_engine(ranger_fit_parsnip)
+fit_workflow <- workflows::extract_fit_engine(ranger_fit_workflow)
+fit_parsnip <- parsnip::extract_fit_engine(ranger_fit_parsnip)
 
 
 ################################################################################

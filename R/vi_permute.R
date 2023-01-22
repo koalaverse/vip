@@ -1,7 +1,7 @@
 #' Permutation-based variable importance
 #'
 #' Compute permutation-based variable importance scores for the predictors in a
-#' model.
+#' model; for details on the algorithm, see Greenwell and Boehmke (2020).
 #'
 #' @param object A fitted model object (e.g., a \code{"randomForest"} object).
 #'
@@ -75,9 +75,6 @@
 #'   class probabilities for each class (e.g., if using log loss or AUC).}
 #' }
 #'
-#' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
-#' \code{Variable} and \code{Importance}.
-#'
 #' @param verbose Logical indicating whether or not to print information during
 #' the construction of variable importance scores. Default is \code{FALSE}.
 #'
@@ -90,15 +87,22 @@
 #' is \code{FALSE}. If \code{TRUE}, a \code{\link[foreach]{foreach}}-compatible
 #' backend must be provided by must be provided.
 #'
-#' @param Character string specifying whether to parallelize across features
-#' (\code{parallelize_by = "features"}) or repetitions
+#' @param parallelize_by Character string specifying whether to parallelize 
+#' across features (\code{parallelize_by = "features"}) or repetitions
 #' (\code{parallelize_by = "reps"}); the latter is only useful whenever
 #' \code{nsim > 1}. Default is \code{"features"}.
 #'
 #' @param ... Additional optional arguments to be passed on to
 #' \code{\link[foreach]{foreach}}.
 #'
-#' @details Coming soon!
+#' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
+#' \code{Variable} and \code{Importance}.
+#'
+#' @importFrom foreach foreach %do% %dopar%
+#' 
+#' @references 
+#' Brandon M. Greenwell and Bradley C. Boehmke, The R Journal (2020) 12:1, 
+#' pages 343-366. 
 #'
 #' @rdname vi_permute
 #'

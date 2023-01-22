@@ -1,6 +1,6 @@
 # Check dependencies
-if (!require(pdp, quietly = TRUE)) {
-  exit_file("R package pdp not available.")
+if (!requireNamespace("pdp", quietly = TRUE)) {
+  exit_file("Package 'pdp' missing")
 }
 
 # Generate Friedman benchmark data
