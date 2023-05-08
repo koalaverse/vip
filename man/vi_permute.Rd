@@ -20,6 +20,7 @@ vi_permute(object, ...)
   sample_size = NULL,
   sample_frac = NULL,
   reference_class = NULL,
+  event_level = NULL,
   pred_wrapper = NULL,
   verbose = FALSE,
   parallel = FALSE,
@@ -82,10 +83,13 @@ for each Monte Carlo repetition. Default is \code{NULL} (i.e., use all of the
 available training data). Cannot be specified with \code{sample_size}. Can be
 used to reduce computation time with large data sets.}
 
-\item{reference_class}{Character string specifying which response category
-represents the "reference" class (i.e., the class for which the predicted
-class probabilities correspond to). Only needed for binary classification
-problems.}
+\item{reference_class}{Deprecated, use \code{event_level} instead.}
+
+\item{event_level}{String specifying which factor level of \code{truth} to
+consider as the "event". Options are \code{"first"} (the default) or \code{"second"}.
+This argument is only applicable for binary classification when \code{metric} is
+one of \code{"roc_auc"}, \code{"pr_auc"}, or \code{"youden"}. This argument is passed on to
+the corresponding \link[yardstick:yardstick-package]{yardstick} metric.}
 
 \item{pred_wrapper}{Prediction function that requires two arguments,
 \code{object} and \code{newdata}. The output of this function should be
