@@ -132,6 +132,13 @@ vi_firm.default <- function(
          "Please install it.", call. = FALSE)
   }
 
+  # Catch deprecated arguments
+  if (!is.null(var_fun)) {
+    stop("Argument `var_fun` is deprecated; please use the `var_continuous` ",
+         "and `var_categorical` arguments instead.",
+         call. = FALSE)
+  }
+
   # Try to extract feature names from `object`
   if (is.null(feature_names)) {
     feature_names <- get_feature_names(object)

@@ -59,8 +59,6 @@
 #' class probabilities correspond to). Only needed for binary classification
 #' problems.
 #'
-#' @param pred_fun Deprecated. Use \code{pred_wrapper} instead.
-#'
 #' @param pred_wrapper Prediction function that requires two arguments,
 #' \code{object} and \code{newdata}. The output of this function should be
 #' determined by the \code{metric} being used:

@@ -113,8 +113,6 @@ backend must be provided by must be provided.}
 across features (\code{parallelize_by = "features"}) or repetitions
 (\code{parallelize_by = "reps"}); the latter is only useful whenever
 \code{nsim > 1}. Default is \code{"features"}.}
-
-\item{pred_fun}{Deprecated. Use \code{pred_wrapper} instead.}
 }
 \value{
 A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
