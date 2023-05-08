@@ -34,14 +34,14 @@ check_var_fun <- function(x) {
 }
 
 
-#' #' @keywords internal
-#' permute_columns <- function(x, columns = NULL) {
-#'   if (is.null(columns)) {
-#'     stop("No columns specified for permutation.")
-#'   }
-#'   x[, columns] <- x[sample(nrow(x)), columns]
-#'   x
-#' }
+# #' @keywords internal
+# permute_columns <- function(x, columns = NULL) {
+#   if (is.null(columns)) {
+#     stop("No columns specified for permutation.")
+#   }
+#   x[, columns] <- x[sample(nrow(x)), columns]
+#   x
+# }
 
 
 #' @keywords internal

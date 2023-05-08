@@ -9,3 +9,6 @@
 ^tools$
 ^\.github$
 ^tools$
+^_pkgdown\.yml$
+^pkgdown$
+^vignettes/articles$

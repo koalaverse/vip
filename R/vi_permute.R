@@ -6,9 +6,9 @@
 #' @param object A fitted model object (e.g., a \code{"randomForest"} object).
 #'
 #' @param feature_names Character string giving the names of the predictor
-#' variables (i.e., features) of interest. If \code{NULL} (the default) then the
-#' internal `get_feature_names()` function will be called to try and extract
-#' them automatically. It is good practice to always specify this argument.
+#' variables (i.e., features) of interest. If \code{NULL} (the default) then
+#' they will be inferred from the `train` and `target` arguments (see below).
+#' It is good practice to always specify this argument.
 #'
 #' @param train A matrix-like R object (e.g., a data frame or matrix)
 #' containing the training data. If \code{NULL} (the default) then the
@@ -78,16 +78,12 @@
 #' @param verbose Logical indicating whether or not to print information during
 #' the construction of variable importance scores. Default is \code{FALSE}.
 #'
-#' @param progress Character string giving the name of the progress bar to use.
-#' See \code{\link[plyr]{create_progress_bar}} for details. Default is
-#' \code{"none"}.
-#'
 #' @param parallel Logical indicating whether or not to run \code{vi_permute()}
 #' in parallel (using a backend provided by the \code{foreach} package). Default
 #' is \code{FALSE}. If \code{TRUE}, a \code{\link[foreach]{foreach}}-compatible
 #' backend must be provided by must be provided.
 #'
-#' @param parallelize_by Character string specifying whether to parallelize 
+#' @param parallelize_by Character string specifying whether to parallelize
 #' across features (\code{parallelize_by = "features"}) or repetitions
 #' (\code{parallelize_by = "reps"}); the latter is only useful whenever
 #' \code{nsim > 1}. Default is \code{"features"}.
@@ -99,10 +95,10 @@
 #' \code{Variable} and \code{Importance}.
 #'
 #' @importFrom foreach foreach %do% %dopar%
-#' 
-#' @references 
-#' Brandon M. Greenwell and Bradley C. Boehmke, The R Journal (2020) 12:1, 
-#' pages 343-366. 
+#'
+#' @references
+#' Brandon M. Greenwell and Bradley C. Boehmke, The R Journal (2020) 12:1,
+#' pages 343-366.
 #'
 #' @rdname vi_permute
 #'
@@ -168,24 +164,20 @@ vi_permute.default <- function(
   sample_size = NULL,
   sample_frac = NULL,
   reference_class = NULL,
-  pred_fun = NULL,
-  pred_wrapper = NULL,
+  pred_wrapper = NULL,  # FIXME: Why give this a default?
   verbose = FALSE,
-  progress = "none",
   parallel = FALSE,
   parallelize_by = c("features", "repetitions"),
   ...
 ) {
 
-  # # Issue warning until this function is complete!
-  # warning("Setting `method = \"permute\"` is experimental, use at your own ",
-  #         "risk!", call. = FALSE)
-
-  # Catch deprecated arguments
-  if (!is.null(pred_fun)) {
-    stop("Argument `pred_fun` is deprecated; please use `pred_wrapper` ",
-         "instead.", call. = FALSE)
-  }
+  # FIXEME: Is there a better way to fix this?
+  #
+  # ❯ checking R code for possible problems ... NOTE
+  # vi_permute.default: no visible binding for global variable ‘j’
+  # Undefined global functions or variables:
+  #   j
+  i <- j <- NULL
 
   # # Try to extract feature names if not supplied
   # if (is.null(feature_names)) {

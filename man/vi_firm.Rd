@@ -7,55 +7,70 @@
 \usage{
 vi_firm(object, ...)
 
-\method{vi_firm}{default}(object, feature_names, FUN = NULL, var_fun = NULL, ice = FALSE, ...)
+\method{vi_firm}{default}(
+  object,
+  feature_names = NULL,
+  train = NULL,
+  var_fun = NULL,
+  var_continuous = stats::sd,
+  var_categorical = function(x) diff(range(x))/4,
+  ...
+)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
 
 \item{...}{Additional optional arguments to be passed on to
-\code{\link[pdp]{partial}}.}
+\code{\link[pdp:partial]{pdp::partial()}} (e.g., \code{ice = TRUE}, \code{prob = TRUE}, or a
+prediction wrapper via the \code{pred.fun} argument); see \code{pdp::partial} for
+details on these and other potentially useful arguments.}
 
 \item{feature_names}{Character string giving the names of the predictor
-variables (i.e., features) of interest.}
+variables (i.e., features) of interest. If \code{NULL} (the default) then the
+internal \code{get_feature_names()} function will be called to try and extract
+them automatically. It is good practice to always specify this argument.}
 
-\item{FUN}{Deprecated. Use \code{var_fun} instead.}
+\item{train}{A matrix-like R object (e.g., a data frame or matrix)
+containing the training data. If \code{NULL} (the default) then the
+internal \code{get_training_data()} function will be called to try and extract it
+automatically. It is good practice to always specify this argument.}
 
-\item{var_fun}{List with two components, \code{"cat"} and \code{"con"},
-containing the functions to use to quantify the variability of the feature
-effects (e.g., partial dependence values) for categorical and continuous
-features, respectively. If \code{NULL}, the standard deviation is used for
-continuous features. For categorical features, the range statistic is used
-(i.e., (max - min) / 4). Only applies when \code{method = "firm"}.}
+\item{var_fun}{Deprecated; use \code{var_continuous} and \code{var_categorical}
+instead.}
 
-\item{ice}{Logical indicating whether or not to estimate feature effects
-using \emph{individual conditional expectation} (ICE) curves.
-Only applies when \code{method = "firm"}. Default is \code{FALSE}. Setting
-\code{ice = TRUE} is preferred whenever strong interaction effects are
-potentially present.}
+\item{var_continuous}{Function used to quantify the variability of effects
+for continuous features. Defaults to using the sample standard deviation
+(i.e., \code{\link[stats:sd]{stats::sd()}}).}
+
+\item{var_categorical}{Function used to quantify the variability of effects
+for categorical features. Defaults to using the range divided by four; that
+is, \code{function(x) diff(range(x)) / 4}.}
 }
 \value{
-A tidy data frame (i.e., a \code{"tibble"} object) with two columns,
-\code{Variable} and \code{Importance}, containing the variable name and its
+A tidy data frame (i.e., a \link[tibble:tibble]{tibble} object) with two
+columns, \code{Variable} and \code{Importance}, containing the variable name and its
 associated importance score, respectively.
 }
 \description{
-Compute variance-based variable importance using a simple
+Compute variance-based variable importance (VI) scores using a simple
 \emph{feature importance ranking measure} (FIRM) approach; for details, see
 \href{https://arxiv.org/abs/1805.04755}{Greenwell et al. (2018)} and
 \href{https://arxiv.org/abs/1904.03959}{Scholbeck et al. (2019)}.
 }
 \details{
-This approach to computing VI scores is based on quantifying the
-relative "flatness" of the effect of each feature. Feature effects can be
-assessed using \emph{partial dependence plots} (PDPs) or
-\emph{individual conditional expectation} (ICE) curves. These approaches are
-model-agnostic and can be applied to any supervised learning algorithm. By
-default, relative "flatness" is defined by computing the standard deviation
-of the y-axis values for each feature effect plot for numeric features; for
-categorical features, the default is to use range divided by 4. This can be
-changed via the \code{var_fun} argument. See
-\href{https://arxiv.org/abs/1805.04755}{Greenwell et al. (2018)} for details
-and additional examples.
+This approach is based on quantifying the relative "flatness" of the
+effect of each feature and assumes the user has some familiarity with the
+\code{\link[pdp:partial]{pdp::partial()}} function. The  Feature effects can be assessed
+using \emph{partial dependence} (PD) plots (Friedman, 2001) or
+\emph{individual conditional expectation} (ICE) plots (Goldstein et al., 2014).
+These methods are model-agnostic and can be applied to any supervised
+learning algorithm. By default, relative "flatness" is defined by computing
+the standard deviation of the y-axis values for each feature effect plot for
+numeric features; for categorical features, the default is to use range
+divided by 4. This can be changed via the \code{var_continuous} and
+\code{var_categorical} arguments. See
+\href{https://arxiv.org/abs/1805.04755}{Greenwell et al. (2018)} for details and
+additional examples.
 }
 \examples{
 \dontrun{
@@ -69,16 +84,38 @@ data(mtcars)
 # Fit a projection pursuit regression model
 mtcars.ppr <- ppr(mpg ~ ., data = mtcars, nterms = 1)
 
-# Compute variable importance scores using the FIRM method
-vi(mtcars.ppr, method = "firm", ice = TRUE)
-vi(mtcars.ppr, method = "firm", ice = TRUE,
-   var_fun = list("con" = mad, "cat" = function(x) diff(range(x)) / 4))
+# Compute variable importance scores using the FIRM method; note the the pdp
+# package knows how to work with a "ppr" object, so there's no need to pass
+# the training data or a prediction wrapper, but it's good practice.
+vi_firm(mtcars.ppr, train = mtcars)
 
-# Plot variable importance scores
-vip(mtcars.ppr, method = "firm", ice = TRUE)
+# Define prediction wrapper
+pfun <- function(object, newdata) {  # use PD
+  mean(predict(object, newdata = newdata))  # return averaged prediction
+}
+
+# Equivalent to the previous results
+vi_firm(mtcars.ppr, train = mtcars, pred.fun = pfun)
+
+# Equivalent VI scores, but the output is sorted by default
+vi(mtcars.ppr, method = "firm")
+
+# Use MAD to estimate variability for the continuous feature effects
+vi_firm(mtcars.ppr, var_continuous = stats::mad)
+
+# Plot VI scores
+vip(mtcars.ppr, method = "firm", train = mtcars, pred.fun = pfun)
 }
 }
 \references{
+J. H. Friedman. Greedy function approximation: A gradient boosting machine.
+\emph{Annals of Statistics}, *\emph{29}: 1189-1232, 2001.
+
+Goldstein, A., Kapelner, A., Bleich, J., and Pitkin, E., Peeking Inside the
+Black Box: Visualizing Statistical Learning With Plots of Individual
+Conditional Expectation. (2014) \emph{Journal of Computational and Graphical
+Statistics}, \strong{24}(1): 44-65, 2015.
+
 Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J. A Simple
 and Effective Model-Based Variable Importance Measure. arXiv preprint
 arXiv:1805.04755 (2018).

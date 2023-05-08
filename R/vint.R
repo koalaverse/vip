@@ -9,11 +9,6 @@
 #' @param feature_names Character string giving the names of the two features of
 #' interest.
 #'
-#' @param progress Character string giving the name of the progress bar to use
-#' while constructing the interaction statistics. See
-#' \code{\link[plyr]{create_progress_bar}} for details. Default is
-#' \code{"none"}.
-#'
 #' @param parallel Logical indicating whether or not to run \code{partial} in
 #' parallel using a backend provided by the \code{foreach} package. Default is
 #' \code{FALSE}.

@@ -20,10 +20,8 @@ vi_permute(object, ...)
   sample_size = NULL,
   sample_frac = NULL,
   reference_class = NULL,
-  pred_fun = NULL,
   pred_wrapper = NULL,
   verbose = FALSE,
-  progress = "none",
   parallel = FALSE,
   parallelize_by = c("features", "repetitions"),
   ...
@@ -36,9 +34,9 @@ vi_permute(object, ...)
 \code{\link[foreach]{foreach}}.}
 
 \item{feature_names}{Character string giving the names of the predictor
-variables (i.e., features) of interest. If \code{NULL} (the default) then the
-internal \code{get_feature_names()} function will be called to try and extract
-them automatically. It is good practice to always specify this argument.}
+variables (i.e., features) of interest. If \code{NULL} (the default) then
+they will be inferred from the \code{train} and \code{target} arguments (see below).
+It is good practice to always specify this argument.}
 
 \item{train}{A matrix-like R object (e.g., a data frame or matrix)
 containing the training data. If \code{NULL} (the default) then the
@@ -89,8 +87,6 @@ represents the "reference" class (i.e., the class for which the predicted
 class probabilities correspond to). Only needed for binary classification
 problems.}
 
-\item{pred_fun}{Deprecated. Use \code{pred_wrapper} instead.}
-
 \item{pred_wrapper}{Prediction function that requires two arguments,
 \code{object} and \code{newdata}. The output of this function should be
 determined by the \code{metric} being used:
@@ -108,10 +104,6 @@ class probabilities for each class (e.g., if using log loss or AUC).}
 \item{verbose}{Logical indicating whether or not to print information during
 the construction of variable importance scores. Default is \code{FALSE}.}
 
-\item{progress}{Character string giving the name of the progress bar to use.
-See \code{\link[plyr]{create_progress_bar}} for details. Default is
-\code{"none"}.}
-
 \item{parallel}{Logical indicating whether or not to run \code{vi_permute()}
 in parallel (using a backend provided by the \code{foreach} package). Default
 is \code{FALSE}. If \code{TRUE}, a \code{\link[foreach]{foreach}}-compatible
@@ -121,6 +113,8 @@ backend must be provided by must be provided.}
 across features (\code{parallelize_by = "features"}) or repetitions
 (\code{parallelize_by = "reps"}); the latter is only useful whenever
 \code{nsim > 1}. Default is \code{"features"}.}
+
+\item{pred_fun}{Deprecated. Use \code{pred_wrapper} instead.}
 }
 \value{
 A tidy data frame (i.e., a \code{"tibble"} object) with two columns:

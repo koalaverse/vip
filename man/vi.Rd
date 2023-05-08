@@ -11,9 +11,6 @@ vi(object, ...)
   object,
   method = c("model", "firm", "permute", "shap"),
   feature_names = NULL,
-  FUN = NULL,
-  var_fun = NULL,
-  ice = FALSE,
   abbreviate_feature_names = NULL,
   sort = TRUE,
   decreasing = TRUE,
@@ -28,7 +25,7 @@ an object that inherits from class \code{"vi"}.}
 
 \item{...}{Additional optional arguments to be passed on to
 \code{\link{vi_model}}, \code{\link{vi_firm}}, \code{\link{vi_permute}},
-or \code{\link{vi_shap}}.}
+or \code{\link{vi_shap}}; see their respective help pages for details.}
 
 \item{method}{Character string specifying the type of variable importance
 (VI) to compute. Current options are \code{"model"} (the default), for
@@ -42,21 +39,6 @@ VI scores. For more details on the variance-based methods, see
 
 \item{feature_names}{Character string giving the names of the predictor
 variables (i.e., features) of interest.}
-
-\item{FUN}{Deprecated. Use \code{var_fun} instead.}
-
-\item{var_fun}{List with two components, \code{"cat"} and \code{"con"},
-containing the functions to use to quantify the variability of the feature
-effects (e.g., partial dependence values) for categorical and continuous
-features, respectively. If \code{NULL}, the standard deviation is used for
-continuous features. For categorical features, the range statistic is used
-(i.e., (max - min) / 4). Only applies when \code{method = "firm"}.}
-
-\item{ice}{Logical indicating whether or not to estimate feature effects
-using \emph{individual conditional expectation} (ICE) curves.
-Only applies when \code{method = "firm"}. Default is \code{FALSE}. Setting
-\code{ice = TRUE} is preferred whenever strong interaction effects are
-potentially present.}
 
 \item{abbreviate_feature_names}{Integer specifying the length at which to
 abbreviate feature names. Default is \code{NULL} which results in no

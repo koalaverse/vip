@@ -1,5 +1,11 @@
 # vip 0.3.3
 
+## Breaking changes
+
+* The `var_fun` argument in `vi_firm()` has been deprecated; use the new `var_continuous` and `var_categorical` instead.
+
+* The explcit `ice` argument in `vi_firm()` has been removed; it was not really needed since it can be passed via the `...` argument. 
+
 ## Enhancements
 
 * `list_metrics()` gained an additional `smaller_is_better` column indicating whether or not the corresponding metric should be minimized (`smaller_is_better = TRUE`) or maximized (`smaller_is_better = FALSE`); thanks to @topedo. Additionally, all the column names are now in lower case. 
