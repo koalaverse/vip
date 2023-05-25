@@ -1,50 +1,68 @@
 #' Variance-based variable importance
 #'
-#' Compute variance-based variable importance using a simple
+#' Compute variance-based variable importance (VI) scores using a simple
 #' \emph{feature importance ranking measure} (FIRM) approach; for details, see
 #' \href{https://arxiv.org/abs/1805.04755}{Greenwell et al. (2018)} and
 #' \href{https://arxiv.org/abs/1904.03959}{Scholbeck et al. (2019)}.
 #'
-#' @param object A fitted model object (e.g., a \code{"randomForest"} object).
+#' @param object A fitted model object (e.g., a `"randomForest"` object).
 #'
 #' @param feature_names Character string giving the names of the predictor
-#' variables (i.e., features) of interest.
+#' variables (i.e., features) of interest. If `NULL` (the default) then the
+#' internal `get_feature_names()` function will be called to try and extract
+#' them automatically. It is good practice to always specify this argument.
 #'
-#' @param FUN Deprecated. Use \code{var_fun} instead.
+#' @param train A matrix-like R object (e.g., a data frame or matrix)
+#' containing the training data. If `NULL` (the default) then the
+#' internal `get_training_data()` function will be called to try and extract it
+#' automatically. It is good practice to always specify this argument.
 #'
-#' @param var_fun List with two components, \code{"cat"} and \code{"con"},
-#' containing the functions to use to quantify the variability of the feature
-#' effects (e.g., partial dependence values) for categorical and continuous
-#' features, respectively. If \code{NULL}, the standard deviation is used for
-#' continuous features. For categorical features, the range statistic is used
-#' (i.e., (max - min) / 4). Only applies when \code{method = "firm"}.
+#' @param var_fun Deprecated; use `var_continuous` and `var_categorical`
+#' instead.
 #'
-#' @param ice Logical indicating whether or not to estimate feature effects
-#' using \emph{individual conditional expectation} (ICE) curves.
-#' Only applies when \code{method = "firm"}. Default is \code{FALSE}. Setting
-#' \code{ice = TRUE} is preferred whenever strong interaction effects are
-#' potentially present.
+#' @param var_continuous Function used to quantify the variability of effects
+#' for continuous features. Defaults to using the sample standard deviation
+#' (i.e., [stats::sd()]).
 #'
-#' @param ... Additional optional arguments to be passed on to
-#' \code{\link[pdp]{partial}}.
+#' @param var_categorical Function used to quantify the variability of effects
+#' for categorical features. Defaults to using the range divided by four; that
+#' is, `function(x) diff(range(x)) / 4`.
 #'
-#' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns,
-#' \code{Variable} and \code{Importance}, containing the variable name and its
-#' associated importance score, respectively.
+#' @param ... Additional arguments to be passed on to the [pdp::partial()]
+#' function (e.g., `ice = TRUE`, `prob = TRUE`, or a prediction wrapper via the
+#' `pred.fun` argument); see `?pdp::partial` for details on these and other
+#' useful arguments.
 #'
-#' @details This approach to computing VI scores is based on quantifying the
-#' relative "flatness" of the effect of each feature. Feature effects can be
-#' assessed using \emph{partial dependence plots} (PDPs) or
-#' \emph{individual conditional expectation} (ICE) curves. These approaches are
-#' model-agnostic and can be applied to any supervised learning algorithm. By
-#' default, relative "flatness" is defined by computing the standard deviation
-#' of the y-axis values for each feature effect plot for numeric features; for
-#' categorical features, the default is to use range divided by 4. This can be
-#' changed via the `var_fun` argument. See
-#' \href{https://arxiv.org/abs/1805.04755}{Greenwell et al. (2018)} for details
-#' and additional examples.
+#' @return A tidy data frame (i.e., a [tibble][tibble::tibble] object) with two
+#' columns:
+#'
+#' * `Variable` - the corresponding feature name;
+#' * `Importance` - the associated importance, computed as described in
+#' [Greenwell et al. (2018)](https://arxiv.org/abs/1805.04755).
+#'
+#' @details This approach is based on quantifying the relative "flatness" of the
+#' effect of each feature and assumes the user has some familiarity with the
+#' [pdp::partial()] function. The  Feature effects can be assessed
+#' using *partial dependence* (PD) plots (Friedman, 2001) or
+#' *individual conditional expectation* (ICE) plots (Goldstein et al., 2014).
+#' These methods are model-agnostic and can be applied to any supervised
+#' learning algorithm. By default, relative "flatness" is defined by computing
+#' the standard deviation of the y-axis values for each feature effect plot for
+#' numeric features; for categorical features, the default is to use range
+#' divided by 4. This can be changed via the `var_continuous` and
+#' `var_categorical` arguments. See
+#' [Greenwell et al. (2018)](https://arxiv.org/abs/1805.04755) for details and
+#' additional examples.
 #'
 #' @references
+#' J. H. Friedman. Greedy function approximation: A gradient boosting machine.
+#' *Annals of Statistics*, **29*: 1189-1232, 2001.
+#'
+#' Goldstein, A., Kapelner, A., Bleich, J., and Pitkin, E., Peeking Inside the
+#' Black Box: Visualizing Statistical Learning With Plots of Individual
+#' Conditional Expectation. (2014) *Journal of Computational and Graphical
+#' Statistics*, **24**(1): 44-65, 2015.
+#'
 #' Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J. A Simple
 #' and Effective Model-Based Variable Importance Measure. arXiv preprint
 #' arXiv:1805.04755 (2018).
@@ -53,6 +71,7 @@
 #' and Casalicchio, G. Sampling, Intervention, Prediction, Aggregation: A
 #' Generalized Framework for Model-Agnostic Interpretations. arXiv preprint
 #' arXiv:1904.03959 (2019).
+#'
 #'
 #' @rdname vi_firm
 #'
@@ -70,13 +89,27 @@
 #' # Fit a projection pursuit regression model
 #' mtcars.ppr <- ppr(mpg ~ ., data = mtcars, nterms = 1)
 #'
-#' # Compute variable importance scores using the FIRM method
-#' vi(mtcars.ppr, method = "firm", ice = TRUE)
-#' vi(mtcars.ppr, method = "firm", ice = TRUE,
-#'    var_fun = list("con" = mad, "cat" = function(x) diff(range(x)) / 4))
+#' # Compute variable importance scores using the FIRM method; note the the pdp
+#' # package knows how to work with a "ppr" object, so there's no need to pass
+#' # the training data or a prediction wrapper, but it's good practice.
+#' vi_firm(mtcars.ppr, train = mtcars)
 #'
-#' # Plot variable importance scores
-#' vip(mtcars.ppr, method = "firm", ice = TRUE)
+#' # Define prediction wrapper
+#' pfun <- function(object, newdata) {  # use PD
+#'   mean(predict(object, newdata = newdata))  # return averaged prediction
+#' }
+#'
+#' # Equivalent to the previous results
+#' vi_firm(mtcars.ppr, train = mtcars, pred.fun = pfun)
+#'
+#' # Equivalent VI scores, but the output is sorted by default
+#' vi(mtcars.ppr, method = "firm")
+#'
+#' # Use MAD to estimate variability for the continuous feature effects
+#' vi_firm(mtcars.ppr, var_continuous = stats::mad)
+#'
+#' # Plot VI scores
+#' vip(mtcars.ppr, method = "firm", train = mtcars, pred.fun = pfun)
 #' }
 vi_firm <- function(object, ...) {
   UseMethod("vi_firm")
@@ -86,45 +119,55 @@ vi_firm <- function(object, ...) {
 #' @rdname vi_firm
 #'
 #' @export
-vi_firm.default <- function(object, feature_names, FUN = NULL, var_fun = NULL,
-                            ice = FALSE, ...) {
+vi_firm.default <- function(
+    object,
+    feature_names = NULL,
+    train = NULL,
+    var_fun = NULL,
+    var_continuous = stats::sd,
+    var_categorical = function(x) diff(range(x)) / 4,
+    ...
+) {
 
-  # # Print warning message
-  # warning("Setting `method = \"pdp\"` is experimental, use at your own risk!",
-  #         call. = FALSE)
-
-  # Check for fastshap package
+  # Check for pdp package
   if (!requireNamespace("pdp", quietly = TRUE)) {
     stop("Package \"pdp\" needed for this function to work. ",
          "Please install it.", call. = FALSE)
   }
 
   # Catch deprecated arguments
-  if (!is.null(FUN)) {
-    stop("Argument `FUN` is deprecated; please use `var_fun` instead.",
+  if (!is.null(var_fun)) {
+    stop("Argument `var_fun` is deprecated; please use the `var_continuous` ",
+         "and `var_categorical` arguments instead.",
          call. = FALSE)
   }
 
-  # Check var_fun argument
-  var_fun <- if (is.null(var_fun)) {
-    list(
-      "cat" = function(x) diff(range(x)) / 4,
-      "con" = stats::sd
-    )
-  } else {
-    check_var_fun(var_fun)
-    var_fun
+  # Try to extract feature names from `object`
+  if (is.null(feature_names)) {
+    feature_names <- get_feature_names(object)
   }
 
-  # Consruct PDP-based variable importance scores
+  # Try to extract training data if not supplied
+  if (is.null(train)) {
+    train <- get_training_data(object)
+  }
+
+  # Construct PD/ICE-based variable importance scores
   vis <- lapply(feature_names, function(x) {
-    firm(object, feature_name = x, var_fun = var_fun, ice = ice, ...)
+    firm(object, feature_name = x, var_continuous = var_continuous,
+         var_categorical = var_categorical, ...)
   })
+  # vis <- numeric(length(feature_names))  # loses "effects" attribute
+  # for (i in seq_along(feature_names)) {
+  #   vis[i] <- firm(object, feature_name = feature_names[i],
+  #                  var_continuous = var_continuous,
+  #                  var_categorical = var_categorical, ...)
+  # }
   tib <- tibble::tibble(
     "Variable" = feature_names,
     "Importance" = unlist(vis)
   )
-  fe <- lapply(vis, FUN = function(x) attr(x, "effects"))
+  fe <- lapply(vis, FUN = function(x) attr(x, which = "effects"))
   names(fe) <- feature_names
   attr(tib, which = "effects") <- fe
   attr(tib, which = "type") <- "firm"
@@ -146,27 +189,27 @@ vi_firm.default <- function(object, feature_names, FUN = NULL, var_fun = NULL,
 #' @keywords internal
 #'
 #' @noRd
-firm <- function(object, feature_name, var_fun, ice = FALSE, ...) {
+firm <- function(object, feature_name, var_continuous, var_categorical, ...) {
 
   # Only allow for a single feature
   if (length(feature_name) != 1L) {
     stop("Only a single feature allowed in `firm()`.", call. = FALSE)
   }
 
-  # Compute feature effects
-  fe <- pdp::partial(object, pred.var = feature_name, ice = ice, ...)
+  # Compute feature effect
+  fe <- pdp::partial(object, pred.var = feature_name, ...)
 
   # Compute partial dependence-based variable importance scores
   var_fun <- if (is.factor(fe[[feature_name]])) {
-    var_fun$cat  # categorical feature
+    var_categorical  # categorical feature
   } else {
-    var_fun$con  # continuous feature
+    var_continuous  # continuous feature
   }
 
   # Compute FIRM
-  res <- if (isTRUE(ice)) {
-    mean(tapply(fe$yhat, INDEX = fe$yhat.id, FUN = var_fun))
-  } else {
+  res <- if ("yhat.id" %in% names(fe)) {  # ICE
+    mean(tapply(fe$yhat, INDEX = fe[["yhat.id"]], FUN = var_fun))
+  } else {  # PD
     var_fun(fe$yhat)
   }
 
@@ -177,31 +220,3 @@ firm <- function(object, feature_name, var_fun, ice = FALSE, ...) {
   res
 
 }
-
-
-#' Deprecated
-#'
-#' These functions have been deprecated and should not be used. They will be
-#' removed in the next release.
-#'
-#' @param ... Arguments passed on to \code{\link{vi_firm}}.
-#'
-#' @rdname deprecated
-#'
-#' @export
-vi_pdp <- function(...) {
-  warning("Function `vi_pdp()` is deprecated; please use `vi_firm()` instead.",
-          call. = FALSE)
-  vi_firm(..., ice = FALSE)
-}
-
-
-#' @rdname deprecated
-#'
-#' @export
-vi_ice <- function(...) {
-  warning("Function `vi_ice()` is deprecated; please use `vi_firm()` instead.",
-          call. = FALSE)
-  vi_firm(..., ice = TRUE)
-}
-

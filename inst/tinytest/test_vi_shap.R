@@ -21,5 +21,4 @@ pfun <- function(object, newdata) {
 set.seed(1511)  # for reproducibility
 vis1 <- vi_shap(fit1, pred_wrapper = pfun, nsim = 10)
 vis2 <- vi_shap(fit2, pred_wrapper = pfun, nsim = 10)
-vis3 <- vi(fit1, method = "shap", pred_wrapper = pfun, nsim = 10,
-           .progress = "text")
+vis3 <- vi(fit1, method = "shap", pred_wrapper = pfun, nsim = 10)

@@ -10,15 +10,18 @@ vi_shap(object, ...)
 \method{vi_shap}{default}(object, feature_names = NULL, train = NULL, ...)
 }
 \arguments{
-\item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
+\item{object}{A fitted model object (e.g., a
+\link[randomForest:randomForest]{randomForest} object).}
 
-\item{...}{Additional optional arguments to be passed on to
-\code{\link[fastshap]{explain}}.}
+\item{...}{Additional arguments to be passed on to \code{\link[fastshap:explain]{fastshap::explain()}}
+(e.g., \code{nsim =  30}, \code{adjust = TRUE}, or avprediction wrapper via the
+\code{pred_wrapper} argument); see \code{?fastshap::explain} for details on these and
+other useful arguments.}
 
 \item{feature_names}{Character string giving the names of the predictor
-variables (i.e., features) of interest. If \code{NULL} (the default) then the
-internal \code{get_feature_names()} function will be called to try and extract
-them automatically. It is good practice to always specify this argument.}
+variables (i.e., features) of interest. If \code{NULL} (the default) then they
+will be inferred from the \code{train} and \code{target} arguments (see below). It is
+good practice to always specify this argument.}
 
 \item{train}{A matrix-like R object (e.g., a data frame or matrix)
 containing the training data. If \code{NULL} (the default) then the
@@ -26,9 +29,13 @@ internal \code{get_training_data()} function will be called to try and extract i
 automatically. It is good practice to always specify this argument.}
 }
 \value{
-A tidy data frame (i.e., a \code{"tibble"} object) with two columns,
-\code{Variable} and \code{Importance}, containing the variable name and its
-associated importance score, respectively.
+A tidy data frame (i.e., a \link[tibble:tibble]{tibble} object) with two
+columns:
+\itemize{
+\item \code{Variable} - the corresponding feature name;
+\item \code{Importance} - the associated importance, computed as the mean absolute
+Shapley value.
+}
 }
 \description{
 Compute SHAP-based VI scores for the predictors in a model. See details

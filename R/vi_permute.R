@@ -1,14 +1,14 @@
 #' Permutation-based variable importance
 #'
 #' Compute permutation-based variable importance scores for the predictors in a
-#' model.
+#' model; for details on the algorithm, see Greenwell and Boehmke (2020).
 #'
 #' @param object A fitted model object (e.g., a \code{"randomForest"} object).
 #'
 #' @param feature_names Character string giving the names of the predictor
-#' variables (i.e., features) of interest. If \code{NULL} (the default) then the
-#' internal `get_feature_names()` function will be called to try and extract
-#' them automatically. It is good practice to always specify this argument.
+#' variables (i.e., features) of interest. If `NULL` (the default) then they
+#' will be inferred from the `train` and `target` arguments (see below). It is
+#' good practice to always specify this argument.
 #'
 #' @param train A matrix-like R object (e.g., a data frame or matrix)
 #' containing the training data. If \code{NULL} (the default) then the
@@ -54,12 +54,13 @@
 #' available training data). Cannot be specified with \code{sample_size}. Can be
 #' used to reduce computation time with large data sets.
 #'
-#' @param reference_class Character string specifying which response category
-#' represents the "reference" class (i.e., the class for which the predicted
-#' class probabilities correspond to). Only needed for binary classification
-#' problems.
+#' @param reference_class Deprecated, use `event_level` instead.
 #'
-#' @param pred_fun Deprecated. Use \code{pred_wrapper} instead.
+#' @param event_level String specifying which factor level of `truth` to
+#' consider as the "event". Options are `"first"` (the default) or `"second"`.
+#' This argument is only applicable for binary classification when `metric` is
+#' one of `"roc_auc"`, `"pr_auc"`, or `"youden"`. This argument is passed on to
+#' the corresponding [yardstick][yardstick::yardstick] metric.
 #'
 #' @param pred_wrapper Prediction function that requires two arguments,
 #' \code{object} and \code{newdata}. The output of this function should be
@@ -75,30 +76,41 @@
 #'   class probabilities for each class (e.g., if using log loss or AUC).}
 #' }
 #'
-#' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
-#' \code{Variable} and \code{Importance}.
-#'
 #' @param verbose Logical indicating whether or not to print information during
-#' the construction of variable importance scores. Default is \code{FALSE}.
+#' the construction of variable importance scores. Default is `FALSE`.
 #'
-#' @param progress Character string giving the name of the progress bar to use.
-#' See \code{\link[plyr]{create_progress_bar}} for details. Default is
-#' \code{"none"}.
+#' @param parallel Logical indicating whether or not to run `vi_permute()`
+#' in parallel (using a backend provided by the [foreach][foreach::foreach]
+#' package). Default is `FALSE`. If `TRUE`, a
+#' [foreach][foreach::foreach]-compatible backend must be provided by must be
+#' provided.
 #'
-#' @param parallel Logical indicating whether or not to run \code{vi_permute()}
-#' in parallel (using a backend provided by the \code{foreach} package). Default
-#' is \code{FALSE}. If \code{TRUE}, a \code{\link[foreach]{foreach}}-compatible
-#' backend must be provided by must be provided.
-#'
-#' @param Character string specifying whether to parallelize across features
-#' (\code{parallelize_by = "features"}) or repetitions
+#' @param parallelize_by Character string specifying whether to parallelize
+#' across features (\code{parallelize_by = "features"}) or repetitions
 #' (\code{parallelize_by = "reps"}); the latter is only useful whenever
 #' \code{nsim > 1}. Default is \code{"features"}.
 #'
 #' @param ... Additional optional arguments to be passed on to
 #' \code{\link[foreach]{foreach}}.
 #'
-#' @details Coming soon!
+#' @return A tidy data frame (i.e., a [tibble][tibble::tibble] object) with two
+#' columns:
+#'
+#' * `Variable` - the corresponding feature name;
+#' * `Importance` - the associated importance, computed as the average change in
+#' performance after a random permutation (or permutations, if `nsim > 1`) of
+#' the feature in question.
+#'
+#' If `nsim > 1`, then an additional column (`StDev`) containing the standard
+#' deviation of the individual permutation scores for each feature is also
+#' returned; this helps assess the stability/variation of the individual
+#' permutation importance for each feature.
+#'
+#' @importFrom foreach foreach %do% %dopar%
+#'
+#' @references
+#' Brandon M. Greenwell and Bradley C. Boehmke, The R Journal (2020) 12:1,
+#' pages 343-366.
 #'
 #' @rdname vi_permute
 #'
@@ -108,7 +120,11 @@
 #' \dontrun{
 #' # Load required packages
 #' library(ggplot2)  # for ggtitle() function
-#' library(nnet)     # for fitting neural networks
+#' library(ranger)   # for fitting random forests
+#'
+#' #
+#' # Regression example
+#' #
 #'
 #' # Simulate training data
 #' trn <- gen_friedman(500, seed = 101)  # ?vip::gen_friedman
@@ -142,6 +158,16 @@
 #'     smaller_is_better = TRUE,
 #'     pred_wrapper = function(object, newdata) predict(object, newdata)
 #' ) + ggtitle("PPR")
+#'
+#' #
+#' # Classification example
+#' #
+#'
+#' # Complete (i.e., imputed version of titanic data); see `?vip::titanic_mice`
+#' head(t1 <- titanic_mice[[1L]])
+#'
+#' # Fit a (default) probability forest
+#' set.seed(1150)  # for reproducibility
 #' }
 vi_permute <- function(object, ...) {
   UseMethod("vi_permute")
@@ -163,25 +189,22 @@ vi_permute.default <- function(
   keep = TRUE,
   sample_size = NULL,
   sample_frac = NULL,
-  reference_class = NULL,
-  pred_fun = NULL,
-  pred_wrapper = NULL,
+  reference_class = NULL,  # deprecated
+  event_level = NULL,
+  pred_wrapper = NULL,  # FIXME: Why give this a default?
   verbose = FALSE,
-  progress = "none",
   parallel = FALSE,
   parallelize_by = c("features", "repetitions"),
   ...
 ) {
 
-  # # Issue warning until this function is complete!
-  # warning("Setting `method = \"permute\"` is experimental, use at your own ",
-  #         "risk!", call. = FALSE)
-
-  # Catch deprecated arguments
-  if (!is.null(pred_fun)) {
-    stop("Argument `pred_fun` is deprecated; please use `pred_wrapper` ",
-         "instead.", call. = FALSE)
-  }
+  # FIXEME: Is there a better way to fix this?
+  #
+  # ❯ checking R code for possible problems ... NOTE
+  # vi_permute.default: no visible binding for global variable ‘j’
+  # Undefined global functions or variables:
+  #   j
+  i <- j <- NULL
 
   # # Try to extract feature names if not supplied
   # if (is.null(feature_names)) {
@@ -258,9 +281,11 @@ vi_permute.default <- function(
     }
 
     # Check metric function arguments
-    if (!all(c("actual", "predicted") %in% names(formals(metric)))) {
-      stop("`metric()` must be a function with arguments `actual` and ",
-           "`predicted`.", call. = FALSE)
+    if (!all(c("truth", "estimate") %in% names(formals(metric)))) {
+      stop("`metric()` must be a function with arguments `truth` and ",
+           "`estimate`; consider using one of the vector metric functions ",
+           "from the `yardstick` package (e.g., ",
+           "`metric = yardstick::huber_loss_vec`).", call. = FALSE)
     }
 
     # # Check if reference class is provided
@@ -270,78 +295,47 @@ vi_permute.default <- function(
     # train_y <- ifelse(train_y == reference_class, yes = 1, no = 0)
 
     # Performance function
-    mfun <- metric
+    metric_fun <- metric
 
   } else {
 
-    # Convert metric string to lowercase
-    metric <- tolower(metric)
-
     # Get corresponding metric/performance function
-    mfun <- switch(metric,
+    ys_metric <- get_metric(metric)
+    # metric_fun <- ys_metric[["metric_fun"]]
+    smaller_is_better <- ys_metric[["smaller_is_better"]]
 
-      # Classification
-      "accuracy" = metric_accuracy,  # requires predicted class labels
-      "error" = metric_error,        # requires predicted class labels
-      "auc" = metric_auc,            # requires predicted class probabilities
-      "logloss" = metric_logLoss,    # requires predicted class probabilities
-      "mauc" = metric_mauc,          # requires predicted class probabilities
-      # "mlogloss" = metric_mlogLoss,  # requires predicted class probabilities
-
-      # Regression
-      "mae" = metric_mae,
-      "mse" = metric_mse,
-      "r2" = metric_rsquared,
-      "rsquared" = metric_rsquared,
-      "rmse" = metric_rmse,
-      "sse" = metric_sse,
-
-      # Return informative error
-      stop("Metric \"", metric, "\" is not supported; use ",
-           "`vip::list_metrics()` to print a list of currently supported ",
-           "metrics.", call. = FALSE)
-
-    )
-
-    # Is smaller better?
-    smaller_is_better <- switch(metric,
-
-      # Classification
-      "accuracy" = FALSE,
-      "error" = TRUE,
-      "auc" = FALSE,
-      "logloss" = TRUE,
-      "mauc" = FALSE,
-      # "mlogloss" = TRUE,
-
-      # Regression
-      "mae" = TRUE,
-      "mse" = TRUE,
-      "r2" = FALSE,
-      "rsquared" = FALSE,
-      "rmse" = TRUE,
-      "sse" = TRUE,
-
-      # Return informative error
-      stop("Metric \"", metric, "\" is not supported.")
-
-    )
-
-    # Determine reference class (binary classification only)
-    if (is.null(reference_class) && metric %in% c("auc", "logloss")) {
-      stop("Please specify the reference class via the `reference_class` ",
-           "argument when using \"auc\" or \"logloss\".")
+    # Get metric function and update `event_level` arg if needed
+    metric_fun <- if (!is.null(event_level)) {
+      metric_fun <- function(truth, estimate) {
+        fun <- ys_metric[["metric_fun"]]
+        fun(truth, estimate = estimate, event_level = event_level)
+      }
+    } else {
+      if (metric %in% c("roc_auc", "pr_auc", "youden")) {
+        warning("Consider setting the `event_level` argument when using ",
+                deparse(substitute(metric)), " as the metric; see ",
+                "`?vip::vi_permute` for details. Defaulting to ",
+                "`event_level = \"first\"`.", call. = FALSE)
+      }
+      ys_metric[["metric_fun"]]
     }
-    if (!is.null(reference_class) && metric %in% c("auc", "logloss")) {
-      train_y <- ifelse(train_y == reference_class, yes = 1, no = 0)
-    }
+
+    # FIXME: How to handle this with new `yardstick` integration?
+    # # Determine reference class (binary classification only)
+    # if (is.null(reference_class) && metric %in% c("auc", "logloss")) {
+    #   stop("Please specify the reference class via the `reference_class` ",
+    #        "argument when using \"auc\" or \"logloss\".")
+    # }
+    # if (!is.null(reference_class) && metric %in% c("auc", "logloss")) {
+    #   train_y <- ifelse(train_y == reference_class, yes = 1, no = 0)
+    # }
 
   }
 
   # Compute baseline metric for comparison
-  baseline <- mfun(
-    actual = train_y,
-    predicted = pred_wrapper(object, newdata = train_x)
+  baseline <- metric_fun(
+    truth = train_y,
+    estimate = pred_wrapper(object, newdata = train_x)
   )
 
   # Type of comparison
@@ -391,9 +385,9 @@ vi_permute.default <- function(
       permx <- train_x
       permx[, feature_names[j]] <- permx[sample(nrow(permx)), feature_names[j]]
       # train_x_permuted <- permute_columns(train_x, columns = feature_names[j])
-      permuted <- mfun(
-        actual = train_y,
-        predicted = pred_wrapper(object, newdata = permx)
+      permuted <- metric_fun(
+        truth = train_y,
+        estimate = pred_wrapper(object, newdata = permx)
       )
       if (smaller_is_better) {
         permuted %compare% baseline  # e.g., RMSE

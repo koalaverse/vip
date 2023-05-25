@@ -7,10 +7,10 @@ if (!requireNamespace("ranger", quietly = TRUE)) {
 }
 
 # Load required packages
-suppressMessages({
-  # library(mlr)
-  library(ranger)
-})
+#suppressMessages({
+#  library(mlr)
+#  library(ranger)
+#})
 
 # Generate Friedman benchmark data
 friedman1 <- gen_friedman(seed = 101)

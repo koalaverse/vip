@@ -34,7 +34,7 @@ pfun <- function(object, newdata) {
 }
 
 # Try all regression metrics
-regression_metrics <- metrics[metrics$Task == "Regression", ]$Metric
+regression_metrics <- metrics[metrics$task == "Regression", ]$metric
 set.seed(828)  # for reproducibility
 vis <- lapply(regression_metrics, FUN = function(x) {
   vi(fit1, method = "permute", target = "y", metric = x, pred_wrapper = pfun,
@@ -43,8 +43,8 @@ vis <- lapply(regression_metrics, FUN = function(x) {
 lapply(vis, FUN = expectations)
 
 # Use a custom metric
-rsquared <- function(actual, predicted) {
-  cor(actual, predicted) ^ 2
+rsquared <- function(truth, estimate) {
+  cor(truth, estimate) ^ 2
 }
 
 # Compute permutation-based importance using R-squared (character string)
@@ -53,7 +53,7 @@ vis_rsquared <- vi_permute(
   object = fit1,
   # train = friedman1,
   target = "y",
-  metric = "rsquared",
+  metric = "rsq",
   pred_wrapper = pfun,
   sample_size = 90,
   nsim = 10
@@ -156,7 +156,7 @@ vis_auc <- vi_permute(
   object = fit2,
   # train = friedman1,
   target = "y",
-  metric = "auc",
+  metric = "roc_auc",
   pred_wrapper = pred_prob,
   reference_class = "class1"
 )
@@ -186,25 +186,13 @@ vis_accuracy <- vi_permute(
 )
 expectations(vis_accuracy)
 
-# Compute permutation-based importance using classification error metric
-set.seed(907)  # for reproducibility
-vis_error <- vi_permute(
-  object = fit2,
-  # train = friedman1,
-  target = "y",
-  metric = "error",
-  pred_wrapper = pred_label,
-  reference_class = "class1"
-)
-expectations(vis_error)
-
 # Expect error if using AUC (or logLoss) with no reference class
 expect_error(
   vi_permute(
     object = fit2,
     train = friedman1,
     target = "y",
-    metric = "auc",
+    metric = "roc_auc",
     pred_wrapper = pred_prob
     # reference_class = "class1"
   )
@@ -217,11 +205,6 @@ expect_error(
 if (!requireNamespace("ranger", quietly = TRUE)) {
   exit_file("Package ranger missing")
 }
-
-# # Load required packages
-# suppressMessages({
-#   library(ranger)
-# })
 
 # Fit a (default) random forest
 set.seed(928)  # for reproducibility
@@ -239,7 +222,7 @@ vis_mauc <- vi_permute(
   object = fit3,
   train = friedman3,
   target = "y",
-  metric = "mauc",
+  metric = "brier",
   pred_wrapper = pred_multi_prob,
   reference_class = "class1",
   nsim = 10

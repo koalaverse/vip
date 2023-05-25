@@ -54,11 +54,3 @@ expect_identical(
   current = class(p),
   target = c("gg", "ggplot")
 )
-
-# Display VIPs side by side
-grid.arrange(
-  vip(vis1, include_type = TRUE),
-  vip(vis2, include_type = TRUE),
-  p,
-  nrow = 1
-)

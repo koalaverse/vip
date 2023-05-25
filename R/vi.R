@@ -2,7 +2,8 @@
 #'
 #' Compute variable importance scores for the predictors in a model.
 #'
-#' @param object A fitted model object (e.g., a \code{"randomForest"} object) or
+#' @param object A fitted model object (e.g., a
+#' [randomForest][randomForest::randomForest] object) or
 #' an object that inherits from class \code{"vi"}.
 #'
 #' @param method Character string specifying the type of variable importance
@@ -17,21 +18,6 @@
 #'
 #' @param feature_names Character string giving the names of the predictor
 #' variables (i.e., features) of interest.
-#'
-#' @param FUN Deprecated. Use \code{var_fun} instead.
-#'
-#' @param var_fun List with two components, \code{"cat"} and \code{"con"},
-#' containing the functions to use to quantify the variability of the feature
-#' effects (e.g., partial dependence values) for categorical and continuous
-#' features, respectively. If \code{NULL}, the standard deviation is used for
-#' continuous features. For categorical features, the range statistic is used
-#' (i.e., (max - min) / 4). Only applies when \code{method = "firm"}.
-#'
-#' @param ice Logical indicating whether or not to estimate feature effects
-#' using \emph{individual conditional expectation} (ICE) curves.
-#' Only applies when \code{method = "firm"}. Default is \code{FALSE}. Setting
-#' \code{ice = TRUE} is preferred whenever strong interaction effects are
-#' potentially present.
 #'
 #' @param abbreviate_feature_names Integer specifying the length at which to
 #' abbreviate feature names. Default is \code{NULL} which results in no
@@ -54,7 +40,7 @@
 #'
 #' @param ... Additional optional arguments to be passed on to
 #' \code{\link{vi_model}}, \code{\link{vi_firm}}, \code{\link{vi_permute}},
-#' or \code{\link{vi_shap}}.
+#' or \code{\link{vi_shap}}; see their respective help pages for details.
 #'
 #' @return A tidy data frame (i.e., a \code{"tibble"} object) with at least two
 #' columns: \code{Variable} and \code{Importance}. For \code{"lm"/"glm"}-like
@@ -150,9 +136,6 @@ vi.default <- function(
   object,
   method = c("model", "firm", "permute", "shap"),
   feature_names = NULL,
-  FUN = NULL,  # deprecated
-  var_fun = NULL,
-  ice = FALSE,
   abbreviate_feature_names = NULL,
   sort = TRUE,
   decreasing = TRUE,
@@ -169,21 +152,10 @@ vi.default <- function(
     }
   }
 
-  # Catch deprecated arguments
-  if (!is.null(FUN)) {
-    stop("Argument `FUN` is deprecated; please use `var_fun` instead.",
-         call. = FALSE)
-  }
-  if (method %in% c("pdp", "ice")) {
-    stop("Methods \"pdp\" and \"ice\" are deprecated; use `method = \"firm\"` ",
-         "instead. See `?vip::vi_firm` for details.", call. = FALSE)
-  }
-
   # Construct tibble of VI scores
   tib <- switch(method,
     "model" = vi_model(object, ...),
-    "firm" = vi_firm(object, feature_names = feature_names, var_fun = var_fun,
-                     ice = ice, ...),
+    "firm" = vi_firm(object, feature_names = feature_names, ...),
     "permute" = vi_permute(object, feature_names = feature_names, ...),
     vi_shap(object, feature_names = feature_names, ...)
   )

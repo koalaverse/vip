@@ -27,16 +27,19 @@ Description: A general framework for constructing variable importance plots from
   variance-based method for quantifying the relative strength of interaction 
   effects is also included (see the previous reference for details).
 License: GPL (>= 2)
-URL: https://github.com/koalaverse/vip/
+URL: https://github.com/koalaverse/vip/,
+    https://koalaverse.github.io/vip/
 BugReports: https://github.com/koalaverse/vip/issues
 Encoding: UTF-8
 VignetteBuilder: knitr
+Depends: R (>= 2.10)
 Imports: 
     foreach,
     ggplot2 (>= 0.9.0),
     magrittr,
     stats,
     tibble,
+    yardstick,
     utils
 Suggests: 
     DT,
@@ -49,7 +52,6 @@ Suggests:
     dplyr,
     earth,
     fastshap,
-    foreach,
     gbm,
     glmnet,
     h2o,
@@ -61,6 +63,7 @@ Suggests:
     mlbench,
     mlr,
     mlr3,
+    modeldata,
     neuralnet,
     NeuralNetTools,
     nnet,
@@ -77,9 +80,10 @@ Suggests:
     sparkline,
     sparklyr (>= 0.8.0),
     tidymodels,
-    tinytest,
+    tinytest (>= 1.4.1),
     varImp,
     workflows (>= 0.2.3),
     xgboost
+LazyData: true
 RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)

@@ -1,14 +1,18 @@
 # Check dependencies
-if (!require(pdp, quietly = TRUE)) {
-  exit_file("R package pdp not available.")
-}
+exit_if_not(
+  requireNamespace("pdp", quietly = TRUE),
+  requireNamespace("ranger", quietly = TRUE)
+)
 
-# Generate Friedman benchmark data
-friedman1 <-  gen_friedman(seed = 101)
+# Use one of the available (imputed) versions of the Titanic data
+titanic <- titanic_mice[[1L]]
 
-# Fit model
-fit <- stats::lm(y ~ sin(pi * x1 * x2) + I((x3 - 0.5) ^ 2) + x4 + x5 + x6 + x7 +
-                   x8 + x9 + x10, data = friedman1)
+# Feature names
+xnames <- names(subset(titanic, select = -survived))
+
+# Fit a default probability forest
+set.seed(1511)  # for reproducibility
+rfo <- ranger(survived ~ ., data = titanic, probability = TRUE)
 
 # Function to run expectations
 expectations <- function(object) {
@@ -18,33 +22,50 @@ expectations <- function(object) {
                    target = c("vi", "tbl_df", "tbl", "data.frame"))
 
   # Check dimensions (should be one row for each feature)
-  expect_identical(ncol(friedman1) - 1L, target = nrow(object))
+  expect_identical(ncol(titanic) - 1L, target = nrow(object))
 
   # Check top five predictors
-  expect_true(all(paste0("x", 1L:5L) %in% object$Variable[1L:5L]))
+  expect_identical(xnames, object[["Variable"]])
 
   # Check attributes
   expect_true("effects" %in% names(attributes(object)))
 
 }
 
-# Compute PDP-based importance
-vis_firm <- vi(fit, method = "firm", train = friedman1,
-               feature_names = paste0("x", 1L:10L))
-expectations(vis_firm)
+# Prediction wrappers
+pfun.pd <- function(object, newdata) {
+  mean(predict(object, data = newdata)$predictions[, "yes"])
+}
+pfun.ice <- function(object, newdata) {
+  predict(object, data = newdata)$predictions[, "yes"]
+}
+
+# Compute PD-based importance
+vis_pd <- vi_firm(rfo)  # default (centered) logit scale
+vis_pd_prob <- vi_firm(rfo, prob = TRUE)  # probability scale
+vis_pd_pfun <- vi_firm(rfo, pred.fun = pfun.pd)
+
+# Expectations
+expectations(vis_pd)
+expect_equal(vis_pd_prob, vis_pd_pfun)
 
 # Compute ICE-based importance
-vis_firm_ice <- vi(fit, method = "firm", ice = TRUE, train = friedman1,
-                   feature_names = paste0("x", 1L:10L))
-expectations(vis_firm_ice)
+vis_ice <- vi_firm(rfo, ice = TRUE, prob = TRUE, var_continuous = mad)  # use ICE plots
+vis_ice_pfun <- vi_firm(rfo, pred.fun = pfun.ice, var_continuous = mad)
 
-# Compute PDP-based importance with custom variance function
-vfuns <- list("cat" = stats::mad, "con" = stats::mad)
-vis_firm_mad <- vi(fit, method = "firm", train = friedman1,
-                   feature_names = paste0("x", 1L:10L), var_fun = vfuns)
-expectations(vis_firm_mad)
+# Expectations
+expectations(vis_ice)
+expect_equal(vis_ice, vis_ice_pfun)
 
-# Compute PDP-based importance with custom variance function
-vis_firm_ice_mad <- vi(fit, method = "firm", ice = TRUE, train = friedman1,
-                       feature_names = paste0("x", 1L:10L), var_fun = vfuns)
-expectations(vis_firm_ice_mad)
+# Use `vi()` function
+vis_ice_vi <- vi(rfo, method = "firm", ice = TRUE, prob = TRUE,
+                 var_continuous = mad)
+
+# Expectations
+expect_identical(sort(vis_ice$Importance), sort(vis_ice_vi$Importance))
+
+# Check computation by hand!
+age.effect <- attr(vis_ice, which = "effects")$age
+x <- mean(tapply(age.effect$yhat, INDEX = age.effect$yhat.id, FUN = mad))
+y <- vis_ice[vis_ice$Variable == "age", "Importance", drop = TRUE]
+expect_identical(x, y)
