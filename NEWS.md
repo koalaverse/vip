@@ -4,7 +4,7 @@
 
 * The `var_fun` argument in `vi_firm()` has been deprecated; use the new `var_continuous` and `var_categorical` instead.
 
-* The explcit `ice` argument in `vi_firm()` has been removed; it was not really needed since it can be passed via the `...` argument. 
+* The explicit `ice` argument in `vi_firm()` has been removed; it was not really needed since it can be passed via the `...` argument. 
 
 ## Enhancements
 
@@ -15,6 +15,8 @@
 * Added support for partial least squares via the [mixOmics](https://bioconductor.org/packages/mixOmics/) package [(PR #129)](https://github.com/koalaverse/vip/pull/129); thanks to @topedo.
 
 * Added support for the [workflows](https://cran.r-project.org/package=workflows) and [parsnip](https://cran.r-project.org/package=parsnip) packages from the [tidymodels](https://www.tidymodels.org/) ecosystem [(PR #128)](https://github.com/koalaverse/vip/pull/128); thanks to @topedo.
+
+* New [pkgdown](https://cran.r-project.org/package=pkgdown) site and vignette based on our original R Journal article.
 
 ## Miscellaneous
 

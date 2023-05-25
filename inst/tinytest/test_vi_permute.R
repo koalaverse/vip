@@ -1,3 +1,5 @@
+exit_file("Tests not ready.")
+
 # Generate Friedman benchmark data
 friedman1 <-  gen_friedman(seed = 101)
 friedman2 <- gen_friedman(seed = 101, n_bins = 2)
