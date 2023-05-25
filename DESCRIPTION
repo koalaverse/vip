@@ -42,6 +42,7 @@ Imports:
     yardstick,
     utils
 Suggests: 
+    bookdown,
     DT,
     C50,
     caret,
