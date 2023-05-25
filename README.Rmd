@@ -17,8 +17,8 @@ knitr::opts_chunk$set(
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/vip)](https://cran.r-project.org/package=vip)
 [![R build status](https://github.com/koalaverse/vip/workflows/R-CMD-check/badge.svg)](https://github.com/koalaverse/vip/actions)
 [![Coverage Status](https://img.shields.io/codecov/c/github/koalaverse/vip/master.svg)](https://codecov.io/github/koalaverse/vip?branch=master)
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-CMD-check](https://github.com/koalaverse/vip/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/koalaverse/vip/actions/workflows/R-CMD-check.yaml)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 <!-- badges: end -->
 
 

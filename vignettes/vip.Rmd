@@ -14,7 +14,7 @@ vignette: >
   %\VignetteIndexEntry{vip}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-bibliography: '/Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/library/vip/references.bib'
+bibliography: '`r system.file("references.bib", package = "vip")`'
 ---
 
 
