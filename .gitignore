@@ -2,8 +2,8 @@
 .Rhistory
 .RData
 .Ruserdata
-README.Rmd
 inst/doc
+README.Rmd
 .DS_Store
 logs
 derby.log
