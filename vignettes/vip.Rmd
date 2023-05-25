@@ -137,7 +137,7 @@ vi_rfo <- rfo$variable.importance  # or use `randomForest::importance(rfo)`
 vi_bst <- xgb.importance(model = bst)
 ```
 
-<img src="man/figures/vi-plots-1.png" alt="Model-specific VIPs for the three different tree-based models fit to the simulated Friedman data." width="100%" />
+<img src="../man/figures/vi-plots-1.png" alt="Model-specific VIPs for the three different tree-based models fit to the simulated Friedman data." width="100%" />
 
 As we would expect, all three methods rank the variables `x1`--`x5` as more important than the others. While this is good news, it is unfortunate that we have to remember the different functions and ways of extracting and plotting VI scores from various model fitting functions. This is one place where [vip](https://cran.r-project.org/package=vip) can help...one function to rule them all! Once [vip](https://cran.r-project.org/package=vip) is loaded, we can use `vi()` to extract a tibble of VI scores.^[In order to avoid deprecation warnings due to recent updates to [tibble](https://cran.r-project.org/package=tibble) and [ggplot2](https://cran.r-project.org/package=ggplot2), the code examples in this article are based on the latest development versions of both [vip](https://cran.r-project.org/package=vip) (version 0.3.2.9000) and [pdp](https://cran.r-project.org/package=pdp) (version 0.8.1); the URL to the development version of each package is available on its associated CRAN landing page.]
 
@@ -231,7 +231,7 @@ vip(bst, num_features = 5, geom = "point", horizontal = FALSE,
   theme_light()
 ```
 
-<img src="man/figures/dot-plot-1.png" alt="Illustrating various plotting options." width="70%" />
+<img src="../man/figures/dot-plot-1.png" alt="Illustrating various plotting options." width="70%" />
 
 
 ## Linear models
@@ -275,7 +275,7 @@ vip(vi_backward, num_features = length(coef(backward)),  # Figure 3
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-<img src="man/figures/vip-step-1.png" alt="Example VIP from a linear model fit to the simulated Friedman data. The points are colored according to the sign of the associated coefficient." width="70%" />
+<img src="../man/figures/vip-step-1.png" alt="Example VIP from a linear model fit to the simulated Friedman data. The points are colored according to the sign of the associated coefficient." width="70%" />
 
 A major limitation of this approach is that a VI score is assigned to each term in the model, rather than to each individual feature! We can solve this problem using one of the model-agnostic approaches discussed later.
 
@@ -314,7 +314,7 @@ vi(mars, type = "gcv")
 vip(mars)
 ```
 
-<img src="man/figures/vip-earth-1.png" alt="Example VIP from a MARS model fit to the simulated Friedman data." width="70%" />
+<img src="../man/figures/vip-earth-1.png" alt="Example VIP from a MARS model fit to the simulated Friedman data." width="70%" />
 
 To access VI scores directly in [earth](https://cran.r-project.org/package=earth), you can use the `earth::evimp()` function.
 
@@ -341,7 +341,7 @@ p2 <- vip(nn, type = "olden")
 p1 + p2
 ```
 
-<img src="man/figures/vip-nnet-1.png" alt="Example VIPs from a single-hidden-layer NN fit to the simulated Friedman data." width="70%" />
+<img src="../man/figures/vip-nnet-1.png" alt="Example VIPs from a single-hidden-layer NN fit to the simulated Friedman data." width="70%" />
 
 
 # Model-agnostic VI
@@ -357,7 +357,7 @@ Model-agnostic interpretability separates interpretation from the model. Compare
 
 Our first model-agnostic method is based on a simple *feature importance ranking measure* (FIRM); for details, see @greenwell-simple-2018, @zien-2009-feature, and @scholbeck-2019-sampling. The specific approach used here is based on quantifying the "flatness" of the effects of each feature.^[A similar approach is taken in the [vivo](https://cran.r-project.org/package=vivo) package [@R-vivo].] Feature effects can be assessed using *partial dependence plots* (PDPs) \citep{friedman-2001-greedy} or *individual conditional expectation* (ICE) curves [@goldstein-peeking-2015]. PDPs and ICE curves help visualize the effect of low cardinality subsets of the feature space on the estimated prediction surface (e.g., main effects and two/three-way interaction effects.). They are also model-agnostic and can be constructed in the same way for any supervised learning algorithm. Below, we fit a *projection pursuit regression* (PPR) model (see `?stats::ppr` for details and references) and construct PDPs for each feature using the [pdp](https://cran.r-project.org/package=pdp) package @pdp2017. The results are displayed in Figure \@ref(fig:pdp-ppr). Notice how the PDPs for the uninformative features are relatively flat compared to the PDPs for features `x1`--`x5`!
 
-<img src="man/figures/pdp-ppr-1.png" alt="PDPs of main effects in the PPR model fit to the simulated Friedman data." width="100%" />
+<img src="../man/figures/pdp-ppr-1.png" alt="PDPs of main effects in the PPR model fit to the simulated Friedman data." width="100%" />
 
 Next, we compute PDP-based VI scores for the fitted PPR and NN models. The PDP method constructs VI scores that quantify the relative "flatness" of each PDP (by default, this is defined by computing the standard deviation of the $y$-axis values for each PDP). To use the PDP method, specify `method = "firm"` in the call to `vi()` or `vip()` (or just use `vi_firm()` directly):
 
@@ -375,7 +375,7 @@ p2 <- vip(nn, method = "firm") + ggtitle("NN")
 p1 + p2
 ```
 
-<img src="man/figures/pdp-ppr-nn-1.png" alt="PDP-based feature importance for the PPR and NN models fit to the simulated Friedman data." width="70%" />
+<img src="../man/figures/pdp-ppr-nn-1.png" alt="PDP-based feature importance for the PPR and NN models fit to the simulated Friedman data." width="70%" />
 
 In Figure \@ref(fig:pdp-ppr-nn) we display the PDP-based feature importance for the previously obtained PPR and NN models. These VI scores essentially capture the variability in the partial dependence values for each main effect.
 
@@ -383,7 +383,7 @@ The ICE curve method is similar to the PDP method, except that we measure the "f
 
 Below, we display the ICE curves for each feature in the fitted PPR model using the same $y$-axis scale; see Figure \@ref(fig:ice-ppr). Again, there is a clear difference between the ICE curves for features `x1`--`x5` and `x6`--`x10`; the later being relatively flat by comparison. Also, notice how the ICE curves within each feature are relatively parallel (if the ICE curves within each feature were perfectly parallel, the standard deviation for each curve would be the same and the results will be identical to the PDP method). In this example, the interaction term between `x1` and `x2` does not obfuscate the PDPs for the main effects and the results are not much different.
 
-<img src="man/figures/ice-ppr-1.png" alt="ICE curves for each feature in the PPR model fit to the simulated Friedman data. The red curve represents the PDP (i.e., the averaged ICE curves)." width="100%" />
+<img src="../man/figures/ice-ppr-1.png" alt="ICE curves for each feature in the PPR model fit to the simulated Friedman data. The red curve represents the PDP (i.e., the averaged ICE curves)." width="100%" />
 
 Obtaining the ICE-based feature importance scores is also straightforward, just specify `ice = TRUE` when using the FIRM approach. This is illustrated in the code chunk below and the results, which are displayed in Figure \@ref(fig:vip-ice-ppr-nn), are similar to those obtained using the PDP method.
 
@@ -397,7 +397,7 @@ p2 <- vip(nn, method = "firm", ice = TRUE) + ggtitle("NN")
 p1 + p2
 ```
 
-<img src="man/figures/vip-ice-ppr-nn-1.png" alt="ICE-based feature importance for the PPR and NN models fit to the simulated Friedman data." width="70%" />
+<img src="../man/figures/vip-ice-ppr-nn-1.png" alt="ICE-based feature importance for the PPR and NN models fit to the simulated Friedman data." width="70%" />
 
 When using `method = "firm"`, the feature effect values are stored in an attribute called `"effects"`. This is a convenience so that the feature effect plots (e.g., PDPs and ICE curves) can easily be reconstructed and compared with the VI scores, as demonstrated in the example below (see Figure \@ref(fig:pdp-from-attr)):
 
@@ -431,7 +431,7 @@ for (name in paste0("x", 1:10)) {
 }
 ```
 
-<img src="man/figures/pdp-from-attr-1.png" alt="PDPs for all ten features reconstructed from the \code{pdp} attribute of the \code{vis} object." width="100%" />
+<img src="../man/figures/pdp-from-attr-1.png" alt="PDPs for all ten features reconstructed from the \code{pdp} attribute of the \code{vis} object." width="100%" />
 
 
 ## Permutation method
@@ -477,7 +477,7 @@ p2 <- vip(nn, method = "permute", target = "y", metric = "rsq",
 p1 + p2
 ```
 
-<img src="man/figures/vip-permute-ppr-nn-1.png" alt="Permutation-based feature importance for the PPR and NN models fit to the simulated Friedman data." width="70%" />
+<img src="../man/figures/vip-permute-ppr-nn-1.png" alt="Permutation-based feature importance for the PPR and NN models fit to the simulated Friedman data." width="70%" />
 
 The permutation approach introduces randomness into the procedure and therefore should be run more than once if computationally feasible. The upside to performing multiple runs of Algorithm 1 is that it allows us to compute standard errors (among other metrics) for the estimated VI scores, as illustrated in the example below; here we specify `nsim = 30` to request that each feature be permuted 30 times and the results averaged together. (Additionally, if `nsim > 1`, you can set \code{geom = "boxplot"} in the call to `vip()` to construct boxplots of the raw permutation-based VI scores. This is useful if you want to visualize the variability in each of the VI estimates; see Figure \@ref(fig:vip-boxplots) for an example.)
 
@@ -490,7 +490,7 @@ vis <- vi(pp, method = "permute", target = "y", metric = "rsq",
 vip(vis, geom = "boxplot")  # Figure 12
 ```
 
-<img src="man/figures/vip-boxplots-1.png" alt="Boxplots of VI scores using the permutation method with 15 Monte Carlo repetitions." width="70%" />
+<img src="../man/figures/vip-boxplots-1.png" alt="Boxplots of VI scores using the permutation method with 15 Monte Carlo repetitions." width="70%" />
 
 All available performance metrics for regression and classification can be listed using the `list_metrics()` function, for example:
 
@@ -559,7 +559,7 @@ p2 <- vip(nn, method = "permute", target = "y", metric = yardstick::mae_vec,
 p1 + p2
 ```
 
-<img src="man/figures/vip-nn-mae-1.png" alt="Permutation-based VI scores for the NN model fit to the simulated Friedman data. In this example, permutation importance is based on the MAE metric." width="70%" />
+<img src="../man/figures/vip-nn-mae-1.png" alt="Permutation-based VI scores for the NN model fit to the simulated Friedman data. In this example, permutation importance is based on the MAE metric." width="70%" />
 
 Although permutation importance is most naturally computed on the training data, it may also be useful to do the shuffling and measure performance on new data! This is discussed in depth in @molnar-2019-iml [sec. 5.2]. For users interested in computing permutation importance using new data, just supply it to the `train` argument in the call to `vi()`, `vip()`, or `vi_permute()`. For instance, suppose we wanted to only use a fraction of the original training data to carry out the computations. In this case, we could simply pass the sampled data to the `train` argument as follows:
 
@@ -573,7 +573,7 @@ vip(nn, method = "permute", pred_wrapper = pfun_nnet, target = "y",
   ggtitle("Using a random subset of training data")
 ```
 
-<img src="man/figures/vip-permute-nn-sample-1.png" alt="Permutation-based feature importance for the NN model fit to the simulated Friedman data. In this example, permutation importance is based on a random sample of 400 training observations." width="70%" />
+<img src="../man/figures/vip-permute-nn-sample-1.png" alt="Permutation-based feature importance for the NN model fit to the simulated Friedman data. In this example, permutation importance is based on a random sample of 400 training observations." width="70%" />
 
 When using the permutation method with `nsim > 1`, the default is to keep all the permutation scores as an attribute called `"raw_scores"`; you can turn this behavior off by setting `keep = FALSE` in the call to `vi_permute()`, `vi()`, or `vip()`. If `keep = TRUE` and `nsim > 1`, you can request all permutation scores to be plotted by setting `all_permutations = TRUE` in the call to `vip()`, as demonstrated in the code chunk below (see Figure \@ref(fig:vip-nn-mae-all)). This also let's you visually inspect the variability in the permutation scores within each feature.
 
@@ -587,7 +587,7 @@ vip(nn, method = "permute", pred_wrapper = pfun_nnet, target = "y",
   ggtitle("Plotting all permutation scores")
 ```
 
-<img src="man/figures/vip-nn-mae-all-1.png" alt="Permutation-based feature importance for the NN model fit to the simulated Friedman data. In this example, all the permutation importance scores (points) are displayed for each feature along with their average (bars)." width="70%" />
+<img src="../man/figures/vip-nn-mae-all-1.png" alt="Permutation-based feature importance for the NN model fit to the simulated Friedman data. In this example, all the permutation importance scores (points) are displayed for each feature along with their average (bars)." width="70%" />
 
 
 ### A classification example
@@ -647,7 +647,7 @@ For comparison, here's a plot of the OOB-based permutation importance scores ava
 vip(rfo, include_type = TRUE)
 ```
 
-<img src="man/figures/titanic-rfo-vi-1.png" alt="plot of chunk titanic-rfo-vi" width="70%" />
+<img src="../man/figures/titanic-rfo-vi-1.png" alt="plot of chunk titanic-rfo-vi" width="70%" />
 
 For categorical outcomes, random forests can provide predicted class labels (i.e., classification) or predicted class probabilities (i.e., prediction), as shown below.
 
@@ -821,7 +821,7 @@ In this section, we compare the performance of four implementations of permutati
 
 We simulated 10,000 training observations from the Friedman 1 benchmark problem and trained a random forest using the [ranger](https://cran.r-project.org/package=ranger) package. For each implementation, we computed permutation-based VI scores 100 times using the [microbenchmark](https://cran.r-project.org/package=microbenchmark) package [@R-microbenchmark]. For this benchmark we did not use any of the parallel processing capability available in the [iml](https://cran.r-project.org/package=iml) and [vip](https://cran.r-project.org/package=vip) implementations. The results from [microbenchmark](https://cran.r-project.org/package=microbenchmark) are displayed in Figure \ref@(fig:benchmark) and summarized in the output below. In this case, the [vip](https://cran.r-project.org/package=vip) package (version 0.3.2.9000) was the fastest, followed closely by [ingredients](https://cran.r-project.org/package=ingredients) and [mmpf](https://cran.r-project.org/package=mmpf). It should be noted, however, that the implementations in [vip](https://cran.r-project.org/package=vip) and [iml](https://cran.r-project.org/package=iml) can be parallelized. To the best of our knowledge, this is not the case for [ingredients](https://cran.r-project.org/package=ingredients) or [mmpf](https://cran.r-project.org/package=mmpf) (although it would not be difficult to write a simple parallel wrapper for either). The code used to generate these benchmarks can be found at http://bit.ly/2TogXrq.
 
-<img src="man/figures/benchmark-1.png" alt="Violin plots comparing the computation time from three different implementations of permutation-based VI scores across 100 simulations." width="70%" />
+<img src="../man/figures/benchmark-1.png" alt="Violin plots comparing the computation time from three different implementations of permutation-based VI scores across 100 simulations." width="70%" />
 
 
 ## Shapley method
@@ -852,7 +852,7 @@ vip(bst, method = "shap", train = X, exact = TRUE, include_type = TRUE,
   theme_light()
 ```
 
-<img src="man/figures/vi-shap-1.png" alt="Shapley-based VI scores from an XGBoost model fit to the simulated Friedman data." width="70%" />
+<img src="../man/figures/vi-shap-1.png" alt="Shapley-based VI scores from an XGBoost model fit to the simulated Friedman data." width="70%" />
 
 Passing `exact = TRUE` to `fastshap::explain()` via the `...` argument in the call to `vip()` (or `vi()` and `vi_shap()`) only works for [lightgbm](https://cran.r-project.org/package=lightgbm), [xgboost](https://cran.r-project.org/package=xgboost), and additive (generalized) linear models fit using R's internal **`stats`** package. For all other cases, a prediction wrapper must be supplied via the `...` argument.
 
