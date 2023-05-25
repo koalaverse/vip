@@ -8,6 +8,8 @@
 
 ## Enhancements
 
+* The permutation importance method (i.e., function `vi_permute()`) now integrates with and uses [yardstick](https://cran.r-project.org/package=yardstick) performance metrics.
+
 * `list_metrics()` gained an additional `smaller_is_better` column indicating whether or not the corresponding metric should be minimized (`smaller_is_better = TRUE`) or maximized (`smaller_is_better = FALSE`); thanks to @topedo. Additionally, all the column names are now in lower case. 
 
 * Added support for partial least squares via the [mixOmics](https://bioconductor.org/packages/mixOmics/) package [(PR #129)](https://github.com/koalaverse/vip/pull/129); thanks to @topedo.

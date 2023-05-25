@@ -28,14 +28,17 @@
 #' for categorical features. Defaults to using the range divided by four; that
 #' is, `function(x) diff(range(x)) / 4`.
 #'
-#' @param ... Additional optional arguments to be passed on to
-#' [pdp::partial()] (e.g., `ice = TRUE`, `prob = TRUE`, or a
-#' prediction wrapper via the `pred.fun` argument); see `pdp::partial` for
-#' details on these and other potentially useful arguments.
+#' @param ... Additional arguments to be passed on to the [pdp::partial()]
+#' function (e.g., `ice = TRUE`, `prob = TRUE`, or a prediction wrapper via the
+#' `pred.fun` argument); see `?pdp::partial` for details on these and other
+#' useful arguments.
 #'
 #' @return A tidy data frame (i.e., a [tibble][tibble::tibble] object) with two
-#' columns, `Variable` and `Importance`, containing the variable name and its
-#' associated importance score, respectively.
+#' columns:
+#'
+#' * `Variable` - the corresponding feature name;
+#' * `Importance` - the associated importance, computed as described in
+#' [Greenwell et al. (2018)](https://arxiv.org/abs/1805.04755).
 #'
 #' @details This approach is based on quantifying the relative "flatness" of the
 #' effect of each feature and assumes the user has some familiarity with the

@@ -20,7 +20,8 @@ vi(object, ...)
 )
 }
 \arguments{
-\item{object}{A fitted model object (e.g., a \code{"randomForest"} object) or
+\item{object}{A fitted model object (e.g., a
+\link[randomForest:randomForest]{randomForest} object) or
 an object that inherits from class \code{"vi"}.}
 
 \item{...}{Additional optional arguments to be passed on to

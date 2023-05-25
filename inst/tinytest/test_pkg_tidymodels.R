@@ -75,7 +75,7 @@ set.seed(912)  # for reproducibility
 vi_auc <- ranger_fit_workflow %>%
   vi(method = "permute",
      target = "Class",
-     metric = "auc",
+     metric = "roc_auc",
      pred_wrapper = pfun,
      train = bivariate_train,
      reference_class = "One")

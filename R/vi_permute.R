@@ -6,9 +6,9 @@
 #' @param object A fitted model object (e.g., a \code{"randomForest"} object).
 #'
 #' @param feature_names Character string giving the names of the predictor
-#' variables (i.e., features) of interest. If \code{NULL} (the default) then
-#' they will be inferred from the `train` and `target` arguments (see below).
-#' It is good practice to always specify this argument.
+#' variables (i.e., features) of interest. If `NULL` (the default) then they
+#' will be inferred from the `train` and `target` arguments (see below). It is
+#' good practice to always specify this argument.
 #'
 #' @param train A matrix-like R object (e.g., a data frame or matrix)
 #' containing the training data. If \code{NULL} (the default) then the
@@ -77,12 +77,13 @@
 #' }
 #'
 #' @param verbose Logical indicating whether or not to print information during
-#' the construction of variable importance scores. Default is \code{FALSE}.
+#' the construction of variable importance scores. Default is `FALSE`.
 #'
-#' @param parallel Logical indicating whether or not to run \code{vi_permute()}
-#' in parallel (using a backend provided by the \code{foreach} package). Default
-#' is \code{FALSE}. If \code{TRUE}, a \code{\link[foreach]{foreach}}-compatible
-#' backend must be provided by must be provided.
+#' @param parallel Logical indicating whether or not to run `vi_permute()`
+#' in parallel (using a backend provided by the [foreach][foreach::foreach]
+#' package). Default is `FALSE`. If `TRUE`, a
+#' [foreach][foreach::foreach]-compatible backend must be provided by must be
+#' provided.
 #'
 #' @param parallelize_by Character string specifying whether to parallelize
 #' across features (\code{parallelize_by = "features"}) or repetitions
@@ -92,8 +93,18 @@
 #' @param ... Additional optional arguments to be passed on to
 #' \code{\link[foreach]{foreach}}.
 #'
-#' @return A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
-#' \code{Variable} and \code{Importance}.
+#' @return A tidy data frame (i.e., a [tibble][tibble::tibble] object) with two
+#' columns:
+#'
+#' * `Variable` - the corresponding feature name;
+#' * `Importance` - the associated importance, computed as the average change in
+#' performance after a random permutation (or permutations, if `nsim > 1`) of
+#' the feature in question.
+#'
+#' If `nsim > 1`, then an additional column (`StDev`) containing the standard
+#' deviation of the individual permutation scores for each feature is also
+#' returned; this helps assess the stability/variation of the individual
+#' permutation importance for each feature.
 #'
 #' @importFrom foreach foreach %do% %dopar%
 #'
@@ -109,7 +120,11 @@
 #' \dontrun{
 #' # Load required packages
 #' library(ggplot2)  # for ggtitle() function
-#' library(nnet)     # for fitting neural networks
+#' library(ranger)   # for fitting random forests
+#'
+#' #
+#' # Regression example
+#' #
 #'
 #' # Simulate training data
 #' trn <- gen_friedman(500, seed = 101)  # ?vip::gen_friedman
@@ -143,6 +158,16 @@
 #'     smaller_is_better = TRUE,
 #'     pred_wrapper = function(object, newdata) predict(object, newdata)
 #' ) + ggtitle("PPR")
+#'
+#' #
+#' # Classification example
+#' #
+#'
+#' # Complete (i.e., imputed version of titanic data); see `?vip::titanic_mice`
+#' head(t1 <- titanic_mice[[1L]])
+#'
+#' # Fit a (default) probability forest
+#' set.seed(1150)  # for reproducibility
 #' }
 vi_permute <- function(object, ...) {
   UseMethod("vi_permute")

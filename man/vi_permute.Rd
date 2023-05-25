@@ -35,9 +35,9 @@ vi_permute(object, ...)
 \code{\link[foreach]{foreach}}.}
 
 \item{feature_names}{Character string giving the names of the predictor
-variables (i.e., features) of interest. If \code{NULL} (the default) then
-they will be inferred from the \code{train} and \code{target} arguments (see below).
-It is good practice to always specify this argument.}
+variables (i.e., features) of interest. If \code{NULL} (the default) then they
+will be inferred from the \code{train} and \code{target} arguments (see below). It is
+good practice to always specify this argument.}
 
 \item{train}{A matrix-like R object (e.g., a data frame or matrix)
 containing the training data. If \code{NULL} (the default) then the
@@ -109,9 +109,10 @@ class probabilities for each class (e.g., if using log loss or AUC).}
 the construction of variable importance scores. Default is \code{FALSE}.}
 
 \item{parallel}{Logical indicating whether or not to run \code{vi_permute()}
-in parallel (using a backend provided by the \code{foreach} package). Default
-is \code{FALSE}. If \code{TRUE}, a \code{\link[foreach]{foreach}}-compatible
-backend must be provided by must be provided.}
+in parallel (using a backend provided by the \link[foreach:foreach]{foreach}
+package). Default is \code{FALSE}. If \code{TRUE}, a
+\link[foreach:foreach]{foreach}-compatible backend must be provided by must be
+provided.}
 
 \item{parallelize_by}{Character string specifying whether to parallelize
 across features (\code{parallelize_by = "features"}) or repetitions
@@ -119,8 +120,19 @@ across features (\code{parallelize_by = "features"}) or repetitions
 \code{nsim > 1}. Default is \code{"features"}.}
 }
 \value{
-A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
-\code{Variable} and \code{Importance}.
+A tidy data frame (i.e., a \link[tibble:tibble]{tibble} object) with two
+columns:
+\itemize{
+\item \code{Variable} - the corresponding feature name;
+\item \code{Importance} - the associated importance, computed as the average change in
+performance after a random permutation (or permutations, if \code{nsim > 1}) of
+the feature in question.
+}
+
+If \code{nsim > 1}, then an additional column (\code{StDev}) containing the standard
+deviation of the individual permutation scores for each feature is also
+returned; this helps assess the stability/variation of the individual
+permutation importance for each feature.
 }
 \description{
 Compute permutation-based variable importance scores for the predictors in a
@@ -130,7 +142,11 @@ model; for details on the algorithm, see Greenwell and Boehmke (2020).
 \dontrun{
 # Load required packages
 library(ggplot2)  # for ggtitle() function
-library(nnet)     # for fitting neural networks
+library(ranger)   # for fitting random forests
+
+#
+# Regression example
+#
 
 # Simulate training data
 trn <- gen_friedman(500, seed = 101)  # ?vip::gen_friedman
@@ -164,6 +180,16 @@ vip(pp, method = "permute", target = "y", metric = mae,
     smaller_is_better = TRUE,
     pred_wrapper = function(object, newdata) predict(object, newdata)
 ) + ggtitle("PPR")
+
+#
+# Classification example
+#
+
+# Complete (i.e., imputed version of titanic data); see `?vip::titanic_mice`
+head(t1 <- titanic_mice[[1L]])
+
+# Fit a (default) probability forest
+set.seed(1150)  # for reproducibility
 }
 }
 \references{

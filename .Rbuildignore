@@ -10,4 +10,5 @@
 ^rjournal$
 ^slowtests
 ^tools$
-^vignettes$
+^vignettes/references\.bib$
+^vignettes/benchmark\.rds$

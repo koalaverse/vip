@@ -39,7 +39,8 @@ Imports:
     magrittr,
     stats,
     tibble,
-    yardstick
+    yardstick,
+    utils
 Suggests: 
     DT,
     C50,

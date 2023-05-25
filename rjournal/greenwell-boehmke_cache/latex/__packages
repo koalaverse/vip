@@ -1,4 +1,3 @@
-base
 dplyr
 vip
 rpart
@@ -20,3 +19,4 @@ SuperLearner
 foreach
 iterators
 doParallel
+gam

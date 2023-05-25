@@ -2,7 +2,8 @@
 #'
 #' Compute variable importance scores for the predictors in a model.
 #'
-#' @param object A fitted model object (e.g., a \code{"randomForest"} object) or
+#' @param object A fitted model object (e.g., a
+#' [randomForest][randomForest::randomForest] object) or
 #' an object that inherits from class \code{"vi"}.
 #'
 #' @param method Character string specifying the type of variable importance

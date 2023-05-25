@@ -20,10 +20,10 @@ vi_firm(object, ...)
 \arguments{
 \item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
 
-\item{...}{Additional optional arguments to be passed on to
-\code{\link[pdp:partial]{pdp::partial()}} (e.g., \code{ice = TRUE}, \code{prob = TRUE}, or a
-prediction wrapper via the \code{pred.fun} argument); see \code{pdp::partial} for
-details on these and other potentially useful arguments.}
+\item{...}{Additional arguments to be passed on to the \code{\link[pdp:partial]{pdp::partial()}}
+function (e.g., \code{ice = TRUE}, \code{prob = TRUE}, or a prediction wrapper via the
+\code{pred.fun} argument); see \code{?pdp::partial} for details on these and other
+useful arguments.}
 
 \item{feature_names}{Character string giving the names of the predictor
 variables (i.e., features) of interest. If \code{NULL} (the default) then the
@@ -48,8 +48,12 @@ is, \code{function(x) diff(range(x)) / 4}.}
 }
 \value{
 A tidy data frame (i.e., a \link[tibble:tibble]{tibble} object) with two
-columns, \code{Variable} and \code{Importance}, containing the variable name and its
-associated importance score, respectively.
+columns:
+\itemize{
+\item \code{Variable} - the corresponding feature name;
+\item \code{Importance} - the associated importance, computed as described in
+\href{https://arxiv.org/abs/1805.04755}{Greenwell et al. (2018)}.
+}
 }
 \description{
 Compute variance-based variable importance (VI) scores using a simple

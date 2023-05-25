@@ -6,7 +6,10 @@
 #' * `metric` - the optimization or tuning metric;
 #' * `description` - a brief description about the metric;
 #' * `task` - whether the metric is suitable for regression or classification;
-#' * `smaller_is_better` - logical indicating whether or not a smaller value of the metric is considered better.
+#' * `smaller_is_better` - logical indicating whether or not a smaller value of
+#' the metric is considered better.
+#' * `yardstick_function` - the name of the corresponding function from the
+#' [yardstick][yardstick::yardstick] package.
 #'
 #' @export
 #'
@@ -15,65 +18,83 @@
 #' metrics[metrics$task == "Multiclass classification", ]
 list_metrics <- function() {
   data.frame(rbind(
+    #
+    # Classification
+    #
     c("metric"      = "accuracy",
       "description" = "Classification accuracy",
       "task"        = "Binary/multiclass classification",
-      "smaller_is_better" = FALSE
+      "smaller_is_better" = FALSE,
+      "yardstick_function" = "accuracy_vec"
     ),
-    c("metric"      = "error",
-      "description" = "Misclassification error",
+    c("metric"      = "bal_accuracy",
+      "description" = "Balanced classification accuracy",
       "task"        = "Binary/multiclass classification",
-      "smaller_is_better" = TRUE
+      "smaller_is_better" = FALSE,
+      "yardstick_function" = "bal_accuracy_vec"
     ),
-    c("metric"      = "auc",
-      "description" = "Area under (ROC) curve",
+    c("metric"      = "youden",
+      "description" = "Youden;'s index (or Youden\'s J statistic)",
+      "task"        = "Binary/multiclass classification",
+      "smaller_is_better" = FALSE,
+      "yardstick_function" = "j_index"
+    ),
+    c("metric"      = "roc_auc",
+      "description" = "Area under ROC curve",
       "task"        = "Binary classification",
-      "smaller_is_better" = FALSE
+      "smaller_is_better" = FALSE,
+      "yardstick_function" = "roc_auc_vec"
+    ),
+    c("metric"      = "pr_auc",
+      "description" = "Area under precision-recall (PR) curve",
+      "task"        = "Binary classification",
+      "smaller_is_better" = FALSE,
+      "yardstick_function" = "pr_auc_vec"
     ),
     c("metric"      = "logloss",
       "description" = "Log loss",
-      "task"        = "Binary classification",
-      "smaller_is_better" = TRUE
+      "task"        = "Binary/multiclass classification",
+      "smaller_is_better" = TRUE,
+      "yardstick_function" = "mn_log_loss_vec"
     ),
-    c("metric"      = "mauc",
-      "description" = "Multiclass area under (ROC) curve",
-      "task"        = "Multiclass classification",
-      "smaller_is_better" = FALSE
+    c("metric"      = "brier",
+      "description" = "Brier score",
+      "task"        = "Binary/multiclass classification",
+      "smaller_is_better" = TRUE,
+      "yardstick_function" = "brier_class_vec"
     ),
-    # c("metric"      = "mlogloss",
-    #   "description" = "Multiclass log loss",
-    #   "task"        = "Multiclass classification",
-    #   "smaller_is_better" = TRUE
-    # ),
+    #
+    # Regression
+    #
     c("metric"      = "mae",
       "description" = "Mean absolute error",
       "task"        = "Regression",
-      "smaller_is_better" = TRUE
+      "smaller_is_better" = TRUE,
+      "yardstick_function" = "mae_vec"
     ),
-    c("metric"      = "mse",
-      "description" = "Mean squared error",
+    c("metric"      = "mape",
+      "description" = "Mean absolute percentage error",
       "task"        = "Regression",
-      "smaller_is_better" = TRUE
-    ),
-    c("metric"      = "r2",
-      "description" = "R squared",
-      "task"        = "Regression",
-      "smaller_is_better" = FALSE
-    ),
-    c("metric"      = "rsquared",
-      "description" = "R squared",
-      "task"        = "Regression",
-      "smaller_is_better" = FALSE
+      "smaller_is_better" = TRUE,
+      "yardstick_function" = "mape_vec"
     ),
     c("metric"      = "rmse",
       "description" = "Root mean squared error",
       "task"        = "Regression",
-      "smaller_is_better" = TRUE
+      "smaller_is_better" = TRUE,
+      "yardstick_function" = "rmse_vec"
     ),
-    c("metric"      = "sse",
-      "description" = "Sum of squared errors",
+    c("metric"      = "rsq",
+      "description" = "R-squared (correlation)",
       "task"        = "Regression",
-      "smaller_is_better" = TRUE
+      "smaller_is_better" = FALSE,
+      "yardstick_function" = "rsq_vec"
+    ),
+    c("metric"      = "rsq_trad",
+      "description" = "R-squared (traditional)",
+      "task"        = "Regression",
+      "smaller_is_better" = FALSE,
+      "yardstick_function" = "rsq_trad_vec"
     )
   ), stringsAsFactors = FALSE)
 }
