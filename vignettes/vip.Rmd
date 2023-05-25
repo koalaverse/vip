@@ -21,7 +21,7 @@ bibliography: '`r system.file("references.bib", package = "vip")`'
 
 This vignette is essentially an up-to-date version of @RJ-2020-013. Please use that if you'd like to cite our work.
 
-## Introduction
+# Introduction
 
 Too often machine learning (ML) models are summarized using a single metric (e.g., cross-validated accuracy) and then put into production. Although we often care about the predictions from these models, it is becoming routine (and good practice) to also better understand the predictions! Understanding how an ML model makes its predictions helps build trust in the model and is the fundamental idea of the emerging field of *interpretable machine learning* (IML).^[Although "interpretability" is difficult to formally define in the context of ML, we follow @doshivelez-2017-rigorous and describe "interpretable" as the "...ability to explain or to present in understandable terms to a human."] For an in-depth discussion on IML, see @molnar-2019-iml. In this paper, we focus on *global methods* for quantifying the importance^[In this context "importance" can be defined in a number of different ways. In general, we can describe it as *the extent to which a feature has a "meaningful" impact on the predicted outcome*. A more formal definition and treatment can be found in @laan-2006-statistical.] of features in an ML model; that is, methods that help us understand the global contribution each feature has to a model's predictions. Computing variable importance (VI) and communicating them through variable importance plots (VIPs) is a fundamental component of IML and is the main topic of this paper.
 
@@ -892,14 +892,14 @@ We already mentioned that PDPs can be misleading in the presence of strong inter
 @hooker-2007-generalized also argues that feature importance (which concern only *main effects*) can be misleading in high dimensional settings, especially when there are strong dependencies and interaction effects among the features, and suggests an approach based on a *generalized functional ANOVA decomposition*&mdash;though, to our knowledge, this approach is not widely implemented in open source.
 
 
-## Summary
+# Summary
 
 VIPs help to visualize the strength of the relationship between each feature and the predicted response, while accounting for all the other features in the model. We've discussed two types of VI: model-specific and model-agnostic, as well as some of their strengths and weaknesses. In this paper, we showed how to construct VIPs for various types of "black box" models in R using the [vip](https://cran.r-project.org/package=vip) package. We also briefly discussed related approaches available in a number of other R packages. Suggestions to avoid high execution times were discussed and demonstrated via examples. This paper is based on [vip](https://cran.r-project.org/package=vip) version 0.3.2.9000. In terms of future development, [vip](https://cran.r-project.org/package=vip) can be expanded in a number of ways. For example, we plan to incorporate the option to compute group-based and conditional permutation scores. Although not discussed in this paper, [vip](https://cran.r-project.org/package=vip) also includes a promising statistic (similar to the variance-based VI scores previously discussed) for measuring the relative strength of interaction between features. Although VIPs can help understand which features are driving the model's predictions, ML practitioners should be cognizant of the fact that none of the methods discussed in this paper are uniformly best across all situations; they require an accurate model that has been properly tuned, and should be checked for consistency with human domain knowledge.
 
 
-## Acknowledgments
+# Acknowledgments
 
 The authors would like to thank the anonymous reviewers and the Editor for their helpful comments and suggestions. We would also like to thank the members of the 84.51$^{\circ}$ Interpretable Machine Learning Special Interest Group for their thoughtful discussions on the topics discussed herein.
 
 
-## References
+# References
