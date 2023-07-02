@@ -1,6 +1,0 @@
-time-zones              Time-zone manipulation
-time_add                Arithmetics with periods
-time_get                Get components of a date-time object
-time_round              Round, floor and ceiling for date-time objects
-time_update             Update components of a date-time object
-timechange-package      Package 'timechange'

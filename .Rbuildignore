@@ -7,6 +7,7 @@
 ^docs$
 ^README\.Rmd$
 ^README_cache
+^revdep
 ^rjournal$
 ^slowtests
 ^tools$
