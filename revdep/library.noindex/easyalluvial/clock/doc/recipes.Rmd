@@ -1,0 +1,786 @@
+---
+title: "Examples and Recipes"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Examples and Recipes}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(clock)
+library(magrittr)
+```
+
+This vignette shows common examples and recipes that might be useful when learning about clock. Where possible, both the high and low level API are shown.
+
+Many of these examples are adapted from the date C++ library's [Examples and Recipes](https://github.com/HowardHinnant/date/wiki/Examples-and-Recipes) page.
+
+## The current local time
+
+`zoned_time_now()` returns the current time in a particular time zone. It will display up to nanosecond precision, but the exact amount is OS dependent (on a Mac this displays microsecond level information at nanosecond resolution).
+
+Using `""` as the time zone string will try and use whatever R thinks your local time zone is (i.e. from `Sys.timezone()`).
+
+```{r, eval=FALSE}
+zoned_time_now("")
+#> <zoned_time<nanosecond><America/New_York (current)>[1]>
+#> [1] "2021-02-10T15:54:29.875011000-05:00"
+```
+
+## The current time somewhere else
+
+Pass a time zone name to `zoned_time_now()` to get the current time somewhere else.
+
+```{r, eval=FALSE}
+zoned_time_now("Asia/Shanghai")
+#> <zoned_time<nanosecond><Asia/Shanghai>[1]>
+#> [1] "2021-02-11T04:54:29.875011000+08:00"
+```
+
+## Set a meeting across time zones
+
+Say you need to set a meeting with someone in Shanghai, but you live in New York. If you set a meeting for 9am, what time is that for them?
+
+```{r}
+my_time <- year_month_day(2019, 1, 30, 9) %>%
+  as_naive_time() %>%
+  as_zoned_time("America/New_York")
+
+my_time
+
+their_time <- zoned_time_set_zone(my_time, "Asia/Shanghai")
+
+their_time
+```
+
+### High level API
+
+```{r}
+my_time <- as.POSIXct("2019-01-30 09:00:00", "America/New_York")
+
+date_time_set_zone(my_time, "Asia/Shanghai")
+```
+
+## Force a specific time zone
+
+Say your co-worker in Shanghai (from the last example) accidentally logged on at 9am _their time_. What time would this be for you?
+
+The first step to solve this is to force `my_time` to have the same printed time, but use the Asia/Shanghai time zone. You can do this by going through naive-time:
+
+```{r}
+my_time <- year_month_day(2019, 1, 30, 9) %>%
+  as_naive_time() %>%
+  as_zoned_time("America/New_York")
+
+my_time
+
+# Drop the time zone information, retaining the printed time
+my_time %>%
+  as_naive_time()
+
+# Add the correct time zone name back on,
+# again retaining the printed time
+their_9am <- my_time %>%
+  as_naive_time() %>%
+  as_zoned_time("Asia/Shanghai")
+
+their_9am
+```
+
+Note that a conversion like this isn't always possible due to daylight saving time issues, in which case you might need to set the `nonexistent` and `ambiguous` arguments of `as_zoned_time()`.
+
+What time would this have been for you in New York?
+
+```{r}
+zoned_time_set_zone(their_9am, "America/New_York")
+```
+
+### High level API
+
+```{r}
+my_time <- as.POSIXct("2019-01-30 09:00:00", "America/New_York")
+
+my_time %>%
+  as_naive_time() %>%
+  as.POSIXct("Asia/Shanghai") %>%
+  date_time_set_zone("America/New_York")
+```
+
+## Finding the next Monday (or Thursday)
+
+Given a particular day precision naive-time, how can you compute the next Monday? This is very easily accomplished with `time_point_shift()`. It takes a time point vector and a "target" weekday, and shifts the time points to that target weekday.
+
+```{r}
+days <- as_naive_time(year_month_day(2019, c(1, 2), 1))
+
+# A Tuesday and a Friday
+as_weekday(days)
+
+monday <- weekday(clock_weekdays$monday)
+
+time_point_shift(days, monday)
+
+as_weekday(time_point_shift(days, monday))
+```
+
+You can also shift to the previous instance of the target weekday:
+
+```{r}
+time_point_shift(days, monday, which = "previous")
+```
+
+If you happen to already be on the target weekday, the default behavior returns the input unchanged. However, you can also chose to advance to the next instance of the target.
+
+```{r}
+tuesday <- weekday(clock_weekdays$tuesday)
+
+time_point_shift(days, tuesday)
+time_point_shift(days, tuesday, boundary = "advance")
+```
+
+While `time_point_shift()` is built in to clock, it can be useful to discuss the arithmetic going on in the underlying weekday type which powers this function. To do so, we will build some parts of `time_point_shift()` from scratch.
+
+The weekday type represents a single day of the week and implements _circular arithmetic_. Let's see the code for a simple version of `time_point_shift()` that just shifts to the next target weekday:
+
+```{r}
+next_weekday <- function(x, target) {
+  x + (target - as_weekday(x))
+}
+
+next_weekday(days, monday)
+
+as_weekday(next_weekday(days, monday))
+```
+
+Let's break down how `next_weekday()` works. The first step takes the difference between two weekday vectors. It does this using circular arithmetic. Once we get passed the 7th day of the week (whatever that may be), it wraps back around to the 1st day of the week. Implementing weekday arithmetic in this way means that the following nicely returns the number of days until the next Monday as a day based duration:
+
+```{r}
+monday - as_weekday(days)
+```
+
+Which can be added to our day precision `days` vector to get the date of the next Monday:
+
+```{r}
+days + (monday - as_weekday(days))
+```
+
+The current implementation will return the input if it is already on the target weekday. To use the `boundary = "advance"` behavior, you could implement `next_weekday()` as:
+
+```{r}
+next_weekday2 <- function(x, target) {
+  x <- x + duration_days(1L)
+  x + (target - as_weekday(x))
+}
+
+a_monday <- as_naive_time(year_month_day(2018, 12, 31))
+as_weekday(a_monday)
+
+next_weekday2(a_monday, monday)
+```
+
+### High level API
+
+In the high level API, you can use `date_shift()`:
+
+```{r}
+monday <- weekday(clock_weekdays$monday)
+
+x <- as.Date(c("2019-01-01", "2019-02-01"))
+
+date_shift(x, monday)
+
+# With a date-time
+y <- as.POSIXct(
+  c("2019-01-01 02:30:30", "2019-02-01 05:20:22"), 
+  "America/New_York"
+)
+
+date_shift(y, monday)
+```
+
+Note that adding weekdays to a POSIXct could generate nonexistent or ambiguous times due to daylight saving time, which would have to be handled by supplying `nonexistent` and `ambiguous` arguments to `date_shift()`.
+
+## Generate sequences of dates and date-times
+
+clock implements S3 methods for the `seq()` generic function for the calendar and time point types it provides. The precision that you can generate sequences for depends on the type.
+
+- year-month-day: Yearly or monthly sequences
+- year-quarter-day: Yearly or quarterly sequences
+- sys-time / naive-time: Weekly, Daily, Hourly, ..., Subsecond sequences
+
+When generating sequences, the type and precision of `from` determine the result. For example:
+
+```{r}
+ym <- seq(year_month_day(2019, 1), by = 2, length.out = 10)
+ym
+```
+
+```{r}
+yq <- seq(year_quarter_day(2019, 1), by = 2, length.out = 10)
+```
+
+This allows you to generate sequences of year-months or year-quarters without having to worry about the day of the month/quarter becoming invalid. You can set the day of the results to get to a day precision calendar. For example, to get the last days of the month/quarter for this sequence:
+
+```{r}
+set_day(ym, "last")
+
+set_day(yq, "last")
+```
+
+You won't be able to generate day precision sequences with calendars. Instead, you should use a time point.
+
+```{r}
+from <- as_naive_time(year_month_day(2019, 1, 1))
+to <- as_naive_time(year_month_day(2019, 5, 15))
+
+seq(from, to, by = 20)
+```
+
+If you use an integer `by` value, it is interpreted as a duration at the same precision as `from`. You can also use a duration object that can be cast to the same precision as `from`. For example, to generate a sequence spaced out by 90 minutes for these second precision end points:
+
+```{r}
+from <- as_naive_time(year_month_day(2019, 1, 1, 2, 30, 00))
+to <- as_naive_time(year_month_day(2019, 1, 1, 12, 30, 00))
+
+seq(from, to, by = duration_minutes(90))
+```
+
+### High level API
+
+In the high level API, you can use `date_seq()` to generate sequences. This doesn't have all of the flexibility of the `seq()` methods above, but is still extremely useful and has the added benefit of switching between calendars, sys-times, and naive-times automatically for you.
+
+If an integer `by` is supplied with a date `from`, it defaults to a daily sequence:
+
+```{r}
+date_seq(date_build(2019, 1), by = 2, total_size = 10)
+```
+
+You can generate a monthly sequence by supplying a month precision duration for `by`.
+
+```{r}
+date_seq(date_build(2019, 1), by = duration_months(2), total_size = 10)
+```
+
+If you supply `to`, be aware that all components of `to` that are more precise than the precision of `by` must match `from` exactly. For example, the day component of `from` and `to` doesn't match here, so the sequence isn't defined.
+
+```{r, error=TRUE}
+date_seq(
+  date_build(2019, 1, 1),
+  to = date_build(2019, 10, 2),
+  by = duration_months(2)
+)
+```
+
+`date_seq()` also catches invalid dates for you, forcing you to specify the `invalid` argument to specify how to handle them.
+
+```{r, error=TRUE}
+jan31 <- date_build(2019, 1, 31)
+dec31 <- date_build(2019, 12, 31)
+
+date_seq(jan31, to = dec31, by = duration_months(1))
+```
+
+By specifying `invalid = "previous"` here, we can generate month end values.
+
+```{r}
+date_seq(jan31, to = dec31, by = duration_months(1), invalid = "previous")
+```
+
+Compare this with the automatic "overflow" behavior of `seq()`, which is often a source of confusion.
+
+```{r}
+seq(jan31, to = dec31, by = "1 month")
+```
+
+## Grouping by months or quarters
+
+When working on a data analysis, you might be required to summarize certain metrics at a monthly or quarterly level. With `calendar_group()`, you can easily summarize at the granular precision that you care about. Take this vector of day precision naive-times in 2019:
+
+```{r}
+from <- as_naive_time(year_month_day(2019, 1, 1))
+to <- as_naive_time(year_month_day(2019, 12, 31))
+
+x <- seq(from, to, by = duration_days(20))
+
+x
+```
+
+To group by month, first convert to a year-month-day:
+
+```{r}
+ymd <- as_year_month_day(x)
+
+head(ymd)
+
+calendar_group(ymd, "month")
+```
+
+To group by quarter, convert to a year-quarter-day:
+
+```{r}
+yqd <- as_year_quarter_day(x)
+
+head(yqd)
+
+calendar_group(yqd, "quarter")
+```
+
+If you need to group by a multiple of months / quarters, you can do that too:
+
+```{r}
+calendar_group(ymd, "month", n = 2)
+
+calendar_group(yqd, "quarter", n = 2)
+```
+
+Note that the returned calendar vector is at the precision we grouped by, not at the original precision with, say, the day of the month / quarter set to `1`.
+
+Additionally, be aware that `calendar_group()` groups "within" the component that is one unit of precision larger than the `precision` you specify. So, when grouping by `"day"`, this groups by "day of the month", which can't cross the month or year boundary. If you need to bundle dates together by something like 60 days (i.e. crossing the month boundary), then you should use `time_point_floor()`.
+
+### High level API
+
+In the high level API, you can use `date_group()` to group Date vectors by one of their 3 components: year, month, or day. Since month precision dates can't be represented with Date vectors, `date_group()` sets the day of the month to 1.
+
+```{r}
+x <- seq(as.Date("2019-01-01"), as.Date("2019-12-31"), by = 20)
+
+date_group(x, "month")
+```
+
+You won't be able to group by `"quarter"`, since this isn't one of the 3 components that the high level API lets you work with. Instead, this is a case where you should convert to a year-quarter-day, group on that type, then convert back to Date.
+
+```{r}
+x %>%
+  as_year_quarter_day() %>%
+  calendar_group("quarter") %>%
+  set_day(1) %>%
+  as.Date()
+```
+
+This is actually equivalent to `date_group(x, "month", n = 3)`. If your fiscal year starts in January, you can use that instead. However, if your fiscal year starts in a different month, say, June, you'll need to use the approach from above like so:
+
+```{r}
+x %>%
+  as_year_quarter_day(start = clock_months$june) %>%
+  calendar_group("quarter") %>%
+  set_day(1) %>%
+  as.Date()
+```
+
+## Flooring by days
+
+While `calendar_group()` can group by "component", it isn't useful for bundling together sets of time points that can cross month/year boundaries, like "60 days" of data. For that, you are better off _flooring_ by rolling sets of 60 days.
+
+```{r}
+from <- as_naive_time(year_month_day(2019, 1, 1))
+to <- as_naive_time(year_month_day(2019, 12, 31))
+
+x <- seq(from, to, by = duration_days(20))
+```
+
+```{r}
+time_point_floor(x, "day", n = 60)
+```
+
+Flooring operates on the underlying duration, which for day precision time points is a count of days since the _origin_, 1970-01-01.
+
+```{r}
+unclass(x[1])
+```
+
+The 60 day counter starts here, which means that any times between `[1970-01-01, 1970-03-02)` are all floored to 1970-01-01. At `1970-03-02`, the counter starts again.
+
+If you would like to change this origin, you can provide a time point to start counting from with the `origin` argument. This is mostly useful if you are flooring by weeks and you want to change the day of the week that the count starts on. Since 1970-01-01 is a Thursday, flooring by 14 days defaults to returning all Thursdays.
+
+```{r}
+x <- seq(as_naive_time(year_month_day(2019, 1, 1)), by = 3, length.out = 10)
+x
+
+thursdays <- time_point_floor(x, "day", n = 14)
+thursdays
+
+as_weekday(thursdays)
+```
+
+You can use `origin` to change this to floor to Mondays.
+
+```{r}
+origin <- as_naive_time(year_month_day(2018, 12, 31))
+as_weekday(origin)
+
+mondays <- time_point_floor(x, "day", n = 14, origin = origin)
+mondays
+
+as_weekday(mondays)
+```
+
+### High level API
+
+You can use `date_floor()` with Date and POSIXct types.
+
+```{r}
+x <- seq(as.Date("2019-01-01"), as.Date("2019-12-31"), by = 20)
+
+date_floor(x, "day", n = 60)
+```
+
+The `origin` you provide should be another Date. For week precision flooring with Dates, you can specify `"week"` as the precision.
+
+```{r}
+x <- seq(as.Date("2019-01-01"), by = 3, length.out = 10)
+
+origin <- as.Date("2018-12-31")
+
+date_floor(x, "week", n = 2, origin = origin)
+```
+
+## Day of the year
+
+To get the day of the year, convert to the year-day calendar type and extract the day with `get_day()`.
+
+```{r}
+x <- year_month_day(2019, clock_months$july, 4)
+
+yd <- as_year_day(x)
+yd
+
+get_day(yd)
+```
+
+### High level API
+
+```{r}
+x <- as.Date("2019-07-04")
+
+x %>%
+  as_year_day() %>%
+  get_day()
+```
+
+## Computing an age in years
+
+To get the age of an individual in years, use `calendar_count_between()`.
+
+```{r}
+x <- year_month_day(1980, 12, 14:16)
+today <- year_month_day(2005, 12, 15)
+
+# Note that the month and day of the month are taken into account!
+# (Time of day would also be taken into account if there was any.)
+calendar_count_between(x, today, "year")
+```
+
+### High level API
+
+You can use `date_count_between()` with Date and POSIXct types.
+
+```{r}
+x <- date_build(1980, 12, 14:16)
+today <- date_build(2005, 12, 15)
+
+date_count_between(x, today, "year")
+```
+
+## Computing number of weeks since the start of the year
+
+`lubridate::week()` is a useful function that returns "the number of complete seven day periods that have occurred between the date and January 1st, plus one."
+
+There is no direct equivalent to this, but it is possible to replicate with `calendar_start()` and `time_point_count_between()`.
+
+```{r}
+x <- year_month_day(2019, 11, 28)
+
+# lubridate::week(as.Date(x))
+# [1] 48
+
+x_start <- calendar_start(x, "year")
+x_start
+
+time_point_count_between(
+  as_naive_time(x_start),
+  as_naive_time(x),
+  "week"
+) + 1L
+```
+
+You could also peek at the `lubridate::week()` implementation to see that this is just:
+
+```{r}
+doy <- get_day(as_year_day(x))
+doy
+
+(doy - 1L) %/% 7L + 1L
+```
+
+### High level API
+
+This is actually a little easier in the high level API because you don't have to think about switching between types.
+
+```{r}
+x <- date_build(2019, 11, 28)
+
+date_count_between(date_start(x, "year"), x, "week") + 1L
+```
+
+## Compute the number of months between two dates
+
+How can we compute the number of months between these two dates?
+
+```{r}
+x <- year_month_day(2013, 10, 15)
+y <- year_month_day(2016, 10, 13)
+```
+
+This is a bit of an ambiguous question because "month" isn't very well-defined, and there are various different interpretations we could take.
+
+We might want to ignore the day component entirely, and just compute the number of months between `2013-10` and `2016-10`.
+
+```{r}
+calendar_narrow(y, "month") - calendar_narrow(x, "month")
+```
+
+Or we could include the day of the month, and say that `2013-10-15` to `2014-10-15` defines 1 month (i.e. you have to hit the same day of the month in the next month).
+
+```{r}
+calendar_count_between(x, y, "month")
+```
+
+With this you could also compute the number of days remaining between these two dates.
+
+```{r}
+x_close <- add_months(x, calendar_count_between(x, y, "month"))
+x_close
+
+x_close_st <- as_sys_time(x_close)
+y_st <- as_sys_time(y)
+
+time_point_count_between(x_close_st, y_st, "day")
+```
+
+Or we could compute the number of days between these two dates in units of seconds, and divide that by the average number of seconds in 1 proleptic Gregorian month.
+
+```{r}
+# Days between x and y
+days <- as_sys_time(y) - as_sys_time(x)
+days
+
+# In units of seconds
+days <- duration_cast(days, "second")
+days <- as.numeric(days)
+days
+
+# Average number of seconds in 1 proleptic Gregorian month
+avg_sec_in_month <- duration_cast(duration_months(1), "second")
+avg_sec_in_month <- as.numeric(avg_sec_in_month)
+
+days / avg_sec_in_month
+```
+
+### High level API
+
+```{r}
+x <- date_build(2013, 10, 15)
+y <- date_build(2016, 10, 13)
+```
+
+To ignore the day of the month, first shift to the start of the month, then you can use `date_count_between()`.
+
+```{r}
+date_count_between(date_start(x, "month"), date_start(y, "month"), "month")
+```
+
+To utilize the day field, do the same as above but without calling `date_start()`.
+
+```{r}
+date_count_between(x, y, "month")
+```
+
+There is no high level equivalent to the average length of one proleptic Gregorian month example.
+
+## Computing the ISO year or week
+
+The ISO 8601 standard outlines an alternative calendar that is specified by the year, the week of the year, and the day of the week. It also specifies that the _start_ of the week is considered to be a Monday. This ends up meaning that the actual ISO year may be different from the Gregorian year, and is somewhat difficult to compute "by hand". Instead, you can use the `year_week_day()` calendar if you need to work with ISO week dates.
+
+```{r}
+x <- date_build(2019:2026)
+y <- as_year_week_day(x, start = clock_weekdays$monday)
+
+data.frame(x = x, y = y)
+```
+
+```{r}
+get_year(y)
+get_week(y)
+
+# Last week in the ISO year
+set_week(y, "last")
+```
+
+The year-week-day calendar is a fully supported calendar, meaning that all of the `calendar_*()` functions work on it:
+
+```{r}
+calendar_narrow(y, "week")
+```
+
+There is also an `iso_year_week_day()` calendar available, which is identical to `year_week_day(start = clock_weekdays$monday)`. That ISO calendar actually existed first, before we generalized it to any `start` weekday.
+
+## Computing the Epidemiological year or week
+
+Epidemiologists following the US CDC guidelines use a calendar that is similar to the ISO calendar, but defines the start of the week to be Sunday instead of Monday. `year_week_day()` supports this as well:
+
+```{r}
+x <- date_build(2019:2026)
+iso <- as_year_week_day(x, start = clock_weekdays$monday)
+epi <- as_year_week_day(x, start = clock_weekdays$sunday)
+
+data.frame(x = x, iso = iso, epi = epi)
+```
+
+```{r}
+get_year(epi)
+get_week(epi)
+```
+
+## Converting a time zone abbreviation into a time zone name
+
+It is possible that you might run into date-time strings of the form `"2020-10-25 01:30:00 IST"`, which contain a time zone _abbreviation_ rather than a full time zone name. Because time zone maintainers change the abbreviation they use throughout time, and because multiple time zones sometimes use the same abbreviation, it is generally impossible to parse strings of this form without more information. That said, if you know what time zone this abbreviation goes with, you can parse this time with `zoned_time_parse_abbrev()`, supplying the `zone`.
+
+```{r}
+x <- "2020-10-25 01:30:00 IST"
+
+zoned_time_parse_abbrev(x, "Asia/Kolkata")
+zoned_time_parse_abbrev(x, "Asia/Jerusalem")
+```
+
+If you _don't_ know what time zone this abbreviation goes with, then generally you are out of luck. However, there are low-level tools in this library that can help you generate a list of _possible_ zoned-times this could map to.
+
+Assuming that `x` is a naive-time with its corresponding time zone abbreviation attached, the first thing to do is to parse this string as a naive-time.
+
+```{r}
+x <- naive_time_parse(x, format = "%Y-%m-%d %H:%M:%S IST")
+x
+```
+
+Next, we'll develop a function that attempts to turn this naive-time into a zoned-time, iterating through all of the time zone names available in the time zone database. These time zone names are accessible through `tzdb_names()`. By using the low-level `naive_time_info()`, rather than `as_zoned_time()`, to lookup zone specific information, we'll also get back information about the UTC offset and time zone abbreviation that is currently in use. By matching this abbreviation against our input abbreviation, we can generate a list of zoned-times that use the abbreviation we care about at that particular instance in time.
+
+```{r}
+naive_find_by_abbrev <- function(x, abbrev) {
+  if (!is_naive_time(x)) {
+    abort("`x` must be a naive-time.")
+  }
+  if (length(x) != 1L) {
+    abort("`x` must be length 1.")
+  }
+  if (!rlang::is_string(abbrev)) {
+    abort("`abbrev` must be a single string.")
+  }
+  
+  zones <- tzdb_names()
+  info <- naive_time_info(x, zones)
+  info$zones <- zones
+  
+  c(
+    compute_uniques(x, info, abbrev),
+    compute_ambiguous(x, info, abbrev)
+  )
+}
+
+compute_uniques <- function(x, info, abbrev) {
+  info <- info[info$type == "unique",]
+  
+  # If the abbreviation of the unique time matches the input `abbrev`,
+  # then that candidate zone should be in the output
+  matches <- info$first$abbreviation == abbrev
+  zones <- info$zones[matches]
+  
+  lapply(zones, as_zoned_time, x = x)
+}
+
+compute_ambiguous <- function(x, info, abbrev) {
+  info <- info[info$type == "ambiguous",]
+
+  # Of the two possible times,
+  # does the abbreviation of the earliest match the input `abbrev`?
+  matches <- info$first$abbreviation == abbrev
+  zones <- info$zones[matches]
+  
+  earliest <- lapply(zones, as_zoned_time, x = x, ambiguous = "earliest")
+  
+  # Of the two possible times,
+  # does the abbreviation of the latest match the input `abbrev`?
+  matches <- info$second$abbreviation == abbrev
+  zones <- info$zones[matches]
+  
+  latest <- lapply(zones, as_zoned_time, x = x, ambiguous = "latest")
+  
+  c(earliest, latest)
+}
+```
+
+```{r}
+candidates <- naive_find_by_abbrev(x, "IST")
+candidates
+```
+
+While it looks like we got 7 candidates, in reality we only have 3. Asia/Kolkata, Europe/Dublin, and Asia/Jerusalem are our 3 candidates. The others are aliases of those 3 that have been retired but are kept for backwards compatibility.
+
+Looking at the code, there are two ways to add a candidate time zone name to the list.
+
+If there is a unique mapping from `{naive-time, zone}` to `sys-time`,  then we check if the abbreviation that goes with that unique mapping matches our input abbreviation. If so, then we convert `x` to a zoned-time with that time zone.
+
+If there is an ambiguous mapping from `{naive-time, zone}` to `sys-time`, which is due to a daylight saving fallback, then we check the abbreviation of both the _earliest_ and _latest_ possible times. If either matches, then we convert `x` to a zoned-time using that time zone and the information about which of the two ambiguous times were used.
+
+This example is particularly interesting, since each of the 3 candidates came from a different path. The Asia/Kolkata one is unique, the Europe/Dublin one is ambiguous but the earliest was chosen, and the Asia/Jerusalem one is ambiguous but the latest was chosen:
+
+```{r}
+as_zoned_time(x, "Asia/Kolkata")
+as_zoned_time(x, "Europe/Dublin", ambiguous = "earliest")
+as_zoned_time(x, "Asia/Jerusalem", ambiguous = "latest")
+```
+
+## When is the next daylight saving time event?
+
+Given a particular zoned-time, when will it next be affected by daylight saving time? For this, we can use a relatively low level helper, `zoned_time_info()`. It returns a data frame of information about the current daylight saving time transition points, along with information about the offset, the current time zone abbreviation, and whether or not daylight saving time is currently active or not.
+
+```{r}
+x <- zoned_time_parse_complete("2019-01-01T00:00:00-05:00[America/New_York]")
+
+info <- zoned_time_info(x)
+
+# Beginning of the current DST range
+info$begin
+
+# Beginning of the next DST range
+info$end
+```
+
+So on 2018-11-04 at (the second) 1 o'clock hour, daylight saving time was turned off. On 2019-03-10 at 3 o'clock, daylight saving time will be considered on again. This is the next moment in time right after a daylight saving time gap of 1 hour, which you can see by subtracting 1 second (in sys-time):
+
+```{r}
+# Last moment in time in the current DST range
+info$end %>%
+  as_sys_time() %>%
+  add_seconds(-1) %>%
+  as_zoned_time(zoned_time_zone(x))
+```
+
+### High level API
+
+`date_time_info()` exists in the high level API to do a similar thing. It is basically the same as `zoned_time_info()`, except the `begin` and `end` columns are returned as R POSIXct date-times rather than zoned-times, and the `offset` column is returned as an integer rather than as a clock duration (since we try not to expose high level API users to low level types).
+
+```{r}
+x <- date_time_parse("2019-01-01 00:00:00", zone = "America/New_York")
+
+date_time_info(x)
+```
+

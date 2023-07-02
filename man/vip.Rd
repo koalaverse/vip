@@ -33,55 +33,48 @@ vip(object, ...)
 \method{vip}{Learner}(object, ...)
 }
 \arguments{
-\item{object}{A fitted model object (e.g., a \code{"randomForest"} object) or
-an object that inherits from class \code{"vi"}.}
+\item{object}{A fitted model (e.g., of class
+\link[randomForest:randomForest]{randomForest} object) or a \link[=vi]{vi} object.}
 
-\item{...}{Additional optional arguments to be passed on to \code{\link{vi}}.}
+\item{...}{Additional optional arguments to be passed on to \link[=vi]{vi}.}
 
 \item{num_features}{Integer specifying the number of variable importance
 scores to plot. Default is \code{10}.}
 
 \item{geom}{Character string specifying which type of plot to construct.
 The currently available options are described below.
-
 \itemize{
-
-\item \code{geom = "col"} uses \code{\link[ggplot2:geom_bar]{geom_col}} to construct
-a bar chart of the variable importance scores.
-
-\item \code{geom = "point"} uses \code{\link[ggplot2]{geom_point}} to
-construct a Cleveland dot plot of the variable importance scores.
-
-\item \code{geom = "boxplot"} uses \code{\link[ggplot2]{geom_boxplot}} to
+\item \code{geom = "col"} uses \link[ggplot2:geom_bar]{geom_col} to construct a bar chart
+of the variable importance scores.
+\item \code{geom = "point"} uses \link[ggplot2:geom_point]{geom_point} to construct a
+Cleveland dot plot of the variable importance scores.
+\item \code{geom = "boxplot"} uses \link[ggplot2:geom_boxplot]{geom_boxplot} to
 construct a boxplot plot of the variable importance scores. This option can
 only for the permutation-based importance method with \code{nsim > 1} and
-\code{keep = TRUE}; see \code{\link{vi_permute}} for details.
-
-\item \code{geom = "violin"} uses \code{\link[ggplot2]{geom_violin}} to
+\code{keep = TRUE}; see \link[=vi_permute]{vi_permute} for details.
+\item \code{geom = "violin"} uses \link[ggplot2:geom_violin]{geom_violin} to
 construct a violin plot of the variable importance scores. This option can
 only for the permutation-based importance method with \code{nsim > 1} and
-\code{keep = TRUE}; see \code{\link{vi_permute}} for details.
-
+\code{keep = TRUE}; see \link[=vi_permute]{vi_permute} for details.
 }}
 
-\item{mapping}{Set of aesthetic mappings created by \code{\link[ggplot2]{aes}}
-or \code{\link[ggplot2]{aes_}}. See example usage below.}
+\item{mapping}{Set of aesthetic mappings created by \link[ggplot2:aes]{aes}
+or \link[ggplot2:aes_]{aes_}. See example usage below.}
 
 \item{aesthetics}{List specifying additional arguments passed on to
-\code{\link[ggplot2]{layer}}. These are often aesthetics, used to set an
-aesthetic to a fixed value, like \code{colour = "red"} or \code{size = 3}.
-See example usage below.}
+\link[ggplot2:layer]{layer}. These are often aesthetics, used to set an aesthetic
+to a fixed value, like\code{colour = "red"} or \code{size = 3}. See example usage
+below.}
 
 \item{horizontal}{Logical indicating whether or not to plot the importance
 scores on the x-axis (\code{TRUE}). Default is \code{TRUE}.}
 
 \item{all_permutations}{Logical indicating whether or not to plot all
-permutation scores along with the average. Default is \code{FALSE}. (Only
-used for permutation scores when \code{nsim > 1}.)}
+permutation scores along with the average. Default is \code{FALSE}. (Only used for
+permutation scores when \code{nsim > 1}.)}
 
 \item{jitter}{Logical indicating whether or not to jitter the raw permutation
-scores. Default is \code{FALSE}. (Only used when
-\code{all_permutations = TRUE}.)}
+scores. Default is \code{FALSE}. (Only used when \code{all_permutations = TRUE}.)}
 
 \item{include_type}{Logical indicating whether or not to include the type of
 variable importance computed in the axis label. Default is \code{FALSE}.}
@@ -112,14 +105,6 @@ vis <- vi(model, method = "permute", train = mtcars, target = "mpg",
           nsim = 10, metric = "rmse", pred_wrapper = pfun)
 vip(vis, geom = "point", horiz = FALSE)
 vip(vis, geom = "point", horiz = FALSE, aesthetics = list(size = 3))
-
-# The `\%T>\\%` operator is imported for convenience; see ?magrittr::`\%T>\%`
-# for details
-vis<- model \%>\%
-  vi(method = "permute", train = mtcars, target = "mpg",
-     nsim = 10, metric = "rmse", pred_wrapper = pfun) \%T>\%
-  {print(vip(.))}
-vis
 
 # Plot unaggregated permutation scores (boxplot colored by feature)
 library(ggplot2)  # for `aes_string()` function

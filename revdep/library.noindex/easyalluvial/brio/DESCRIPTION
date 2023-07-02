@@ -1,0 +1,28 @@
+Package: brio
+Title: Basic R Input Output
+Version: 1.1.3
+Authors@R: c(
+    person("Jim", "Hester", role = "aut",
+           comment = c(ORCID = "0000-0002-2739-7082")),
+    person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre")),
+    person("RStudio", role = c("cph", "fnd"))
+  )
+Description: Functions to handle basic input output, these functions
+    always read and write UTF-8 (8-bit Unicode Transformation Format)
+    files and provide more explicit control over line endings.
+License: MIT + file LICENSE
+URL: https://brio.r-lib.org, https://github.com/r-lib/brio
+BugReports: https://github.com/r-lib/brio/issues
+Suggests: covr, testthat (>= 2.1.0)
+Encoding: UTF-8
+RoxygenNote: 7.1.2
+NeedsCompilation: yes
+Packaged: 2021-11-29 23:19:46 UTC; jhester
+Author: Jim Hester [aut] (<https://orcid.org/0000-0002-2739-7082>),
+  Gábor Csárdi [aut, cre],
+  RStudio [cph, fnd]
+Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
+Repository: CRAN
+Date/Publication: 2021-11-30 13:10:02 UTC
+Built: R 4.2.0; aarch64-apple-darwin20; 2023-04-01 09:39:27 UTC; unix
+Archs: brio.so.dSYM

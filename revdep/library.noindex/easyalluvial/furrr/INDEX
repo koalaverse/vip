@@ -1,0 +1,11 @@
+furrr_options           Options to fine tune furrr
+future_imap             Apply a function to each element of a vector,
+                        and its index via futures
+future_invoke_map       Invoke functions via futures
+future_map              Apply a function to each element of a vector
+                        via futures
+future_map2             Map over multiple inputs simultaneously via
+                        futures
+future_map_if           Apply a function to each element of a vector
+                        conditionally via futures
+future_modify           Modify elements selectively via futures

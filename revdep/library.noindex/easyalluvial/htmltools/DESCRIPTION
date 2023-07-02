@@ -1,0 +1,43 @@
+Package: htmltools
+Type: Package
+Title: Tools for HTML
+Version: 0.5.5
+Authors@R: c(
+  person("Joe", "Cheng", role = "aut", email = "joe@rstudio.com"),
+  person("Carson", "Sievert", role = c("aut", "cre"), email = "carson@rstudio.com", comment = c(ORCID = "0000-0002-4958-2844")),
+  person("Barret", "Schloerke", role = "aut", email = "barret@rstudio.com", comment = c(ORCID = "0000-0001-9986-114X")),
+  person("Winston", "Chang", role = "aut", email = "winston@rstudio.com", comment = c(ORCID = "0000-0002-1576-2126")),
+  person("Yihui", "Xie", role = "aut", email = "yihui@rstudio.com"),
+  person("Jeff", "Allen", role = "aut", email = "jeff@rstudio.com"),
+  person(family = "RStudio", role = "cph")
+ )
+Description: Tools for HTML generation and output.
+Depends: R (>= 2.14.1)
+Imports: utils, digest, grDevices, base64enc, rlang (>= 0.4.10),
+        fastmap (>= 1.1.0), ellipsis
+Suggests: markdown, testthat, withr, Cairo, ragg, shiny
+Enhances: knitr
+License: GPL (>= 2)
+URL: https://github.com/rstudio/htmltools,
+        https://rstudio.github.io/htmltools/
+BugReports: https://github.com/rstudio/htmltools/issues
+RoxygenNote: 7.2.3
+Encoding: UTF-8
+Collate: 'colors.R' 'fill.R' 'html_dependency.R' 'html_escape.R'
+        'html_print.R' 'images.R' 'known_tags.R' 'selector.R'
+        'staticimports.R' 'tag_query.R' 'utils.R' 'tags.R' 'template.R'
+Config/Needs/website: rstudio/quillt, bench
+NeedsCompilation: yes
+Packaged: 2023-03-22 22:59:42 UTC; cpsievert
+Author: Joe Cheng [aut],
+  Carson Sievert [aut, cre] (<https://orcid.org/0000-0002-4958-2844>),
+  Barret Schloerke [aut] (<https://orcid.org/0000-0001-9986-114X>),
+  Winston Chang [aut] (<https://orcid.org/0000-0002-1576-2126>),
+  Yihui Xie [aut],
+  Jeff Allen [aut],
+  RStudio [cph]
+Maintainer: Carson Sievert <carson@rstudio.com>
+Repository: CRAN
+Date/Publication: 2023-03-23 09:50:06 UTC
+Built: R 4.2.0; aarch64-apple-darwin20; 2023-04-01 16:39:32 UTC; unix
+Archs: htmltools.so.dSYM

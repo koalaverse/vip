@@ -1,0 +1,152 @@
+%\VignetteIndexEntry{Introduction to the gower package}
+\documentclass[11pt]{article}
+\usepackage{enumitem}
+\setlist{nosep}
+
+\usepackage{hyperref}
+
+\hypersetup{
+  pdfborder={0 0 0}
+ , colorlinks=true 
+ , urlcolor=red
+ , linkcolor=blue
+}
+
+\renewcommand{\familydefault}{\sfdefault}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2ex}
+
+\title{Introduction to the gower package}
+\author{Mark van der Loo}
+
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\pkg}[1]{\textbf{#1}}
+
+
+
+
+\begin{document}
+\maketitle{}
+
+\tableofcontents{}
+<<echo=FALSE>>=
+options(prompt="    ")
+@
+
+\newpage
+
+\section{Gower's distance measure}
+
+Gower's distance can be used to measure how different two records are. The
+records may contain combinations of logical, numerical, categorical or text
+data. The distance is always a number between 0 (identical) and 1 (maximally
+dissimilar). An easy to read specification of the measure is given in the
+original paper.
+
+Gower (1971) 
+\href{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.412.4155&rep=rep1&type=pdf}{A general coefficient of similarity and some of its properties}.
+\emph{Biometrics} **27** 857--874.
+
+In short, Gower's distance (or similarity) first computes distances between pairs of variables over two data sets and then combines those distances to a single value per record-pair.
+
+This package modifies Gower's original similarity measure in the following ways.
+
+\begin{itemize}
+\item{In stead of the original similarity $S$, the package returns the distance $1-S$.}
+\item{The original paper does not mention the concept of \code{NA}. Missing
+variables are skipped when computing the distance.}
+\item{The original paper does not mention character data. These are treated as
+categorical data.}
+\end{itemize}
+
+\section{Computing Gower's distance}
+
+The function \code{gower\_dist} computes pairwise-distances between records.
+
+<<>>=
+library(gower)
+dat1 <- iris[1:10,]
+dat2 <- iris[6:15,]
+gower_dist(dat1, dat2)
+@
+If one data frame has less records than the other, the shortest one is recycled
+over (just like when you're adding two vectors of unequal length)
+
+<<>>=
+gower_dist(iris[1,], dat1)
+@
+
+It is possible to control how columns from the two data sets are paired for
+comparison using the \code{pair\_x} and \code{pair\_y} arguments. This comes in
+handy when similar colums have different names accross datasets.  By default,
+columns with matching names are paired. The behaviour is somewhat similar to
+that of base R's \code{merge} in that respect.
+
+<<>>=
+dat1 <- dat2 <- iris[1:10,]
+names(dat2) <- tolower(names(dat2))
+gower_dist(dat1, dat2)
+# tell gower_dist to match columns 1..5 in dat1 with column 1..5 in dat2
+gower_dist(dat1, dat2, pair_y=1:5)
+@
+
+It is also possible to explicitly ignore case when matching columns
+by name.
+<<>>=
+gower_dist(dat1, dat2, ignore_case=TRUE)
+@
+
+
+
+\section{Computing the top-n best matches}
+
+The function \code{gower\_topn} returns a list with two arrays.
+<<>>=
+dat1 <- iris[1:10,]
+L <- gower_topn(x=dat1, y=iris, n=3)
+L
+@
+
+The first array is called \code{index}. Each column corresponds to one row of \code{x}.
+The entries of each column index the top $n$ best matches of that row in \code{x} with
+rows in \code{y}. In this example, the best match of the first row of \code{dat1} is
+record number \Sexpr{L$index[1,1]} from \code{iris} (this should be obvious, since
+they are the same record). The second best match is record number 
+\Sexpr{L$index[2,1]} from \code{iris}.
+ 
+The second array is called \code{distance} and it contains the corresponding distances.
+
+\section{Using weights}
+
+Gower's distance is computed as an average over differences between variables.
+By setting  \code{weights} you can compute the distance as a weighted average.
+<<>>=
+gower_dist(women[1,], women)
+gower_dist(women[1,], women, weights=c(2,3))
+@
+
+
+\section{Parallelization, memory usage}
+
+
+The underlying algorithm is implemented in C and parallelized using
+\href{http://www.openmp.org}{OpenMP}. OpenMP is available on most systems that
+can run R. Please see
+\href{https://cran.r-project.org/doc/manuals/r-release/R-exts.html#OpenMP-support}{this
+section} of the writing R extensions manual for up-to-details details on which
+systems are supported. At the time of writing (spring 2019), OSX is the only
+system not supporting OpenMP out of the box. You can still make it work by
+installing the gcc toolchain and compiling the package (and R).
+
+If OpenMP is not supported, the package will still work but the core algorithms
+will not be parallelized.
+
+This implementation makes no copies of the data in memory. When computing
+\code{gower\_dist}, two double precision arrays of size
+\code{max(nrow(x),nrow(y))} are kept in memory to store intermediate results.
+When computing the top-n matches, for $k$ cores, $k+2$ double precision arrays
+of length \code{nrow(y)} are created to store intermediate results at C level.
+
+\end{document}

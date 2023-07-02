@@ -1,0 +1,470 @@
+---
+title: "Getting Started"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(clock)
+library(magrittr)
+```
+
+The goal of this vignette is to introduce you to clock's high-level API, which works directly on R's built-in date-time types, Date and POSIXct. For an overview of all of the functionality in the high-level API, check out the pkgdown reference section, [High Level API](https://clock.r-lib.org/reference/index.html#section-high-level-api). One thing you should immediately notice is that every function specific to R's date and date-time types are prefixed with `date_*()`. There are also additional functions for arithmetic (`add_*()`) and getting (`get_*()`) or setting (`set_*()`) components that are also used by other types in clock.
+
+As you'll quickly see in this vignette, one of the main goals of clock is to guard you, the user, from unexpected issues caused by frustrating date manipulation concepts like invalid dates and daylight saving time. It does this by letting you know as soon as one of these issues happens, giving you the power to handle it explicitly with one of a number of different resolution strategies.
+
+## Building
+
+To create a vector of dates, you can use `date_build()`. This allows you to specify the components individually.
+
+```{r}
+date_build(2019, 2, 1:5)
+```
+
+If you happen to specify an _invalid date_, you'll get an error message:
+
+```{r, error=TRUE}
+date_build(2019, 1:12, 31)
+```
+
+One way to resolve this is by specifying an invalid date resolution strategy using the `invalid` argument. There are multiple options, but in this case we'll ask for the invalid dates to be set to the previous valid moment in time.
+
+```{r}
+date_build(2019, 1:12, 31, invalid = "previous")
+```
+
+To learn more about invalid dates, check out the documentation for `invalid_resolve()`.
+
+If we were actually after the "last day of the month", an easier way to specify this would have been:
+
+```{r}
+date_build(2019, 1:12, "last")
+```
+
+You can also create date-times using `date_time_build()`, which generates a POSIXct. Note that you must supply a time zone!
+
+```{r}
+date_time_build(2019, 1:5, 1, 2, 30, zone = "America/New_York")
+```
+
+If you "build" a time that doesn't exist, you'll get an error. For example, on March 8th, 2020, there was a daylight saving time gap of 1 hour in the America/New_York time zone that took us from `01:59:59` directly to `03:00:00`, skipping the 2 o'clock hour entirely. Let's "accidentally" create a time in that gap:
+
+```{r, error=TRUE}
+date_time_build(2019:2021, 3, 8, 2, 30, zone = "America/New_York")
+```
+
+To resolve this issue, we can specify a nonexistent time resolution strategy through the `nonexistent` argument. There are a number of options, including rolling forward or backward to the next or previous valid moments in time:
+
+```{r}
+zone <- "America/New_York"
+
+date_time_build(2019:2021, 3, 8, 2, 30, zone = zone, nonexistent = "roll-forward")
+date_time_build(2019:2021, 3, 8, 2, 30, zone = zone, nonexistent = "roll-backward")
+```
+
+## Parsing
+
+### Parsing dates
+
+To parse dates, use `date_parse()`. Parsing dates requires a _format string_, a combination of _commands_ that specify where date components are in your string. By default, it assumes that you're working with dates in the form `"%Y-%m-%d"` (year-month-day).
+
+```{r}
+date_parse("2019-01-05")
+```
+
+You can change the format string using `format`:
+
+```{r}
+date_parse("January 5, 2020", format = "%B %d, %Y")
+```
+
+Various different locales are supported for parsing month and weekday names in different languages. To parse a French month:
+
+```{r}
+date_parse(
+  "juillet 10, 2021", 
+  format = "%B %d, %Y", 
+  locale = clock_locale("fr")
+)
+```
+
+You can learn about more locale options in the documentation for `clock_locale()`.
+
+If you have heterogeneous dates, you can supply multiple format strings:
+
+```{r}
+x <- c("2020/1/5", "10-03-05", "2020/2/2")
+formats <- c("%Y/%m/%d", "%y-%m-%d")
+
+date_parse(x, format = formats)
+```
+
+### Parsing date-times
+
+You have four options when parsing date-times:
+
+- `date_time_parse()`: For strings like `"2020-01-01 01:02:03"` where there is neither a time zone offset nor a full (not abbreviated!) time zone name.
+
+- `date_time_parse_complete()`: For strings like `"2020-01-01T01:02:03-05:00[America/New_York]"` where there is both a time zone offset and time zone name present in the string.
+
+- `date_time_parse_abbrev()`: For strings like `"2020-01-01 01:02:03 EST"` where there is a time zone abbreviation in the string.
+
+- `date_time_parse_RFC_3339()`: For strings like `"2020-01-01T01:02:03Z"` or `"2020-01-01T01:02:03-05:00"`, which are in RFC 3339 format and are intended to be interpreted as UTC.
+
+#### date_time_parse()
+
+`date_time_parse()` requires a `zone` argument, and will ignore any other zone information in the string (i.e. if you tried to specify `%z` and `%Z`). The default format string is `"%Y-%m-%d %H:%M:%S"`.
+
+```{r}
+date_time_parse("2020-01-01 01:02:03", "America/New_York")
+```
+
+If you happen to parse an invalid or ambiguous date-time, you'll get an error. For example, on November 1st, 2020, there were _two_ 1 o'clock hours in the America/New_York time zone due to a daylight saving time fallback. You can see that if we parse a time right before the fallback, and then shift it forward by 1 second, and then 1 hour and 1 second, respectively:
+
+```{r}
+before <- date_time_parse("2020-11-01 00:59:59", "America/New_York")
+
+# First 1 o'clock
+before + 1
+
+# Second 1 o'clock
+before + 1 + 3600
+```
+
+The following string doesn't include any information about which of these two 1 o'clocks it belongs to, so it is considered _ambiguous_. Ambiguous times will error when parsing:
+
+```{r, error=TRUE}
+date_time_parse("2020-11-01 01:30:00", "America/New_York")
+```
+
+To fix that, you can specify an ambiguous time resolution strategy with the `ambiguous` argument.
+
+```{r}
+zone <- "America/New_York"
+
+date_time_parse("2020-11-01 01:30:00", zone, ambiguous = "earliest")
+date_time_parse("2020-11-01 01:30:00", zone, ambiguous = "latest")
+```
+
+#### date_time_parse_complete()
+
+`date_time_parse_complete()` doesn't have a `zone` argument, and doesn't require `ambiguous` or `nonexistent` arguments, since it assumes that the string you are providing is completely unambiguous. The only way this is possible is by having both a time zone offset, specified by `%z`, and a full time zone name, specified by `%Z`, in the string.
+
+The following is an example of an "extended" RFC 3339 format used by Java 8's time library to specify complete date-time strings. This is something that `date_time_parse_complete()` can parse. The default format string follows this extended format, and is `"%Y-%m-%dT%H:%M:%S%z[%Z]"`.
+
+```{r}
+x <- "2020-01-01T01:02:03-05:00[America/New_York]"
+
+date_time_parse_complete(x)
+```
+
+#### date_time_parse_abbrev()
+
+`date_time_parse_abbrev()` is useful when your date-time strings contain a time zone abbreviation rather than a time zone offset or full time zone name.
+
+```{r}
+x <- "2020-01-01 01:02:03 EST"
+
+date_time_parse_abbrev(x, "America/New_York")
+```
+
+The string is first parsed as a naive time without considering the abbreviation, and is then converted to a zoned-time using the supplied `zone`. If an ambiguous time is parsed, the abbreviation is used to resolve the ambiguity.
+
+```{r}
+x <- c(
+  "1970-10-25 01:30:00 EDT",
+  "1970-10-25 01:30:00 EST"
+)
+
+date_time_parse_abbrev(x, "America/New_York")
+```
+
+You might be wondering why you need to supply `zone` at all. Isn't the abbreviation enough? Unfortunately, multiple countries use the same time zone abbreviations, even though they have different time zones. This means that, in many cases, the abbreviation alone is ambiguous. For example, both India and Israel use `IST` for their standard times.
+
+```{r}
+x <- "1970-01-01 02:30:30 IST"
+
+# IST = India Standard Time
+date_time_parse_abbrev(x, "Asia/Kolkata")
+
+# IST = Israel Standard Time
+date_time_parse_abbrev(x, "Asia/Jerusalem")
+```
+
+#### date_time_parse_RFC_3339()
+
+`date_time_parse_RFC_3339()` is useful when your date-time strings come from an API, which means they are likely in an ISO 8601 or RFC 3339 format, and should be interpreted as UTC.
+
+The default format string parses the typical RFC 3339 format of `"%Y-%m-%dT%H:%M:%SZ"`.
+
+```{r}
+x <- "2020-01-01T01:02:03Z"
+
+date_time_parse_RFC_3339(x)
+```
+
+If your date-time strings contain a numeric offset from UTC rather than a `"Z"`, then you'll need to set the `offset` argument to one of the following:
+
+- `"%z"` if the offset is of the form `"-0500"`.
+- `"%Ez"` if the offset is of the form `"-05:00"`.
+
+```{r}
+x <- "2020-01-01T01:02:03-0500"
+
+date_time_parse_RFC_3339(x, offset = "%z")
+
+x <- "2020-01-01T01:02:03-05:00"
+
+date_time_parse_RFC_3339(x, offset = "%Ez")
+```
+
+## Grouping, rounding and shifting
+
+When performing time-series related data analysis, you often need to summarize your series at a less precise precision. There are many different ways to do this, and the differences between them are subtle, but meaningful. clock offers three different sets of functions for summarization:
+
+- `date_group()`
+
+- `date_floor()`, `date_ceiling()`, and `date_round()`
+
+- `date_shift()`
+
+### Grouping
+
+Grouping allows you to summarize a component of a date or date-time _within_ other components. An example of this is grouping by day of the month, which summarizes the day component _within_ the current year-month.
+
+```{r}
+x <- seq(date_build(2019, 1, 20), date_build(2019, 2, 5), by = 1)
+x
+
+# Grouping by 5 days of the current month
+date_group(x, "day", n = 5)
+```
+
+The thing to note about grouping by day of the month is that at the end of each month, the groups restart. So this created groups for January of `[1, 5], [6, 10], [11, 15], [16, 20], [21, 25], [26, 30], [31]`.
+
+You can also group by month or year:
+
+```{r}
+date_group(x, "month")
+```
+
+This also works with date-times, adding the ability to group by hour of the day, minute of the hour, and second of the minute.
+
+```{r}
+x <- seq(
+  date_time_build(2019, 1, 1, 1, 55, zone = "UTC"),
+  date_time_build(2019, 1, 1, 2, 15, zone = "UTC"),
+  by = 120
+)
+x
+
+date_group(x, "minute", n = 5)
+```
+
+### Rounding
+
+While grouping is useful for summarizing _within_ a component, rounding is useful for summarizing _across_ components. It is great for summarizing by, say, a rolling set of 60 days.
+
+Rounding operates on the underlying count that makes up your date or date-time. To see what I mean by this, try unclassing a date:
+
+```{r}
+unclass(date_build(2020, 1, 1))
+```
+
+This is a count of days since the _origin_ that R uses, 1970-01-01, which is considered day 0. If you were to floor by 60 days, this would bundle `[1970-01-01, 1970-03-02), [1970-03-02, 1970-05-01)`, and so on. Equivalently, it bundles counts of `[0, 60), [60, 120)`, etc.
+
+```{r}
+x <- seq(date_build(1970, 01, 01), date_build(1970, 05, 10), by = 20)
+
+date_floor(x, "day", n = 60)
+date_ceiling(x, "day", n = 60)
+```
+
+If you prefer a different origin, you can supply a Date `origin` to `date_floor()`, which determines what "day 0" is considered to be. This can be useful for grouping by multiple weeks if you want to control what is considered the start of the week. Since 1970-01-01 is a Thursday, flooring by 2 weeks would normally generate all Thursdays:
+
+```{r}
+as_weekday(date_floor(x, "week", n = 14))
+```
+
+To change this you can supply an `origin` on the weekday that you'd like to be considered the first day of the week.
+
+```{r}
+sunday <- date_build(1970, 01, 04)
+
+date_floor(x, "week", n = 14, origin = sunday)
+
+as_weekday(date_floor(x, "week", n = 14, origin = sunday))
+```
+
+If you only need to floor by 1 week, it is often easier to use `date_shift()`, as seen in the next section.
+
+### Shifting
+
+`date_shift()` allows you to target a weekday, and then shift a vector of dates forward or backward to the next instance of that target. It requires using one of the new types in clock, _weekday_, which is supplied as the target.
+
+For example, to shift to the next Tuesday:
+
+```{r}
+x <- date_build(2020, 1, 1:2)
+
+# Wednesday / Thursday
+as_weekday(x)
+
+# `clock_weekdays` is a helper that returns the code corresponding to
+# the requested day of the week
+clock_weekdays$tuesday
+
+tuesday <- weekday(clock_weekdays$tuesday)
+tuesday
+
+date_shift(x, target = tuesday)
+```
+
+Shifting to the _previous_ day of the week is a nice way to floor by 1 week. It allows you to control the start of the week in a way that is slightly easier than using `date_floor(origin = )`.
+
+```{r}
+x <- seq(date_build(1970, 01, 01), date_build(1970, 01, "last"), by = 3)
+
+date_shift(x, tuesday, which = "previous")
+```
+
+## Arithmetic
+
+You can do arithmetic with dates and date-times using the family of `add_*()` functions. With dates, you can add years, months, and days. With date-times, you can additionally add hours, minutes, and seconds.
+
+```{r}
+x <- date_build(2020, 1, 1)
+
+add_years(x, 1:5)
+```
+
+One of the neat parts about clock is that it requires you to be explicit about how you want to handle invalid dates when doing arithmetic. What is 1 month after January 31st? If you try and create this date, you'll get an error.
+
+```{r, error=TRUE}
+x <- date_build(2020, 1, 31)
+
+add_months(x, 1)
+```
+
+clock gives you the power to handle this through the `invalid` option:
+
+```{r}
+# The previous valid moment in time
+add_months(x, 1, invalid = "previous")
+
+# The next valid moment in time
+add_months(x, 1, invalid = "next")
+
+# Overflow the days. There were 29 days in February, 2020, but we
+# specified 31. So this overflows 2 days past day 29.
+add_months(x, 1, invalid = "overflow")
+
+# If you don't consider it to be a valid date
+add_months(x, 1, invalid = "NA")
+```
+
+As a teaser, the low level library has a _calendar_ type named year-month-day that powers this operation. It actually gives you _more_ flexibility, allowing `"2020-02-31"` to exist in the wild:
+
+```{r}
+ymd <- as_year_month_day(x) + duration_months(1)
+ymd
+```
+
+You can use `invalid_resolve(invalid =)` to resolve this like you did in `add_months()`, or you can let it hang around if you expect other operations to make it "valid" again. 
+
+```{r}
+# Adding 1 more month makes it valid again
+ymd + duration_months(1)
+```
+
+When working with date-times, you can additionally add hours, minutes, and seconds.
+
+```{r}
+x <- date_time_build(2020, 1, 1, 2, 30, zone = "America/New_York")
+
+x %>%
+  add_days(1) %>%
+  add_hours(2:5)
+```
+
+When adding units of time to a POSIXct, you have to be very careful with daylight saving time issues. clock tries to help you out by letting you know when you run into an issue:
+
+```{r, error=TRUE}
+x <- date_time_build(1970, 04, 25, 02, 30, 00, zone = "America/New_York")
+x
+
+# Daylight saving time gap on the 26th between 01:59:59 -> 03:00:00
+x %>% add_days(1)
+```
+
+You can solve this using the `nonexistent` argument to control how these times should be handled.
+
+```{r}
+# Roll forward to the next valid moment in time
+x %>% add_days(1, nonexistent = "roll-forward")
+
+# Roll backward to the previous valid moment in time
+x %>% add_days(1, nonexistent = "roll-backward")
+
+# Shift forward by adding the size of the DST gap
+# (this often keeps the time of day,
+# but doesn't guaratee that relative ordering in `x` is maintained
+# so I don't recommend it)
+x %>% add_days(1, nonexistent = "shift-forward")
+
+# Replace nonexistent times with an NA
+x %>% add_days(1, nonexistent = "NA")
+```
+
+## Getting and setting
+
+clock provides a family of getters and setters for working with dates and date-times. You can get and set the year, month, or day of a date.
+
+```{r}
+x <- date_build(2019, 5, 6)
+
+get_year(x)
+get_month(x)
+get_day(x)
+
+x %>%
+  set_day(22) %>%
+  set_month(10)
+```
+
+As you might expect by now, setting the date to an invalid date requires you to explicitly handle this:
+
+```{r, error=TRUE}
+x %>%
+  set_day(31) %>%
+  set_month(4)
+
+x %>%
+  set_day(31) %>%
+  set_month(4, invalid = "previous")
+```
+
+You can additionally set the hour, minute, and second of a POSIXct.
+
+```{r}
+x <- date_time_build(2020, 1, 2, 3, zone = "America/New_York")
+x
+
+x %>%
+  set_minute(5) %>%
+  set_second(10)
+```
+
+As with other manipulations of POSIXct, you'll have to be aware of daylight saving time when setting components. You may need to supply the `nonexistent` or `ambiguous` arguments of the `set_*()` functions to handle these issues.

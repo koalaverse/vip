@@ -1,0 +1,4 @@
+aperm.listenv           Transpose a 'listenv' array by permuting its
+                        dimensions
+dim_na                  Set the dimension of an object
+listenv                 Create a list environment

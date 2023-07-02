@@ -1,0 +1,236 @@
+TeachingDemos version 2.12
+
+* Made factors explicit in examples using data.frame since 
+  the default for conversion to factors is changing.
+
+New in TeachingDemos version 2.11
+
+* Improvements in shadowtext function to work on log scales and defaults to higher resolution.
+
+New in TeachingDemos version 2.10
+
+* Modified z.test so that you can provide a sample mean and sample
+  size instead of the raw data.
+
+* Added digits function to compute digits of an integer
+
+* Fixed zoomplot to work with R 3.0
+
+* Fixed subplot function to work better in multi frame plots with type='fig'.
+
+* Fixed minor (and potentially major) bugs in TkListView
+
+New in TeachingDemos version 2.9
+
+* Removed sd.g, limits.g, and stats.g functions that work with the qcc
+  package as they are now included in qcc and don't need to be here
+  any more.
+
+* Added functions mdtxtStart, mdtxtStop, mdtxtComment, mdtxtSkip, and
+  mdtxtPlot to create transcript files using MarkDown which can then
+  be converted to common formats (pdf, MS Word, html, etc.) using the
+  pandoc program.
+
+* Changed names of plot.rgl.coin and plot.rgl.die to rgl.coin and
+  rgl.die to prevent confusion with S3 methods for plot generic
+  function.
+
+* added function cor.rect.plot to demonstrate concept of correlation.
+
+* Added USCrimes dataset
+
+* Added linesfun argument to my.symbols so that the user can use
+  functions like polygon in place of lines.
+
+* Added function simfun to help with creating simulated data sets.
+
+* Modified squishplot function to remove missing values in case the
+  entire data is submitted as xlim and ylim.
+
+
+New in TeachingDemos version 2.8
+
+* Changed many functions to no longer use partial match of arguments,
+  this makes the newer versions happy and results in better code.
+
+* Internal changes to R2txt.R and gnuplot.R to use an environment
+  rather than a list for storing package local variables, this
+  eliminated the need for "<<-" and unlocking of bindings and makes
+  the code cleaner.
+
+* arguments xsize and ysize added to my.symbols to allow setting the
+  size of the symbols using the scale of the x or y variable.
+
+* new functions TkBuildDist and TkBuildDist2 to interactively create a
+  (prior) distrbution.
+
+* new function cal to plot calendars
+
+* new 'animate' option for tkexamp
+
+* new function 'petals' to play the petals around the rose game (and
+  demonstrate a simple code obscuration).
+
+* fixed bug in subplot when subplotting inside mfrow/mfcol figures.
+
+* Added ldsgrowth dataset
+
+* Modified subplot and other functions to no longer need cnvrt.coords.
+
+* cnvert.coords is now depricated, use grconvertX and grconvertY from
+  the graphics package instead.
+
+* Functions identify.Map, identify.polylist, recenter.Map, and
+  project.Map have been removed as there is now better functionality
+  in the sp package.
+
+* The state.vbm object has been moved to the maptools package.
+
+New in TeachingDemos version 2.7
+
+* new function ms.image for plotting images using my.symbols.
+
+* new functions wdtxtStart and friends to insert transcript into MS Word.
+
+* function vt.residsim to work with vis.test.
+
+* fixed several functions that depend on tcltk but did not load it.
+
+* Updated HWidentify and HTKidentify to give more control and clean up after.
+
+* Removed exaple in subplot using rimage package since it is not
+  current and potentially causes problems.
+
+New in TeachingDemos version 2.6
+
+* function vis.test and friends made available (was present before,
+  but not in the Namespace).
+
+* Fixed bug in tkexamp with checkboxes.
+
+* Added 'outliers' dataset
+
+New in TeachingDemos version 2.5
+
+* New functions HWidentify and HTKidentify to label points being hovered over.
+
+* Turned off clipping (par(xpd=TRUE)) inside of my.symbols so that
+  subsequent points are plotted
+
+* New function sigma.test for testing a single variance.
+
+
+New in TeachingDemos version 2.4
+
+* The squishplot function now calls plot.new before doing the
+  calculations, fixs a bug when things have not been reset or if fig
+  regions are not all the same size.  There is an argument that will
+  turn this off if needed.
+
+* New functions Pvalue.norm.sim, Pvalue.binom.sim,
+  run.Pvalue.norm.sim, and run.Pvalue.binom.sim to simulate p-values.
+
+* The subplot function can now accept strings such as "topleft" or
+  "bottom" as the x argument (and does the appropriate thing).
+
+* New function gp.splot to send surface plot info to gnuplot
+
+* Changed the write char commands in the etxtStart family to remove
+  warnings in 2.8.0
+
+* Changed par settings in my.symbols.  Old way reset all pars which
+  could cause some plotting in the wrong areas.  Now it only resets
+  the pars that it changes.
+
+* updated plot2script to use dput rather than deparse which does
+  better line wrapping.  Also fixed the problem with the "box" command
+  (though other functions could still have the same problem).
+
+* Removed strip.shingle function as it no longer works and its
+  intended purpose has been available in lattice for a while.
+
+* tkexamp now has a 'print' option (defaults to FALSE) that will
+  automatically print the results of the function evaluation.  This is
+  useful for ggplot2 or lattice graphics that must be printed to be seen.
+
+* Function TkPredict for visualizing predicted values from a
+  regression model adjusting for other terms in the model.
+
+* New datasets 'evap' and 'stork'
+
+* state.vbm updated to spatial polygon data frame.
+
+New in TeachingDemos version 2.3
+
+* etxt* functions updated to use rawToChar(as.raw(0)) rather than '\000'
+
+* new function TkListView for interactively looking at list structures.
+
+* Removed strict dependence on the Tk packages, will only be loaded for functions that use them.
+
+* new function updateusr to update usr coordinate system.
+
+* new function pairs2 that works like the pairs function, but with 2
+  matricies and plots the pairwise scatterplots between the matricies.
+
+New in TeachingDemos version 2.2
+
+* tkprogress was removed, use tkProgressBar in utils package (by
+  Prof. Ripley) as a better version.
+
+* New function spread.labs to spread coordinates out for adding labels
+  to a plot.
+
+For TeachingDemos version 2.1
+
+*  Removed dependence on rgl and tcltk2 packages
+
+
+New to TeachingDemos version 2.0
+
+* TeachingDemos now has a NAMESPACE so you can access just parts of
+  the package without loading everything.  Fewer packages are now
+  loaded with it, so it should load smaller and faster.
+
+* Some of the gui demonstrations (e.g. run.cor.examp) were rewritten
+  using the tkrplot package so that the graph shows up in the same
+  window as the controls.  Old versions will remain, but with the word
+  "old" inserted into the name.  More will change eventually.
+
+* Many of the examples sections have replaced \dontrun with
+  if(interactive()) so that the examples can be run using the
+  "examples" function (recommended to use ask=FALSE).
+
+* clt.demo function will now allow you to specify parameters of the
+  distributions and the exponential was replaced with a gamma (the
+  defaults match the prior information).
+
+* New function "tkexamp" for creating interactive
+  examples/demonstrations of the effect of changing parameter values
+  on a graph.
+
+* New functions "dynIdentify" and "TkIdentify" which create a
+  scatterplot, place labels on the points, then allow you to drag the
+  labels to new locations.
+
+* New function "col2grey" for getting an idea of how a graph will look
+  if printed or copied to greyscale.
+
+* New function "SensSpec.demo" to show how to move from Sensitivity
+  and Specificity to predictive power positive and negative using an
+  intuitive virtual population method rather than the explicit math of
+  Bayes formula.
+
+* New functions "TkApprox" and "TkSpline" to interactivly interpolate
+  on graphs and find values, differences, derivatives.
+
+* New function "tkprogress" for a popup progress bar window to show
+  you how a loop is progressing.
+
+* New functions "txtStart", "etxtStart", etc to create transcript
+  files and script files of your session.  Final result is a text file
+  or a text file that can be converted to postscript and others via
+  the enscript program.  The later version can include copies of
+  graphs.
+
+

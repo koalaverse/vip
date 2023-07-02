@@ -1,0 +1,214 @@
+Timing test results on pre-release earth version 5.2.0  Sep 15, 2018
+--------------------------------------------------------------------
+
+Tested on Dell M6800 2.90 GHz i7 laptop running Win7, computer quiet, internet disconnected.
+
+==== ozone 330 x 9 ============
+
+nk degree  earth  earth | execution time ratio:                                     | grsq:
+          nterms   time | mars nofast nobeta minspan1 allowed weights   cv5 pmethcv | earth mars nofast minspan1 weights pmethcv
+                        |                                                           |
+ 5      1      5  0.005 |  0.2    1.0    1.0      1.0     1.0       3   5.0    23.3 |  0.69 0.69   0.69     0.70    0.70   0.69
+ 5      2      4  0.005 |  0.2    1.0    1.0      1.0     1.0       5   5.0    22.4 |  0.69 0.69   0.69     0.69    0.69   0.69
+ 5      3      4  0.006 |  0.2    0.9    0.9      1.0     1.0       5   4.8    21.5 |  0.69 0.69   0.69     0.69    0.69   0.69
+                        |                                                           |
+21      1     12  0.007 |  0.5    1.0    1.0      1.1     1.1      46   5.7    67.3 |  0.77 0.77   0.77     0.78    0.77   0.77
+21      2     12  0.014 |  1.3    1.0    1.1      1.1     1.0      83   5.6    44.2 |  0.79 0.78   0.79     0.79    0.78   0.76
+21      3     15  0.016 |  1.2    1.0    1.1      1.2     1.0      89   5.5    38.9 |  0.79 0.78   0.79     0.79    0.78   0.77
+                        |                                                           |
+51      1     16  0.011 |  1.2    1.0    1.1      1.3     1.0     277   6.2    96.2 |  0.78 0.77   0.78     0.80    0.78   0.78
+51      2     25  0.025 |  5.0    1.8    1.2      0.9     1.0     142   5.4    65.6 |  0.81 0.80   0.82     0.80    0.79   0.72
+51      3     27  0.050 |  3.5    1.5    1.2      1.2     1.0     303   5.1    48.4 |  0.82 0.82   0.82     0.80    0.80   0.76
+
+
+==== robot arm 1000 x 20 ========
+
+nk degree  earth  earth | execution time ratio:                                     | grsq:
+          nterms   time | mars nofast nobeta minspan1 allowed weights   cv5 pmethcv | earth mars nofast minspan1 weights pmethcv
+                        |                                                           |
+ 5      1      5  0.013 |  0.2    0.8    0.8      0.9     0.8      20   3.5    12.3 |  0.54 0.54   0.54     0.54    0.54   0.54
+ 5      2      5  0.012 |  0.4    1.0    1.1      1.0     1.1      34   4.5    14.2 |  0.54 0.54   0.54     0.54    0.54   0.54
+ 5      3      5  0.012 |  0.4    1.1    1.0      1.2     1.1      35   4.6    14.1 |  0.54 0.54   0.54     0.54    0.54   0.54
+                        |                                                           |
+21      1     13  0.022 |  0.7    0.9    1.0      1.0     0.9     283   4.5    27.0 |  0.78 0.77   0.78     0.78    0.78   0.77
+21      2     20  0.066 |  1.2    1.0    1.1      1.2     1.0     328   4.8    15.5 |  0.88 0.88   0.88     0.88    0.88   0.88
+21      3     21  0.093 |  1.4    1.0    1.1      1.2     1.0     311   4.9    12.9 |  0.89 0.88   0.89     0.89    0.89   0.89
+                        |                                                           |
+51      1     13  0.025 |  2.9    1.0    1.1      1.3     1.0     380   6.6    36.3 |  0.78 0.77   0.78     0.78    0.78   0.77
+51      2     28  0.103 |  4.8    2.7    1.1      1.2     1.0     438   5.1    18.9 |  0.93 0.94   0.95     0.92    0.93   0.93
+51      3     38  0.345 |  3.1    1.6    1.2      1.2     1.0     648   4.7    13.4 |  0.97 0.96   0.97     0.97    0.97   0.97
+
+
+Timing Test Results On Earth Version 5.1.2 (released version, not locally compiled)
+-----------------------------------------------------------------------------------
+
+Tested on Dell M6800 2.90 GHz i7 laptop running Win7, computer quiet, internet disconnected.
+
+==== ozone 330 x 9 ============
+
+nk degree  earth  earth | execution time ratio:                                     | grsq:
+          nterms   time | mars nofast nobeta minspan1 allowed weights   cv5 pmethcv | earth mars nofast minspan1 weights pmethcv
+                        |                                                           |
+ 5      1      5  0.004 |  0.3    1.0    1.0      0.9     0.9       3   6.2    30.7 |  0.69 0.69   0.69     0.70    0.70   0.69
+ 5      2      4  0.004 |  0.4    1.0    1.0      1.0     1.0       7   6.4    30.9 |  0.69 0.69   0.69     0.69    0.69   0.69
+ 5      3      4  0.004 |  0.3    1.1    1.1      1.1     1.1       6   7.1    33.8 |  0.69 0.69   0.69     0.69    0.69   0.69
+                        |                                                           |
+21      1     12  0.006 |  0.6    1.0    1.0      1.0     1.0      55   6.6    81.7 |  0.77 0.77   0.77     0.78    0.77   0.77
+21      2     12  0.012 |  1.4    1.0    1.1      1.1     1.0      92   6.0    49.8 |  0.79 0.78   0.79     0.79    0.78   0.76
+21      3     15  0.015 |  1.3    1.0    1.1      1.2     1.0      98   6.0    43.5 |  0.79 0.78   0.79     0.79    0.78   0.77
+                        |                                                           |
+51      1     16  0.009 |  1.4    1.0    1.0      1.3     1.0     313   6.8   109.7 |  0.78 0.77   0.78     0.80    0.78   0.78
+51      2     25  0.024 |  5.2    1.8    1.2      0.9     1.1     148   5.6    69.2 |  0.81 0.80   0.82     0.80    0.79   0.72
+51      3     27  0.048 |  3.6    1.5    1.2      1.2     1.1     314   5.3    50.1 |  0.82 0.82   0.82     0.80    0.80   0.76
+
+
+==== robot arm 1000 x 20 ========
+
+nk degree  earth  earth | execution time ratio:                                     | grsq:
+          nterms   time | mars nofast nobeta minspan1 allowed weights   cv5 pmethcv | earth mars nofast minspan1 weights pmethcv
+                        |                                                           |
+ 5      1      5  0.008 |  0.4    1.0    1.0      1.0     1.0      33   5.5    19.5 |  0.54 0.54   0.54     0.54    0.54   0.54
+ 5      2      5  0.010 |  0.4    0.7    0.8      1.1     0.9      40   5.2    16.5 |  0.54 0.54   0.54     0.54    0.54   0.54
+ 5      3      5  0.010 |  0.5    0.9    1.0      0.9     0.9      40   5.0    16.9 |  0.54 0.54   0.54     0.54    0.54   0.54
+                        |                                                           |
+21      1     13  0.019 |  0.9    0.9    1.0      1.1     0.9     327   5.2    31.4 |  0.78 0.77   0.78     0.78    0.78   0.77
+21      2     20  0.062 |  1.2    1.0    1.1      1.2     1.0     349   5.1    16.5 |  0.88 0.88   0.88     0.88    0.88   0.88
+21      3     21  0.089 |  1.5    1.0    1.1      1.2     1.1     325   5.1    13.4 |  0.89 0.88   0.89     0.89    0.89   0.89
+                        |                                                           |
+51      1     13  0.023 |  3.2    1.0    1.0      1.2     1.0     413   7.0    39.3 |  0.78 0.77   0.78     0.78    0.78   0.77
+51      2     28  0.098 |  5.0    2.9    1.1      1.2     1.0     460   5.4    20.0 |  0.93 0.94   0.95     0.92    0.93   0.93
+51      3     38  0.342 |  3.1    1.6    1.2      1.2     1.0     653   4.7    13.4 |  0.97 0.96   0.97     0.97    0.97   0.97
+
+
+Timing Test Results On Earth Version 4.6.2  May 2018
+----------------------------------------------------
+
+Tested on Dell M6800 2.90 GHz i7 laptop running Win7, computer quiet, internet disconnected.
+
+==== ozone 330 x 9 ============
+
+nk degree  earth  earth | execution time ratio:                                   | grsq:
+          nterms   time | mars no-fastmars no-betacache minspan=1 allowed weights | earth mars no-fastmars minspan=1 weights
+                        |                                                         |
+ 5      1      5  0.004 |  0.3         1.0          1.0       1.0     1.0       4 |  0.69 0.69        0.69      0.70    0.70
+ 5      2      4  0.005 |  0.2         0.9          0.9       0.8     0.9       4 |  0.69 0.69        0.69      0.69    0.69
+ 5      3      4  0.004 |  0.3         0.9          1.0       1.0     1.0       5 |  0.69 0.69        0.69      0.69    0.69
+                        |                                                         |
+21      1     12  0.006 |  0.6         1.0          1.1       1.1     1.0      52 |  0.77 0.77        0.77      0.78    0.77
+21      2     12  0.013 |  1.4         1.0          1.1       1.1     1.0      88 |  0.79 0.78        0.79      0.79    0.78
+21      3     15  0.015 |  1.4         1.0          1.1       1.2     1.1      96 |  0.79 0.78        0.79      0.79    0.78
+                        |                                                         |
+51      1     16  0.009 |  1.3         1.0          1.2       1.4     1.0     305 |  0.78 0.77        0.78      0.80    0.78
+51      2     25  0.023 |  5.4         1.7          1.1       0.9     1.0     146 |  0.81 0.80        0.82      0.80    0.79
+51      3     27  0.046 |  3.9         1.5          1.3       1.2     1.0     319 |  0.82 0.82        0.82      0.80    0.80
+
+
+==== robot arm 1000 x 20 ========
+
+nk degree  earth  earth | execution time ratio:                                   | grsq:
+          nterms   time | mars no-fastmars no-betacache minspan=1 allowed weights | earth mars no-fastmars minspan=1 weights
+                        |                                                         |
+ 5      1      4  0.010 |  0.2         1.0          1.0       0.6     0.6      26 |  0.58 0.58        0.58      0.58    0.58
+ 5      2      4  0.010 |  0.2         1.0          0.8       1.0     1.0      40 |  0.58 0.58        0.58      0.58    0.58
+ 5      3      4  0.008 |  0.7         1.2          1.2       1.2     1.2      50 |  0.58 0.58        0.58      0.58    0.58
+                        |                                                         |
+21      1     17  0.014 |  1.1         1.1          1.4       1.6     1.4     425 |  0.81 0.81        0.81      0.81    0.81
+21      2     19  0.060 |  1.5         1.0          1.1       1.2     1.0     384 |  0.89 0.89        0.89      0.89    0.89
+21      3     19  0.084 |  1.5         1.0          1.2       1.3     1.1     383 |  0.90 0.90        0.90      0.90    0.90
+                        |                                                         |
+51      1     22  0.022 |  3.5         1.3          1.3       1.7     1.3     707 |  0.81 0.81        0.81      0.81    0.81
+51      2     31  0.116 |  5.1         1.8          1.2       1.2     1.1     609 |  0.95 0.95        0.95      0.95    0.95
+51      3     43  0.328 |  3.3         1.6          1.3       1.3     1.0     816 |  0.97 0.96        0.97      0.97    0.97
+
+
+
+Timing Test Results On Earth Version 0.1
+----------------------------------------
+
+NOTE Jan 2008: more recent tests can be found at www.milbo.users.sonic.net.
+
+Tested on a 1.5GHz Dell laptop with the robot arm from Friedman's Fast MARS paper.
+
+These tests were done before I added the multiple response code.  I
+re-defined BETA_CACHE to FALSE when I added the multiple response
+code, so the current code is not as fast as the times below.
+
+N     ncol(x) fast.k  degree     time    gcv             grsq  nterms  npreds
+3000     5       -1      10      4.9     0.0025          0.98    54      4       original
+3000     5       20      10      3.6     0.0024          0.98    59      4       original
+3000     30      -1      10      41      0.0025          0.98    54      4       original
+3000     30      20      10      27      0.0024          0.98    59      4       original
+
+3000     5       -1      10      5       0.0025          0.98    54      4       no -O3 (i.e. -O2)
+3000     5       20      10      3.7     0.0024          0.98    59      4       no -O3 (i.e. -O2)
+3000     30      -1      10      41      0.0025          0.98    54      4       no -O3 (i.e. -O2)
+3000     30      20      10      27      0.0024          0.98    59      4       no -O3 (i.e. -O2)
+
+3000     5       -1      10      4.9     0.0025          0.98    54      4       no INLINE
+3000     5       20      10      3.7     0.0024          0.98    59      4       no INLINE
+3000     30      -1      10      41      0.0025          0.98    54      4       no INLINE
+3000     30      20      10      27      0.0024          0.98    59      4       no INLINE
+
+3000     5       -1      10      6.7     0.0025          0.98    54      4       no BLAS
+3000     5       20      10      4.8     0.0024          0.98    59      4       no BLAS
+3000     30      -1      10      62      0.0025          0.98    54      4       no BLAS
+3000     30      20      10      39      0.0024          0.98    59      4       no BLAS
+
+3000     5       -1      10      5.7     0.0025          0.98    54      4       no BETA_CACHE
+3000     5       20      10      4.2     0.0024          0.98    59      4       no BETA_CACHE
+3000     30      -1      10      49      0.0025          0.98    54      4       no BETA_CACHE
+3000     30      20      10      32      0.0024          0.98    59      4       no BETA_CACHE
+
+3000     5       -1      10      7.6     0.0025          0.98    54      4       no INLINE, no USE_BLAS, no BETA_CACHE
+3000     5       20      10      5.4     0.0024          0.98    59      4       no INLINE, no USE_BLAS, no BETA_CACHE
+3000     30      -1      10      70      0.0025          0.98    54      4       no INLINE, no USE_BLAS, no BETA_CACHE
+3000     30      20      10      44      0.0024          0.98    59      4       no INLINE, no USE_BLAS, no BETA_CACHE
+
+Notes
+-----
+
+1. INLINE appears to make no difference for this model -- is gcc actually doing the inlining?
+   Using the Microsoft compiler, INLINE makes a difference(not shown here)
+
+2. -O3 appears to make no difference for this model
+
+3. fast.k gives less improvement than expected from the Fast MARS paper
+
+4. To see a malloc fail (in RegressAndFix) on a 512 MB machine: test(s, 100000, -1,  1, 5)
+   This probably means that the peak memory use occurs in RegressAndFix,
+   which could be fixed quite easily but I haven't done so yet.
+
+Here is the code used to produce the above table.
+
+robotArm <- function(x) {
+  x. <- with(x, l1 * cos(theta1) - l2 * cos(theta1 + theta2) * cos(phi))
+  y  <- with(x, l1 * sin(theta1) - l2 * sin(theta1 + theta2) * cos(phi))
+  z  <- with(x, l2 * sin(theta2) * sin(phi))
+  sqrt(x.^2 + y^2 + z^2)
+}
+test <- function(s, N, fast.k, degree, ndummy) {
+  set.seed(1)   # for reproducibility
+  gc()
+  l1     <- runif(N, 0, 1)
+  l2     <- runif(N, 0, 1)
+  theta1 <- runif(N, 0, 2 * pi)
+  theta2 <- runif(N, 0, 2 * pi)
+  phi    <- runif(N, -pi/2, pi/2)
+  x <- cbind(l1, l2, theta1, theta2, phi)
+  if (ndummy > 0) for (i in 1:ndummy)
+     x <- cbind(x, runif(N, 0, 1))
+  x <- data.frame(x)
+  e.time <- system.time(e <- earth(x, robotArm(x), degree=degree, nk=201, fast.k=fast.k))
+  options(digits=2)
+  cat(N, "\t", ncol(x), "\t", fast.k, "\t", degree, "\t", e.time[1], "\t",  e$gcv,
+      "\t",  e$grsq, "\t",  length(e$selected.terms), "\t",
+     earth:::get.nused.preds.per.subset(e$dirs, e$selected.terms), "\t", s, "\n")
+}
+s <- "original"
+cat("N     ncol(x) fast.k  degree     time    gcv             grsq   nterms  npreds\n")
+test(s, 3000, -1,  10, 0)
+test(s, 3000, 20,  10, 0)
+test(s, 3000, -1,  10, 25)
+test(s, 3000, 20,  10, 25)
+
+Forden Wales Mar 2007

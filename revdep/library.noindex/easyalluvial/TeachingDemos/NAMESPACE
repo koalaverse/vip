@@ -1,0 +1,61 @@
+     export(bct,char2seed,chisq.detail,ci.examp,clipplot,clt.examp,cnvrt.coords,
+       dice,dots,dots2,emp.hpd,faces,faces2,fagan.plot,
+       flip.rgl.coin,gp.close,gp.open,gp.plot,gp.splot,gp.send,hpd,
+       Pvalue.norm.sim,Pvalue.binom.sim,simfun,
+       run.Pvalue.norm.sim,run.Pvalue.binom.sim,
+       lattice.demo,loess.demo,mle.demo, digits,
+       ms.arrows,ms.female,ms.filled.polygon,ms.male,ms.polygon,ms.polygram,
+       ms.sunflowers,ms.image,my.symbols,panel.dice,plot.dice,rgl.coin,
+       rgl.die,plot2script,plotFagan,plotFagan2,plotFagan.old,ms.face,
+       plotFagan2.old,power.examp,updateusr,pairs2,
+       prepanel.dice,put.points.demo,shadowtext,
+       rgl.Map,roc.demo,roll.rgl.die,rotate.cloud,cor.rect.plot,
+       rotate.persp,rotate.wireframe,run.ci.examp,run.cor.examp,
+       run.cor2.examp,run.old.cor.examp,run.old.cor2.examp,
+       run.hist.demo,run.power.examp,run.power.examp.old,slider,
+       sliderv,squishplot,SensSpec.demo,spread.labs,
+       subplot,TkListView,HWidentify,HTKidentify,
+       tkBrush,tree.demo,triplot,vis.binom,vis.boxcox,vis.boxcoxu,
+       vis.boxcox.old, vis.boxcoxu.old, sigma.test,
+       vis.gamma,vis.normal,vis.t,z.test,zoomplot,oldzoomplot,
+       tkexamp,col2grey,col2gray,
+       TkApprox,TkSpline,txtStart,txtStop,txtComment,txtSkip,etxtStart,
+       etxtStop,etxtComment,etxtSkip,etxtPlot,wdtxtStart,wdtxtStop,
+       wdtxtComment,wdtxtSkip,wdtxtPlot,mdtxtStart,mdtxtStop,mdtxtComment,
+       mdtxtSkip,mdtxtPlot,
+       dynIdentify,TkIdentify,
+       Predict.Plot, TkPredict, "%<%", "%<=%", panel.my.symbols,
+       SnowsPenultimateNormalityTest,vis.test,vt.qqnorm,vt.normhist,
+       vt.scatterpermute,vt.tspermute,vt.residpermute,vt.residsim,
+       SnowsCorrectlySizedButOtherwiseUselessTestOfAnything,petals,cal,
+       TkBuildDist,TkBuildDist2)
+
+
+  importFrom("grDevices", "chull", "col2rgb", "colors", "dev.copy",
+             "dev.copy2eps", "dev.cur", "dev.new", "dev.off",
+             "getGraphicsEvent", "nclass.Sturges", "png", "recordPlot",
+             "replayPlot", "rgb", "xy.coords")
+  importFrom("graphics", "Axis", "abline", "arrows", "axis", "barplot",
+             "box", "curve", "frame", "grconvertX", "grconvertY", "hist",
+             "image", "layout", "legend", "lines", "locator", "mtext",
+             "pairs", "par", "persp", "plot", "plot.new", "plot.window",
+             "points", "polygon", "rect", "rug", "segments", "strheight",
+             "strwidth", "symbols", "text", "title")
+  importFrom("stats", "approxfun", "coef", "cor", "dbinom", "dchisq",
+             "delete.response", "density", "dexp", "dgamma", "dnorm",
+             "dpois", "dt", "fitted", "get_all_vars", "lm", "loess",
+             "loess.control", "median", "optimize", "pbinom", "pchisq",
+             "pnorm", "predict", "pt", "qchisq", "qgeom", "qnorm",
+             "qqline", "qqnorm", "qqplot", "qt", "quantile", "rbinom",
+             "resid", "rnorm", "runif", "scatter.smooth", "sd",
+             "splinefun", "terms", "var")
+  importFrom("utils", "capture.output", "file_test", "flush.console",
+             "str", "tail", "write.table")
+
+
+S3method(plot, dice)
+
+
+
+
+

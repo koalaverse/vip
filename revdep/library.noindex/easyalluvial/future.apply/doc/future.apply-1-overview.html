@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>A Future for R: Apply Function to Elements in Parallel</title>
+<style type="text/css">
+/**
+ * Prism.s theme ported from highlight.js's xcode style
+ */
+pre code {
+  padding: 1em;
+}
+.token.comment {
+  color: #007400;
+}
+.token.punctuation {
+  color: #999;
+}
+.token.tag,
+.token.selector {
+  color: #aa0d91;
+}
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol {
+  color: #1c00cf;
+}
+.token.property,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin {
+  color: #c41a16;
+}
+.token.inserted {
+  background-color: #ccffd8;
+}
+.token.deleted {
+  background-color: #ffebe9;
+}
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  color: #9a6e3a;
+}
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: #836c28;
+}
+.token.function,
+.token.class-name {
+  color: #DD4A68;
+}
+.token.regex,
+.token.important,
+.token.variable {
+  color: #5c2699;
+}
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+.token.italic {
+  font-style: italic;
+}
+</style>
+<style type="text/css">
+body {
+  font-family: sans-serif;
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+body, .footnotes, code { font-size: .9em; }
+li li { font-size: .95em; }
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+pre, img { max-width: 100%; }
+pre, pre:hover {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+pre code {
+  display: block;
+  overflow-x: auto;
+}
+code { font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace; }
+:not(pre) > code, code[class] { background-color: #F8F8F8; }
+code.language-undefined, pre > code:not([class]) {
+  background-color: inherit;
+  border: 1px solid #eee;
+}
+table {
+  margin: auto;
+  border-top: 1px solid #666;
+}
+table thead th { border-bottom: 1px solid #ddd; }
+th, td { padding: 5px; }
+thead, tfoot, tr:nth-child(even) { background: #eee; }
+blockquote {
+  color: #666;
+  margin: 0;
+  padding-left: 1em;
+  border-left: 0.5em solid #eee;
+}
+hr, .footnotes::before { border: 1px dashed #ddd; }
+.frontmatter { text-align: center; }
+#TOC .numbered li { list-style: none; }
+#TOC .numbered { padding-left: 0; }
+#TOC .numbered ul { padding-left: 1em; }
+table, .body h2 { border-bottom: 1px solid #666; }
+.body .appendix, .appendix ~ h2 { border-bottom-style: dashed; }
+.footnote-ref a::before { content: "["; }
+.footnote-ref a::after { content: "]"; }
+.footnotes::before {
+  content: "";
+  display: block;
+  max-width: 20em;
+}
+
+@media print {
+  body {
+    font-size: 12pt;
+    max-width: 100%;
+  }
+  tr, img { page-break-inside: avoid; }
+}
+@media only screen and (min-width: 992px) {
+  pre { white-space: pre; }
+}
+</style>
+<meta name="keywords" content="R, package, vignette, future, lazy evaluation, synchronous, asynchronous, parallel, cluster">
+<meta name="author" content="Henrik Bengtsson">
+</head>
+<body>
+<div class="include-before">
+</div>
+<div class="frontmatter">
+<div class="title"><h1>A Future for R: Apply Function to Elements in Parallel</h1></div>
+<div class="author"><h2></h2></div>
+<div class="date"><h3></h3></div>
+</div>
+<div class="body">
+<h1 id="a-future-for-r-apply-function-to-elements-in-parallel">A Future for R: Apply Function to Elements in Parallel</h1>
+<h2 id="introduction">Introduction</h2>
+<p>The purpose of this package is to provide worry-free parallel alternatives to base-R “apply” functions, e.g. <code>apply()</code>, <code>lapply()</code>, and <code>vapply()</code>.  The goal is that one should be able to replace any of these in the core with its futurized equivalent and things will just work.  For example, instead of doing:</p>
+<pre><code class="language-r">library(datasets)
+library(stats)
+y &lt;- lapply(mtcars, FUN = mean, trim = 0.10)
+</code></pre>
+<p>one can do:</p>
+<pre><code class="language-r">library(future.apply)
+plan(multisession) ## Run in parallel on local computer
+
+library(datasets)
+library(stats)
+y &lt;- future_lapply(mtcars, FUN = mean, trim = 0.10)
+</code></pre>
+<p>Reproducibility is part of the core design, which means that perfect, parallel random number generation (RNG) is supported regardless of the amount of chunking, type of load balancing, and future backend being used.  To enable parallel RNG, use argument <code>future.seed = TRUE</code>.</p>
+<h2 id="role">Role</h2>
+<p>Where does the <strong><a href="https://cran.r-project.org/package=future.apply">future.apply</a></strong> package fit in the software stack?  You can think of it as a sibling to <strong><a href="https://cran.r-project.org/package=foreach">foreach</a></strong>, <strong><a href="https://cran.r-project.org/package=furrr">furrr</a></strong>, <strong><a href="https://bioconductor.org/packages/BiocParallel/">BiocParallel</a></strong>, <strong><a href="https://cran.r-project.org/package=plyr">plyr</a></strong>, etc.  Just as <strong>parallel</strong> provides <code>parLapply()</code>, <strong>foreach</strong> provides <code>foreach()</code>, <strong>BiocParallel</strong> provides <code>bplapply()</code>, and <strong>plyr</strong> provides <code>llply()</code>, <strong>future.apply</strong> provides <code>future_lapply()</code>.  Below is a table summarizing this idea:</p>
+<table>
+<tr>
+<th>Package</th>
+<th>Functions</th>
+<th>Backends</th>
+</tr>
+<tr style="vertical-align: top">
+<td>
+<a href="https://cran.r-project.org/package=future.apply"><strong>future.apply</strong></a><br>
+<br>
+</td>
+<td>
+Future-versions of common goto <code>*apply()</code> functions available in base R (of the <strong>base</strong> package):<br>
+<code>future_apply()</code>, 
+<code>future_by()</code>, 
+<code>future_eapply()</code>, 
+<code>future_lapply()</code>, 
+<code>future_Map()</code>, 
+<code>future_mapply()</code>, 
+<code>future_.mapply()</code>, 
+<code>future_replicate()</code>,
+<code>future_sapply()</code>,
+<code>future_tapply()</code>, and 
+<code>future_vapply()</code>.
+<br>
+<em>The following function is not implemented:</em><br>
+<code>future_rapply()</code><br>
+</td>
+<td>
+All <strong>future</strong> backends
+</td>
+</tr>
+<tr style="vertical-align: top">
+<td>
+<strong>parallel</strong>
+</td>
+<td>
+<code>mclapply()</code>, <code>mcmapply()</code>,
+<code>clusterMap()</code>, <code>parApply()</code>, <code>parLapply()</code>, <code>parSapply()</code>, ...
+</td>
+<td>
+Built-in and conditional on operating system</a>
+</td>
+</tr>
+<tr style="vertical-align: top">
+<td>
+<a href="https://cran.r-project.org/package=foreach"><strong>foreach</strong></a>
+</td>
+<td>
+<code>foreach()</code>,
+<code>times()</code>
+</td>
+<td>
+All <strong>future</strong> backends via <a href="https://cran.r-project.org/package=doFuture"><strong>doFuture</strong></a>
+</td>
+</tr>
+<tr style="vertical-align: top">
+<td>
+<a href="https://cran.r-project.org/package=furrr"><strong>furrr</strong></a>
+</td>
+<td>
+<code>future_imap()</code>,
+<code>future_map()</code>,
+<code>future_pmap()</code>,
+<code>future_map2()</code>,
+...
+</td>
+<td>
+All <strong>future</strong> backends
+</td>
+</tr>
+<tr style="vertical-align: top">
+<td>
+<a href="https://bioconductor.org/packages/release/bioc/html/BiocParallel.html"><strong>BiocParallel</strong></a>
+</td>
+<td>
+Bioconductor's parallel mappers:<br>
+<code>bpaggregate()</code>,
+<code>bpiterate()</code>,
+<code>bplapply()</code>, and
+<code>bpvec()</code>
+</td>
+<td>
+All <strong>future</strong> backends via <a href="https://cran.r-project.org/package=doFuture"><strong>doFuture</strong></a> (because it supports <strong>foreach</strong>) or via <a href="https://github.com/HenrikBengtsson/BiocParallel.FutureParam"><strong>BiocParallel.FutureParam</strong></a> (direct BiocParallelParam support; prototype)
+</td>
+</tr>
+<tr style="vertical-align: top">
+<td>
+<a href="https://cran.r-project.org/package=plyr"><strong>plyr</strong></a>
+</td>
+<td>
+<code>**ply(..., .parallel = TRUE)</code> functions:<br>
+<code>aaply()</code>,
+<code>ddply()</code>,
+<code>dlply()</code>,
+<code>llply()</code>, ...
+</td>
+<td>
+All <strong>future</strong> backends via <a href="https://cran.r-project.org/package=doFuture"><strong>doFuture</strong></a> (because it uses <strong>foreach</strong> internally)
+</td>
+</tr>
+</table>
+<p>Note that, except for the built-in <strong>parallel</strong> package, none of these higher-level APIs implement their own parallel backends, but they rather enhance existing ones.  The <strong>foreach</strong> framework leverages backends such as <strong><a href="https://cran.r-project.org/package=doParallel">doParallel</a></strong>, <strong><a href="https://cran.r-project.org/package=doMC">doMC</a></strong> and <strong><a href="https://cran.r-project.org/package=doFuture">doFuture</a></strong>, and the <strong>future.apply</strong> framework leverages the <strong><a href="https://cran.r-project.org/package=future">future</a></strong> ecosystem and therefore backends such as built-in <strong>parallel</strong>, <strong><a href="https://cran.r-project.org/package=future.callr">future.callr</a></strong>, and <strong><a href="https://cran.r-project.org/package=future.batchtools">future.batchtools</a></strong>.</p>
+<p>By separating <code>future_lapply()</code> and friends from the <strong><a href="https://cran.r-project.org/package=future">future</a></strong> package, it helps clarifying the purpose of the <strong>future</strong> package, which is to define and provide the core Future API, which higher-level parallel APIs can build on and for which any futurized parallel backends can be plugged into.</p>
+<p>The API and identity of the <strong>future.apply</strong> package will be kept close to the <code>*apply()</code> functions in base R.  In other words, it will <em>neither</em> keep growing nor be expanded with new, more powerful apply-like functions beyond those core ones in base R.  Such extended functionality should be part of a separate package.</p>
+</div>
+<div class="include-after">
+</div>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+</body>
+</html>

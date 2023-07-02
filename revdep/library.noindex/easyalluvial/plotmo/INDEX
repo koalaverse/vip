@@ -1,0 +1,6 @@
+check.index             Ignore
+plot_gbm                Plot a gbm model
+plot_glmnet             Plot a glmnet model
+plotmo                  Plot a model's response over a range of
+                        predictor values (the model surface)
+plotres                 Plot the residuals of a regression model

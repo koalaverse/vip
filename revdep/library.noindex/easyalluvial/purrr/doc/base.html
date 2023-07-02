@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>purrr &lt;-&gt; base R</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">purrr &lt;-&gt; base R</h1>
+
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>This vignette compares purrr’s functionals to their base R
+equivalents, focusing primarily on the map family and related functions.
+This helps those familiar with base R understand better what purrr does,
+and shows purrr users how you might express the same ideas in base R
+code. We’ll start with a rough overview of the major differences, give a
+rough translation guide, and then show a few examples.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(purrr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span></code></pre></div>
+<div id="key-differences" class="section level2">
+<h2>Key differences</h2>
+<p>There are two primary differences between the base apply family and
+the purrr map family: purrr functions are named more consistently, and
+more fully explore the space of input and output variants.</p>
+<ul>
+<li><p>purrr functions consistently use <code>.</code> as prefix to
+avoid <a href="https://adv-r.hadley.nz/functionals.html#argument-names">inadvertently
+matching arguments</a> of the purrr function, instead of the function
+that you’re trying to call. Base functions use a variety of techniques
+including upper case (e.g. <code>lapply(X, FUN, ...)</code>) or require
+anonymous functions (e.g. <code>Map()</code>).</p></li>
+<li><p>All map functions are type stable: you can predict the type of
+the output using little information about the inputs. In contrast, the
+base functions <code>sapply()</code> and <code>mapply()</code>
+automatically simplify making the return value hard to predict.</p></li>
+<li><p>The map functions all start with the data, followed by the
+function, then any additional constant argument. Most base apply
+functions also follow this pattern, but <code>mapply()</code> starts
+with the function, and <code>Map()</code> has no way to supply
+additional constant arguments.</p></li>
+<li><p>purrr functions provide all combinations of input and output
+variants, and include variants specifically for the common two argument
+case.</p></li>
+</ul>
+</div>
+<div id="direct-translations" class="section level2">
+<h2>Direct translations</h2>
+<p>The following sections give a high-level translation between base R
+commands and their purrr equivalents. See function documentation for the
+details.</p>
+<div id="map-functions" class="section level3">
+<h3><code>Map</code> functions</h3>
+<p>Here <code>x</code> denotes a vector and <code>f</code> denotes a
+function</p>
+<table>
+<colgroup>
+<col width="24%" />
+<col width="24%" />
+<col width="24%" />
+<col width="26%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Output</th>
+<th>Input</th>
+<th>Base R</th>
+<th>purrr</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>List</td>
+<td>1 vector</td>
+<td><code>lapply()</code></td>
+<td><code>map()</code></td>
+</tr>
+<tr class="even">
+<td>List</td>
+<td>2 vectors</td>
+<td><code>mapply()</code>, <code>Map()</code></td>
+<td><code>map2()</code></td>
+</tr>
+<tr class="odd">
+<td>List</td>
+<td>&gt;2 vectors</td>
+<td><code>mapply()</code>, <code>Map()</code></td>
+<td><code>pmap()</code></td>
+</tr>
+<tr class="even">
+<td>Atomic vector of desired type</td>
+<td>1 vector</td>
+<td><code>vapply()</code></td>
+<td><code>map_lgl()</code> (logical), <code>map_int()</code> (integer),
+<code>map_dbl()</code> (double), <code>map_chr()</code> (character),
+<code>map_raw()</code> (raw)</td>
+</tr>
+<tr class="odd">
+<td>Atomic vector of desired type</td>
+<td>2 vectors</td>
+<td><code>mapply()</code>, <code>Map()</code>, then <code>is.*()</code>
+to check type</td>
+<td><code>map2_lgl()</code> (logical), <code>map2_int()</code>
+(integer), <code>map2_dbl()</code> (double), <code>map2_chr()</code>
+(character), <code>map2_raw()</code> (raw)</td>
+</tr>
+<tr class="even">
+<td>Atomic vector of desired type</td>
+<td>&gt;2 vectors</td>
+<td><code>mapply()</code>, <code>Map()</code>, then <code>is.*()</code>
+to check type</td>
+<td><code>pmap_lgl()</code> (logical), <code>pmap_int()</code>
+(integer), <code>pmap_dbl()</code> (double), <code>pmap_chr()</code>
+(character), <code>pmap_raw()</code> (raw)</td>
+</tr>
+<tr class="odd">
+<td>Side effect only</td>
+<td>1 vector</td>
+<td>loops</td>
+<td><code>walk()</code></td>
+</tr>
+<tr class="even">
+<td>Side effect only</td>
+<td>2 vectors</td>
+<td>loops</td>
+<td><code>walk2()</code></td>
+</tr>
+<tr class="odd">
+<td>Side effect only</td>
+<td>&gt;2 vectors</td>
+<td>loops</td>
+<td><code>pwalk()</code></td>
+</tr>
+<tr class="even">
+<td>Data frame (<code>rbind</code> outputs)</td>
+<td>1 vector</td>
+<td><code>lapply()</code> then <code>rbind()</code></td>
+<td><code>map_dfr()</code></td>
+</tr>
+<tr class="odd">
+<td>Data frame (<code>rbind</code> outputs)</td>
+<td>2 vectors</td>
+<td><code>mapply()</code>/<code>Map()</code> then
+<code>rbind()</code></td>
+<td><code>map2_dfr()</code></td>
+</tr>
+<tr class="even">
+<td>Data frame (<code>rbind</code> outputs)</td>
+<td>&gt;2 vectors</td>
+<td><code>mapply()</code>/<code>Map()</code> then
+<code>rbind()</code></td>
+<td><code>pmap_dfr()</code></td>
+</tr>
+<tr class="odd">
+<td>Data frame (<code>cbind</code> outputs)</td>
+<td>1 vector</td>
+<td><code>lapply()</code> then <code>cbind()</code></td>
+<td><code>map_dfc()</code></td>
+</tr>
+<tr class="even">
+<td>Data frame (<code>cbind</code> outputs)</td>
+<td>2 vectors</td>
+<td><code>mapply()</code>/<code>Map()</code> then
+<code>cbind()</code></td>
+<td><code>map2_dfc()</code></td>
+</tr>
+<tr class="odd">
+<td>Data frame (<code>cbind</code> outputs)</td>
+<td>&gt;2 vectors</td>
+<td><code>mapply()</code>/<code>Map()</code> then
+<code>cbind()</code></td>
+<td><code>pmap_dfc()</code></td>
+</tr>
+<tr class="even">
+<td>Any</td>
+<td>Vector and its names</td>
+<td><code>l/s/vapply(X, function(x) f(x, names(x)))</code> or
+<code>mapply/Map(f, x, names(x))</code></td>
+<td><code>imap()</code>, <code>imap_*()</code> (<code>lgl</code>,
+<code>dbl</code>, <code>dfr</code>, and etc. just like for
+<code>map()</code>, <code>map2()</code>, and <code>pmap()</code>)</td>
+</tr>
+<tr class="odd">
+<td>Any</td>
+<td>Selected elements of the vector</td>
+<td><code>l/s/vapply(X[index], FUN, ...)</code></td>
+<td><code>map_if()</code>, <code>map_at()</code></td>
+</tr>
+<tr class="even">
+<td>List</td>
+<td>Recursively apply to list within list</td>
+<td><code>rapply()</code></td>
+<td><code>map_depth()</code></td>
+</tr>
+<tr class="odd">
+<td>List</td>
+<td>List only</td>
+<td><code>lapply()</code></td>
+<td><code>lmap()</code>, <code>lmap_at()</code>,
+<code>lmap_if()</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="extractor-shorthands" class="section level3">
+<h3>Extractor shorthands</h3>
+<p>Since a common use case for map functions is list extracting
+components, purrr provides a handful of shortcut functions for various
+uses of <code>[[</code>.</p>
+<table>
+<colgroup>
+<col width="26%" />
+<col width="36%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Input</th>
+<th>base R</th>
+<th>purrr</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Extract by name</td>
+<td><code>lapply(x, `[[`, &quot;a&quot;)</code></td>
+<td><code>map(x, &quot;a&quot;)</code></td>
+</tr>
+<tr class="even">
+<td>Extract by position</td>
+<td><code>lapply(x, `[[`, 3)</code></td>
+<td><code>map(x, 3)</code></td>
+</tr>
+<tr class="odd">
+<td>Extract deeply</td>
+<td><code>lapply(x, \(y) y[[1]][[&quot;x&quot;]][[3]])</code></td>
+<td><code>map(x, list(1, &quot;x&quot;, 3))</code></td>
+</tr>
+<tr class="even">
+<td>Extract with default value</td>
+<td><code>lapply(x, function(y) tryCatch(y[[3]], error = function(e) NA))</code></td>
+<td><code>map(x, 3, .default = NA)</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="predicates" class="section level3">
+<h3>Predicates</h3>
+<p>Here <code>p</code>, a predicate, denotes a function that returns
+<code>TRUE</code> or <code>FALSE</code> indicating whether an object
+fulfills a criterion, e.g. <code>is.character()</code>.</p>
+<table>
+<colgroup>
+<col width="40%" />
+<col width="27%" />
+<col width="31%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Description</th>
+<th>base R</th>
+<th>purrr</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Find a matching element</td>
+<td><code>Find(p, x)</code></td>
+<td><code>detect(x, p)</code>,</td>
+</tr>
+<tr class="even">
+<td>Find position of matching element</td>
+<td><code>Position(p, x)</code></td>
+<td><code>detect_index(x, p)</code></td>
+</tr>
+<tr class="odd">
+<td>Do all elements of a vector satisfy a predicate?</td>
+<td><code>all(sapply(x, p))</code></td>
+<td><code>every(x, p)</code></td>
+</tr>
+<tr class="even">
+<td>Does any elements of a vector satisfy a predicate?</td>
+<td><code>any(sapply(x, p))</code></td>
+<td><code>some(x, p)</code></td>
+</tr>
+<tr class="odd">
+<td>Does a list contain an object?</td>
+<td><code>any(sapply(x, identical, obj))</code></td>
+<td><code>has_element(x, obj)</code></td>
+</tr>
+<tr class="even">
+<td>Keep elements that satisfy a predicate</td>
+<td><code>x[sapply(x, p)]</code></td>
+<td><code>keep(x, p)</code></td>
+</tr>
+<tr class="odd">
+<td>Discard elements that satisfy a predicate</td>
+<td><code>x[!sapply(x, p)]</code></td>
+<td><code>discard(x, p)</code></td>
+</tr>
+<tr class="even">
+<td>Negate a predicate function</td>
+<td><code>function(x) !p(x)</code></td>
+<td><code>negate(p)</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="other-vector-transforms" class="section level3">
+<h3>Other vector transforms</h3>
+<table>
+<colgroup>
+<col width="40%" />
+<col width="27%" />
+<col width="31%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Description</th>
+<th>base R</th>
+<th>purrr</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Accumulate intermediate results of a vector reduction</td>
+<td><code>Reduce(f, x, accumulate = TRUE)</code></td>
+<td><code>accumulate(x, f)</code></td>
+</tr>
+<tr class="even">
+<td>Recursively combine two lists</td>
+<td><code>c(X, Y)</code>, but more complicated to merge recursively</td>
+<td><code>list_merge()</code>, <code>list_modify()</code></td>
+</tr>
+<tr class="odd">
+<td>Reduce a list to a single value by iteratively applying a binary
+function</td>
+<td><code>Reduce(f, x)</code></td>
+<td><code>reduce(x, f)</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="examples" class="section level2">
+<h2>Examples</h2>
+<div id="varying-inputs" class="section level3">
+<h3>Varying inputs</h3>
+<div id="one-input" class="section level4">
+<h4>One input</h4>
+<p>Suppose we would like to generate a list of samples of 5 from normal
+distributions with different means:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span></span></code></pre></div>
+<p>There’s little difference when generating the samples:</p>
+<ul>
+<li><p>Base R uses <code>lapply()</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2020</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>samples <span class="ot">&lt;-</span> <span class="fu">lapply</span>(means, rnorm, <span class="at">n =</span> <span class="dv">5</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(samples)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; List of 4</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num [1:5] 1.377 1.302 -0.098 -0.13 -1.797</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num [1:5] 2.72 2.94 1.77 3.76 2.12</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num [1:5] 2.15 3.91 4.2 2.63 2.88</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num [1:5] 5.8 5.704 0.961 1.711 4.058</span></span></code></pre></div></li>
+<li><p>purrr uses <code>map()</code>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2020</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>samples <span class="ot">&lt;-</span> <span class="fu">map</span>(means, rnorm, <span class="at">n =</span> <span class="dv">5</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(samples)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; List of 4</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num [1:5] 1.377 1.302 -0.098 -0.13 -1.797</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num [1:5] 2.72 2.94 1.77 3.76 2.12</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num [1:5] 2.15 3.91 4.2 2.63 2.88</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num [1:5] 5.8 5.704 0.961 1.711 4.058</span></span></code></pre></div></li>
+</ul>
+</div>
+<div id="two-inputs" class="section level4">
+<h4>Two inputs</h4>
+<p>Lets make the example a little more complicated by also varying the
+standard deviations:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>sds <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span></span></code></pre></div>
+<ul>
+<li><p>This is relatively tricky in base R because we have to adjust a
+number of <code>mapply()</code>’s defaults.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2020</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>samples <span class="ot">&lt;-</span> <span class="fu">mapply</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  rnorm, </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean =</span> means, </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd =</span> sds, </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">MoreArgs =</span> <span class="fu">list</span>(<span class="at">n =</span> <span class="dv">5</span>), </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">SIMPLIFY =</span> <span class="cn">FALSE</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(samples)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; List of 4</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num [1:5] 1.377 1.302 -0.098 -0.13 -1.797</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num [1:5] 3.44 3.88 1.54 5.52 2.23</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num [1:5] 0.441 5.728 6.589 1.885 2.63</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num [1:5] 11.2 10.82 -8.16 -5.16 4.23</span></span></code></pre></div>
+<p>Alternatively, we could use <code>Map()</code> which doesn’t simply,
+but also doesn’t take any constant arguments, so we need to use an
+anonymous function:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>samples <span class="ot">&lt;-</span> <span class="fu">Map</span>(<span class="cf">function</span>(...) <span class="fu">rnorm</span>(..., <span class="at">n =</span> <span class="dv">5</span>), <span class="at">mean =</span> means, <span class="at">sd =</span> sds)</span></code></pre></div>
+<p>In R 4.1 and up, you could use the shorter anonymous function
+form:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>samples <span class="ot">&lt;-</span> <span class="fu">Map</span>(\(...) <span class="fu">rnorm</span>(..., <span class="at">n =</span> <span class="dv">5</span>), <span class="at">mean =</span> means, <span class="at">sd =</span> sds)</span></code></pre></div></li>
+<li><p>Working with a pair of vectors is a common situation so purrr
+provides the <code>map2()</code> family of functions:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2020</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>samples <span class="ot">&lt;-</span> <span class="fu">map2</span>(means, sds, rnorm, <span class="at">n =</span> <span class="dv">5</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(samples)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; List of 4</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num [1:5] 1.377 1.302 -0.098 -0.13 -1.797</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num [1:5] 3.44 3.88 1.54 5.52 2.23</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num [1:5] 0.441 5.728 6.589 1.885 2.63</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num [1:5] 11.2 10.82 -8.16 -5.16 4.23</span></span></code></pre></div></li>
+</ul>
+</div>
+<div id="any-number-of-inputs" class="section level4">
+<h4>Any number of inputs</h4>
+<p>We can make the challenge still more complex by also varying the
+number of samples:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>ns <span class="ot">&lt;-</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">1</span></span></code></pre></div>
+<ul>
+<li><p>Using base R’s <code>Map()</code> becomes more straightforward
+because there are no constant arguments.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2020</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>samples <span class="ot">&lt;-</span> <span class="fu">Map</span>(rnorm, <span class="at">mean =</span> means, <span class="at">sd =</span> sds, <span class="at">n =</span> ns)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(samples)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; List of 4</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num [1:4] 1.377 1.302 -0.098 -0.13</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num [1:3] -3.59 3.44 3.88</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num [1:2] 2.31 8.28</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num 4.47</span></span></code></pre></div></li>
+<li><p>In purrr, we need to switch from <code>map2()</code> to
+<code>pmap()</code> which takes a list of any number of arguments.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2020</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>samples <span class="ot">&lt;-</span> <span class="fu">pmap</span>(<span class="fu">list</span>(<span class="at">mean =</span> means, <span class="at">sd =</span> sds, <span class="at">n =</span> ns), rnorm)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(samples)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; List of 4</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num [1:4] 1.377 1.302 -0.098 -0.13</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num [1:3] -3.59 3.44 3.88</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num [1:2] 2.31 8.28</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ : num 4.47</span></span></code></pre></div></li>
+</ul>
+</div>
+</div>
+<div id="outputs" class="section level3">
+<h3>Outputs</h3>
+<p>Given the samples, imagine we want to compute their means. A mean is
+a single number, so we want the output to be a numeric vector rather
+than a list.</p>
+<ul>
+<li><p>There are two options in base R: <code>vapply()</code> or
+<code>sapply()</code>. <code>vapply()</code> requires you to specific
+the output type (so is relatively verbose), but will always return a
+numeric vector. <code>sapply()</code> is concise, but if you supply an
+empty list you’ll get a list instead of a numeric vector.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># type stable</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>medians <span class="ot">&lt;-</span> <span class="fu">vapply</span>(samples, median, <span class="at">FUN.VALUE =</span> <span class="fu">numeric</span>(1L))</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>medians</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.6017626 3.4411470 5.2946304 4.4694671</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co"># not type stable</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>medians <span class="ot">&lt;-</span> <span class="fu">sapply</span>(samples, median)</span></code></pre></div></li>
+<li><p>purrr is little more compact because we can use
+<code>map_dbl()</code>.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>medians <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(samples, median)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>medians</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.6017626 3.4411470 5.2946304 4.4694671</span></span></code></pre></div></li>
+</ul>
+<p>What if we want just the side effect, such as a plot or a file
+output, but not the returned values?</p>
+<ul>
+<li><p>In base R we can either use a for loop or hide the results of
+<code>lapply</code>.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># for loop</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (s <span class="cf">in</span> samples) {</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hist</span>(s, <span class="at">xlab =</span> <span class="st">&quot;value&quot;</span>, <span class="at">main =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co"># lapply</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="fu">invisible</span>(<span class="fu">lapply</span>(samples, <span class="cf">function</span>(s) {</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hist</span>(s, <span class="at">xlab =</span> <span class="st">&quot;value&quot;</span>, <span class="at">main =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>}))</span></code></pre></div></li>
+<li><p>In purrr, we can use <code>walk()</code>.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">walk</span>(samples, <span class="sc">~</span> <span class="fu">hist</span>(.x, <span class="at">xlab =</span> <span class="st">&quot;value&quot;</span>, <span class="at">main =</span> <span class="st">&quot;&quot;</span>))</span></code></pre></div></li>
+</ul>
+</div>
+<div id="pipes" class="section level3">
+<h3>Pipes</h3>
+<p>You can join multiple steps together either using the magrittr
+pipe:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2020</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>means <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(rnorm, <span class="at">n =</span> <span class="dv">5</span>, <span class="at">sd =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dbl</span>(median)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -0.09802317  2.72057350  2.87673977  4.05830349</span></span></code></pre></div>
+<p>Or the base pipe R:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2020</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>means <span class="sc">|&gt;</span> </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(rnorm, <span class="at">n =</span> <span class="dv">5</span>, <span class="at">sd =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sapply</span>(median)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -0.09802317  2.72057350  2.87673977  4.05830349</span></span></code></pre></div>
+<p>(And of course you can mix and match the piping style with either
+base R or purrr.)</p>
+<p>The pipe is particularly compelling when working with longer
+transformations. For example, the following code splits
+<code>mtcars</code> up by <code>cyl</code>, fits a linear model,
+extracts the coefficients, and extracts the first one (the
+intercept).</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>mtcars <span class="sc">%&gt;%</span> </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split</span>(mtcars<span class="sc">$</span>cyl) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(\(df) <span class="fu">lm</span>(mpg <span class="sc">~</span> wt, <span class="at">data =</span> df)) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(coef) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dbl</span>(<span class="dv">1</span>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        4        6        8 </span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 39.57120 28.40884 23.86803</span></span></code></pre></div>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

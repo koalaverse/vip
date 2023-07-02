@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Tianqi Chen, Tong He, Michaël Benesty" />
+
+
+<title>XGBoost presentation</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
+
+<style type="text/css">body {
+margin: 0 auto;
+background-color: white;
+
+/ font-family:Georgia, Palatino, serif;
+font-family: "Open Sans", "Book Antiqua", Palatino, serif;
+/ font-family:Arial, Helvetica, sans-serif;
+/ font-family:Tahoma, Verdana, Geneva, sans-serif;
+/ font-family:Courier, monospace;
+/ font-family:"Times New Roman", Times, serif;
+	color: #333333; 
+/ color: #000000; 
+/ color: #666666; 	/ color: #E3E3E3; 
+/ color: white; line-height: 100%;
+max-width: 800px;
+padding: 10px;
+font-size: 17px;
+text-align: justify;
+text-justify: inter-word;
+}
+p {
+line-height: 150%;
+/ max-width: 540px;
+max-width: 960px;
+margin-bottom: 5px;
+font-weight: 400; / color: #333333
+}
+h1, h2, h3, h4, h5, h6 {
+font-weight: 400;
+margin-top: 35px;
+margin-bottom: 15px;
+padding-top: 10px;
+}
+h1 {
+margin-top: 70px;
+color: #606AAA;
+font-size:230%;
+font-variant:small-caps;
+padding-bottom:20px;
+width:100%;
+border-bottom:1px solid #606AAA;
+}
+h2 {
+font-size:160%;
+}
+h3 {
+font-size:130%;
+}
+h4 {
+font-size:120%;
+font-variant:small-caps;
+}
+h5 {
+font-size:120%;
+}
+h6 {
+font-size:120%;
+font-variant:small-caps;
+}
+a {
+color: #606AAA;
+margin: 0;
+padding: 0;
+vertical-align: baseline;
+}
+a:hover {
+text-decoration: blink;
+color: green;
+}
+a:visited {
+color: gray;
+}
+ul, ol {
+padding: 0;
+margin: 0px 0px 0px 50px;
+}
+ul {
+list-style-type: square;
+list-style-position: inside;
+}
+li {
+line-height:150% }
+li ul, li ul {
+margin-left: 24px;
+}
+pre {
+padding: 0px 10px;
+max-width: 800px;
+white-space: pre-wrap;
+}
+code {
+font-family: Consolas, Monaco, Andale Mono, monospace, courrier new;
+line-height: 1.5;
+font-size: 15px;
+background: #F8F8F8;
+border-radius: 4px;
+padding: 5px;
+display: inline-block;
+max-width: 800px;
+white-space: pre-wrap;
+}
+li code, p code {
+background: #CDCDCD;
+color: #606AAA;
+padding: 0px 5px 0px 5px;
+}
+code.r, code.cpp {
+display: block;
+word-wrap: break-word;
+border: 1px solid #606AAA; }
+aside {
+display: block;
+float: right;
+width: 390px;
+}
+blockquote {
+border-left:.5em solid #606AAA;
+background: #F8F8F8;
+padding: 0em 1em 0em 1em;
+margin-left:10px;
+max-width: 500px;
+}
+blockquote cite {
+line-height:10px;
+color:#bfbfbf;
+}
+blockquote cite:before {
+/content: '\2014 \00A0';
+}
+blockquote p, blockquote li { color: #666;
+}
+hr {
+/ width: 540px;
+text-align: left;
+margin: 0 auto 0 0;
+color: #999;
+}
+
+table {
+width: 100%;
+border-top: 1px solid #919699;
+border-left: 1px solid #919699;
+border-spacing: 0;
+}
+table th {
+padding: 4px 8px 4px 8px;
+text-align: center;
+color: white;
+background: #606AAA;
+border-bottom: 1px solid #919699;
+border-right: 1px solid #919699;
+}
+table th p {
+font-weight: bold;
+margin-bottom: 0px; }
+table td {
+padding: 8px;	vertical-align: top;
+border-bottom: 1px solid #919699;
+border-right: 1px solid #919699;
+}
+table td:last-child {
+/background: lightgray;
+text-align: right;
+}
+table td p {
+margin-bottom: 0px; }
+table td p + p {
+margin-top: 5px; }
+table td p + p + p {
+margin-top: 5px; }
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">XGBoost presentation</h1>
+<h4 class="author">Tianqi Chen, Tong He, Michaël Benesty</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#xgboost-r-tutorial" id="toc-xgboost-r-tutorial"><span class="toc-section-number">1</span> XGBoost R Tutorial</a>
+<ul>
+<li><a href="#introduction" id="toc-introduction"><span class="toc-section-number">1.1</span> Introduction</a></li>
+<li><a href="#installation" id="toc-installation"><span class="toc-section-number">1.2</span> Installation</a>
+<ul>
+<li><a href="#github-version" id="toc-github-version"><span class="toc-section-number">1.2.1</span> GitHub version</a></li>
+<li><a href="#cran-version" id="toc-cran-version"><span class="toc-section-number">1.2.2</span> CRAN version</a></li>
+</ul></li>
+<li><a href="#learning" id="toc-learning"><span class="toc-section-number">1.3</span> Learning</a>
+<ul>
+<li><a href="#dataset-presentation" id="toc-dataset-presentation"><span class="toc-section-number">1.3.1</span> Dataset presentation</a></li>
+<li><a href="#dataset-loading" id="toc-dataset-loading"><span class="toc-section-number">1.3.2</span> Dataset loading</a></li>
+<li><a href="#basic-training-using-xgboost" id="toc-basic-training-using-xgboost"><span class="toc-section-number">1.3.3</span> Basic Training using
+XGBoost</a></li>
+</ul></li>
+<li><a href="#basic-prediction-using-xgboost" id="toc-basic-prediction-using-xgboost"><span class="toc-section-number">1.4</span> Basic prediction using
+XGBoost</a></li>
+<li><a href="#perform-the-prediction" id="toc-perform-the-prediction"><span class="toc-section-number">1.5</span> Perform the prediction</a></li>
+<li><a href="#transform-the-regression-in-a-binary-classification" id="toc-transform-the-regression-in-a-binary-classification"><span class="toc-section-number">1.6</span> Transform the regression in a
+binary classification</a></li>
+<li><a href="#measuring-model-performance" id="toc-measuring-model-performance"><span class="toc-section-number">1.7</span> Measuring model
+performance</a></li>
+<li><a href="#advanced-features" id="toc-advanced-features"><span class="toc-section-number">1.8</span> Advanced features</a>
+<ul>
+<li><a href="#dataset-preparation" id="toc-dataset-preparation"><span class="toc-section-number">1.8.1</span> Dataset preparation</a></li>
+<li><a href="#measure-learning-progress-with-xgb.train" id="toc-measure-learning-progress-with-xgb.train"><span class="toc-section-number">1.8.2</span> Measure learning progress with
+xgb.train</a></li>
+<li><a href="#linear-boosting" id="toc-linear-boosting"><span class="toc-section-number">1.8.3</span> Linear boosting</a></li>
+<li><a href="#manipulating-xgb.dmatrix" id="toc-manipulating-xgb.dmatrix"><span class="toc-section-number">1.8.4</span> Manipulating
+xgb.DMatrix</a></li>
+<li><a href="#view-feature-importanceinfluence-from-the-learnt-model" id="toc-view-feature-importanceinfluence-from-the-learnt-model"><span class="toc-section-number">1.8.5</span> View feature
+importance/influence from the learnt model</a></li>
+</ul></li>
+<li><a href="#references" id="toc-references">References</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="xgboost-r-tutorial" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> XGBoost R Tutorial</h1>
+<div id="introduction" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> Introduction</h2>
+<p><strong>XGBoost</strong> is short for e<strong>X</strong>treme
+<strong>G</strong>radient <strong>Boost</strong>ing package.</p>
+<p>The purpose of this Vignette is to show you how to use
+<strong>XGBoost</strong> to build a model and make predictions.</p>
+<p>It is an efficient and scalable implementation of gradient boosting
+framework by <span class="citation">J. Friedman et al. (2000)</span> and
+<span class="citation">J. H. Friedman (2001)</span>. Two solvers are
+included:</p>
+<ul>
+<li><em>linear</em> model ;</li>
+<li><em>tree learning</em> algorithm.</li>
+</ul>
+<p>It supports various objective functions, including
+<em>regression</em>, <em>classification</em> and <em>ranking</em>. The
+package is made to be extendible, so that users are also allowed to
+define their own objective functions easily.</p>
+<p>It has been <a href="https://github.com/dmlc/xgboost">used</a> to win
+several <a href="http://www.kaggle.com">Kaggle</a> competitions.</p>
+<p>It has several features:</p>
+<ul>
+<li>Speed: it can automatically do parallel computation on
+<em>Windows</em> and <em>Linux</em>, with <em>OpenMP</em>. It is
+generally over 10 times faster than the classical <code>gbm</code>.</li>
+<li>Input Type: it takes several types of input data:
+<ul>
+<li><em>Dense</em> Matrix: <em>R</em>’s <em>dense</em> matrix,
+i.e. <code>matrix</code> ;</li>
+<li><em>Sparse</em> Matrix: <em>R</em>’s <em>sparse</em> matrix,
+i.e. <code>Matrix::dgCMatrix</code> ;</li>
+<li>Data File: local data files ;</li>
+<li><code>xgb.DMatrix</code>: its own class (recommended).</li>
+</ul></li>
+<li>Sparsity: it accepts <em>sparse</em> input for both <em>tree
+booster</em> and <em>linear booster</em>, and is optimized for
+<em>sparse</em> input ;</li>
+<li>Customization: it supports customized objective functions and
+evaluation functions.</li>
+</ul>
+</div>
+<div id="installation" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> Installation</h2>
+<div id="github-version" class="section level3" number="1.2.1">
+<h3><span class="header-section-number">1.2.1</span> GitHub version</h3>
+<p>For weekly updated version (highly recommended), install from
+<em>GitHub</em>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;drat&quot;</span>, <span class="at">repos=</span><span class="st">&quot;https://cran.rstudio.com&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>drat<span class="sc">:::</span><span class="fu">addRepo</span>(<span class="st">&quot;dmlc&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;xgboost&quot;</span>, <span class="at">repos=</span><span class="st">&quot;http://dmlc.ml/drat/&quot;</span>, <span class="at">type =</span> <span class="st">&quot;source&quot;</span>)</span></code></pre></div>
+<blockquote>
+<p><em>Windows</em> user will need to install <a href="https://cran.r-project.org/bin/windows/Rtools/">Rtools</a>
+first.</p>
+</blockquote>
+</div>
+<div id="cran-version" class="section level3" number="1.2.2">
+<h3><span class="header-section-number">1.2.2</span> CRAN version</h3>
+<p>The version 0.4-2 is on CRAN, and you can install it by:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;xgboost&quot;</span>)</span></code></pre></div>
+<p>Formerly available versions can be obtained from the CRAN <a href="https://cran.r-project.org/src/contrib/Archive/xgboost/">archive</a></p>
+</div>
+</div>
+<div id="learning" class="section level2" number="1.3">
+<h2><span class="header-section-number">1.3</span> Learning</h2>
+<p>For the purpose of this tutorial we will load
+<strong>XGBoost</strong> package.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(xgboost)</span></code></pre></div>
+<div id="dataset-presentation" class="section level3" number="1.3.1">
+<h3><span class="header-section-number">1.3.1</span> Dataset
+presentation</h3>
+<p>In this example, we are aiming to predict whether a mushroom can be
+eaten or not (like in many tutorials, example data are the same as you
+will use on in your every day life :-).</p>
+<p>Mushroom data is cited from UCI Machine Learning Repository. <span class="citation">Bache and Lichman (2013)</span>.</p>
+</div>
+<div id="dataset-loading" class="section level3" number="1.3.2">
+<h3><span class="header-section-number">1.3.2</span> Dataset
+loading</h3>
+<p>We will load the <code>agaricus</code> datasets embedded with the
+package and will link them to variables.</p>
+<p>The datasets are already split in:</p>
+<ul>
+<li><code>train</code>: will be used to build the model ;</li>
+<li><code>test</code>: will be used to assess the quality of our
+model.</li>
+</ul>
+<p>Why <em>split</em> the dataset in two parts?</p>
+<p>In the first part we will build our model. In the second part we will
+want to test it and assess its quality. Without dividing the dataset we
+would test the model on the data which the algorithm have already
+seen.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(agaricus.train, <span class="at">package=</span><span class="st">&#39;xgboost&#39;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(agaricus.test, <span class="at">package=</span><span class="st">&#39;xgboost&#39;</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> agaricus.train</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> agaricus.test</span></code></pre></div>
+<blockquote>
+<p>In the real world, it would be up to you to make this division
+between <code>train</code> and <code>test</code> data. The way to do it
+is out of the purpose of this article, however <code>caret</code>
+package may <a href="http://topepo.github.io/caret/data-splitting.html">help</a>.</p>
+</blockquote>
+<p>Each variable is a <code>list</code> containing two things,
+<code>label</code> and <code>data</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(train)</span></code></pre></div>
+<pre><code>## List of 2
+##  $ data :Formal class &#39;dgCMatrix&#39; [package &quot;Matrix&quot;] with 6 slots
+##   .. ..@ i       : int [1:143286] 2 6 8 11 18 20 21 24 28 32 ...
+##   .. ..@ p       : int [1:127] 0 369 372 3306 5845 6489 6513 8380 8384 10991 ...
+##   .. ..@ Dim     : int [1:2] 6513 126
+##   .. ..@ Dimnames:List of 2
+##   .. .. ..$ : NULL
+##   .. .. ..$ : chr [1:126] &quot;cap-shape=bell&quot; &quot;cap-shape=conical&quot; &quot;cap-shape=convex&quot; &quot;cap-shape=flat&quot; ...
+##   .. ..@ x       : num [1:143286] 1 1 1 1 1 1 1 1 1 1 ...
+##   .. ..@ factors : list()
+##  $ label: num [1:6513] 1 0 0 1 0 0 0 1 0 0 ...</code></pre>
+<p><code>label</code> is the outcome of our dataset meaning it is the
+binary <em>classification</em> we will try to predict.</p>
+<p>Let’s discover the dimensionality of our datasets.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(train<span class="sc">$</span>data)</span></code></pre></div>
+<pre><code>## [1] 6513  126</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(test<span class="sc">$</span>data)</span></code></pre></div>
+<pre><code>## [1] 1611  126</code></pre>
+<p>This dataset is very small to not make the <strong>R</strong> package
+too heavy, however <strong>XGBoost</strong> is built to manage huge
+dataset very efficiently.</p>
+<p>As seen below, the <code>data</code> are stored in a
+<code>dgCMatrix</code> which is a <em>sparse</em> matrix and
+<code>label</code> vector is a <code>numeric</code> vector
+(<code>{0,1}</code>):</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(train<span class="sc">$</span>data)[<span class="dv">1</span>]</span></code></pre></div>
+<pre><code>## [1] &quot;dgCMatrix&quot;</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(train<span class="sc">$</span>label)</span></code></pre></div>
+<pre><code>## [1] &quot;numeric&quot;</code></pre>
+</div>
+<div id="basic-training-using-xgboost" class="section level3" number="1.3.3">
+<h3><span class="header-section-number">1.3.3</span> Basic Training
+using XGBoost</h3>
+<p>This step is the most critical part of the process for the quality of
+our model.</p>
+<div id="basic-training" class="section level4" number="1.3.3.1">
+<h4><span class="header-section-number">1.3.3.1</span> Basic
+training</h4>
+<p>We are using the <code>train</code> data. As explained above, both
+<code>data</code> and <code>label</code> are stored in a
+<code>list</code>.</p>
+<p>In a <em>sparse</em> matrix, cells containing <code>0</code> are not
+stored in memory. Therefore, in a dataset mainly made of <code>0</code>,
+memory size is reduced. It is very usual to have such dataset.</p>
+<p>We will train decision tree model using the following parameters:</p>
+<ul>
+<li><code>objective = &quot;binary:logistic&quot;</code>: we will train a binary
+classification model ;</li>
+<li><code>max_depth = 2</code>: the trees won’t be deep, because our
+case is very simple ;</li>
+<li><code>nthread = 2</code>: the number of CPU threads we are going to
+use;</li>
+<li><code>nrounds = 2</code>: there will be two passes on the data, the
+second one will enhance the model by further reducing the difference
+between ground truth and prediction.</li>
+</ul>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>bstSparse <span class="ot">&lt;-</span> <span class="fu">xgboost</span>(<span class="at">data =</span> train<span class="sc">$</span>data, <span class="at">label =</span> train<span class="sc">$</span>label, <span class="at">max_depth =</span> <span class="dv">2</span>, <span class="at">eta =</span> <span class="dv">1</span>, <span class="at">nthread =</span> <span class="dv">2</span>, <span class="at">nrounds =</span> <span class="dv">2</span>, <span class="at">objective =</span> <span class="st">&quot;binary:logistic&quot;</span>)</span></code></pre></div>
+<pre><code>## [1]  train-logloss:0.233376 
+## [2]  train-logloss:0.136658</code></pre>
+<blockquote>
+<p>More complex the relationship between your features and your
+<code>label</code> is, more passes you need.</p>
+</blockquote>
+</div>
+<div id="parameter-variations" class="section level4" number="1.3.3.2">
+<h4><span class="header-section-number">1.3.3.2</span> Parameter
+variations</h4>
+<div id="dense-matrix" class="section level5" number="1.3.3.2.1">
+<h5><span class="header-section-number">1.3.3.2.1</span> Dense
+matrix</h5>
+<p>Alternatively, you can put your dataset in a <em>dense</em> matrix,
+i.e. a basic <strong>R</strong> matrix.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>bstDense <span class="ot">&lt;-</span> <span class="fu">xgboost</span>(<span class="at">data =</span> <span class="fu">as.matrix</span>(train<span class="sc">$</span>data), <span class="at">label =</span> train<span class="sc">$</span>label, <span class="at">max_depth =</span> <span class="dv">2</span>, <span class="at">eta =</span> <span class="dv">1</span>, <span class="at">nthread =</span> <span class="dv">2</span>, <span class="at">nrounds =</span> <span class="dv">2</span>, <span class="at">objective =</span> <span class="st">&quot;binary:logistic&quot;</span>)</span></code></pre></div>
+<pre><code>## [1]  train-logloss:0.233376 
+## [2]  train-logloss:0.136658</code></pre>
+</div>
+<div id="xgb.dmatrix" class="section level5" number="1.3.3.2.2">
+<h5><span class="header-section-number">1.3.3.2.2</span>
+xgb.DMatrix</h5>
+<p><strong>XGBoost</strong> offers a way to group them in a
+<code>xgb.DMatrix</code>. You can even add other meta data in it. It
+will be useful for the most advanced features we will discover
+later.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>dtrain <span class="ot">&lt;-</span> <span class="fu">xgb.DMatrix</span>(<span class="at">data =</span> train<span class="sc">$</span>data, <span class="at">label =</span> train<span class="sc">$</span>label)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>bstDMatrix <span class="ot">&lt;-</span> <span class="fu">xgboost</span>(<span class="at">data =</span> dtrain, <span class="at">max_depth =</span> <span class="dv">2</span>, <span class="at">eta =</span> <span class="dv">1</span>, <span class="at">nthread =</span> <span class="dv">2</span>, <span class="at">nrounds =</span> <span class="dv">2</span>, <span class="at">objective =</span> <span class="st">&quot;binary:logistic&quot;</span>)</span></code></pre></div>
+<pre><code>## [1]  train-logloss:0.233376 
+## [2]  train-logloss:0.136658</code></pre>
+</div>
+<div id="verbose-option" class="section level5" number="1.3.3.2.3">
+<h5><span class="header-section-number">1.3.3.2.3</span> Verbose
+option</h5>
+<p><strong>XGBoost</strong> has several features to help you to view how
+the learning progress internally. The purpose is to help you to set the
+best parameters, which is the key of your model quality.</p>
+<p>One of the simplest way to see the training progress is to set the
+<code>verbose</code> option (see below for more advanced
+techniques).</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># verbose = 0, no message</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>bst <span class="ot">&lt;-</span> <span class="fu">xgboost</span>(<span class="at">data =</span> dtrain, <span class="at">max_depth =</span> <span class="dv">2</span>, <span class="at">eta =</span> <span class="dv">1</span>, <span class="at">nthread =</span> <span class="dv">2</span>, <span class="at">nrounds =</span> <span class="dv">2</span>, <span class="at">objective =</span> <span class="st">&quot;binary:logistic&quot;</span>, <span class="at">verbose =</span> <span class="dv">0</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># verbose = 1, print evaluation metric</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>bst <span class="ot">&lt;-</span> <span class="fu">xgboost</span>(<span class="at">data =</span> dtrain, <span class="at">max_depth =</span> <span class="dv">2</span>, <span class="at">eta =</span> <span class="dv">1</span>, <span class="at">nthread =</span> <span class="dv">2</span>, <span class="at">nrounds =</span> <span class="dv">2</span>, <span class="at">objective =</span> <span class="st">&quot;binary:logistic&quot;</span>, <span class="at">verbose =</span> <span class="dv">1</span>)</span></code></pre></div>
+<pre><code>## [1]  train-logloss:0.233376 
+## [2]  train-logloss:0.136658</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># verbose = 2, also print information about tree</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>bst <span class="ot">&lt;-</span> <span class="fu">xgboost</span>(<span class="at">data =</span> dtrain, <span class="at">max_depth =</span> <span class="dv">2</span>, <span class="at">eta =</span> <span class="dv">1</span>, <span class="at">nthread =</span> <span class="dv">2</span>, <span class="at">nrounds =</span> <span class="dv">2</span>, <span class="at">objective =</span> <span class="st">&quot;binary:logistic&quot;</span>, <span class="at">verbose =</span> <span class="dv">2</span>)</span></code></pre></div>
+<pre><code>## [1]  train-logloss:0.233376 
+## [2]  train-logloss:0.136658</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="basic-prediction-using-xgboost" class="section level2" number="1.4">
+<h2><span class="header-section-number">1.4</span> Basic prediction
+using XGBoost</h2>
+</div>
+<div id="perform-the-prediction" class="section level2" number="1.5">
+<h2><span class="header-section-number">1.5</span> Perform the
+prediction</h2>
+<p>The purpose of the model we have built is to classify new data. As
+explained before, we will use the <code>test</code> dataset for this
+step.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(bst, test<span class="sc">$</span>data)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co"># size of the prediction vector</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">length</span>(pred))</span></code></pre></div>
+<pre><code>## [1] 1611</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># limit display of predictions to the first 10</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(pred))</span></code></pre></div>
+<pre><code>## [1] 0.28583017 0.92392391 0.28583017 0.28583017 0.05169873 0.92392391</code></pre>
+<p>These numbers doesn’t look like <em>binary classification</em>
+<code>{0,1}</code>. We need to perform a simple transformation before
+being able to use these results.</p>
+</div>
+<div id="transform-the-regression-in-a-binary-classification" class="section level2" number="1.6">
+<h2><span class="header-section-number">1.6</span> Transform the
+regression in a binary classification</h2>
+<p>The only thing that <strong>XGBoost</strong> does is a
+<em>regression</em>. <strong>XGBoost</strong> is using
+<code>label</code> vector to build its <em>regression</em> model.</p>
+<p>How can we use a <em>regression</em> model to perform a binary
+classification?</p>
+<p>If we think about the meaning of a regression applied to our data,
+the numbers we get are probabilities that a datum will be classified as
+<code>1</code>. Therefore, we will set the rule that if this probability
+for a specific datum is <code>&gt; 0.5</code> then the observation is
+classified as <code>1</code> (or <code>0</code> otherwise).</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>prediction <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(pred <span class="sc">&gt;</span> <span class="fl">0.5</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(prediction))</span></code></pre></div>
+<pre><code>## [1] 0 1 0 0 0 1</code></pre>
+</div>
+<div id="measuring-model-performance" class="section level2" number="1.7">
+<h2><span class="header-section-number">1.7</span> Measuring model
+performance</h2>
+<p>To measure the model performance, we will compute a simple metric,
+the <em>average error</em>.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>err <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">as.numeric</span>(pred <span class="sc">&gt;</span> <span class="fl">0.5</span>) <span class="sc">!=</span> test<span class="sc">$</span>label)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;test-error=&quot;</span>, err))</span></code></pre></div>
+<pre><code>## [1] &quot;test-error= 0.0217256362507759&quot;</code></pre>
+<blockquote>
+<p>Note that the algorithm has not seen the <code>test</code> data
+during the model construction.</p>
+</blockquote>
+<p>Steps explanation:</p>
+<ol style="list-style-type: decimal">
+<li><code>as.numeric(pred &gt; 0.5)</code> applies our rule that when
+the probability (&lt;=&gt; regression &lt;=&gt; prediction) is
+<code>&gt; 0.5</code> the observation is classified as <code>1</code>
+and <code>0</code> otherwise ;</li>
+<li><code>probabilityVectorPreviouslyComputed != test$label</code>
+computes the vector of error between true data and computed
+probabilities ;</li>
+<li><code>mean(vectorOfErrors)</code> computes the <em>average
+error</em> itself.</li>
+</ol>
+<p>The most important thing to remember is that <strong>to do a
+classification, you just do a regression to the</strong>
+<code>label</code> <strong>and then apply a threshold</strong>.</p>
+<p><em>Multiclass</em> classification works in a similar way.</p>
+<p>This metric is <strong>0.02</strong> and is pretty low: our yummy
+mushroom model works well!</p>
+</div>
+<div id="advanced-features" class="section level2" number="1.8">
+<h2><span class="header-section-number">1.8</span> Advanced
+features</h2>
+<p>Most of the features below have been implemented to help you to
+improve your model by offering a better understanding of its
+content.</p>
+<div id="dataset-preparation" class="section level3" number="1.8.1">
+<h3><span class="header-section-number">1.8.1</span> Dataset
+preparation</h3>
+<p>For the following advanced features, we need to put data in
+<code>xgb.DMatrix</code> as explained above.</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>dtrain <span class="ot">&lt;-</span> <span class="fu">xgb.DMatrix</span>(<span class="at">data =</span> train<span class="sc">$</span>data, <span class="at">label=</span>train<span class="sc">$</span>label)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>dtest <span class="ot">&lt;-</span> <span class="fu">xgb.DMatrix</span>(<span class="at">data =</span> test<span class="sc">$</span>data, <span class="at">label=</span>test<span class="sc">$</span>label)</span></code></pre></div>
+</div>
+<div id="measure-learning-progress-with-xgb.train" class="section level3" number="1.8.2">
+<h3><span class="header-section-number">1.8.2</span> Measure learning
+progress with xgb.train</h3>
+<p>Both <code>xgboost</code> (simple) and <code>xgb.train</code>
+(advanced) functions train models.</p>
+<p>One of the special feature of <code>xgb.train</code> is the capacity
+to follow the progress of the learning after each round. Because of the
+way boosting works, there is a time when having too many rounds lead to
+an overfitting. You can see this feature as a cousin of cross-validation
+method. The following techniques will help you to avoid overfitting or
+optimizing the learning time in stopping it as soon as possible.</p>
+<p>One way to measure progress in learning of a model is to provide to
+<strong>XGBoost</strong> a second dataset already classified. Therefore
+it can learn on the first dataset and test its model on the second one.
+Some metrics are measured after each round during the learning.</p>
+<blockquote>
+<p>in some way it is similar to what we have done above with the average
+error. The main difference is that below it was after building the
+model, and now it is during the construction that we measure errors.</p>
+</blockquote>
+<p>For the purpose of this example, we use <code>watchlist</code>
+parameter. It is a list of <code>xgb.DMatrix</code>, each of them tagged
+with a name.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>watchlist <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">train=</span>dtrain, <span class="at">test=</span>dtest)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>bst <span class="ot">&lt;-</span> <span class="fu">xgb.train</span>(<span class="at">data=</span>dtrain, <span class="at">max_depth=</span><span class="dv">2</span>, <span class="at">eta=</span><span class="dv">1</span>, <span class="at">nthread =</span> <span class="dv">2</span>, <span class="at">nrounds=</span><span class="dv">2</span>, <span class="at">watchlist=</span>watchlist, <span class="at">objective =</span> <span class="st">&quot;binary:logistic&quot;</span>)</span></code></pre></div>
+<pre><code>## [1]  train-logloss:0.233376  test-logloss:0.226686 
+## [2]  train-logloss:0.136658  test-logloss:0.137874</code></pre>
+<p><strong>XGBoost</strong> has computed at each round the same average
+error metric than seen above (we set <code>nrounds</code> to 2, that is
+why we have two lines). Obviously, the <code>train-error</code> number
+is related to the training dataset (the one the algorithm learns from)
+and the <code>test-error</code> number to the test dataset.</p>
+<p>Both training and test error related metrics are very similar, and in
+some way, it makes sense: what we have learned from the training dataset
+matches the observations from the test dataset.</p>
+<p>If with your own dataset you have not such results, you should think
+about how you divided your dataset in training and test. May be there is
+something to fix. Again, <code>caret</code> package may <a href="http://topepo.github.io/caret/data-splitting.html">help</a>.</p>
+<p>For a better understanding of the learning progression, you may want
+to have some specific metric or even use multiple evaluation
+metrics.</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>bst <span class="ot">&lt;-</span> <span class="fu">xgb.train</span>(<span class="at">data=</span>dtrain, <span class="at">max_depth=</span><span class="dv">2</span>, <span class="at">eta=</span><span class="dv">1</span>, <span class="at">nthread =</span> <span class="dv">2</span>, <span class="at">nrounds=</span><span class="dv">2</span>, <span class="at">watchlist=</span>watchlist, <span class="at">eval_metric =</span> <span class="st">&quot;error&quot;</span>, <span class="at">eval_metric =</span> <span class="st">&quot;logloss&quot;</span>, <span class="at">objective =</span> <span class="st">&quot;binary:logistic&quot;</span>)</span></code></pre></div>
+<pre><code>## [1]  train-error:0.046522    train-logloss:0.233376  test-error:0.042831 test-logloss:0.226686 
+## [2]  train-error:0.022263    train-logloss:0.136658  test-error:0.021726 test-logloss:0.137874</code></pre>
+<blockquote>
+<p><code>eval_metric</code> allows us to monitor two new metrics for
+each round, <code>logloss</code> and <code>error</code>.</p>
+</blockquote>
+</div>
+<div id="linear-boosting" class="section level3" number="1.8.3">
+<h3><span class="header-section-number">1.8.3</span> Linear
+boosting</h3>
+<p>Until now, all the learnings we have performed were based on boosting
+trees. <strong>XGBoost</strong> implements a second algorithm, based on
+linear boosting. The only difference with previous command is
+<code>booster = &quot;gblinear&quot;</code> parameter (and removing
+<code>eta</code> parameter).</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>bst <span class="ot">&lt;-</span> <span class="fu">xgb.train</span>(<span class="at">data=</span>dtrain, <span class="at">booster =</span> <span class="st">&quot;gblinear&quot;</span>, <span class="at">max_depth=</span><span class="dv">2</span>, <span class="at">nthread =</span> <span class="dv">2</span>, <span class="at">nrounds=</span><span class="dv">2</span>, <span class="at">watchlist=</span>watchlist, <span class="at">eval_metric =</span> <span class="st">&quot;error&quot;</span>, <span class="at">eval_metric =</span> <span class="st">&quot;logloss&quot;</span>, <span class="at">objective =</span> <span class="st">&quot;binary:logistic&quot;</span>)</span></code></pre></div>
+<pre><code>## [02:10:38] WARNING: src/learner.cc:767: 
+## Parameters: { &quot;max_depth&quot; } are not used.
+## 
+## [1]  train-error:0.014893    train-logloss:0.191250  test-error:0.016760 test-logloss:0.193889 
+## [2]  train-error:0.004760    train-logloss:0.083530  test-error:0.003724 test-logloss:0.085053</code></pre>
+<p>In this specific case, <em>linear boosting</em> gets slightly better
+performance metrics than decision trees based algorithm.</p>
+<p>In simple cases, it will happen because there is nothing better than
+a linear algorithm to catch a linear link. However, decision trees are
+much better to catch a non linear link between predictors and outcome.
+Because there is no silver bullet, we advise you to check both
+algorithms with your own datasets to have an idea of what to use.</p>
+</div>
+<div id="manipulating-xgb.dmatrix" class="section level3" number="1.8.4">
+<h3><span class="header-section-number">1.8.4</span> Manipulating
+xgb.DMatrix</h3>
+<div id="save-load" class="section level4" number="1.8.4.1">
+<h4><span class="header-section-number">1.8.4.1</span> Save / Load</h4>
+<p>Like saving models, <code>xgb.DMatrix</code> object (which groups
+both dataset and outcome) can also be saved using
+<code>xgb.DMatrix.save</code> function.</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xgb.DMatrix.save</span>(dtrain, <span class="st">&quot;dtrain.buffer&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] TRUE</code></pre>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># to load it in, simply call xgb.DMatrix</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>dtrain2 <span class="ot">&lt;-</span> <span class="fu">xgb.DMatrix</span>(<span class="st">&quot;dtrain.buffer&quot;</span>)</span></code></pre></div>
+<pre><code>## [02:10:38] 6513x126 matrix with 143286 entries loaded from dtrain.buffer</code></pre>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>bst <span class="ot">&lt;-</span> <span class="fu">xgb.train</span>(<span class="at">data=</span>dtrain2, <span class="at">max_depth=</span><span class="dv">2</span>, <span class="at">eta=</span><span class="dv">1</span>, <span class="at">nthread =</span> <span class="dv">2</span>, <span class="at">nrounds=</span><span class="dv">2</span>, <span class="at">watchlist=</span>watchlist, <span class="at">objective =</span> <span class="st">&quot;binary:logistic&quot;</span>)</span></code></pre></div>
+<pre><code>## [1]  train-logloss:0.233376  test-logloss:0.226686 
+## [2]  train-logloss:0.136658  test-logloss:0.137874</code></pre>
+</div>
+<div id="information-extraction" class="section level4" number="1.8.4.2">
+<h4><span class="header-section-number">1.8.4.2</span> Information
+extraction</h4>
+<p>Information can be extracted from <code>xgb.DMatrix</code> using
+<code>getinfo</code> function. Hereafter we will extract
+<code>label</code> data.</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>label <span class="ot">=</span> <span class="fu">getinfo</span>(dtest, <span class="st">&quot;label&quot;</span>)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(bst, dtest)</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>err <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">sum</span>(<span class="fu">as.integer</span>(pred <span class="sc">&gt;</span> <span class="fl">0.5</span>) <span class="sc">!=</span> label))<span class="sc">/</span><span class="fu">length</span>(label)</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;test-error=&quot;</span>, err))</span></code></pre></div>
+<pre><code>## [1] &quot;test-error= 0.0217256362507759&quot;</code></pre>
+</div>
+</div>
+<div id="view-feature-importanceinfluence-from-the-learnt-model" class="section level3" number="1.8.5">
+<h3><span class="header-section-number">1.8.5</span> View feature
+importance/influence from the learnt model</h3>
+<p>Feature importance is similar to R gbm package’s relative influence
+(rel.inf).</p>
+<pre><code>importance_matrix &lt;- xgb.importance(model = bst)
+print(importance_matrix)
+xgb.plot.importance(importance_matrix = importance_matrix)</code></pre>
+<div id="view-the-trees-from-a-model" class="section level4" number="1.8.5.1">
+<h4><span class="header-section-number">1.8.5.1</span> View the trees
+from a model</h4>
+<p>You can dump the tree you learned using <code>xgb.dump</code> into a
+text file.</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xgb.dump</span>(bst, <span class="at">with_stats =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>##  [1] &quot;booster[0]&quot;                                                                   
+##  [2] &quot;0:[f28&lt;-9.53674316e-07] yes=1,no=2,missing=1,gain=4000.53101,cover=1628.25&quot;   
+##  [3] &quot;1:[f55&lt;-9.53674316e-07] yes=3,no=4,missing=3,gain=1158.21204,cover=924.5&quot;     
+##  [4] &quot;3:leaf=1.71217716,cover=812&quot;                                                  
+##  [5] &quot;4:leaf=-1.70044053,cover=112.5&quot;                                               
+##  [6] &quot;2:[f108&lt;-9.53674316e-07] yes=5,no=6,missing=5,gain=198.173828,cover=703.75&quot;   
+##  [7] &quot;5:leaf=-1.94070864,cover=690.5&quot;                                               
+##  [8] &quot;6:leaf=1.85964918,cover=13.25&quot;                                                
+##  [9] &quot;booster[1]&quot;                                                                   
+## [10] &quot;0:[f59&lt;-9.53674316e-07] yes=1,no=2,missing=1,gain=832.544983,cover=788.852051&quot;
+## [11] &quot;1:[f28&lt;-9.53674316e-07] yes=3,no=4,missing=3,gain=569.725098,cover=768.389709&quot;
+## [12] &quot;3:leaf=0.78471756,cover=458.936859&quot;                                           
+## [13] &quot;4:leaf=-0.968530357,cover=309.45282&quot;                                          
+## [14] &quot;2:leaf=-6.23624468,cover=20.462389&quot;</code></pre>
+<p>You can plot the trees from your model using
+`<code>xgb.plot.tree</code></p>
+<pre><code>xgb.plot.tree(model = bst)</code></pre>
+<blockquote>
+<p>if you provide a path to <code>fname</code> parameter you can save
+the trees to your hard drive.</p>
+</blockquote>
+</div>
+<div id="save-and-load-models" class="section level4" number="1.8.5.2">
+<h4><span class="header-section-number">1.8.5.2</span> Save and load
+models</h4>
+<p>Maybe your dataset is big, and it takes time to train a model on it?
+May be you are not a big fan of losing time in redoing the same task
+again and again? In these very rare cases, you will want to save your
+model and load it when required.</p>
+<p>Hopefully for you, <strong>XGBoost</strong> implements such
+functions.</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># save model to binary local file</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">xgb.save</span>(bst, <span class="st">&quot;xgboost.model&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] TRUE</code></pre>
+<blockquote>
+<p><code>xgb.save</code> function should return TRUE if everything goes
+well and crashes otherwise.</p>
+</blockquote>
+<p>An interesting test to see how identical our saved model is to the
+original one would be to compare the two predictions.</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load binary model to R</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>bst2 <span class="ot">&lt;-</span> <span class="fu">xgb.load</span>(<span class="st">&quot;xgboost.model&quot;</span>)</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>pred2 <span class="ot">&lt;-</span> <span class="fu">predict</span>(bst2, test<span class="sc">$</span>data)</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="co"># And now the test</span></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;sum(abs(pred2-pred))=&quot;</span>, <span class="fu">sum</span>(<span class="fu">abs</span>(pred2<span class="sc">-</span>pred))))</span></code></pre></div>
+<pre><code>## [1] &quot;sum(abs(pred2-pred))= 0&quot;</code></pre>
+<blockquote>
+<p>result is <code>0</code>? We are good!</p>
+</blockquote>
+<p>In some very specific cases, like when you want to pilot
+<strong>XGBoost</strong> from <code>caret</code> package, you will want
+to save the model as a <em>R</em> binary vector. See below how to do
+it.</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># save model to R&#39;s raw vector</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>rawVec <span class="ot">&lt;-</span> <span class="fu">xgb.serialize</span>(bst)</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="co"># print class</span></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">class</span>(rawVec))</span></code></pre></div>
+<pre><code>## [1] &quot;raw&quot;</code></pre>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load binary model to R</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>bst3 <span class="ot">&lt;-</span> <span class="fu">xgb.load</span>(rawVec)</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>pred3 <span class="ot">&lt;-</span> <span class="fu">predict</span>(bst3, test<span class="sc">$</span>data)</span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a><span class="co"># pred2 should be identical to pred</span></span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;sum(abs(pred3-pred))=&quot;</span>, <span class="fu">sum</span>(<span class="fu">abs</span>(pred2<span class="sc">-</span>pred))))</span></code></pre></div>
+<pre><code>## [1] &quot;sum(abs(pred3-pred))= 0&quot;</code></pre>
+<blockquote>
+<p>Again <code>0</code>? It seems that <code>XGBoost</code> works pretty
+well!</p>
+</blockquote>
+</div>
+</div>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2 class="unnumbered">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Bache+Lichman:2013" class="csl-entry">
+Bache, K., and M. Lichman. 2013. <span>“<span>UCI</span> Machine
+Learning Repository.”</span> University of California, Irvine, School of
+Information; Computer Sciences. <a href="http://archive.ics.uci.edu/ml/">http://archive.ics.uci.edu/ml/</a>.
+</div>
+<div id="ref-friedman2001greedy" class="csl-entry">
+Friedman, Jerome H. 2001. <span>“Greedy Function Approximation: A
+Gradient Boosting Machine.”</span> <em>Annals of Statistics</em>,
+1189–1232.
+</div>
+<div id="ref-friedman2000additive" class="csl-entry">
+Friedman, Jerome, Trevor Hastie, Robert Tibshirani, et al. 2000.
+<span>“Additive Logistic Regression: A Statistical View of Boosting
+(with Discussion and a Rejoinder by the Authors).”</span> <em>The Annals
+of Statistics</em> 28 (2): 337–407.
+</div>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

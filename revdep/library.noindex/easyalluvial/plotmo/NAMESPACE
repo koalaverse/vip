@@ -1,0 +1,46 @@
+importFrom(plotrix, thigmophobe.labels)
+importFrom(TeachingDemos, spread.labs)
+importFrom(Formula, Formula)
+export(plotmo)
+export(plotres)
+export(plot_gbm)
+export(plot_glmnet)
+# by convention, the prefix "plotmo_" is for
+# standard functions and "plotmo." is for methods
+# (but check.index is a historical name)
+export(check.index)
+export(plotmo.convert.na.nresponse)
+export(plotmo.pairs)
+export(plotmo.pint)
+export(plotmo.predict)
+export(plotmo.prolog)
+export(plotmo.residtype)
+export(plotmo.singles)
+export(plotmo.type)
+export(plotmo.x)
+export(plotmo.y)
+export(plotmo.y.default)
+export(plotmo_cum)
+export(plotmo_fitted)
+export(plotmo_nresponse)
+export(plotmo_predict)
+export(plotmo_prolog)
+export(plotmo_resplevs)
+export(plotmo_response)
+export(plotmo_rinfo)
+export(plotmo_rsq)
+export(plotmo_standardizescale)
+export(plotmo_type)
+export(plotmo_y)
+S3method(plotmo.y, default)
+importFrom("grDevices", "as.graphicsAnnot", "col2rgb", "gray", "xy.coords")
+importFrom("graphics", "abline", "axis", "box", "grid", "image",
+     "legend", "lines", "mtext", "par", "plot", "points",
+     "polygon", "rect", "segments", "strheight", "strwidth",
+     "text", "xinch", "yinch")
+importFrom("stats", "approx", "coef", "cor.test", "density",
+     "deviance", "df.residual", "formula", "getCall", "hatvalues", "loess",
+     "lowess", "median", "model.matrix", "na.omit", "na.pass",
+     "pnorm", "predict", "qqline", "qqnorm", "quantile", "rnorm",
+     "sd", "update", "weighted.mean")
+importFrom("utils", "assignInMyNamespace", "head", "str")

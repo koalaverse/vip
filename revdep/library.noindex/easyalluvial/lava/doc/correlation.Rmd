@@ -1,0 +1,322 @@
+---
+# YAML header created by ox-ravel
+title: Estimating partial correlations with lava
+author: Klaus Kähler Holst
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{Estimating partial correlations with lava}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+<!-- correlation.Rmd is generated from correlation.org. Please edit that file -->
+
+```{r  include=FALSE }
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+mets <- lava:::versioncheck('mets', 1)
+```
+
+\[
+\newcommand{\arctanh}{\operatorname{arctanh}}
+\]
+
+This document illustrates how to estimate partial correlation
+coefficients using `lava`.
+
+Assume that \(Y_{1}\) and \(Y_{2}\) are conditionally normal
+distributed given \(\mathbf{X}\) with the following linear structure
+\[Y_1 = \mathbf{\beta}_1^{t}\mathbf{X} + \epsilon_1\]
+\[Y_2 = \mathbf{\beta}_2^{t}\mathbf{X} + \epsilon_2\]
+with covariates \(\mathbf{X} = (X_1,\ldots,X_k)^{t}\) and measurement errors
+\[\begin{pmatrix}
+    \epsilon_{1} \\
+    \epsilon_{2}
+    \end{pmatrix} \sim \mathcal{N}\left(0, \mathbf{\Sigma} \right), \quad \mathbf{\Sigma}
+    =
+    \begin{pmatrix}
+    \sigma_1^2 & \rho\sigma_{1}\sigma_{2} \\
+    \rho\sigma_{1}\sigma_{2} & \sigma_2^2
+    \end{pmatrix}.\]
+
+```{r   }
+library('lava')
+m0 <- lvm(y1+y2 ~ x, y1 ~~ y2)
+edgelabels(m0, y1 + y2 ~ x) <- c(expression(beta[1]), expression(beta[2]))
+edgelabels(m0, y1 ~ y2) <- expression(rho)
+plot(m0, layoutType="circo")
+```
+
+Here we focus on inference with respect to the correlation parameter \(\rho\).
+
+
+# Simulation
+
+As an example, we will simulate data from this model with a single covariate. First we load the necessary libraries:
+
+```{r  load, results="hide",message=FALSE,warning=FALSE }
+library('lava')
+```
+
+The model can be specified (here using the pipe notation)
+with the following syntax where the correlation parameter here is
+given the label '`r`':
+
+```{r  m0 }
+m0 <- lvm() |>
+  covariance(y1 ~ y2, value='r') |>
+  regression(y1 + y2 ~ x)
+```
+
+To simulate from the model we can now simply use the `sim` method. The
+parameters of the models are set through the argument `p` which must be a
+named numeric vector of parameters of the model. The parameter names
+can be inspected with the `coef` method
+
+```{r  coef }
+coef(m0, labels=TRUE)
+```
+
+The default simulation parameters are zero for all intercepts (`y1`, `y2`)
+and one for all regression coefficients (`y1~x`, `y2~x`) and residual
+variance parameters (`y1~~y1`, `y2~~y2`).
+
+```{r  sim }
+d <- sim(m0, 500, p=c(r=0.9), seed=1)
+head(d)
+```
+
+Under Gaussian and coarsening at random assumptions we can also
+consistently estimate the correlation in the presence of censoring or
+missing data. To illustrate this, we add left and right censored data
+types to the model output using the `transform` method.
+
+```{r  defcens }
+cens1 <- function(threshold,type='right') {
+  function(x) {
+    x <- unlist(x)
+    if (type=='left')
+      return( survival::Surv(pmax(x,threshold), x>=threshold, type='left') )
+      return ( survival::Surv(pmin(x,threshold), x<=threshold) )
+  }
+}
+
+m0 <- 
+  transform(m0, s1 ~ y1, cens1(-2, 'left')) |>
+  transform(s2 ~ y2, cens1(2,  'right'))
+```
+
+```{r  sim2 }
+d <- sim(m0, 500, p=c(r=0.9), seed=1)
+head(d)
+```
+
+
+# Estimation and inference
+
+The Maximum Likelihood Estimate can be obtainted using the `estimate` method:
+
+```{r  est1 }
+m <- lvm() |>
+     regression(y1 + y2 ~ x) |>
+     covariance(y1 ~ y2)
+
+e <- estimate(m, data=d)
+e
+```
+
+The estimate `y1~~y2` gives us the estimated covariance between the
+residual terms in the model. To estimate the correlation we can apply
+the delta method using the `estimate` method again
+
+```{r  delta }
+estimate(e, function(p) p['y1~~y2']/(p['y1~~y1']*p['y2~~y2'])^.5)
+```
+
+Alternatively, the correlations can be extracted using the `correlation` method
+
+```{r  correlation }
+correlation(e)
+```
+
+Note, that in this case the confidence intervals are constructed
+by using a variance stabilizing transformation, Fishers
+\(z\)-transform <sup id="bd9fb723a778b8030b92a040cc4acf52"><a href="#lehmann_romano_2005" title="Lehmann \&amp; Romano, Testing statistical hypotheses, Springer (2005).">lehmann_romano_2005</a></sup>,
+
+\[z = \arctanh(\widehat{\rho}) =
+  \frac{1}{2}\log\left(\frac{1+\widehat{\rho}}{1-\widehat{\rho}}\right)\]
+where \(\widehat{\rho}\) is the MLE.  This estimate has an approximate
+asymptotic normal distribution
+\(\mathcal{N}(\arctanh(\rho),\frac{1}{n-3-k})\). Hence a asymptotic 95%
+confidence interval is given by
+\[\widehat{z} \pm \frac{1.96}{\sqrt{n-3-k}}\]
+and the confidence interval for \(\widehat{\rho}\) can directly be calculated by
+the inverse transformation:
+\[\widehat{\rho} = \tanh(z) = \frac{e^{2z}-1}{e^{2z}+1}.\]
+
+This is equivalent to the direct calculations using the delta method
+(except for the small sample bias correction \(3+k\)) where the
+estimate and confidence interval are transformed back to the original
+scale using the `back.transform` argument.
+
+```{r   }
+estimate(e, function(p) atanh(p['y1~~y2']/(p['y1~~y1']*p['y2~~y2'])^.5), back.transform=tanh)
+```
+
+The transformed confidence interval will generally have improved
+coverage especially near the boundary \(\rho \approx \pm 1\).
+
+While the estimates of this particular model can be obtained in closed
+form, this is generally not the case when for example considering
+parameter constraints, latent variables, or missing and censored
+observations. The MLE is therefore obtained using iterative
+optimization procedures (typically Fisher scoring or Newton-Raphson
+methods). To ensure that the estimated variance parameters leads to a
+meaningful positive definite structure and to avoid potential problems
+with convergence it can often be a good idea to parametrize the model
+in a way that such parameter constraints are naturally fulfilled.
+This can be achieved with the `constrain` method.
+
+```{r  constraints }
+m2 <- m |>
+    parameter(~ l1 + l2 + z) |>
+    variance(~ y1 + y2, value=c('v1','v2')) |>
+    covariance(y1 ~ y2, value='c') |>
+    constrain(v1 ~ l1, fun=exp) |>
+    constrain(v2 ~ l2, fun=exp) |>
+    constrain(c ~ z+l1+l2, fun=function(x) tanh(x[1])*sqrt(exp(x[2])*exp(x[3])))
+```
+
+In the above code,  we first add new parameters `l1` and `l2` to hold the log-variance
+parameters, and `z` which will be the z-transform of the correlation
+parameter.
+Next we label the variances and covariances: The variance of `y1` is called `v1`;
+the variance of `y2` is called `v2`; the covariance of `y1` and `y2` is called `c`.
+Finally, these parameters are tied to the previously defined
+parameters using the `constrain` method such that `v1` := \(\exp(\mathtt{l1})\)
+`v2` := \(\exp(\mathtt{l1})\) and `z` := \(\tanh(\mathtt{z})\sqrt{\mathtt{v1}\mathtt{v2}}\).
+In this way there is no constraints on the actual estimated parameters
+`l1`, `l2`, and `z` which can take any values in \(\R^{3}\), while we at the
+same time are guaranteed a proper covariance matrix which is positive
+definite.
+
+```{r  estconstraints }
+e2 <- estimate(m2, d)
+e2
+```
+
+The correlation coefficient can then be obtained as
+
+```{r  deltaconstraints }
+estimate(e2, 'z', back.transform=tanh)
+```
+
+In practice, a much shorter syntax can be used to obtain the above
+parametrization. We can simply use the argument `constrain`
+when specifying the covariances (the argument `rname` specifies the
+parameter name of the \(\arctanh\) transformed correlation
+coefficient, and `lname`, `lname2` can be used to specify the parameter
+names for the log variance parameters):
+
+```{r  constraints2 }
+m2 <- lvm() |>
+  regression(y1 + y2 ~ x) |>
+  covariance(y1 ~ y2, constrain=TRUE, rname='z')
+
+e2 <- estimate(m2, data=d)
+e2
+```
+
+```{r  e2backtransform }
+estimate(e2, 'z', back.transform=tanh)
+```
+
+As an alternative to the Wald confidence intervals (with or without
+transformation) is to profile the likelihood. The profile likelihood
+confidence intervals can be obtained with the `confint` method:
+
+```{r  profileci, cache=TRUE }
+tanh(confint(e2, 'z', profile=TRUE))
+```
+
+Finally, a non-parametric bootstrap (in practice a larger number of
+replications would be needed) can be calculated in the following way
+
+```{r  bootstrap, cache=TRUE }
+set.seed(1)
+b <- bootstrap(e2, data=d, R=50, mc.cores=1)
+b
+```
+
+```{r  cache=TRUE }
+quantile(tanh(b$coef[,'z']), c(.025,.975))
+```
+
+
+## Censored observations
+
+Letting one of the variables be right-censored (Tobit-type model) we
+can proceed in exactly the same way<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>. The
+only difference is that the variables that are censored must all be
+defined as `Surv` objects (from the `survival` package which is
+automatically loaded when using the `mets` package) in the data frame.
+
+```{r  cache=TRUE, eval=mets }
+m3 <- lvm() |>
+  regression(y1 + s2 ~ x) |>
+  covariance(y1 ~ s2, constrain=TRUE, rname='z')
+
+e3 <- estimate(m3, d)
+```
+
+```{r  eval=mets }
+e3
+```
+
+```{r  cache=TRUE, eval=mets }
+estimate(e3, 'z', back.transform=tanh)
+```
+
+And here the same analysis with `s1` being left-censored and `s2` right-censored:
+
+```{r  cache=TRUE, eval=mets }
+m3b <- lvm() |>
+  regression(s1 + s2 ~ x) |>
+  covariance(s1 ~ s2, constrain=TRUE, rname='z')
+
+e3b <- estimate(m3b, d)
+e3b
+```
+
+```{r  eval=mets }
+e3b
+```
+
+```{r  cache=TRUE, eval=mets }
+estimate(e3b, 'z', back.transform=tanh)
+```
+
+```{r  profilecens, cache=TRUE, eval=mets }
+tanh(confint(e3b, 'z', profile=TRUE))
+```
+
+
+# SessionInfo
+
+```{r   }
+sessionInfo()
+```
+
+
+# Bibliography
+<a id="lehmann_romano_2005"></a>[lehmann_romano_2005] Lehmann & Romano, Testing statistical hypotheses, Springer (2005). [↩](#bd9fb723a778b8030b92a040cc4acf52)
+
+
+# Footnotes
+
+<sup><a id="fn.1" href="#fnr.1">1</a></sup> This functionality is only
+available with the `mets` package installed (available from CRAN)

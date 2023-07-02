@@ -1,0 +1,383 @@
+> # test.allowedfunc.R
+> 
+> source("test.prolog.R")
+> source("check.models.equal.R")
+> library(earth)
+Loading required package: Formula
+Loading required package: plotmo
+Loading required package: plotrix
+Loading required package: TeachingDemos
+> data(trees)
+> 
+> printh <- function(x, expect.warning=FALSE, max.print=0) # like print but with a header
++ {
++     cat("===", deparse(substitute(x)), " ", sep="")
++     if(expect.warning)
++         cat(" expect warning -->")
++     else if (NROW(x) > 1)
++         cat("\n")
++     if (max.print > 0)
++         print(head(x, n=max.print))
++     else
++         print(x)
++ }
+> 
+> example.nopred2  <- function(degree, pred, parents)
++ {
++     pred != 2  # disallow predictor 2, which is "Height"
++ }
+> a.nopred2 <- earth(Volume ~ ., data = trees, allowed = example.nopred2)
+> printh(summary(a.nopred2))
+===summary(a.nopred2) 
+Call: earth(formula=Volume~., data=trees, allowed=example.nopred2)
+
+              coefficients
+(Intercept)      30.656747
+h(14.2-Girth)    -3.569047
+h(Girth-14.2)     6.757306
+
+Selected 3 of 3 terms, and 1 of 2 predictors
+Termination condition: RSq changed by less than 0.001 at 3 terms
+Importance: Girth, Height-unused
+Number of terms at each degree of interaction: 1 2 (additive model)
+GCV 14.3391    RSS 312.6848    GRSq 0.948644    RSq 0.9614259
+> 
+> example.noHeight  <- function(degree, pred, parents, namesx)
++ {
++     namesx[pred] != "Height"  # disallow "Height"
++ }
+> a.noHeight <- earth(Volume ~ ., data = trees, allowed = example.noHeight)
+> newdata.global <- trees[seq(from=nrow(trees), to=1, by=-5),]
+> check.models.equal(a.nopred2, a.noHeight, msg="\"allowed\" function a.nopred2 a.noHeight", newdata=newdata.global)
+"allowed" function a.nopred2 a.noHeight: models identical
+
+> 
+> # we explicitly set minspan and endspan here because they are calculated differently if number of predictors is different
+> aGirthOnly <- earth(Volume ~ Girth, data = trees, trace=4, minspan=1, endspan=1)
+Call: earth(formula=Volume~Girth, data=trees, trace=4, minspan=1, endspan=1)
+
+x[31,1]:
+    Girth
+1     8.3
+2     8.6
+3     8.8
+...  10.5
+31   20.6
+
+y[31,1]:
+    Volume
+1     10.3
+2     10.3
+3     10.2
+...   16.4
+31    77.0
+
+Forward pass: minspan 1 endspan 1   x[31,1] 248 Bytes   bx[31,21] 5.09 kB
+
+         GRSq    RSq     DeltaRSq Pred     PredName         Cut  Terms   Par Deg
+1      0.0000 0.0000                    (Intercept)
+2      0.9503 0.9627       0.9627    1        Girth          16  2   3         1 
+4      0.9446 0.9645      0.00186    1        Girth        13.7  4             1 
+6      0.9349 0.9650      0.00042    1        Girth        17.3  5             1 reject (small DeltaRSq)
+
+RSq changed by less than 0.001 at 5 terms, 4 terms used (DeltaRSq 0.00042)
+After forward pass GRSq 0.935 RSq 0.965
+Forward pass complete: 5 terms, 4 terms used
+
+Subset size        GRSq     RSq  DeltaGRSq nPreds  Terms (col nbr in bx)
+          1      0.0000  0.0000     0.0000      0  1
+          2      0.7615  0.7922     0.7615      1  1 3
+chosen    3      0.9503  0.9627     0.1888      1  1 2 3
+          4      0.9446  0.9645    -0.0057      1  1 2 3 4
+
+Prune backward penalty 2 nprune null: selected 3 of 4 terms, and 1 of 1 preds
+After pruning pass GRSq 0.95 RSq 0.963
+> printh(summary(aGirthOnly))
+===summary(aGirthOnly) 
+Call: earth(formula=Volume~Girth, data=trees, trace=4, minspan=1, endspan=1)
+
+            coefficients
+(Intercept)    39.289008
+h(16-Girth)    -3.993966
+h(Girth-16)     8.260584
+
+Selected 3 of 4 terms, and 1 of 1 predictors
+Termination condition: RSq changed by less than 0.001 at 4 terms
+Importance: Girth
+Number of terms at each degree of interaction: 1 2 (additive model)
+GCV 13.86977    RSS 302.4505    GRSq 0.9503249    RSq 0.9626885
+> a1c <- earth(Volume ~ ., data = trees, allowed = example.noHeight, trace=4, minspan=1, endspan=1)
+Call: earth(formula=Volume~., data=trees, trace=4, allowed=example.noHeight,
+            minspan=1, endspan=1)
+
+x[31,2]:
+    Girth Height
+1     8.3     70
+2     8.6     65
+3     8.8     63
+...  10.5     72
+31   20.6     87
+
+y[31,1]:
+    Volume
+1     10.3
+2     10.3
+3     10.2
+...   16.4
+31    77.0
+
+Forward pass: minspan 1 endspan 1   x[31,2] 496 Bytes   bx[31,21] 5.09 kB
+
+         GRSq    RSq     DeltaRSq Pred     PredName         Cut  Terms   Par Deg
+1      0.0000 0.0000                    (Intercept)
+2      0.9503 0.9627       0.9627    1        Girth          16  2   3         1 
+4      0.9446 0.9645      0.00186    1        Girth        13.7  4             1 
+6      0.9349 0.9650      0.00042    1        Girth        17.3  5             1 reject (small DeltaRSq)
+
+RSq changed by less than 0.001 at 5 terms, 4 terms used (DeltaRSq 0.00042)
+After forward pass GRSq 0.935 RSq 0.965
+Forward pass complete: 5 terms, 4 terms used
+
+Subset size        GRSq     RSq  DeltaGRSq nPreds  Terms (col nbr in bx)
+          1      0.0000  0.0000     0.0000      0  1
+          2      0.7615  0.7922     0.7615      1  1 3
+chosen    3      0.9503  0.9627     0.1888      1  1 2 3
+          4      0.9446  0.9645    -0.0057      1  1 2 3 4
+
+Prune backward penalty 2 nprune null: selected 3 of 4 terms, and 1 of 2 preds
+After pruning pass GRSq 0.95 RSq 0.963
+> # can't use check.models.equal because e.g. dirs for a1c has two columns but aGirthOnly has only one column
+> stopifnot(identical(predict(aGirthOnly), predict(a1c)))
+> 
+> iheight <- 0
+> example.noHeight.first  <- function(degree, pred, parents, namesx, first)
++ {
++     if (first) {
++         iheight <<- which(namesx == "Height") # note use of <<- not <-
++         if (length(iheight) != 1)
++             stop("could not find Height in ", paste(namesx, collapse=" "))
++     }
++     pred != iheight
++ }
+> a.noHeight.first <- earth(Volume ~ ., data = trees, allowed = example.noHeight.first)
+> check.models.equal(a.nopred2, a.noHeight, msg="\"allowed\" function a.nopred2 a.noHeight.first", newdata=newdata.global)
+"allowed" function a.nopred2 a.noHeight.first: models identical
+
+> 
+> example.noHumidityInDegree2 <- function(degree, pred, parents)
++ {
++     # disallow humidity in terms of degree > 1
++     # 3 is the "humidity" column in the input matrix
++     if (degree > 1 && (pred == 3 || parents[3]))
++         return(FALSE)
++     TRUE
++ }
+> a.noHumidityInDegree2 <- earth(O3 ~ ., data = ozone1, degree = 2, allowed = example.noHumidityInDegree2)
+> printh(summary(a.noHumidityInDegree2))
+===summary(a.noHumidityInDegree2) 
+Call: earth(formula=O3~., data=ozone1, degree=2,
+            allowed=example.noHumidityInDegree2)
+
+                         coefficients
+(Intercept)                14.8457466
+h(5860-vh)                 -0.0157499
+h(vh-5860)                  0.2637241
+h(temp-58)                  0.5296758
+h(ibh-1105)                -0.0004860
+h(10-dpg)                  -0.0560986
+h(dpg-10)                  -0.0761112
+h(150-vis)                  0.0504424
+h(96-doy)                  -0.1184470
+h(doy-158)                 -0.0302548
+h(vh-5860) * h(dpg- -15)   -0.0038034
+h(vh-5860) * h(-15-dpg)    -0.0093059
+h(temp-58) * h(dpg-52)     -0.0160364
+h(temp-58) * h(52-dpg)     -0.0047659
+h(72-temp) * h(150-vis)    -0.0012431
+h(temp-72) * h(150-vis)    -0.0042689
+
+Selected 16 of 20 terms, and 6 of 9 predictors
+Termination condition: Reached nk 21
+Importance: temp, doy, dpg, vis, vh, ibh, wind-unused, humidity-unused, ...
+Number of terms at each degree of interaction: 1 9 6
+GCV 15.17392    RSS 3907.158    GRSq 0.764291    RSq 0.8149617
+> example.Degree2OnlyHumidityAndTemp <- function(degree, pred, parents)
++ {
++     # allow only humidity and temp in terms of degree > 1
++     # 3 and 4 are the "humidity" and "temp" columns
++     allowed.set = c(3,4)
++     if (degree > 1 && (all(allowed.set != pred) || any(parents[-allowed.set])))
++         return(FALSE)
++     TRUE
++ }
+> a.Degree2OnlyHumidityAndTemp <- earth(O3 ~ ., data = ozone1, degree = 2, allowed = example.Degree2OnlyHumidityAndTemp)
+> printh(summary(a.Degree2OnlyHumidityAndTemp))
+===summary(a.Degree2OnlyHumidityAndTemp) 
+Call: earth(formula=O3~., data=ozone1, degree=2,
+            allowed=example.Degree2OnlyHumidityAndTemp)
+
+                            coefficients
+(Intercept)                   13.4717045
+h(5850-vh)                    -0.0142141
+h(wind-6)                     -0.5690100
+h(temp-58)                     0.2832302
+h(1105-ibh)                   -0.0029012
+h(10-dpg)                     -0.0691576
+h(dpg-10)                     -0.0903813
+h(ibt-115)                     0.0446509
+h(200-vis)                     0.0181357
+h(96-doy)                     -0.1237491
+h(doy-150)                    -0.0313603
+h(55-humidity) * h(temp-58)   -0.0173091
+
+Selected 12 of 20 terms, and 9 of 9 predictors
+Termination condition: Reached nk 21
+Importance: temp, dpg, vis, doy, humidity, ibh, vh, ibt, wind
+Number of terms at each degree of interaction: 1 10 1
+GCV 13.8999    RSS 3828.887    GRSq 0.7840813    RSq 0.8186686
+> 
+> ihumidity.global <- NA
+> itemp.global <- NA
+> example.Degree2OnlyHumidityAndTemp.First  <- function(degree, pred, parents, namesx, first)
++ {
++     if (first) {
++         ihumidity.global <<- which(namesx == "humidity") # note use of <<- not <-
++         if (length(ihumidity.global) != 1)
++             stop("could not find humidity in ", paste(namesx, collapse=" "))
++         itemp.global <<- which(namesx == "temp") # note use of <<- not <-
++         if (length(itemp.global) != 1)
++             stop("could not find temp in ", paste(namesx, collapse=" "))
++     }
++     # allow only humidity and temp in terms of degree > 1
++     allowed.set = c(ihumidity.global, itemp.global)
++     if (degree > 1 &&
++            (all(allowed.set != pred) || any(parents[-allowed.set])))
++         return(FALSE)
++     TRUE
++ }
+> a.Degree2OnlyHumidityAndTemp.First <- earth(O3 ~ ., data = ozone1, degree = 2, allowed = example.Degree2OnlyHumidityAndTemp)
+> check.models.equal(a.Degree2OnlyHumidityAndTemp, a.Degree2OnlyHumidityAndTemp.First, msg="\"allowed\" function a.Degree2OnlyHumidityAndTemp a.Degree2OnlyHumidityAndTemp.First", newdata=newdata.global)
+"allowed" function a.Degree2OnlyHumidityAndTemp a.Degree2OnlyHumidityAndTemp.First: models identical
+
+> 
+> #--- no predictor in PREDICTORS is allowed to interact with any predictor in PARENTS
+> #--- but all other interactions are allowed
+> 
+> PREDICTORS <- c("age")
+> PARENTS <- c("survived", "parch")
+> 
+> example4 <- function(degree, pred, parents, namesx)
++ {
++     if (degree > 1) {
++         predictor <- namesx[pred]
++         parents   <- namesx[parents != 0]
++         if((any(predictor %in% PREDICTORS) && any(parents %in% PARENTS)) ||
++            (any(predictor %in% PARENTS)    && any(parents %in% PREDICTORS))) {
++             return(FALSE)
++         }
++     }
++     TRUE
++ }
+> a4.allowed <- earth(sex~., data=etitanic, degree=2, allowed=example4)
+> printh(summary(a4.allowed))
+===summary(a4.allowed) 
+Call: earth(formula=sex~., data=etitanic, degree=2, allowed=example4)
+
+                        coefficients
+(Intercept)               0.74841883
+pclass3rd                -0.44966704
+survived                 -0.62673470
+h(15-age)                 0.03878154
+pclass2nd * survived     -0.16200218
+pclass3rd * survived      0.31810348
+pclass3rd * h(20-age)    -0.02792432
+pclass3rd * h(4-parch)    0.08607338
+h(3-sibsp) * h(4-parch)   0.01835222
+h(sibsp-3) * h(4-parch)   0.08911862
+
+Selected 10 of 16 terms, and 6 of 6 predictors
+Termination condition: Reached nk 21
+Importance: survived, parch, sibsp, pclass3rd, age, pclass2nd
+Number of terms at each degree of interaction: 1 3 6
+GCV 0.1525303    RSS 152.4583    GRSq 0.3475741    RSq 0.3753665
+> plotmo(a4.allowed, caption="a4.allowed")
+ plotmo grid:    pclass survived age sibsp parch
+                    3rd        0  28     0     0
+> 
+> #--- predictors in PREDICTORS are allowed to interact with predictors in PARENTS
+> #--- but no other interactions are allowed
+> 
+> PREDICTORS <- c("age")
+> PARENTS    <- c("survived", "parch")
+> 
+> example5 <- function(degree, pred, parents, namesx)
++ {
++     if (degree <= 1)
++         return(TRUE)
++     predictor <- namesx[pred]
++     parents   <- namesx[parents != 0]
++     if((any(predictor %in% PREDICTORS) && any(parents %in% PARENTS)) ||
++        (any(predictor %in% PARENTS)    && any(parents %in% PREDICTORS))) {
++         return(TRUE)
++     }
++     FALSE
++ }
+> a5.allowed <- earth(sex~., data=etitanic, degree=2, allowed=example5)
+> printh(summary(a5.allowed))
+===summary(a5.allowed) 
+Call: earth(formula=sex~., data=etitanic, degree=2, allowed=example5)
+
+                       coefficients
+(Intercept)              0.34721404
+h(2-sibsp)               0.06347988
+h(sibsp-2)               0.10099095
+h(4-parch)               0.11453239
+survived * h(age-15)     0.15093805
+survived * h(age-11.5)  -0.15199742
+h(25-age) * h(4-parch)  -0.00419678
+
+Selected 7 of 17 terms, and 4 of 6 predictors
+Termination condition: Reached nk 21
+Importance: survived, parch, age, sibsp, pclass2nd-unused, ...
+Number of terms at each degree of interaction: 1 3 3
+GCV 0.1561245    RSS 158.3485    GRSq 0.3322006    RSq 0.3512343
+> plotmo(a5.allowed, caption="a5.allowed")
+ plotmo grid:    pclass survived age sibsp parch
+                    3rd        0  28     0     0
+> 
+> # "allowed" function checks, these check error handling by forcing an error
+> 
+> expect.err(try(earth(Volume ~ ., data = trees, allowed = 99)), "argument is not a function")
+Error : your 'allowed' argument is not a function
+Got expected error from try(earth(Volume ~ ., data = trees, allowed = 99))
+> 
+> example7  <- function(degree, pred) pred!=2
+> expect.err(try(earth(Volume ~ ., data = trees, allowed = example7)), "function does not have the correct number of arguments")
+Error : your 'allowed' function does not have the correct number of arguments
+  The 'allowed' function needs the following arguments (but namesx and first are optional):
+      degree pred parents namesx first
+Got expected error from try(earth(Volume ~ ., data = trees, allowed = example7))
+> 
+> expect.err(try(earth(Volume ~ ., data = trees, allowed = earth)), "your 'allowed' function does not have the correct number of arguments")
+Error : your 'allowed' function does not have the correct number of arguments
+  The 'allowed' function needs the following arguments (but namesx and first are optional):
+      degree pred parents namesx first
+Got expected error from try(earth(Volume ~ ., data = trees, allowed = earth))
+> 
+> example8  <- function(degree, pred, parents99) pred!=2
+> expect.err(try(earth(Volume ~ ., data = trees, allowed = example8)), "function needs the following arguments")
+Error :   The 'allowed' function needs the following arguments (but namesx and first are optional):
+      degree pred parents namesx first
+  You have:
+      degree pred parents99
+Got expected error from try(earth(Volume ~ ., data = trees, allowed = example8))
+> 
+> example9  <- function(degree, pred, parents, namesx99) pred!=2
+> expect.err(try(earth(Volume ~ ., data = trees, allowed = example9)), "function needs the following arguments")
+Error :   The 'allowed' function needs the following arguments (but namesx and first are optional):
+      degree pred parents namesx first
+  You have:
+      degree pred parents namesx99
+Got expected error from try(earth(Volume ~ ., data = trees, allowed = example9))
+> 
+> source("test.epilog.R")

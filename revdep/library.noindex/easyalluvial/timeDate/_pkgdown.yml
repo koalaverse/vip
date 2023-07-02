@@ -1,0 +1,228 @@
+url: https://geobosh.github.io/timeDateDoc/
+
+deploy:
+  install_metadata: true
+
+template:
+  bootstrap: 5
+  
+search:
+  exclude: ['news/index.html']
+
+reference:
+  - title: "Overview of package timeDate"
+    contents:
+      - "timeDate-package"
+  - title: "timeDate objects"
+    contents:
+      - "timeDate-class"
+      - timeDate 
+      - timeSequence
+      - timeCalendar
+      - as.timeDate
+      - timeDateMathOps
+      - difftimeDate
+      - Sys.timeDate
+      - sample
+      - isRegular
+      - blockStart
+  - title: "Time/date utilities"
+    contents:
+      - midnightStandard
+      - whichFormat
+  - title: "Statistical functions"
+    contents:
+      - skewness
+      - kurtosis
+  - title: "Financial centers"
+    contents:
+      - finCenter
+      - listFinCenter
+      - rulesFinCenter
+  - title: "Unclasssified"
+    contents:
+      - .endpoints
+  - title: "Base-R related"
+    contents:
+      - c
+      - diff
+      - length
+      - rep
+      - rev
+      - round
+      - sort
+      - start
+      - subset
+      - unique
+      - align
+      - window
+      - "plot-methods"
+      - "names-methods"
+      - "show-methods"
+      - "format-methods"
+      - summary-methods
+      - "is.na-methods"
+  - title: "Calendar related"
+    contents:
+      - julian
+      - dayOfWeek
+      - dayOfYear
+      - timeFirstDayInMonth
+      - timeLastDayInMonth
+      - timeFirstDayInQuarter
+      - timeLastDayInQuarter 
+      - isBizday
+      - isHoliday
+      - isWeekday
+      - isWeekend
+      - timeNthNdayInMonth
+      - timeLastNdayInMonth
+      - timeNdayOnOrAfter
+      - timeNdayOnOrBefore 
+      - periods
+      - periodicallyRolling
+      - monthlyRolling
+  - title:  Rmetrics Options
+    desc: >
+       Values available from getRmetricsOptions().
+       Some of them can be set with setRmetricsOptions()
+    contents:
+      - RmetricsOptions
+      - currentYear
+      - myUnits
+      - myFinCenter
+  - title: "Holiday lists"
+    contents:
+      - holiday       
+      - listHolidays
+      - holidayLONDON
+      - holidayNERC
+      - holidayNYSE
+      - holidayTSX
+      - holidayZURICH
+  - title: "Other holiday related"
+    contents:
+      - Easter   
+  - title: "Public and Ecclesiastical Holidays"
+    contents:
+      - Septuagesima
+      - Quinquagesima
+      - AshWednesday
+      - PalmSunday
+      - GoodFriday
+      - EasterSunday
+      - EasterMonday
+      - RogationSunday
+      - Ascension
+      - Pentecost
+      - PentecostMonday
+      - TrinitySunday
+      - CorpusChristi
+      - ChristTheKing
+      - Advent1st
+      - Advent2nd
+      - Advent3rd
+      - Advent4th
+      - ChristmasEve
+      - ChristmasDay
+      - BoxingDay
+      - NewYearsDay
+      - SolemnityOfMary
+      - Epiphany
+      - PresentationOfLord
+      - Annunciation
+      - TransfigurationOfLord
+      - AssumptionOfMary
+      - BirthOfVirginMary
+      - CelebrationOfHolyCross
+      - MassOfArchangels
+      - AllSaints
+      - AllSouls
+      - LaborDay
+      - CHBerchtoldsDay
+      - CHSechselaeuten
+      - CHAscension
+      - CHConfederationDay
+      - CHKnabenschiessen
+      - GBEarlyMayBankHoliday
+      - GBSpringBankHoliday
+      - GBSummerBankHoliday
+      - GBMilleniumDay
+      - DEAscension
+      - DECorpusChristi
+      - DEGermanUnity
+      - DEChristmasEve
+      - DENewYearsEve
+      - FRFetDeLaVictoire1945
+      - FRAscension
+      - FRBastilleDay
+      - FRAssumptionVirginMary
+      - FRAllSaints
+      - FRArmisticeDay
+      - ITEpiphany
+      - ITLiberationDay
+      - ITAssumptionOfVirginMary
+      - ITAllSaints
+      - ITStAmrose
+      - ITImmaculateConception
+      - USDecorationMemorialDay
+      - USPresidentsDay
+      - USNewYearsDay
+      - USInaugurationDay
+      - USMLKingsBirthday
+      - USLincolnsBirthday
+      - USWashingtonsBirthday
+      - USMemorialDay
+      - USIndependenceDay
+      - USLaborDay
+      - USColumbusDay
+      - USElectionDay
+      - USVeteransDay
+      - USThanksgivingDay
+      - USChristmasDay
+      - USCPulaskisBirthday
+      - USGoodFriday
+      - USJuneteenthNationalIndependenceDay
+      - CAVictoriaDay
+      - CAFamilyDay
+      - CACanadaDay
+      - CACivicProvincialHoliday
+      - CALabourDay
+      - CAThanksgivingDay
+      - CaRemembranceDay
+      - JPVernalEquinox
+      - JPNewYearsDay
+      - JPGantan
+      - JPBankHolidayJan2
+      - JPBankHolidayJan3
+      - JPComingOfAgeDay
+      - JPSeijinNoHi
+      - JPNatFoundationDay
+      - JPKenkokuKinenNoHi
+      - JPGreeneryDay
+      - JPMidoriNoHi
+      - JPConstitutionDay
+      - JPKenpouKinenBi
+      - JPNationHoliday
+      - JPKokuminNoKyujitu
+      - JPChildrensDay
+      - JPKodomoNoHi
+      - JPMarineDay
+      - JPUmiNoHi
+      - JPRespectForTheAgedDay
+      - JPKeirouNOhi
+      - JPAutumnalEquinox
+      - JPShuubunNoHi
+      - JPHealthandSportsDay
+      - JPTaiikuNoHi
+      - JPNationalCultureDay
+      - JPBunkaNoHi
+      - JPThanksgivingDay
+      - JPKinrouKanshaNoHi
+      - JPEmperorsBirthday
+      - JPTennouTanjyouBi
+      - JPBankHolidayDec31
+  - title: "Daylight Saving Time"
+    contents:
+      - DaylightSavingTime
+    

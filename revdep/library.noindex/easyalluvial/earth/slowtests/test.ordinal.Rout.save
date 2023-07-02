@@ -1,0 +1,350 @@
+> # test.ordinal.R: ordinal models by way of package "ordinal" and earth's bx matrix
+> 
+> source("test.prolog.R")
+> source("check.models.equal.R")
+> options(warn=1) # print warnings as they occur
+> library(earth)
+Loading required package: Formula
+Loading required package: plotmo
+Loading required package: plotrix
+Loading required package: TeachingDemos
+> 
+> # toy data, where response is non-monotonic with input
+> 
+> input <- 1:20
+> 
+> resp <- ifelse(input < 8, "low", ifelse(input > 16, "med", "high"))
+> resp[8] <- resp[15] <- "med" # add some noise to make it more interesting
+> resp <- ordered(resp, levels=c("low", "med", "high"))
+> cat("\nsummary(resp)\n")
+
+summary(resp)
+> print(summary(resp))
+ low  med high 
+   7    6    7 
+> 
+> dat <- data.frame(input=input, resp=resp)
+> 
+> library(ordinal)
+> clm.mod <- clm(resp ~ input, data=dat)
+> cat("\nsummary(clm.mod)\n")
+
+summary(clm.mod)
+> print(summary(clm.mod))
+formula: resp ~ input
+data:    dat
+
+ link  threshold nobs logLik AIC   niter max.grad cond.H 
+ logit flexible  20   -18.33 42.66 4(0)  8.39e-08 1.8e+03
+
+Coefficients:
+      Estimate Std. Error z value Pr(>|z|)  
+input  0.20637    0.08507   2.426   0.0153 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Threshold coefficients:
+         Estimate Std. Error z value
+low|med    1.5160     0.9898   1.532
+med|high   3.1978     1.1894   2.688
+> 
+> earth.mod <- earth(resp ~ input, data=dat)
+> cat("\nsummary(earth.mod)\n")
+
+summary(earth.mod)
+> print(summary(earth.mod))
+Call: earth(formula=resp~input, data=dat)
+
+                    low          med       high
+(Intercept) -0.06040609  0.071573604  0.9888325
+h(12-input)  0.11855099 -0.001430549 -0.1171204
+h(input-12)  0.01065990  0.129526227 -0.1401861
+
+Selected 3 of 4 terms, and 1 of 1 predictors
+Termination condition: RSq changed by less than 0.001 at 4 terms
+Importance: input
+Number of terms at each degree of interaction: 1 2 (additive model)
+
+            GCV       RSS      GRSq       RSq
+low  0.06968774 0.7839871 0.7235464 0.8276952
+med  0.16177956 1.8200200 0.3047331 0.5666619
+high 0.15663983 1.7621981 0.3786046 0.6127037
+All  0.38810713 4.3662052 0.4732832 0.6717139
+> 
+> bx <- earth.mod$bx
+> bx <- bx[,-1,drop=FALSE] # drop intercept column
+> bx <- as.data.frame(bx)
+> bx$resp <- dat$resp # add resp (needed for formula interface below)
+> 
+> clm.earth <- clm(resp ~ ., data=bx)
+> cat("\nsummary(clm.earth)\n")
+
+summary(clm.earth)
+> print(summary(clm.earth))
+formula: resp ~ `h(input-12)` + `h(12-input)`
+data:    bx
+
+ link  threshold nobs logLik AIC   niter max.grad cond.H 
+ logit flexible  20   -6.11  20.21 7(0)  7.06e-08 1.2e+03
+
+Coefficients:
+              Estimate Std. Error z value Pr(>|z|)  
+`h(input-12)`  -1.4290     0.6555  -2.180   0.0293 *
+`h(12-input)`  -2.4560     1.0300  -2.384   0.0171 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Threshold coefficients:
+         Estimate Std. Error z value
+low|med   -12.188      5.047  -2.415
+med|high   -6.311      2.945  -2.143
+> 
+> earth.bx.mod <- earth(resp ~ input, data=bx)
+> cat("\nsummary(earth.bx.mod)\n")
+
+summary(earth.bx.mod)
+> print(summary(earth.bx.mod))
+Call: earth(formula=resp~input, data=bx)
+
+                    low          med       high
+(Intercept) -0.06040609  0.071573604  0.9888325
+h(12-input)  0.11855099 -0.001430549 -0.1171204
+h(input-12)  0.01065990  0.129526227 -0.1401861
+
+Selected 3 of 4 terms, and 1 of 1 predictors
+Termination condition: RSq changed by less than 0.001 at 4 terms
+Importance: input
+Number of terms at each degree of interaction: 1 2 (additive model)
+
+            GCV       RSS      GRSq       RSq
+low  0.06968774 0.7839871 0.7235464 0.8276952
+med  0.16177956 1.8200200 0.3047331 0.5666619
+high 0.15663983 1.7621981 0.3786046 0.6127037
+All  0.38810713 4.3662052 0.4732832 0.6717139
+> 
+> cat("\n=== models after converting ordered response to numeric ===\n")
+
+=== models after converting ordered response to numeric ===
+> # i.e. artificially impose equal distance between each level in the response
+> 
+> dat.numeric.resp <- data.frame(input=input, resp=as.numeric(resp))
+> 
+> earth.numeric.resp <- earth(resp ~ input, data=dat.numeric.resp)
+> cat("\nsummary(earth.numeric.resp)\n")
+
+summary(earth.numeric.resp)
+> print(summary(earth.numeric.resp))
+Call: earth(formula=resp~input, data=dat.numeric.resp)
+
+            coefficients
+(Intercept)    3.0492386
+h(12-input)   -0.2356714
+h(input-12)   -0.1508460
+
+Selected 3 of 4 terms, and 1 of 1 predictors
+Termination condition: RSq changed by less than 0.001 at 4 terms
+Importance: input
+Number of terms at each degree of interaction: 1 2 (additive model)
+GCV 0.2908756    RSS 3.27235    GRSq 0.6249783    RSq 0.7662607
+> 
+> bx.numeric.resp <- earth.numeric.resp$bx
+> bx.numeric.resp <- bx.numeric.resp[,-1,drop=FALSE] # drop intercept column
+> bx.numeric.resp <- as.data.frame(bx.numeric.resp)
+> bx.numeric.resp$resp <- resp # add resp (needed for formula interface below)
+>                              # note that for clm() we use the ORIGINAL resp (ordered factor, not numeric)
+> 
+> clm.earth.numeric.resp <- clm(resp ~ ., data=bx.numeric.resp)
+> cat("\nsummary(clm.earth.numeric.resp)\n")
+
+summary(clm.earth.numeric.resp)
+> print(summary(clm.earth.numeric.resp))
+formula: resp ~ `h(input-12)` + `h(12-input)`
+data:    bx.numeric.resp
+
+ link  threshold nobs logLik AIC   niter max.grad cond.H 
+ logit flexible  20   -6.11  20.21 7(0)  7.06e-08 1.2e+03
+
+Coefficients:
+              Estimate Std. Error z value Pr(>|z|)  
+`h(input-12)`  -1.4290     0.6555  -2.180   0.0293 *
+`h(12-input)`  -2.4560     1.0300  -2.384   0.0171 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Threshold coefficients:
+         Estimate Std. Error z value
+low|med   -12.188      5.047  -2.415
+med|high   -6.311      2.945  -2.143
+> 
+> bx.numeric.resp$resp <- as.numeric(resp)
+>                             # add resp (needed for formula interface below)
+>                             # note that for earth() we use as.mumeric(resp)
+>                             # (else we generate a multiple resp model, which we don't want here)
+> 
+> earth.bx.numeric.resp.mod <- earth(resp ~ input, data=bx.numeric.resp)
+> cat("\nsummary(earth.bx.numeric.resp.mod)\n")
+
+summary(earth.bx.numeric.resp.mod)
+> print(summary(earth.bx.numeric.resp.mod))
+Call: earth(formula=resp~input, data=bx.numeric.resp)
+
+            coefficients
+(Intercept)    3.0492386
+h(12-input)   -0.2356714
+h(input-12)   -0.1508460
+
+Selected 3 of 4 terms, and 1 of 1 predictors
+Termination condition: RSq changed by less than 0.001 at 4 terms
+Importance: input
+Number of terms at each degree of interaction: 1 2 (additive model)
+GCV 0.2908756    RSS 3.27235    GRSq 0.6249783    RSq 0.7662607
+> 
+> cat("\n== use plots to compare predicted to measured response ==\n")
+
+== use plots to compare predicted to measured response ==
+> 
+> # color points using measured response values (the "true" response)
+> col <- ifelse(resp == "low", "red", ifelse(resp == "med", "pink", "green"))
+> 
+> par(mfrow = c(3,3), mar = c(4, 3, 3, 1), mgp = c(1.5, 0.5, 0))
+> 
+> cat("\nplot measured response\n")
+
+plot measured response
+> 
+> plot(input, resp, main="measured response",
++      yaxp=c(1,3,2), pch=20, col=col, ylab="measured response")
+> 
+> legend("topleft", legend=c("low", "med", "high"),
++        col=c("red", "pink", "green"), pch=20, cex=.8)
+> 
+> cat("\nplot response predicted by clm model\n")
+
+plot response predicted by clm model
+> 
+> predict.clm <- predict(clm.mod, type="class")$fit
+> 
+> plot(input, predict.clm, main="clm.mod",
++      yaxp=c(1,3,2), pch=20, col=col, ylab="predicted response")
+> 
+> points(input, predict.clm, # black rings around wrong predictions
++        col=ifelse(predict.clm == as.character(resp), 0, "black"))
+> 
+> plot.legend <- function()
++ {
++     legend("topleft", legend=c("low", "med", "high", "wrong"),
++            col=c("red", "pink", "green", "black"), pch=c(20,20,20,1), cex=.8)
++ }
+> plot.legend()
+> 
+> empty.plot()
+> 
+> cat("\nplot response predicted by earth.bx model\n")
+
+plot response predicted by earth.bx model
+> 
+> predict.earth.bx.mod <- predict(earth.bx.mod, type="class")
+> predict.earth.bx.mod <- ifelse(predict.earth.bx.mod == "low", 1,
++                         ifelse(predict.earth.bx.mod == "med", 2,
++                                                               3))
+> 
+> plot(input, predict.earth.bx.mod, main="earth.bx.mod",
++      yaxp=c(1,3,2), pch=20, col=col, ylab="predicted response")
+> 
+> points(input, predict.earth.bx.mod, # black rings around wrong predictions
++        col=ifelse(predict.earth.bx.mod == as.numeric(resp), 0, "black"), cex=1)
+> 
+> plot.legend()
+> 
+> cat("\nplot response predicted by clm/earth model\n")
+
+plot response predicted by clm/earth model
+> 
+> predict.clm.earth <- predict(clm.earth, type="class")$fit
+> 
+> plot(input, predict.clm.earth, main="clm.earth",
++      yaxp=c(1,3,2), pch=20, col=col, ylab="predicted response")
+> 
+> points(input, predict.clm.earth, # black rings around wrong predictions
++        col=ifelse(predict.clm.earth == as.character(resp), 0, "black"), cex=1)
+> 
+> plot.legend()
+> 
+> empty.plot()
+> 
+> cat("\nplot response predicted by earth.bx model with as.numeric(resp)\n")
+
+plot response predicted by earth.bx model with as.numeric(resp)
+> 
+> predict.earth.bx.numeric.resp.mod <- predict(earth.bx.numeric.resp.mod)
+> predict.earth.bx.numeric.resp.mod <- ifelse(predict(earth.bx.numeric.resp.mod) < 1.5, 1,
++                          ifelse(predict(earth.bx.numeric.resp.mod) < 2.5, 2,
++                                                               3))
+> 
+> plot(input, predict.earth.bx.numeric.resp.mod, main="earth.bx.numeric.resp.mod",
++      yaxp=c(1,3,2), pch=20, col=col, ylab="predicted response")
+> 
+> points(input, predict.earth.bx.numeric.resp.mod, # black rings around wrong predictions
++        col=ifelse(predict.earth.bx.numeric.resp.mod == as.numeric(resp), 0, "black"), cex=1)
+> 
+> plot.legend()
+> 
+> cat("\nplot response predicted by clm/earth model with as.numeric(resp)\n")
+
+plot response predicted by clm/earth model with as.numeric(resp)
+> 
+> predict.clm.earth.numeric.resp <- predict(clm.earth.numeric.resp, type="class")$fit
+> 
+> plot(input, predict.clm.earth.numeric.resp, main="clm.earth.numeric.resp",
++      yaxp=c(1,3,2), pch=20, col=col, ylab="predicted response")
+> 
+> points(input, predict.clm.earth.numeric.resp, # black rings around wrong predictions
++        col=ifelse(predict.clm.earth.numeric.resp == as.character(resp), 0, "black"), cex=1)
+> 
+> plot.legend()
+> 
+> empty.plot()
+> 
+> par(org.par)
+> 
+> cat("\n=== plotmo plots ===\n")
+
+=== plotmo plots ===
+> 
+> par(mfrow = c(3,3), mar = c(4, 3, 3, 1), mgp = c(1.5, 0.5, 0))
+> 
+> # in the plotmo plots below we use nresp=1 to select the first response level ("low"),
+> # and  predict probabilites by setting type="prob" for predict.clm
+> plotmo(clm.mod, type="prob", do.par=0, nresp=1, main="clm.mod: is.low")
+> plotmo(clm.mod, type="prob", do.par=0, nresp=2, main="clm.mod: is.med")
+> plotmo(clm.mod, type="prob", do.par=0, nresp=3, main="clm.mod: is.high")
+> 
+> plotmo(earth.mod, do.par=0, nresp=1, main="earth.mod: is.low")
+> plotmo(earth.mod, do.par=0, nresp=2, main="earth.mod: is.med")
+> plotmo(earth.mod, do.par=0, nresp=3, main="earth.mod: is.high")
+> 
+> # plotmo(clm.earth, do.par=0, nresp=1, all2=TRUE) # main="clm.earth: is.low")
+> # plotmo(clm.earth, do.par=0, nresp=2, all2=TRUE) # main="clm.earth: is.med")
+> plotmo(clm.earth, do.par=0, nresp=3, all2=TRUE) # main="clm.earth: is.high")
+ plotmo grid:    h(input-12) h(12-input)
+                           0         1.5
+> 
+> par(org.par)
+> 
+> cat("\n=== plotmo plots with as.numeric(response) ===\n")
+
+=== plotmo plots with as.numeric(response) ===
+> 
+> par(mfrow = c(3,3), mar = c(4, 3, 3, 1), mgp = c(1.5, 0.5, 0))
+> 
+> plotmo(earth.numeric.resp, do.par=0, all2=TRUE, main="earth.numeric.resp")
+> empty.plot()
+> empty.plot()
+> 
+> plotmo(clm.earth.numeric.resp, do.par=0, nresp=3, all2=2)
+ plotmo grid:    h(input-12) h(12-input)
+                           0         1.5
+> 
+> par(org.par)
+> 
+> source("test.epilog.R")

@@ -21,22 +21,26 @@ vi(object, ...)
 }
 \arguments{
 \item{object}{A fitted model object (e.g., a
-\link[randomForest:randomForest]{randomForest} object) or
-an object that inherits from class \code{"vi"}.}
+\link[randomForest:randomForest]{randomForest} object) or an object that inherits
+from class \code{"vi"}.}
 
 \item{...}{Additional optional arguments to be passed on to
-\code{\link{vi_model}}, \code{\link{vi_firm}}, \code{\link{vi_permute}},
-or \code{\link{vi_shap}}; see their respective help pages for details.}
+\link[=vi_model]{vi_model}, \link[=vi_firm]{vi_firm},
+\link[=vi_permute]{vi_permute}, or \link[=vi_shap]{vi_shap}; see their
+respective help pages for details.}
 
 \item{method}{Character string specifying the type of variable importance
-(VI) to compute. Current options are \code{"model"} (the default), for
-model-specific VI scores (see \code{\link{vi_model}} for details),
-\code{"firm"}, for variance-based VI scores (see \code{\link{vi_firm}} for
-details), \code{"permute"}, for permutation-based VI scores (see '
-\code{\link{vi_permute}} for details), or \code{"shap"}, for Shapley-based
-VI scores. For more details on the variance-based methods, see
-\href{https://arxiv.org/abs/1805.04755}{Greenwell et al. (2018)} and
-\href{https://arxiv.org/abs/1904.03959}{Scholbeck et al. (2019)}.}
+(VI) to compute. Current options are:
+\itemize{
+\item \code{"model"} (the default), for model-specific VI scores (see
+\link[=vi_model]{vi_model} for details).
+\item \code{"firm"}, for variance-based VI scores (see \link[=vi_firm]{vi_firm} for
+details).
+\item \code{"permute"}, for permutation-based VI scores (see
+\link[=vi_permute]{vi_permute} for details).
+\item \code{"shap"}, for Shapley-based VI scores (see \link[=vi_shap]{vi_shap} for
+details).
+}}
 
 \item{feature_names}{Character string giving the names of the predictor
 variables (i.e., features) of interest.}
@@ -61,13 +65,23 @@ Potentially useful when comparing variable importance scores across different
 models using different methods.}
 }
 \value{
-A tidy data frame (i.e., a \code{"tibble"} object) with at least two
-columns: \code{Variable} and \code{Importance}. For \code{"lm"/"glm"}-like
-objects, an additional column, called \code{Sign}, is also included which
-includes the sign (i.e., POS/NEG) of the original coefficient. If
-\code{method = "permute"} and  \code{nsim > 1}, then an additional column,
-\code{StDev}, giving the standard deviation of the permutation-based
-variable importance scores is included.
+A tidy data frame (i.e., a \link[tibble:tibble]{tibble} object) with two
+columns:
+\itemize{
+\item \code{Variable} - the corresponding feature name;
+\item \code{Importance} - the associated importance, computed as the average change in
+performance after a random permutation (or permutations, if \code{nsim > 1}) of
+the feature in question.
+}
+
+For \link[stats:lm]{lm}/\link[stats:glm]{glm}-like objects, whenever
+\code{method = "model"}, the sign (i.e., POS/NEG) of the original coefficient is
+also included in a column called \code{Sign}.
+
+If \code{method = "permute"} and \code{nsim > 1}, then an additional column (\code{StDev})
+containing the standard deviation of the individual permutation scores for
+each feature is also returned; this helps assess the stability/variation of
+the individual permutation importance for each feature.
 }
 \description{
 Compute variable importance scores for the predictors in a model.
@@ -137,9 +151,4 @@ set.seed(1046)  # for reproducibility
 vi_permute(tree2, nsim = 10, target = "Class", metric = "logloss",
            pred_wrapper = pfun, reference_class = "malignant")
 }
-}
-\references{
-Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J. A Simple
-and Effective Model-Based Variable Importance Measure. arXiv preprint
-arXiv:1805.04755 (2018).
 }

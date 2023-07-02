@@ -1,0 +1,2 @@
+expect_doppelganger     Does a figure look like its expected output?
+write_svg               Default SVG writer

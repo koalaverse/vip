@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Getting started with httr</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Getting started with httr</h1>
+
+
+
+<div id="httr-quickstart-guide" class="section level1">
+<h1>httr quickstart guide</h1>
+<p>The goal of this document is to get you up and running with httr as
+quickly as possible. httr is designed to map closely to the underlying
+http protocol. I’ll try and explain the basics in this intro, but I’d
+also recommend “<a href="https://code.tutsplus.com/tutorials/http-the-protocol-every-web-developer-must-know-part-1--net-31177">HTTP:
+The Protocol Every Web Developer Must Know</a>” or “<a href="https://www.jmarshall.com/easy/http/">HTTP made really
+easy</a>”.</p>
+<p>This vignette (and parts of the httr API) derived from the excellent
+“<a href="https://requests.readthedocs.io/en/master/user/quickstart/">Requests
+quickstart guide</a>” by Kenneth Reitz. Requests is a python library
+similar in spirit to httr.</p>
+<p>There are two important parts to http: the <strong>request</strong>,
+the data sent to the server, and the <strong>response</strong>, the data
+sent back from the server. In the first section, you’ll learn about the
+basics of constructing a request and accessing the response. In the
+second and third sections, you’ll dive into more details of each.</p>
+<div id="httr-basics" class="section level2">
+<h2>httr basics</h2>
+<p>To make a request, first load httr, then call <code>GET()</code> with
+a url:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(httr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="st">&quot;http://httpbin.org/get&quot;</span>)</span></code></pre></div>
+<p>This gives you a response object. Printing a response object gives
+you some useful information: the actual url used (after any redirects),
+the http status, the file (content) type, the size, and if it’s a text
+file, the first few lines of output.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>r</span></code></pre></div>
+<p>You can pull out important parts of the response with various helper
+methods, or dig directly into the object:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">status_code</span>(r)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">headers</span>(r)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(<span class="fu">content</span>(r))</span></code></pre></div>
+<p>I’ll use <code>httpbin.org</code> throughout this introduction. It
+accepts many types of http request and returns json that describes the
+data that it received. This makes it easy to see what httr is doing.</p>
+<p>As well as <code>GET()</code>, you can also use the
+<code>HEAD()</code>, <code>POST()</code>, <code>PATCH()</code>,
+<code>PUT()</code> and <code>DELETE()</code> verbs. You’re probably most
+familiar with <code>GET()</code> and <code>POST()</code>:
+<code>GET()</code> is used by your browser when requesting a page, and
+<code>POST()</code> is (usually) used when submitting a form to a
+server. <code>PUT()</code>, <code>PATCH()</code> and
+<code>DELETE()</code> are used most often by web APIs.</p>
+</div>
+<div id="the-response" class="section level2">
+<h2>The response</h2>
+<p>The data sent back from the server consists of three parts: the
+status line, the headers and the body. The most important part of the
+status line is the http status code: it tells you whether or not the
+request was successful. I’ll show you how to access that data, then how
+to access the body and headers.</p>
+<div id="the-status-code" class="section level3">
+<h3>The status code</h3>
+<p>The status code is a three digit number that summarises whether or
+not the request was successful (as defined by the server that you’re
+talking to). You can access the status code along with a descriptive
+message using <code>http_status()</code>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="st">&quot;http://httpbin.org/get&quot;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Get an informative description:</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">http_status</span>(r)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Or just access the raw code:</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>r<span class="sc">$</span>status_code</span></code></pre></div>
+<p>A successful request always returns a status of 200. Common errors
+are 404 (file not found) and 403 (permission denied). If you’re talking
+to web APIs you might also see 500, which is a generic failure code (and
+thus not very helpful). If you’d like to learn more, the most memorable
+guides are the <a href="https://www.flickr.com/photos/girliemac/sets/72157628409467125">http
+status cats</a>.</p>
+<p>You can automatically throw a warning or raise an error if a request
+did not succeed:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">warn_for_status</span>(r)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">stop_for_status</span>(r)</span></code></pre></div>
+<p>I highly recommend using one of these functions whenever you’re using
+httr inside a function (i.e. not interactively) to make sure you find
+out about errors as soon as possible.</p>
+</div>
+<div id="the-body" class="section level3">
+<h3>The body</h3>
+<p>There are three ways to access the body of the request, all using
+<code>content()</code>:</p>
+<ul>
+<li><p><code>content(r, &quot;text&quot;)</code> accesses the body as a character
+vector:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="st">&quot;http://httpbin.org/get&quot;</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">content</span>(r, <span class="st">&quot;text&quot;</span>)</span></code></pre></div>
+<p>httr will automatically decode content from the server using the
+encoding supplied in the <code>content-type</code> HTTP header.
+Unfortunately you can’t always trust what the server tells you, so you
+can override encoding if needed:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">content</span>(r, <span class="st">&quot;text&quot;</span>, <span class="at">encoding =</span> <span class="st">&quot;ISO-8859-1&quot;</span>)</span></code></pre></div>
+<p>If you’re having problems figuring out what the correct encoding
+should be, try
+<code>stringi::stri_enc_detect(content(r, &quot;raw&quot;))</code>.</p></li>
+<li><p>For non-text requests, you can access the body of the request as
+a raw vector:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">content</span>(r, <span class="st">&quot;raw&quot;</span>)</span></code></pre></div>
+<p>This is exactly the sequence of bytes that the web server sent, so
+this is the highest fidelity way of saving files to disk:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>bin <span class="ot">&lt;-</span> <span class="fu">content</span>(r, <span class="st">&quot;raw&quot;</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">writeBin</span>(bin, <span class="st">&quot;myfile.txt&quot;</span>)</span></code></pre></div></li>
+<li><p>httr provides a number of default parsers for common file
+types:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># JSON automatically parsed into named list</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(<span class="fu">content</span>(r, <span class="st">&quot;parsed&quot;</span>))</span></code></pre></div>
+<p>See <code>?content</code> for a complete list.</p>
+<p>These are convenient for interactive usage, but if you’re writing an
+API wrapper, it’s best to parse the text or raw content yourself and
+check it is as you expect. See the API wrappers vignette for more
+details.</p></li>
+</ul>
+</div>
+<div id="the-headers" class="section level3">
+<h3>The headers</h3>
+<p>Access response headers with <code>headers()</code>:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">headers</span>(r)</span></code></pre></div>
+<p>This is basically a named list, but because http headers are case
+insensitive, indexing this object ignores case:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">headers</span>(r)<span class="sc">$</span>date</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">headers</span>(r)<span class="sc">$</span>DATE</span></code></pre></div>
+</div>
+<div id="cookies" class="section level3">
+<h3>Cookies</h3>
+<p>You can access cookies in a similar way:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="st">&quot;http://httpbin.org/cookies/set&quot;</span>, <span class="at">query =</span> <span class="fu">list</span>(<span class="at">a =</span> <span class="dv">1</span>))</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cookies</span>(r)</span></code></pre></div>
+<p>Cookies are automatically persisted between requests to the same
+domain:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="st">&quot;http://httpbin.org/cookies/set&quot;</span>, <span class="at">query =</span> <span class="fu">list</span>(<span class="at">b =</span> <span class="dv">1</span>))</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cookies</span>(r)</span></code></pre></div>
+</div>
+</div>
+<div id="the-request" class="section level2">
+<h2>The request</h2>
+<p>Like the response, the request consists of three pieces: a status
+line, headers and a body. The status line defines the http method (GET,
+POST, DELETE, etc) and the url. You can send additional data to the
+server in the url (with the query string), in the headers (including
+cookies) and in the body of <code>POST()</code>, <code>PUT()</code> and
+<code>PATCH()</code> requests.</p>
+<div id="the-url-query-string" class="section level3">
+<h3>The url query string</h3>
+<p>A common way of sending simple key-value pairs to the server is the
+query string: e.g. <code>http://httpbin.org/get?key=val</code>. httr
+allows you to provide these arguments as a named list with the
+<code>query</code> argument. For example, if you wanted to pass
+<code>key1=value1</code> and <code>key2=value2</code> to
+<code>http://httpbin.org/get</code> you could do:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="st">&quot;http://httpbin.org/get&quot;</span>, </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">query =</span> <span class="fu">list</span>(<span class="at">key1 =</span> <span class="st">&quot;value1&quot;</span>, <span class="at">key2 =</span> <span class="st">&quot;value2&quot;</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">content</span>(r)<span class="sc">$</span>args</span></code></pre></div>
+<p>Any <code>NULL</code> elements are automatically dropped from the
+list, and both keys and values are escaped automatically.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="st">&quot;http://httpbin.org/get&quot;</span>, </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">query =</span> <span class="fu">list</span>(<span class="at">key1 =</span> <span class="st">&quot;value 1&quot;</span>, <span class="st">&quot;key 2&quot;</span> <span class="ot">=</span> <span class="st">&quot;value2&quot;</span>, <span class="at">key2 =</span> <span class="cn">NULL</span>))</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">content</span>(r)<span class="sc">$</span>args</span></code></pre></div>
+</div>
+<div id="custom-headers" class="section level3">
+<h3>Custom headers</h3>
+<p>You can add custom headers to a request with
+<code>add_headers()</code>:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="st">&quot;http://httpbin.org/get&quot;</span>, <span class="fu">add_headers</span>(<span class="at">Name =</span> <span class="st">&quot;Hadley&quot;</span>))</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(<span class="fu">content</span>(r)<span class="sc">$</span>headers)</span></code></pre></div>
+<p>(Note that <code>content(r)$header</code> retrieves the headers that
+httpbin received. <code>headers(r)</code> gives the headers that it sent
+back in its response.)</p>
+</div>
+</div>
+<div id="cookies-1" class="section level2">
+<h2>Cookies</h2>
+<p>Cookies are simple key-value pairs like the query string, but they
+persist across multiple requests in a session (because they’re sent back
+and forth every time). To send your own cookies to the server, use
+<code>set_cookies()</code>:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="st">&quot;http://httpbin.org/cookies&quot;</span>, <span class="fu">set_cookies</span>(<span class="st">&quot;MeWant&quot;</span> <span class="ot">=</span> <span class="st">&quot;cookies&quot;</span>))</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">content</span>(r)<span class="sc">$</span>cookies</span></code></pre></div>
+<p>Note that this response includes the <code>a</code> and
+<code>b</code> cookies that were added by the server earlier.</p>
+<div id="request-body" class="section level3">
+<h3>Request body</h3>
+<p>When <code>POST()</code>ing, you can include data in the
+<code>body</code> of the request. httr allows you to supply this in a
+number of different ways. The most common way is a named list:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">POST</span>(<span class="st">&quot;http://httpbin.org/post&quot;</span>, <span class="at">body =</span> <span class="fu">list</span>(<span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">2</span>, <span class="at">c =</span> <span class="dv">3</span>))</span></code></pre></div>
+<p>You can use the <code>encode</code> argument to determine how this
+data is sent to the server:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">&quot;http://httpbin.org/post&quot;</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>body <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">2</span>, <span class="at">c =</span> <span class="dv">3</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Form encoded</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">POST</span>(url, <span class="at">body =</span> body, <span class="at">encode =</span> <span class="st">&quot;form&quot;</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Multipart encoded</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">POST</span>(url, <span class="at">body =</span> body, <span class="at">encode =</span> <span class="st">&quot;multipart&quot;</span>)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co"># JSON encoded</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">POST</span>(url, <span class="at">body =</span> body, <span class="at">encode =</span> <span class="st">&quot;json&quot;</span>)</span></code></pre></div>
+<p>To see exactly what’s being sent to the server, use
+<code>verbose()</code>. Unfortunately due to the way that
+<code>verbose()</code> works, knitr can’t capture the messages, so
+you’ll need to run these from an interactive console to see what’s going
+on.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">POST</span>(url, <span class="at">body =</span> body, <span class="at">encode =</span> <span class="st">&quot;multipart&quot;</span>, <span class="fu">verbose</span>()) <span class="co"># the default</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">POST</span>(url, <span class="at">body =</span> body, <span class="at">encode =</span> <span class="st">&quot;form&quot;</span>, <span class="fu">verbose</span>())</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">POST</span>(url, <span class="at">body =</span> body, <span class="at">encode =</span> <span class="st">&quot;json&quot;</span>, <span class="fu">verbose</span>())</span></code></pre></div>
+<p><code>PUT()</code> and <code>PATCH()</code> can also have request
+bodies, and they take arguments identically to <code>POST()</code>.</p>
+<p>You can also send files off disk:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">POST</span>(url, <span class="at">body =</span> <span class="fu">upload_file</span>(<span class="st">&quot;mypath.txt&quot;</span>))</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">POST</span>(url, <span class="at">body =</span> <span class="fu">list</span>(<span class="at">x =</span> <span class="fu">upload_file</span>(<span class="st">&quot;mypath.txt&quot;</span>)))</span></code></pre></div>
+<p>(<code>upload_file()</code> will guess the mime-type from the
+extension - using the <code>type</code> argument to override/supply
+yourself.)</p>
+<p>These uploads stream the data to the server: the data will be loaded
+in R in chunks then sent to the remote server. This means that you can
+upload files that are larger than memory.</p>
+<p>See <code>POST()</code> for more details on the other types of thing
+that you can send: no body, empty body, and character and raw
+vectors.</p>
+<div id="built-with" class="section level5">
+<h5>Built with</h5>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

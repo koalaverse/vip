@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Getting Started</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Getting Started</h1>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(clock)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span></code></pre></div>
+<p>The goal of this vignette is to introduce you to clock’s high-level
+API, which works directly on R’s built-in date-time types, Date and
+POSIXct. For an overview of all of the functionality in the high-level
+API, check out the pkgdown reference section, <a href="https://clock.r-lib.org/reference/index.html#section-high-level-api">High
+Level API</a>. One thing you should immediately notice is that every
+function specific to R’s date and date-time types are prefixed with
+<code>date_*()</code>. There are also additional functions for
+arithmetic (<code>add_*()</code>) and getting (<code>get_*()</code>) or
+setting (<code>set_*()</code>) components that are also used by other
+types in clock.</p>
+<p>As you’ll quickly see in this vignette, one of the main goals of
+clock is to guard you, the user, from unexpected issues caused by
+frustrating date manipulation concepts like invalid dates and daylight
+saving time. It does this by letting you know as soon as one of these
+issues happens, giving you the power to handle it explicitly with one of
+a number of different resolution strategies.</p>
+<div id="building" class="section level2">
+<h2>Building</h2>
+<p>To create a vector of dates, you can use <code>date_build()</code>.
+This allows you to specify the components individually.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">date_build</span>(<span class="dv">2019</span>, <span class="dv">2</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-01&quot; &quot;2019-02-02&quot; &quot;2019-02-03&quot; &quot;2019-02-04&quot; &quot;2019-02-05&quot;</span></span></code></pre></div>
+<p>If you happen to specify an <em>invalid date</em>, you’ll get an
+error message:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">date_build</span>(<span class="dv">2019</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>, <span class="dv">31</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt; Error in `invalid_resolve()`:</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt; ! Invalid date found at location 2.</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; ℹ Resolve invalid date issues by specifying the `invalid` argument.</span></span></code></pre></div>
+<p>One way to resolve this is by specifying an invalid date resolution
+strategy using the <code>invalid</code> argument. There are multiple
+options, but in this case we’ll ask for the invalid dates to be set to
+the previous valid moment in time.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">date_build</span>(<span class="dv">2019</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>, <span class="dv">31</span>, <span class="at">invalid =</span> <span class="st">&quot;previous&quot;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;2019-01-31&quot; &quot;2019-02-28&quot; &quot;2019-03-31&quot; &quot;2019-04-30&quot; &quot;2019-05-31&quot;</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt;  [6] &quot;2019-06-30&quot; &quot;2019-07-31&quot; &quot;2019-08-31&quot; &quot;2019-09-30&quot; &quot;2019-10-31&quot;</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; [11] &quot;2019-11-30&quot; &quot;2019-12-31&quot;</span></span></code></pre></div>
+<p>To learn more about invalid dates, check out the documentation for
+<code>invalid_resolve()</code>.</p>
+<p>If we were actually after the “last day of the month”, an easier way
+to specify this would have been:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">date_build</span>(<span class="dv">2019</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>, <span class="st">&quot;last&quot;</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;2019-01-31&quot; &quot;2019-02-28&quot; &quot;2019-03-31&quot; &quot;2019-04-30&quot; &quot;2019-05-31&quot;</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt;  [6] &quot;2019-06-30&quot; &quot;2019-07-31&quot; &quot;2019-08-31&quot; &quot;2019-09-30&quot; &quot;2019-10-31&quot;</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt; [11] &quot;2019-11-30&quot; &quot;2019-12-31&quot;</span></span></code></pre></div>
+<p>You can also create date-times using <code>date_time_build()</code>,
+which generates a POSIXct. Note that you must supply a time zone!</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">date_time_build</span>(<span class="dv">2019</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">30</span>, <span class="at">zone =</span> <span class="st">&quot;America/New_York&quot;</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-01-01 02:30:00 EST&quot; &quot;2019-02-01 02:30:00 EST&quot;</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt; [3] &quot;2019-03-01 02:30:00 EST&quot; &quot;2019-04-01 02:30:00 EDT&quot;</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt; [5] &quot;2019-05-01 02:30:00 EDT&quot;</span></span></code></pre></div>
+<p>If you “build” a time that doesn’t exist, you’ll get an error. For
+example, on March 8th, 2020, there was a daylight saving time gap of 1
+hour in the America/New_York time zone that took us from
+<code>01:59:59</code> directly to <code>03:00:00</code>, skipping the 2
+o’clock hour entirely. Let’s “accidentally” create a time in that
+gap:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">date_time_build</span>(<span class="dv">2019</span><span class="sc">:</span><span class="dv">2021</span>, <span class="dv">3</span>, <span class="dv">8</span>, <span class="dv">2</span>, <span class="dv">30</span>, <span class="at">zone =</span> <span class="st">&quot;America/New_York&quot;</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt; Error in `as_zoned_time()`:</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt; ! Nonexistent time due to daylight saving time at location 2.</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt; ℹ Resolve nonexistent time issues by specifying the `nonexistent` argument.</span></span></code></pre></div>
+<p>To resolve this issue, we can specify a nonexistent time resolution
+strategy through the <code>nonexistent</code> argument. There are a
+number of options, including rolling forward or backward to the next or
+previous valid moments in time:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>zone <span class="ot">&lt;-</span> <span class="st">&quot;America/New_York&quot;</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="fu">date_time_build</span>(<span class="dv">2019</span><span class="sc">:</span><span class="dv">2021</span>, <span class="dv">3</span>, <span class="dv">8</span>, <span class="dv">2</span>, <span class="dv">30</span>, <span class="at">zone =</span> zone, <span class="at">nonexistent =</span> <span class="st">&quot;roll-forward&quot;</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-03-08 02:30:00 EST&quot; &quot;2020-03-08 03:00:00 EDT&quot;</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt; [3] &quot;2021-03-08 02:30:00 EST&quot;</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="fu">date_time_build</span>(<span class="dv">2019</span><span class="sc">:</span><span class="dv">2021</span>, <span class="dv">3</span>, <span class="dv">8</span>, <span class="dv">2</span>, <span class="dv">30</span>, <span class="at">zone =</span> zone, <span class="at">nonexistent =</span> <span class="st">&quot;roll-backward&quot;</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-03-08 02:30:00 EST&quot; &quot;2020-03-08 01:59:59 EST&quot;</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt; [3] &quot;2021-03-08 02:30:00 EST&quot;</span></span></code></pre></div>
+</div>
+<div id="parsing" class="section level2">
+<h2>Parsing</h2>
+<div id="parsing-dates" class="section level3">
+<h3>Parsing dates</h3>
+<p>To parse dates, use <code>date_parse()</code>. Parsing dates requires
+a <em>format string</em>, a combination of <em>commands</em> that
+specify where date components are in your string. By default, it assumes
+that you’re working with dates in the form <code>&quot;%Y-%m-%d&quot;</code>
+(year-month-day).</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">date_parse</span>(<span class="st">&quot;2019-01-05&quot;</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-01-05&quot;</span></span></code></pre></div>
+<p>You can change the format string using <code>format</code>:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">date_parse</span>(<span class="st">&quot;January 5, 2020&quot;</span>, <span class="at">format =</span> <span class="st">&quot;%B %d, %Y&quot;</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2020-01-05&quot;</span></span></code></pre></div>
+<p>Various different locales are supported for parsing month and weekday
+names in different languages. To parse a French month:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">date_parse</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="st">&quot;juillet 10, 2021&quot;</span>, </span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="at">format =</span> <span class="st">&quot;%B %d, %Y&quot;</span>, </span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="at">locale =</span> <span class="fu">clock_locale</span>(<span class="st">&quot;fr&quot;</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>)</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2021-07-10&quot;</span></span></code></pre></div>
+<p>You can learn about more locale options in the documentation for
+<code>clock_locale()</code>.</p>
+<p>If you have heterogeneous dates, you can supply multiple format
+strings:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;2020/1/5&quot;</span>, <span class="st">&quot;10-03-05&quot;</span>, <span class="st">&quot;2020/2/2&quot;</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>formats <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;%Y/%m/%d&quot;</span>, <span class="st">&quot;%y-%m-%d&quot;</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="fu">date_parse</span>(x, <span class="at">format =</span> formats)</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2020-01-05&quot; &quot;2010-03-05&quot; &quot;2020-02-02&quot;</span></span></code></pre></div>
+</div>
+<div id="parsing-date-times" class="section level3">
+<h3>Parsing date-times</h3>
+<p>You have four options when parsing date-times:</p>
+<ul>
+<li><p><code>date_time_parse()</code>: For strings like
+<code>&quot;2020-01-01 01:02:03&quot;</code> where there is neither a time zone
+offset nor a full (not abbreviated!) time zone name.</p></li>
+<li><p><code>date_time_parse_complete()</code>: For strings like
+<code>&quot;2020-01-01T01:02:03-05:00[America/New_York]&quot;</code> where there
+is both a time zone offset and time zone name present in the
+string.</p></li>
+<li><p><code>date_time_parse_abbrev()</code>: For strings like
+<code>&quot;2020-01-01 01:02:03 EST&quot;</code> where there is a time zone
+abbreviation in the string.</p></li>
+<li><p><code>date_time_parse_RFC_3339()</code>: For strings like
+<code>&quot;2020-01-01T01:02:03Z&quot;</code> or
+<code>&quot;2020-01-01T01:02:03-05:00&quot;</code>, which are in RFC 3339 format
+and are intended to be interpreted as UTC.</p></li>
+</ul>
+<div id="date_time_parse" class="section level4">
+<h4>date_time_parse()</h4>
+<p><code>date_time_parse()</code> requires a <code>zone</code> argument,
+and will ignore any other zone information in the string (i.e. if you
+tried to specify <code>%z</code> and <code>%Z</code>). The default
+format string is <code>&quot;%Y-%m-%d %H:%M:%S&quot;</code>.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">date_time_parse</span>(<span class="st">&quot;2020-01-01 01:02:03&quot;</span>, <span class="st">&quot;America/New_York&quot;</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2020-01-01 01:02:03 EST&quot;</span></span></code></pre></div>
+<p>If you happen to parse an invalid or ambiguous date-time, you’ll get
+an error. For example, on November 1st, 2020, there were <em>two</em> 1
+o’clock hours in the America/New_York time zone due to a daylight saving
+time fallback. You can see that if we parse a time right before the
+fallback, and then shift it forward by 1 second, and then 1 hour and 1
+second, respectively:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>before <span class="ot">&lt;-</span> <span class="fu">date_time_parse</span>(<span class="st">&quot;2020-11-01 00:59:59&quot;</span>, <span class="st">&quot;America/New_York&quot;</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="co"># First 1 o&#39;clock</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>before <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2020-11-01 01:00:00 EDT&quot;</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co"># Second 1 o&#39;clock</span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>before <span class="sc">+</span> <span class="dv">1</span> <span class="sc">+</span> <span class="dv">3600</span></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2020-11-01 01:00:00 EST&quot;</span></span></code></pre></div>
+<p>The following string doesn’t include any information about which of
+these two 1 o’clocks it belongs to, so it is considered
+<em>ambiguous</em>. Ambiguous times will error when parsing:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">date_time_parse</span>(<span class="st">&quot;2020-11-01 01:30:00&quot;</span>, <span class="st">&quot;America/New_York&quot;</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="co">#&gt; Error in `as_zoned_time()`:</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co">#&gt; ! Ambiguous time due to daylight saving time at location 1.</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co">#&gt; ℹ Resolve ambiguous time issues by specifying the `ambiguous` argument.</span></span></code></pre></div>
+<p>To fix that, you can specify an ambiguous time resolution strategy
+with the <code>ambiguous</code> argument.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>zone <span class="ot">&lt;-</span> <span class="st">&quot;America/New_York&quot;</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="fu">date_time_parse</span>(<span class="st">&quot;2020-11-01 01:30:00&quot;</span>, zone, <span class="at">ambiguous =</span> <span class="st">&quot;earliest&quot;</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2020-11-01 01:30:00 EDT&quot;</span></span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="fu">date_time_parse</span>(<span class="st">&quot;2020-11-01 01:30:00&quot;</span>, zone, <span class="at">ambiguous =</span> <span class="st">&quot;latest&quot;</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2020-11-01 01:30:00 EST&quot;</span></span></code></pre></div>
+</div>
+<div id="date_time_parse_complete" class="section level4">
+<h4>date_time_parse_complete()</h4>
+<p><code>date_time_parse_complete()</code> doesn’t have a
+<code>zone</code> argument, and doesn’t require <code>ambiguous</code>
+or <code>nonexistent</code> arguments, since it assumes that the string
+you are providing is completely unambiguous. The only way this is
+possible is by having both a time zone offset, specified by
+<code>%z</code>, and a full time zone name, specified by
+<code>%Z</code>, in the string.</p>
+<p>The following is an example of an “extended” RFC 3339 format used by
+Java 8’s time library to specify complete date-time strings. This is
+something that <code>date_time_parse_complete()</code> can parse. The
+default format string follows this extended format, and is
+<code>&quot;%Y-%m-%dT%H:%M:%S%z[%Z]&quot;</code>.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="st">&quot;2020-01-01T01:02:03-05:00[America/New_York]&quot;</span></span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="fu">date_time_parse_complete</span>(x)</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2020-01-01 01:02:03 EST&quot;</span></span></code></pre></div>
+</div>
+<div id="date_time_parse_abbrev" class="section level4">
+<h4>date_time_parse_abbrev()</h4>
+<p><code>date_time_parse_abbrev()</code> is useful when your date-time
+strings contain a time zone abbreviation rather than a time zone offset
+or full time zone name.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="st">&quot;2020-01-01 01:02:03 EST&quot;</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="fu">date_time_parse_abbrev</span>(x, <span class="st">&quot;America/New_York&quot;</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2020-01-01 01:02:03 EST&quot;</span></span></code></pre></div>
+<p>The string is first parsed as a naive time without considering the
+abbreviation, and is then converted to a zoned-time using the supplied
+<code>zone</code>. If an ambiguous time is parsed, the abbreviation is
+used to resolve the ambiguity.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>  <span class="st">&quot;1970-10-25 01:30:00 EDT&quot;</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>  <span class="st">&quot;1970-10-25 01:30:00 EST&quot;</span></span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a>)</span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a><span class="fu">date_time_parse_abbrev</span>(x, <span class="st">&quot;America/New_York&quot;</span>)</span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a><span class="co">#&gt; [1] &quot;1970-10-25 01:30:00 EDT&quot; &quot;1970-10-25 01:30:00 EST&quot;</span></span></code></pre></div>
+<p>You might be wondering why you need to supply <code>zone</code> at
+all. Isn’t the abbreviation enough? Unfortunately, multiple countries
+use the same time zone abbreviations, even though they have different
+time zones. This means that, in many cases, the abbreviation alone is
+ambiguous. For example, both India and Israel use <code>IST</code> for
+their standard times.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="st">&quot;1970-01-01 02:30:30 IST&quot;</span></span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="co"># IST = India Standard Time</span></span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a><span class="fu">date_time_parse_abbrev</span>(x, <span class="st">&quot;Asia/Kolkata&quot;</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a><span class="co">#&gt; [1] &quot;1970-01-01 02:30:30 IST&quot;</span></span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a><span class="co"># IST = Israel Standard Time</span></span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a><span class="fu">date_time_parse_abbrev</span>(x, <span class="st">&quot;Asia/Jerusalem&quot;</span>)</span>
+<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a><span class="co">#&gt; [1] &quot;1970-01-01 02:30:30 IST&quot;</span></span></code></pre></div>
+</div>
+<div id="date_time_parse_rfc_3339" class="section level4">
+<h4>date_time_parse_RFC_3339()</h4>
+<p><code>date_time_parse_RFC_3339()</code> is useful when your date-time
+strings come from an API, which means they are likely in an ISO 8601 or
+RFC 3339 format, and should be interpreted as UTC.</p>
+<p>The default format string parses the typical RFC 3339 format of
+<code>&quot;%Y-%m-%dT%H:%M:%SZ&quot;</code>.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="st">&quot;2020-01-01T01:02:03Z&quot;</span></span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="fu">date_time_parse_RFC_3339</span>(x)</span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2020-01-01 01:02:03 UTC&quot;</span></span></code></pre></div>
+<p>If your date-time strings contain a numeric offset from UTC rather
+than a <code>&quot;Z&quot;</code>, then you’ll need to set the <code>offset</code>
+argument to one of the following:</p>
+<ul>
+<li><code>&quot;%z&quot;</code> if the offset is of the form
+<code>&quot;-0500&quot;</code>.</li>
+<li><code>&quot;%Ez&quot;</code> if the offset is of the form
+<code>&quot;-05:00&quot;</code>.</li>
+</ul>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="st">&quot;2020-01-01T01:02:03-0500&quot;</span></span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a><span class="fu">date_time_parse_RFC_3339</span>(x, <span class="at">offset =</span> <span class="st">&quot;%z&quot;</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2020-01-01 06:02:03 UTC&quot;</span></span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="st">&quot;2020-01-01T01:02:03-05:00&quot;</span></span>
+<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a><span class="fu">date_time_parse_RFC_3339</span>(x, <span class="at">offset =</span> <span class="st">&quot;%Ez&quot;</span>)</span>
+<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2020-01-01 06:02:03 UTC&quot;</span></span></code></pre></div>
+</div>
+</div>
+</div>
+<div id="grouping-rounding-and-shifting" class="section level2">
+<h2>Grouping, rounding and shifting</h2>
+<p>When performing time-series related data analysis, you often need to
+summarize your series at a less precise precision. There are many
+different ways to do this, and the differences between them are subtle,
+but meaningful. clock offers three different sets of functions for
+summarization:</p>
+<ul>
+<li><p><code>date_group()</code></p></li>
+<li><p><code>date_floor()</code>, <code>date_ceiling()</code>, and
+<code>date_round()</code></p></li>
+<li><p><code>date_shift()</code></p></li>
+</ul>
+<div id="grouping" class="section level3">
+<h3>Grouping</h3>
+<p>Grouping allows you to summarize a component of a date or date-time
+<em>within</em> other components. An example of this is grouping by day
+of the month, which summarizes the day component <em>within</em> the
+current year-month.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">date_build</span>(<span class="dv">2019</span>, <span class="dv">1</span>, <span class="dv">20</span>), <span class="fu">date_build</span>(<span class="dv">2019</span>, <span class="dv">2</span>, <span class="dv">5</span>), <span class="at">by =</span> <span class="dv">1</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>x</span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;2019-01-20&quot; &quot;2019-01-21&quot; &quot;2019-01-22&quot; &quot;2019-01-23&quot; &quot;2019-01-24&quot;</span></span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a><span class="co">#&gt;  [6] &quot;2019-01-25&quot; &quot;2019-01-26&quot; &quot;2019-01-27&quot; &quot;2019-01-28&quot; &quot;2019-01-29&quot;</span></span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a><span class="co">#&gt; [11] &quot;2019-01-30&quot; &quot;2019-01-31&quot; &quot;2019-02-01&quot; &quot;2019-02-02&quot; &quot;2019-02-03&quot;</span></span>
+<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a><span class="co">#&gt; [16] &quot;2019-02-04&quot; &quot;2019-02-05&quot;</span></span>
+<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a><span class="co"># Grouping by 5 days of the current month</span></span>
+<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a><span class="fu">date_group</span>(x, <span class="st">&quot;day&quot;</span>, <span class="at">n =</span> <span class="dv">5</span>)</span>
+<span id="cb23-10"><a href="#cb23-10" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;2019-01-16&quot; &quot;2019-01-21&quot; &quot;2019-01-21&quot; &quot;2019-01-21&quot; &quot;2019-01-21&quot;</span></span>
+<span id="cb23-11"><a href="#cb23-11" tabindex="-1"></a><span class="co">#&gt;  [6] &quot;2019-01-21&quot; &quot;2019-01-26&quot; &quot;2019-01-26&quot; &quot;2019-01-26&quot; &quot;2019-01-26&quot;</span></span>
+<span id="cb23-12"><a href="#cb23-12" tabindex="-1"></a><span class="co">#&gt; [11] &quot;2019-01-26&quot; &quot;2019-01-31&quot; &quot;2019-02-01&quot; &quot;2019-02-01&quot; &quot;2019-02-01&quot;</span></span>
+<span id="cb23-13"><a href="#cb23-13" tabindex="-1"></a><span class="co">#&gt; [16] &quot;2019-02-01&quot; &quot;2019-02-01&quot;</span></span></code></pre></div>
+<p>The thing to note about grouping by day of the month is that at the
+end of each month, the groups restart. So this created groups for
+January of
+<code>[1, 5], [6, 10], [11, 15], [16, 20], [21, 25], [26, 30], [31]</code>.</p>
+<p>You can also group by month or year:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="fu">date_group</span>(x, <span class="st">&quot;month&quot;</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;2019-01-01&quot; &quot;2019-01-01&quot; &quot;2019-01-01&quot; &quot;2019-01-01&quot; &quot;2019-01-01&quot;</span></span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a><span class="co">#&gt;  [6] &quot;2019-01-01&quot; &quot;2019-01-01&quot; &quot;2019-01-01&quot; &quot;2019-01-01&quot; &quot;2019-01-01&quot;</span></span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a><span class="co">#&gt; [11] &quot;2019-01-01&quot; &quot;2019-01-01&quot; &quot;2019-02-01&quot; &quot;2019-02-01&quot; &quot;2019-02-01&quot;</span></span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a><span class="co">#&gt; [16] &quot;2019-02-01&quot; &quot;2019-02-01&quot;</span></span></code></pre></div>
+<p>This also works with date-times, adding the ability to group by hour
+of the day, minute of the hour, and second of the minute.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">seq</span>(</span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>  <span class="fu">date_time_build</span>(<span class="dv">2019</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">55</span>, <span class="at">zone =</span> <span class="st">&quot;UTC&quot;</span>),</span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a>  <span class="fu">date_time_build</span>(<span class="dv">2019</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">15</span>, <span class="at">zone =</span> <span class="st">&quot;UTC&quot;</span>),</span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a>  <span class="at">by =</span> <span class="dv">120</span></span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a>)</span>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a>x</span>
+<span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;2019-01-01 01:55:00 UTC&quot; &quot;2019-01-01 01:57:00 UTC&quot;</span></span>
+<span id="cb25-8"><a href="#cb25-8" tabindex="-1"></a><span class="co">#&gt;  [3] &quot;2019-01-01 01:59:00 UTC&quot; &quot;2019-01-01 02:01:00 UTC&quot;</span></span>
+<span id="cb25-9"><a href="#cb25-9" tabindex="-1"></a><span class="co">#&gt;  [5] &quot;2019-01-01 02:03:00 UTC&quot; &quot;2019-01-01 02:05:00 UTC&quot;</span></span>
+<span id="cb25-10"><a href="#cb25-10" tabindex="-1"></a><span class="co">#&gt;  [7] &quot;2019-01-01 02:07:00 UTC&quot; &quot;2019-01-01 02:09:00 UTC&quot;</span></span>
+<span id="cb25-11"><a href="#cb25-11" tabindex="-1"></a><span class="co">#&gt;  [9] &quot;2019-01-01 02:11:00 UTC&quot; &quot;2019-01-01 02:13:00 UTC&quot;</span></span>
+<span id="cb25-12"><a href="#cb25-12" tabindex="-1"></a><span class="co">#&gt; [11] &quot;2019-01-01 02:15:00 UTC&quot;</span></span>
+<span id="cb25-13"><a href="#cb25-13" tabindex="-1"></a></span>
+<span id="cb25-14"><a href="#cb25-14" tabindex="-1"></a><span class="fu">date_group</span>(x, <span class="st">&quot;minute&quot;</span>, <span class="at">n =</span> <span class="dv">5</span>)</span>
+<span id="cb25-15"><a href="#cb25-15" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;2019-01-01 01:55:00 UTC&quot; &quot;2019-01-01 01:55:00 UTC&quot;</span></span>
+<span id="cb25-16"><a href="#cb25-16" tabindex="-1"></a><span class="co">#&gt;  [3] &quot;2019-01-01 01:55:00 UTC&quot; &quot;2019-01-01 02:00:00 UTC&quot;</span></span>
+<span id="cb25-17"><a href="#cb25-17" tabindex="-1"></a><span class="co">#&gt;  [5] &quot;2019-01-01 02:00:00 UTC&quot; &quot;2019-01-01 02:05:00 UTC&quot;</span></span>
+<span id="cb25-18"><a href="#cb25-18" tabindex="-1"></a><span class="co">#&gt;  [7] &quot;2019-01-01 02:05:00 UTC&quot; &quot;2019-01-01 02:05:00 UTC&quot;</span></span>
+<span id="cb25-19"><a href="#cb25-19" tabindex="-1"></a><span class="co">#&gt;  [9] &quot;2019-01-01 02:10:00 UTC&quot; &quot;2019-01-01 02:10:00 UTC&quot;</span></span>
+<span id="cb25-20"><a href="#cb25-20" tabindex="-1"></a><span class="co">#&gt; [11] &quot;2019-01-01 02:15:00 UTC&quot;</span></span></code></pre></div>
+</div>
+<div id="rounding" class="section level3">
+<h3>Rounding</h3>
+<p>While grouping is useful for summarizing <em>within</em> a component,
+rounding is useful for summarizing <em>across</em> components. It is
+great for summarizing by, say, a rolling set of 60 days.</p>
+<p>Rounding operates on the underlying count that makes up your date or
+date-time. To see what I mean by this, try unclassing a date:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">unclass</span>(<span class="fu">date_build</span>(<span class="dv">2020</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="co">#&gt; [1] 18262</span></span></code></pre></div>
+<p>This is a count of days since the <em>origin</em> that R uses,
+1970-01-01, which is considered day 0. If you were to floor by 60 days,
+this would bundle
+<code>[1970-01-01, 1970-03-02), [1970-03-02, 1970-05-01)</code>, and so
+on. Equivalently, it bundles counts of <code>[0, 60), [60, 120)</code>,
+etc.</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">date_build</span>(<span class="dv">1970</span>, <span class="dv">01</span>, <span class="dv">01</span>), <span class="fu">date_build</span>(<span class="dv">1970</span>, <span class="dv">05</span>, <span class="dv">10</span>), <span class="at">by =</span> <span class="dv">20</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a><span class="fu">date_floor</span>(x, <span class="st">&quot;day&quot;</span>, <span class="at">n =</span> <span class="dv">60</span>)</span>
+<span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;1970-01-01&quot; &quot;1970-01-01&quot; &quot;1970-01-01&quot; &quot;1970-03-02&quot; &quot;1970-03-02&quot;</span></span>
+<span id="cb27-5"><a href="#cb27-5" tabindex="-1"></a><span class="co">#&gt; [6] &quot;1970-03-02&quot; &quot;1970-05-01&quot;</span></span>
+<span id="cb27-6"><a href="#cb27-6" tabindex="-1"></a><span class="fu">date_ceiling</span>(x, <span class="st">&quot;day&quot;</span>, <span class="at">n =</span> <span class="dv">60</span>)</span>
+<span id="cb27-7"><a href="#cb27-7" tabindex="-1"></a><span class="co">#&gt; [1] &quot;1970-01-01&quot; &quot;1970-03-02&quot; &quot;1970-03-02&quot; &quot;1970-03-02&quot; &quot;1970-05-01&quot;</span></span>
+<span id="cb27-8"><a href="#cb27-8" tabindex="-1"></a><span class="co">#&gt; [6] &quot;1970-05-01&quot; &quot;1970-05-01&quot;</span></span></code></pre></div>
+<p>If you prefer a different origin, you can supply a Date
+<code>origin</code> to <code>date_floor()</code>, which determines what
+“day 0” is considered to be. This can be useful for grouping by multiple
+weeks if you want to control what is considered the start of the week.
+Since 1970-01-01 is a Thursday, flooring by 2 weeks would normally
+generate all Thursdays:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="fu">as_weekday</span>(<span class="fu">date_floor</span>(x, <span class="st">&quot;week&quot;</span>, <span class="at">n =</span> <span class="dv">14</span>))</span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a><span class="co">#&gt; &lt;weekday[7]&gt;</span></span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a><span class="co">#&gt; [1] Thu Thu Thu Thu Thu Thu Thu</span></span></code></pre></div>
+<p>To change this you can supply an <code>origin</code> on the weekday
+that you’d like to be considered the first day of the week.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a>sunday <span class="ot">&lt;-</span> <span class="fu">date_build</span>(<span class="dv">1970</span>, <span class="dv">01</span>, <span class="dv">04</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a><span class="fu">date_floor</span>(x, <span class="st">&quot;week&quot;</span>, <span class="at">n =</span> <span class="dv">14</span>, <span class="at">origin =</span> sunday)</span>
+<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;1969-09-28&quot; &quot;1970-01-04&quot; &quot;1970-01-04&quot; &quot;1970-01-04&quot; &quot;1970-01-04&quot;</span></span>
+<span id="cb29-5"><a href="#cb29-5" tabindex="-1"></a><span class="co">#&gt; [6] &quot;1970-01-04&quot; &quot;1970-04-12&quot;</span></span>
+<span id="cb29-6"><a href="#cb29-6" tabindex="-1"></a></span>
+<span id="cb29-7"><a href="#cb29-7" tabindex="-1"></a><span class="fu">as_weekday</span>(<span class="fu">date_floor</span>(x, <span class="st">&quot;week&quot;</span>, <span class="at">n =</span> <span class="dv">14</span>, <span class="at">origin =</span> sunday))</span>
+<span id="cb29-8"><a href="#cb29-8" tabindex="-1"></a><span class="co">#&gt; &lt;weekday[7]&gt;</span></span>
+<span id="cb29-9"><a href="#cb29-9" tabindex="-1"></a><span class="co">#&gt; [1] Sun Sun Sun Sun Sun Sun Sun</span></span></code></pre></div>
+<p>If you only need to floor by 1 week, it is often easier to use
+<code>date_shift()</code>, as seen in the next section.</p>
+</div>
+<div id="shifting" class="section level3">
+<h3>Shifting</h3>
+<p><code>date_shift()</code> allows you to target a weekday, and then
+shift a vector of dates forward or backward to the next instance of that
+target. It requires using one of the new types in clock,
+<em>weekday</em>, which is supplied as the target.</p>
+<p>For example, to shift to the next Tuesday:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">date_build</span>(<span class="dv">2020</span>, <span class="dv">1</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a><span class="co"># Wednesday / Thursday</span></span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a><span class="fu">as_weekday</span>(x)</span>
+<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a><span class="co">#&gt; &lt;weekday[2]&gt;</span></span>
+<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a><span class="co">#&gt; [1] Wed Thu</span></span>
+<span id="cb30-7"><a href="#cb30-7" tabindex="-1"></a></span>
+<span id="cb30-8"><a href="#cb30-8" tabindex="-1"></a><span class="co"># `clock_weekdays` is a helper that returns the code corresponding to</span></span>
+<span id="cb30-9"><a href="#cb30-9" tabindex="-1"></a><span class="co"># the requested day of the week</span></span>
+<span id="cb30-10"><a href="#cb30-10" tabindex="-1"></a>clock_weekdays<span class="sc">$</span>tuesday</span>
+<span id="cb30-11"><a href="#cb30-11" tabindex="-1"></a><span class="co">#&gt; [1] 3</span></span>
+<span id="cb30-12"><a href="#cb30-12" tabindex="-1"></a></span>
+<span id="cb30-13"><a href="#cb30-13" tabindex="-1"></a>tuesday <span class="ot">&lt;-</span> <span class="fu">weekday</span>(clock_weekdays<span class="sc">$</span>tuesday)</span>
+<span id="cb30-14"><a href="#cb30-14" tabindex="-1"></a>tuesday</span>
+<span id="cb30-15"><a href="#cb30-15" tabindex="-1"></a><span class="co">#&gt; &lt;weekday[1]&gt;</span></span>
+<span id="cb30-16"><a href="#cb30-16" tabindex="-1"></a><span class="co">#&gt; [1] Tue</span></span>
+<span id="cb30-17"><a href="#cb30-17" tabindex="-1"></a></span>
+<span id="cb30-18"><a href="#cb30-18" tabindex="-1"></a><span class="fu">date_shift</span>(x, <span class="at">target =</span> tuesday)</span>
+<span id="cb30-19"><a href="#cb30-19" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2020-01-07&quot; &quot;2020-01-07&quot;</span></span></code></pre></div>
+<p>Shifting to the <em>previous</em> day of the week is a nice way to
+floor by 1 week. It allows you to control the start of the week in a way
+that is slightly easier than using
+<code>date_floor(origin = )</code>.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">date_build</span>(<span class="dv">1970</span>, <span class="dv">01</span>, <span class="dv">01</span>), <span class="fu">date_build</span>(<span class="dv">1970</span>, <span class="dv">01</span>, <span class="st">&quot;last&quot;</span>), <span class="at">by =</span> <span class="dv">3</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a><span class="fu">date_shift</span>(x, tuesday, <span class="at">which =</span> <span class="st">&quot;previous&quot;</span>)</span>
+<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;1969-12-30&quot; &quot;1969-12-30&quot; &quot;1970-01-06&quot; &quot;1970-01-06&quot; &quot;1970-01-13&quot;</span></span>
+<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a><span class="co">#&gt;  [6] &quot;1970-01-13&quot; &quot;1970-01-13&quot; &quot;1970-01-20&quot; &quot;1970-01-20&quot; &quot;1970-01-27&quot;</span></span>
+<span id="cb31-6"><a href="#cb31-6" tabindex="-1"></a><span class="co">#&gt; [11] &quot;1970-01-27&quot;</span></span></code></pre></div>
+</div>
+</div>
+<div id="arithmetic" class="section level2">
+<h2>Arithmetic</h2>
+<p>You can do arithmetic with dates and date-times using the family of
+<code>add_*()</code> functions. With dates, you can add years, months,
+and days. With date-times, you can additionally add hours, minutes, and
+seconds.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">date_build</span>(<span class="dv">2020</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a><span class="fu">add_years</span>(x, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span>
+<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2021-01-01&quot; &quot;2022-01-01&quot; &quot;2023-01-01&quot; &quot;2024-01-01&quot; &quot;2025-01-01&quot;</span></span></code></pre></div>
+<p>One of the neat parts about clock is that it requires you to be
+explicit about how you want to handle invalid dates when doing
+arithmetic. What is 1 month after January 31st? If you try and create
+this date, you’ll get an error.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">date_build</span>(<span class="dv">2020</span>, <span class="dv">1</span>, <span class="dv">31</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a><span class="fu">add_months</span>(x, <span class="dv">1</span>)</span>
+<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a><span class="co">#&gt; Error in `invalid_resolve()`:</span></span>
+<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a><span class="co">#&gt; ! Invalid date found at location 1.</span></span>
+<span id="cb33-6"><a href="#cb33-6" tabindex="-1"></a><span class="co">#&gt; ℹ Resolve invalid date issues by specifying the `invalid` argument.</span></span></code></pre></div>
+<p>clock gives you the power to handle this through the
+<code>invalid</code> option:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="co"># The previous valid moment in time</span></span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a><span class="fu">add_months</span>(x, <span class="dv">1</span>, <span class="at">invalid =</span> <span class="st">&quot;previous&quot;</span>)</span>
+<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2020-02-29&quot;</span></span>
+<span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a></span>
+<span id="cb34-5"><a href="#cb34-5" tabindex="-1"></a><span class="co"># The next valid moment in time</span></span>
+<span id="cb34-6"><a href="#cb34-6" tabindex="-1"></a><span class="fu">add_months</span>(x, <span class="dv">1</span>, <span class="at">invalid =</span> <span class="st">&quot;next&quot;</span>)</span>
+<span id="cb34-7"><a href="#cb34-7" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2020-03-01&quot;</span></span>
+<span id="cb34-8"><a href="#cb34-8" tabindex="-1"></a></span>
+<span id="cb34-9"><a href="#cb34-9" tabindex="-1"></a><span class="co"># Overflow the days. There were 29 days in February, 2020, but we</span></span>
+<span id="cb34-10"><a href="#cb34-10" tabindex="-1"></a><span class="co"># specified 31. So this overflows 2 days past day 29.</span></span>
+<span id="cb34-11"><a href="#cb34-11" tabindex="-1"></a><span class="fu">add_months</span>(x, <span class="dv">1</span>, <span class="at">invalid =</span> <span class="st">&quot;overflow&quot;</span>)</span>
+<span id="cb34-12"><a href="#cb34-12" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2020-03-02&quot;</span></span>
+<span id="cb34-13"><a href="#cb34-13" tabindex="-1"></a></span>
+<span id="cb34-14"><a href="#cb34-14" tabindex="-1"></a><span class="co"># If you don&#39;t consider it to be a valid date</span></span>
+<span id="cb34-15"><a href="#cb34-15" tabindex="-1"></a><span class="fu">add_months</span>(x, <span class="dv">1</span>, <span class="at">invalid =</span> <span class="st">&quot;NA&quot;</span>)</span>
+<span id="cb34-16"><a href="#cb34-16" tabindex="-1"></a><span class="co">#&gt; [1] NA</span></span></code></pre></div>
+<p>As a teaser, the low level library has a <em>calendar</em> type named
+year-month-day that powers this operation. It actually gives you
+<em>more</em> flexibility, allowing <code>&quot;2020-02-31&quot;</code> to exist
+in the wild:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a>ymd <span class="ot">&lt;-</span> <span class="fu">as_year_month_day</span>(x) <span class="sc">+</span> <span class="fu">duration_months</span>(<span class="dv">1</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a>ymd</span>
+<span id="cb35-3"><a href="#cb35-3" tabindex="-1"></a><span class="co">#&gt; &lt;year_month_day&lt;day&gt;[1]&gt;</span></span>
+<span id="cb35-4"><a href="#cb35-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2020-02-31&quot;</span></span></code></pre></div>
+<p>You can use <code>invalid_resolve(invalid =)</code> to resolve this
+like you did in <code>add_months()</code>, or you can let it hang around
+if you expect other operations to make it “valid” again.</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a><span class="co"># Adding 1 more month makes it valid again</span></span>
+<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a>ymd <span class="sc">+</span> <span class="fu">duration_months</span>(<span class="dv">1</span>)</span>
+<span id="cb36-3"><a href="#cb36-3" tabindex="-1"></a><span class="co">#&gt; &lt;year_month_day&lt;day&gt;[1]&gt;</span></span>
+<span id="cb36-4"><a href="#cb36-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2020-03-31&quot;</span></span></code></pre></div>
+<p>When working with date-times, you can additionally add hours,
+minutes, and seconds.</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">date_time_build</span>(<span class="dv">2020</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">30</span>, <span class="at">zone =</span> <span class="st">&quot;America/New_York&quot;</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" tabindex="-1"></a></span>
+<span id="cb37-3"><a href="#cb37-3" tabindex="-1"></a>x <span class="sc">%&gt;%</span></span>
+<span id="cb37-4"><a href="#cb37-4" tabindex="-1"></a>  <span class="fu">add_days</span>(<span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb37-5"><a href="#cb37-5" tabindex="-1"></a>  <span class="fu">add_hours</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>)</span>
+<span id="cb37-6"><a href="#cb37-6" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2020-01-02 04:30:00 EST&quot; &quot;2020-01-02 05:30:00 EST&quot;</span></span>
+<span id="cb37-7"><a href="#cb37-7" tabindex="-1"></a><span class="co">#&gt; [3] &quot;2020-01-02 06:30:00 EST&quot; &quot;2020-01-02 07:30:00 EST&quot;</span></span></code></pre></div>
+<p>When adding units of time to a POSIXct, you have to be very careful
+with daylight saving time issues. clock tries to help you out by letting
+you know when you run into an issue:</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">date_time_build</span>(<span class="dv">1970</span>, <span class="dv">04</span>, <span class="dv">25</span>, <span class="dv">02</span>, <span class="dv">30</span>, <span class="dv">00</span>, <span class="at">zone =</span> <span class="st">&quot;America/New_York&quot;</span>)</span>
+<span id="cb38-2"><a href="#cb38-2" tabindex="-1"></a>x</span>
+<span id="cb38-3"><a href="#cb38-3" tabindex="-1"></a><span class="co">#&gt; [1] &quot;1970-04-25 02:30:00 EST&quot;</span></span>
+<span id="cb38-4"><a href="#cb38-4" tabindex="-1"></a></span>
+<span id="cb38-5"><a href="#cb38-5" tabindex="-1"></a><span class="co"># Daylight saving time gap on the 26th between 01:59:59 -&gt; 03:00:00</span></span>
+<span id="cb38-6"><a href="#cb38-6" tabindex="-1"></a>x <span class="sc">%&gt;%</span> <span class="fu">add_days</span>(<span class="dv">1</span>)</span>
+<span id="cb38-7"><a href="#cb38-7" tabindex="-1"></a><span class="co">#&gt; Error in `as_zoned_time()`:</span></span>
+<span id="cb38-8"><a href="#cb38-8" tabindex="-1"></a><span class="co">#&gt; ! Nonexistent time due to daylight saving time at location 1.</span></span>
+<span id="cb38-9"><a href="#cb38-9" tabindex="-1"></a><span class="co">#&gt; ℹ Resolve nonexistent time issues by specifying the `nonexistent` argument.</span></span></code></pre></div>
+<p>You can solve this using the <code>nonexistent</code> argument to
+control how these times should be handled.</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="co"># Roll forward to the next valid moment in time</span></span>
+<span id="cb39-2"><a href="#cb39-2" tabindex="-1"></a>x <span class="sc">%&gt;%</span> <span class="fu">add_days</span>(<span class="dv">1</span>, <span class="at">nonexistent =</span> <span class="st">&quot;roll-forward&quot;</span>)</span>
+<span id="cb39-3"><a href="#cb39-3" tabindex="-1"></a><span class="co">#&gt; [1] &quot;1970-04-26 03:00:00 EDT&quot;</span></span>
+<span id="cb39-4"><a href="#cb39-4" tabindex="-1"></a></span>
+<span id="cb39-5"><a href="#cb39-5" tabindex="-1"></a><span class="co"># Roll backward to the previous valid moment in time</span></span>
+<span id="cb39-6"><a href="#cb39-6" tabindex="-1"></a>x <span class="sc">%&gt;%</span> <span class="fu">add_days</span>(<span class="dv">1</span>, <span class="at">nonexistent =</span> <span class="st">&quot;roll-backward&quot;</span>)</span>
+<span id="cb39-7"><a href="#cb39-7" tabindex="-1"></a><span class="co">#&gt; [1] &quot;1970-04-26 01:59:59 EST&quot;</span></span>
+<span id="cb39-8"><a href="#cb39-8" tabindex="-1"></a></span>
+<span id="cb39-9"><a href="#cb39-9" tabindex="-1"></a><span class="co"># Shift forward by adding the size of the DST gap</span></span>
+<span id="cb39-10"><a href="#cb39-10" tabindex="-1"></a><span class="co"># (this often keeps the time of day,</span></span>
+<span id="cb39-11"><a href="#cb39-11" tabindex="-1"></a><span class="co"># but doesn&#39;t guaratee that relative ordering in `x` is maintained</span></span>
+<span id="cb39-12"><a href="#cb39-12" tabindex="-1"></a><span class="co"># so I don&#39;t recommend it)</span></span>
+<span id="cb39-13"><a href="#cb39-13" tabindex="-1"></a>x <span class="sc">%&gt;%</span> <span class="fu">add_days</span>(<span class="dv">1</span>, <span class="at">nonexistent =</span> <span class="st">&quot;shift-forward&quot;</span>)</span>
+<span id="cb39-14"><a href="#cb39-14" tabindex="-1"></a><span class="co">#&gt; [1] &quot;1970-04-26 03:30:00 EDT&quot;</span></span>
+<span id="cb39-15"><a href="#cb39-15" tabindex="-1"></a></span>
+<span id="cb39-16"><a href="#cb39-16" tabindex="-1"></a><span class="co"># Replace nonexistent times with an NA</span></span>
+<span id="cb39-17"><a href="#cb39-17" tabindex="-1"></a>x <span class="sc">%&gt;%</span> <span class="fu">add_days</span>(<span class="dv">1</span>, <span class="at">nonexistent =</span> <span class="st">&quot;NA&quot;</span>)</span>
+<span id="cb39-18"><a href="#cb39-18" tabindex="-1"></a><span class="co">#&gt; [1] NA</span></span></code></pre></div>
+</div>
+<div id="getting-and-setting" class="section level2">
+<h2>Getting and setting</h2>
+<p>clock provides a family of getters and setters for working with dates
+and date-times. You can get and set the year, month, or day of a
+date.</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">date_build</span>(<span class="dv">2019</span>, <span class="dv">5</span>, <span class="dv">6</span>)</span>
+<span id="cb40-2"><a href="#cb40-2" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" tabindex="-1"></a><span class="fu">get_year</span>(x)</span>
+<span id="cb40-4"><a href="#cb40-4" tabindex="-1"></a><span class="co">#&gt; [1] 2019</span></span>
+<span id="cb40-5"><a href="#cb40-5" tabindex="-1"></a><span class="fu">get_month</span>(x)</span>
+<span id="cb40-6"><a href="#cb40-6" tabindex="-1"></a><span class="co">#&gt; [1] 5</span></span>
+<span id="cb40-7"><a href="#cb40-7" tabindex="-1"></a><span class="fu">get_day</span>(x)</span>
+<span id="cb40-8"><a href="#cb40-8" tabindex="-1"></a><span class="co">#&gt; [1] 6</span></span>
+<span id="cb40-9"><a href="#cb40-9" tabindex="-1"></a></span>
+<span id="cb40-10"><a href="#cb40-10" tabindex="-1"></a>x <span class="sc">%&gt;%</span></span>
+<span id="cb40-11"><a href="#cb40-11" tabindex="-1"></a>  <span class="fu">set_day</span>(<span class="dv">22</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb40-12"><a href="#cb40-12" tabindex="-1"></a>  <span class="fu">set_month</span>(<span class="dv">10</span>)</span>
+<span id="cb40-13"><a href="#cb40-13" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-10-22&quot;</span></span></code></pre></div>
+<p>As you might expect by now, setting the date to an invalid date
+requires you to explicitly handle this:</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a>x <span class="sc">%&gt;%</span></span>
+<span id="cb41-2"><a href="#cb41-2" tabindex="-1"></a>  <span class="fu">set_day</span>(<span class="dv">31</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb41-3"><a href="#cb41-3" tabindex="-1"></a>  <span class="fu">set_month</span>(<span class="dv">4</span>)</span>
+<span id="cb41-4"><a href="#cb41-4" tabindex="-1"></a><span class="co">#&gt; Error in `invalid_resolve()`:</span></span>
+<span id="cb41-5"><a href="#cb41-5" tabindex="-1"></a><span class="co">#&gt; ! Invalid date found at location 1.</span></span>
+<span id="cb41-6"><a href="#cb41-6" tabindex="-1"></a><span class="co">#&gt; ℹ Resolve invalid date issues by specifying the `invalid` argument.</span></span>
+<span id="cb41-7"><a href="#cb41-7" tabindex="-1"></a></span>
+<span id="cb41-8"><a href="#cb41-8" tabindex="-1"></a>x <span class="sc">%&gt;%</span></span>
+<span id="cb41-9"><a href="#cb41-9" tabindex="-1"></a>  <span class="fu">set_day</span>(<span class="dv">31</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb41-10"><a href="#cb41-10" tabindex="-1"></a>  <span class="fu">set_month</span>(<span class="dv">4</span>, <span class="at">invalid =</span> <span class="st">&quot;previous&quot;</span>)</span>
+<span id="cb41-11"><a href="#cb41-11" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-04-30&quot;</span></span></code></pre></div>
+<p>You can additionally set the hour, minute, and second of a
+POSIXct.</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">date_time_build</span>(<span class="dv">2020</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="at">zone =</span> <span class="st">&quot;America/New_York&quot;</span>)</span>
+<span id="cb42-2"><a href="#cb42-2" tabindex="-1"></a>x</span>
+<span id="cb42-3"><a href="#cb42-3" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2020-01-02 03:00:00 EST&quot;</span></span>
+<span id="cb42-4"><a href="#cb42-4" tabindex="-1"></a></span>
+<span id="cb42-5"><a href="#cb42-5" tabindex="-1"></a>x <span class="sc">%&gt;%</span></span>
+<span id="cb42-6"><a href="#cb42-6" tabindex="-1"></a>  <span class="fu">set_minute</span>(<span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb42-7"><a href="#cb42-7" tabindex="-1"></a>  <span class="fu">set_second</span>(<span class="dv">10</span>)</span>
+<span id="cb42-8"><a href="#cb42-8" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2020-01-02 03:05:10 EST&quot;</span></span></code></pre></div>
+<p>As with other manipulations of POSIXct, you’ll have to be aware of
+daylight saving time when setting components. You may need to supply the
+<code>nonexistent</code> or <code>ambiguous</code> arguments of the
+<code>set_*()</code> functions to handle these issues.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

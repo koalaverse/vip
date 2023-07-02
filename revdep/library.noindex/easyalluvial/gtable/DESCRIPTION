@@ -1,0 +1,39 @@
+Package: gtable
+Title: Arrange 'Grobs' in Tables
+Version: 0.3.3
+Authors@R: 
+    c(person(given = "Hadley",
+             family = "Wickham",
+             role = "aut",
+             email = "hadley@posit.co"),
+      person(given = "Thomas Lin",
+             family = "Pedersen",
+             role = c("aut", "cre"),
+             email = "thomas.pedersen@posit.co"),
+      person(given = "Posit Software, PBC",
+             role = "cph"))
+Description: Tools to make it easier to work with "tables" of
+    'grobs'. The 'gtable' package defines a 'gtable' grob class that specifies a
+    grid along with a list of grobs and their placement in the grid. Further the
+    package makes it easy to manipulate and combine 'gtable' objects so that 
+    complex compositions can be built up sequentially.
+License: MIT + file LICENSE
+Depends: R (>= 3.5)
+Imports: cli, glue, grid, lifecycle, rlang (>= 1.1.0)
+Suggests: covr, ggplot2, knitr, profvis, rmarkdown, testthat (>= 3.0.0)
+VignetteBuilder: knitr
+Encoding: UTF-8
+RoxygenNote: 7.2.3
+URL: https://gtable.r-lib.org, https://github.com/r-lib/gtable
+BugReports: https://github.com/r-lib/gtable/issues
+Config/testthat/edition: 3
+Config/Needs/website: tidyverse/tidytemplate
+NeedsCompilation: no
+Packaged: 2023-03-21 13:17:30 UTC; thomas
+Author: Hadley Wickham [aut],
+  Thomas Lin Pedersen [aut, cre],
+  Posit Software, PBC [cph]
+Maintainer: Thomas Lin Pedersen <thomas.pedersen@posit.co>
+Repository: CRAN
+Date/Publication: 2023-03-21 14:00:05 UTC
+Built: R 4.2.0; ; 2023-03-21 15:29:49 UTC; unix

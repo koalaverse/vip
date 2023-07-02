@@ -1,0 +1,497 @@
+/* control page width ====================================================== */
+
+// Ensure contents never become unreadably wide
+.row > main {
+  max-width: 50rem;
+}
+// Put extra space between content and navbar
+@include media-breakpoint-only(xl) {
+  .container .row { justify-content: space-evenly; }
+}
+// Boost font size and give big (but not infinite) margin on sidebar
+@include media-breakpoint-up(xxl) {
+  body { font-size: 18px }
+  .col-md-3 { margin-left: 5rem; }
+}
+
+/* navbar =================================================================== */
+
+// boostrap doesn't style active/hovered nav making it hard to see where
+// you are and where you're going, so we add our own styling
+.navbar-nav .nav-item > .nav-link {
+  @include border-radius($border-radius);
+  padding: 0.5rem;
+}
+
+// Align baselines of package name, version, and nav items
+.navbar > .container {
+  align-items: baseline;
+  -webkit-align-items: baseline;
+}
+
+.navbar-light .navbar-nav .active > .nav-link {
+  background: $gray-200;
+  color:      $body-color;
+}
+.navbar-dark .navbar-nav .active > .nav-link {
+  background: $gray-800;
+  color:      $body-bg;
+}
+
+.navbar-dark .navbar-nav .nav-item > .nav-link:hover,
+.navbar-light .navbar-nav .nav-item > .nav-link:hover {
+  background: change-color($primary, $alpha: 0.1);
+}
+
+.navbar-dark {
+  input[type="search"] {
+    border-color: $gray-600;
+    background-color: $gray-900;
+    color: $gray-200;
+  }
+}
+
+input[type="search"] {
+  border-color: $border-color;
+  width: 12rem;
+}
+
+/* headroom.js -------------------------------------------------------------- */
+
+.headroom {
+  will-change: transform;
+  transition: transform 400ms ease;
+}
+.headroom--pinned   { transform: translateY(0%); }
+.headroom--unpinned { transform: translateY(-100%); }
+
+// Need to adjust body components down by height of navbar so it
+// doesn't overlap them when visible
+$pkgdown-nav-height: 56px !default;
+
+.row > main, .row > aside {
+  margin-top: $pkgdown-nav-height;
+}
+html, body {
+  scroll-padding: $pkgdown-nav-height
+}
+
+// Make scrollable, sticky TOC
+@include media-breakpoint-up(sm) {
+  #toc {
+    position: sticky;
+    top: $pkgdown-nav-height;
+    max-height: calc(100vh - #{$pkgdown-nav-height} - 1rem);
+    overflow-y: auto;
+  }
+}
+
+/* sidebar ================================================================== */
+
+aside {
+  h2 {
+    margin-top: 1.5rem;
+    font-size: $font-size-lg;
+  }
+  .roles {
+    color: mix($body-color, $body-bg, 80%);
+  }
+
+  .list-unstyled li { margin-bottom: 0.5rem; }
+  .dev-status .list-unstyled li { margin-bottom: 0.1rem; }
+}
+
+// Add some visual distinction between content and "sidebar" on mobile
+@include media-breakpoint-down(sm) {
+  aside {
+    margin: 0.5rem;
+    width: calc(100vw - 1rem);
+    background-color: $gray-100;
+    border-color: $border-color;
+    @include border-radius($border-radius);
+
+    h2:first-child {
+      margin-top: 1rem;
+    }
+  }
+}
+
+/* table of contents -------------------------------------------------------- */
+$pkgdown-toc-border-width: 0 !default;
+$pkgdown-toc-border-color: $border-color !default;
+$pkgdown-toc-active-bg: mix($body-color, $body-bg, 10%) !default;
+$pkgdown-toc-active-color: color-contrast($pkgdown-toc-active-bg) !default;
+$pkgdown-toc-hover-bg: change-color($primary, $alpha: 0.1) !default;
+$pkgdown-toc-hover-color: color-contrast($pkgdown-toc-active-bg) !default;
+
+// needed for scrollspy
+body {position: relative;}
+
+#toc > .nav {
+  margin-bottom: 1rem;
+
+  a.nav-link {
+    color: inherit;
+    padding: 0.25rem 0.5rem;
+    margin-bottom: 2px;
+    @include border-radius($border-radius);
+    border: $pkgdown-toc-border-width solid $pkgdown-toc-border-color;
+
+    &:hover, &:focus {
+      background-color: $pkgdown-toc-hover-bg;
+      color: $pkgdown-toc-hover-color;
+    }
+    &.active {
+      background-color: $pkgdown-toc-active-bg;
+      color: $pkgdown-toc-active-color;
+    }
+  }
+
+  // Nested headings are indented
+  .nav a.nav-link { margin-left: 0.5rem; }
+
+  // Only show second level if active.
+  // Requires !important because that's how BS5 sets display: flex
+  .nav { display: none !important; }
+  a.active + .nav { display: flex !important; }
+}
+
+/* footer  ================================================================== */
+
+$pkgdown-footer-color: mix($body-color, $body-bg, 80%) !default;
+$pkgdown-footer-bg: transparent !default;
+$pkgdown-footer-border-color: $border-color !default;
+$pkgdown-footer-border-width: $border-width !default;
+
+footer {
+  margin: 1rem 0 1rem 0;
+  font-size: .875em;
+  border-top: $pkgdown-footer-border-width solid $pkgdown-footer-border-color;
+  background: $pkgdown-footer-bg;
+  color: $pkgdown-footer-color;
+  display: flex;
+  column-gap: 1rem;
+}
+
+@include media-breakpoint-down(sm) {
+  footer {flex-direction: column;}
+}
+@include media-breakpoint-up(sm) {
+  footer .pkgdown-footer-right { text-align: right;}
+}
+
+footer div {
+  flex: 1 1 auto;
+}
+
+// "Sticky" footer - i.e. the footer always hugs the bottom of the viewport
+// even for short pages.
+//
+// Basic idea: https://philipwalton.github.io/solved-by-flexbox/demos/sticky-footer/
+// Details: https://github.com/philipwalton/solved-by-flexbox/blob/master/assets/css/components/site.css
+
+// Need .container and __all parents__ have height set to 100%
+html, body {
+  height: 100%;
+}
+body > .container {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+body > .container .row {
+  flex: 1 0 auto;
+}
+
+/* General typography ======================================================= */
+
+::selection {
+  background-color: mix($primary, $body-bg, 20%);
+}
+
+// Ensure in-page images don't run outside their container
+main img {
+  max-width: 100%;
+  height: auto;
+}
+main table {
+  display: block;
+  overflow: auto;
+}
+
+// avoid flash of invisible text + flash of unstyled text
+body {
+  font-display: fallback;
+}
+
+// page header
+.page-header {
+  border-bottom: 1px solid $border-color;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+// spacing tweaks
+dd {
+  margin-left: 1.5rem;
+}
+summary {
+  margin-bottom: 0.5rem;
+}
+details {
+  margin-bottom: 1rem;
+}
+
+.html-widget {
+  margin-bottom: 1rem;
+}
+
+// Section anchors
+a.anchor {
+  display: none;
+  margin-left: 5px;
+  width: Min(0.9em, 20px);
+  height: Min(0.9em, 20px);
+
+  background-image: url(../../link.svg);
+  background-repeat: no-repeat;
+  background-size: Min(0.9em, 20px) Min(0.9em, 20px);
+  background-position: center center;
+}
+h2, h3, h4, h5, h6 {
+  &:hover .anchor {display: inline-block;}
+}
+
+// orcid badge
+.orcid {
+  color: #A6CE39;
+  margin-right: 4px;
+}
+// activate font awesome
+.fab {
+  font-family: "Font Awesome 5 Brands" !important;
+}
+
+// package logo
+img.logo {
+  float: right;
+  width: 100px;
+  margin-left: 30px;
+}
+.template-home img.logo {
+  width: 120px;
+}
+
+@include media-breakpoint-down(sm) {
+  img.logo {width: 80px;}
+}
+// line up h1 border-bottom with corner of hexagon
+// values determined empirically
+@include media-breakpoint-up(sm) {
+  .page-header {min-height: 88px}
+  .template-home .page-header {min-height: 104px}
+}
+
+// line-block produced by pandoc needs margin-bottom since it doesn't
+// contain other tags
+.line-block {
+  margin-bottom: 1rem;
+}
+
+// Override bootstrap defaults that make sense in page bodies, but not on
+// the reference index
+.template-reference-index {
+  dt {font-weight: normal;}
+  // Don't allow breaking within a function name
+  code {word-wrap: normal;}
+}
+.icon {
+  float: right;
+  img {width: 40px;}
+}
+
+/* Footnotes ---------------------------------------------------------------- */
+
+a.footnote-ref {
+  cursor: pointer;
+}
+
+// use "Min" to trigger computation in css, not sass
+.popover {
+  width: Min(100vw, 32rem);
+  font-size: 0.9rem;
+  box-shadow: 4px 4px 8px change-color($black, $alpha: 0.3);
+}
+.popover-body {
+  padding: 0.75rem;
+}
+.popover-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* tabsets ------------------------------------------------------------------ */
+
+.tab-content {
+  padding: 1rem;
+}
+.tabset-pills .tab-content {
+  border: solid 1px #e5e5e5;
+}
+
+// Make tab height consistent
+// https://observablehq.com/@rkaravia/css-trick-tabs-with-consistent-height
+.tab-content {
+  display: flex;
+}
+.tab-content > .tab-pane {
+  display: block; /* undo "display: none;" */
+  visibility: hidden;
+  margin-right: -100%;
+  width: 100%;
+}
+.tab-content > .active {
+  visibility: visible;
+}
+
+/* bibliography styling ----------------------------------------------------- */
+// Added in pandoc 2.11: https://github.com/jgm/pandoc-templates/commit/9904bf71
+
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+
+/* code ===================================================================== */
+
+pre, pre code {
+  // override bootstrap deafult that causes problems in old safari + IE
+  // https://github.com/rstudio/shiny/issues/2233
+  word-wrap: normal;
+}
+
+code {
+  // break long functions into multiple lines
+  overflow-wrap: break-word;
+}
+
+// copy button
+.hasCopyButton {
+  position: relative;
+}
+.btn-copy-ex {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  visibility: hidden;
+}
+.hasCopyButton:hover button.btn-copy-ex {
+  visibility: visible;
+}
+// Ensure there's enough space for the copy button
+pre {
+  padding: 1rem 0.5rem;
+}
+
+// "Pop" code out of page margins on small screens to give a little more room
+@include media-breakpoint-down(sm) {
+  // div.section div.sourceCode pre
+  // prevents matching <pre> inside (e.g.) a <li>
+  div > div > pre {
+    margin-left: calc(var(--bs-gutter-x) * -.5);
+    margin-right: calc(var(--bs-gutter-x) * -.5);
+    border-radius: 0;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .btn-copy-ex {
+    right: calc(var(--bs-gutter-x) * -.5 + 5px);
+  }
+}
+
+code a:any-link {
+  color: inherit;
+  text-decoration-color: $gray-600;
+}
+
+pre code {
+  padding: 0;
+  background: transparent;
+
+  .error, .warning {font-weight: bolder;}
+}
+
+pre .img, pre .r-plt {
+  img {
+    margin: 5px 0;
+    background-color: #fff;
+  }
+}
+
+/* don't display links in code chunks when printing */
+/* source: https://stackoverflow.com/a/10781533 */
+@media print {
+  code a:link:after, code a:visited:after {
+    content: "";
+  }
+}
+
+a.sourceLine:hover {
+  text-decoration: none;
+}
+
+/* search =================================================================== */
+
+mark {
+  background: linear-gradient(-100deg,
+    change-color($info, $alpha: 0.2),
+    change-color($info, $alpha: 0.7) 95%,
+    change-color($info, $alpha: 0.1)
+  )
+}
+
+.algolia-autocomplete .aa-hint {
+  color: $gray-900;
+}
+
+/* "Max" needed until libsass supports https://sass-lang.com/documentation/syntax/special-functions#min-and-max */
+.algolia-autocomplete .aa-dropdown-menu {
+  width: Max(100%, 20rem);
+  background-color: $body-bg;
+  border: $border-width solid $table-border-color;
+  margin-top: 2px;
+
+  max-height: 50vh;
+  overflow-y: auto;
+}
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion {
+  cursor: pointer;
+  padding: 5px 4px;
+  border-bottom: 1px $gray-200 solid;
+  font-size: 0.9rem;
+  color: $gray-900;
+}
+.search-details {
+  font-size: 0.9rem;
+  color: $primary;
+  display: inline;
+  font-weight: bolder;
+}
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion.aa-cursor {
+  background-color: mix($primary, $body-bg, 10%);
+}

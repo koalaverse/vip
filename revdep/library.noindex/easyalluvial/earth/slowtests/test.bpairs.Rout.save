@@ -1,0 +1,2044 @@
+> # test.bpairs.R:
+> 
+> source("test.prolog.R")
+> source("check.models.equal.R")
+> source("check.earth.matches.glm.R")
+> library(earth)
+Loading required package: Formula
+Loading required package: plotmo
+Loading required package: plotrix
+Loading required package: TeachingDemos
+> data(ozone1)
+> data(trees)
+> data(etitanic)
+> options(warn=1) # print warnings as they occur
+> 
+> cat("\n===short and long data===\n")
+
+===short and long data===
+> x.short <- data.frame(x1=c(5,2,2,9,5), x2=c(20,20,30,20,20))
+> y.short <- data.frame(true=c(1,2,0,2,2), false=c(3,3,1,0,1))
+> short <- data.frame(x.short, y.short)
+> cat("short:\n")
+short:
+> print(short)
+  x1 x2 true false
+1  5 20    1     3
+2  2 20    2     3
+3  2 30    0     1
+4  9 20    2     0
+5  5 20    2     1
+> x.long <- data.frame(x1=c( 5, 5, 5, 5,  2, 2, 2, 2, 2,  2,  9, 9,   5,  5,  5),
++                      x2=c(20,20,20,20, 20,20,20,20,20, 30, 20,20,  20, 20, 20))
+> y.long <- data.frame(true=c(1,0,0,0,  1, 1, 0, 0, 0,  0,  1, 1,   1,  1,  0))
+> long <- data.frame(x.long, y.long)
+> cat("long:\n")
+long:
+> print(long)
+   x1 x2 true
+1   5 20    1
+2   5 20    0
+3   5 20    0
+4   5 20    0
+5   2 20    1
+6   2 20    1
+7   2 20    0
+8   2 20    0
+9   2 20    0
+10  2 30    0
+11  9 20    1
+12  9 20    1
+13  5 20    1
+14  5 20    1
+15  5 20    0
+> true.false <- cbind(true=short$true, false=short$false)
+> weights.long <- c(4, 4, 4, 4, 5, 5, 5, 5, 5, 1, 2, 2, 3, 3, 3)
+> 
+> elong <- earth(true~x1+x2, data=long, glm=list(family="binomial"),
++                linpreds=TRUE, thresh=0, penalty=-1, trace=1)
+x[15,2] with colnames x1 x2
+y[15,1] with colname true, and values 1, 0, 0, 0, 1, 1, 0, 0, 0, 0,...
+Forward pass term 1, 2, 4, 6
+No new term increases RSq (perhaps reached numerical limits) at 5 terms, 3 terms used
+After forward pass GRSq 0.173 RSq 0.173
+Prune backward penalty -1 nprune null: selected 3 of 3 terms, and 2 of 2 preds
+After pruning pass GRSq 0.173 RSq 0.173
+GLM true devratio 0.15 dof 12/14 iters 16
+> glong <- glm(true~x1+x2, data=long, family="binomial")
+> check.earth.matches.glm(elong, glong)
+check elong vs glong
+> par(mfrow=c(2,2))
+> plotres(elong, do.par=0, which=c(1,3), main="elong", legend.pos="topleft")
+> empty.plot()
+> plotres(glong, do.par=0, which=3, main="glong")
+> par(mfrow=c(2,2))
+> plotmo(elong, do.par=0)
+ plotmo grid:    x1 x2
+                  5 20
+> plotmo(glong, do.par=0)
+ plotmo grid:    x1 x2
+                  5 20
+> par(org.par)
+> 
+> eshort <- earth(true.false~x1+x2, data=short, glm=list(family="binomial"),
++                 linpreds=TRUE, thresh=0, penalty=-1, trace=2)
+x[5,2] with colnames x1 x2
+y[5,2] with colnames true false
+weights used by earth internally: 4, 5, 1, 2, 3
+weights passed to glm (which will adjust by rowsums): NULL
+Response columns true and false are a binomial pair (15 obs in total)
+yfrac[5,1] with colname true, and values 0.25, 0.4, 0, 1, 0.6667
+Linear predictors 1=x1 2=x2
+Forward pass: minspan 3 endspan 1   x[5,2] 80 Bytes   bx[5,21] 840 Bytes weighted
+
+         GRSq    RSq     DeltaRSq Pred     PredName         Cut  Terms   Par Deg
+1      0.0000 0.0000                    (Intercept)
+2      0.5017 0.5017       0.5017    1           x1           2< 2             1 
+4      0.5775 0.5775      0.07583    2           x2          20< 3             1 
+6      0.5775 0.5775            0    -                                       reject (no DeltaRsq)
+
+No new term increases RSq (perhaps reached numerical limits) at 5 terms, 3 terms used
+After forward pass GRSq 0.578 RSq 0.578
+Forward pass complete: 5 terms, 3 terms used
+Prune backward penalty -1 nprune null: selected 3 of 3 terms, and 2 of 2 preds
+After pruning pass GRSq 0.578 RSq 0.578
+GLM true devratio 0.54 dof 2/4 iters 18
+> gshort <- glm(true.false~x1+x2, data=short, family="binomial")
+> OLD.EARTH <- FALSE # earth prior to version 5.0.0
+> MAX.ARG <- if(OLD.EARTH) 1e-6 else 1e-8
+> check.earth.matches.glm(eshort, gshort, max=MAX.ARG)
+check eshort vs gshort
+> par(mfrow=c(2,2))
+> plotres(eshort, do.par=0, which=c(1,3), main="eshort", legend.pos="topleft")
+> empty.plot()
+> plotres(gshort, do.par=0, which=3, main="gshort")
+> par(mfrow=c(2,2))
+> plotmo(eshort, do.par=0)
+ plotmo grid:    x1 x2
+                  5 20
+> plotmo(gshort, do.par=0)
+ plotmo grid:    x1 x2
+                  5 20
+> par(org.par)
+> 
+> par(mfrow=c(2,2))
+> plot(elong, main="elong: Model Selection", which=c(1, 3), do.par=0, legend.pos="topleft")
+> plot(eshort, main="eshort: Model Selection", which=c(1, 3), do.par=0, legend.pos="topleft")
+> par(org.par)
+> 
+> cat("\n===long data with weights ===\n")
+
+===long data with weights ===
+> elong.weights <- earth(true~x1+x2, data=long, glm=list(family="binomial"),
++                        weights=weights.long, trace=1,
++                        linpreds=TRUE, thresh=0, penalty=-1)
+x[15,2] with colnames x1 x2
+y[15,1] with colname true, and values 1, 0, 0, 0, 1, 1, 0, 0, 0, 0,...
+earth and glm weights[15]: 4, 4, 4, 4, 5, 5, 5, 5, 5, 1, 2, 2, 3...
+Forward pass term 1, 2, 4, 6
+No new term increases RSq (perhaps reached numerical limits) at 5 terms, 3 terms used
+After forward pass GRSq 0.064 RSq 0.064
+Prune backward penalty -1 nprune null: selected 3 of 3 terms, and 2 of 2 preds
+After pruning pass GRSq 0.0635 RSq 0.0635
+GLM true devratio 0.05 dof 12/14 iters 14
+> print(summary(elong.weights))
+Call: earth(formula=true~x1+x2, data=long, weights=weights.long, trace=1,
+            glm=list(family="binomial"), linpreds=TRUE, thresh=0, penalty=-1)
+
+GLM coefficients
+                  true
+(Intercept) 28.6833914
+x1           0.2283708
+x2          -1.4902067
+
+GLM (family binomial, link logit):
+ nulldev df       dev df   devratio     AIC iters converged
+ 75.3529 14   71.4597 12     0.0517   77.46    14         1
+
+Earth selected 3 of 3 terms, and 2 of 2 predictors
+Termination condition: No new term increases RSq at 3 terms
+Importance: x1, x2
+Weights: 4, 4, 4, 4, 5, 5, 5, 5, 5, 1, 2, 2, 3, 3, 3
+Number of terms at each degree of interaction: 1 2 (additive model)
+Earth GCV 0.8445361    RSS 12.66804    GRSq 0.06351846    RSq 0.06351846
+> glong.weights <- glm(true~x1+x2, data=long, family="binomial",
++                     weights=weights.long)
+> # models match here but in general models with long and short data won't match
+> check.earth.matches.glm(elong.weights, glong.weights)
+check elong.weights vs glong.weights
+> # compare "earth" part of earth-glm model to lm
+> lm.long.weights <- lm(true~x1+x2, data=long, weights=weights.long)
+> stopifnot(identical(sort(names(coef(elong.weights))), sort(names(coef(lm.long.weights)))))
+> stopifnot(identical(sort(coef(elong.weights, type="earth")), sort(coef(lm.long.weights))))
+> 
+> cat("\n===short data with weights ===\n")
+
+===short data with weights ===
+> # add an extra row to prevent singularities in glm with a zero weight
+> short6 <- rbind(short, list(x1=9, x2=10, true=1, false=1))
+> true.false6 <- rbind(true.false, c(1,1))
+> weights.short6 <- sqrt(1:6)
+> cat("weights.short6:\n")
+weights.short6:
+> print(weights.short6)
+[1] 1.000000 1.414214 1.732051 2.000000 2.236068 2.449490
+> eshort.weights6 <- earth(true.false6~x1+x2, data=short6, glm=list(family="binomial"),
++                         weights=weights.short6,
++                         trace=1,
++                         linpreds=TRUE, thresh=0, penalty=-1)
+x[6,2] with colnames x1 x2
+y[6,2] with colnames true false
+weights used by earth internally: 4, 7.071, 1.732, 4, 6.708, 4.899
+Response columns true and false are a binomial pair (17 obs in total)
+yfrac[6,1] with colname true, and values 0.25, 0.4, 0, 1, 0.6667, 0.5
+Forward pass term 1, 2, 4, 6
+No new term increases RSq (perhaps reached numerical limits) at 5 terms, 3 terms used
+After forward pass GRSq 0.417 RSq 0.417
+Prune backward penalty -1 nprune null: selected 3 of 3 terms, and 2 of 2 preds
+After pruning pass GRSq 0.417 RSq 0.417
+GLM true devratio 0.34 dof 3/5 iters 4
+> print(summary(eshort.weights6))
+Call: earth(formula=true.false6~x1+x2, data=short6, weights=weights.short6,
+            trace=1, glm=list(family="binomial"), linpreds=TRUE, thresh=0,
+            penalty=-1)
+
+GLM coefficients
+                   true
+(Intercept) -3.01560815
+x1           0.32839481
+x2           0.07196558
+
+GLM (family binomial, link logit):
+ nulldev df       dev df   devratio     AIC iters converged
+ 9.99556  5   6.62365  3      0.337   24.38     4         1
+
+Earth selected 3 of 3 terms, and 2 of 2 predictors
+Termination condition: No new term increases RSq at 3 terms
+Importance: x1, x2
+Weights: 1, 1.414214, 1.732051, 2, 2.236068, 2.44949
+Number of terms at each degree of interaction: 1 2 (additive model)
+Earth GCV 0.1876099    RSS 1.12566    GRSq 0.4166392    RSq 0.4166392
+> gshort.weights6 <- glm(true.false6~x1+x2, data=short6, family="binomial",
++                       weights=weights.short6)
+> print(summary(gshort.weights6))
+
+Call:
+glm(formula = true.false6 ~ x1 + x2, family = "binomial", data = short6, 
+    weights = weights.short6)
+
+Deviance Residuals: 
+      1        2        3        4        5        6  
+-1.0873   0.6551  -1.4395   1.3403   0.7875  -0.7235  
+
+Coefficients:
+            Estimate Std. Error z value Pr(>|z|)
+(Intercept) -3.01561    3.03667  -0.993    0.321
+x1           0.32839    0.20696   1.587    0.113
+x2           0.07197    0.11426   0.630    0.529
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 9.9956  on 5  degrees of freedom
+Residual deviance: 6.6237  on 3  degrees of freedom
+AIC: 24.377
+
+Number of Fisher Scoring iterations: 4
+
+> check.earth.matches.glm(eshort.weights6, gshort.weights6, max=1e-6, max.residuals=1e-10)
+check eshort.weights6 vs gshort.weights6
+> 
+> # unweighted (because all weights equal)
+> cat("weights.short6.reciprocal.of.rowsums:\n")
+weights.short6.reciprocal.of.rowsums:
+> eshort.weights6.reciprocal.of.rowsums <- earth(true.false6~x1+x2, data=short6, glm=list(family="binomial"),
++                         weights=1/rowSums(true.false6),
++                         trace=1,
++                         linpreds=TRUE, thresh=0, penalty=-1)
+x[6,2] with colnames x1 x2
+y[6,2] with colnames true false
+earth and glm: unweighted (because all weights equal)
+Response columns true and false are a binomial pair (17 obs in total)
+yfrac[6,1] with colname true, and values 0.25, 0.4, 0, 1, 0.6667, 0.5
+Forward pass term 1, 2, 4, 6
+No new term increases RSq (perhaps reached numerical limits) at 5 terms, 3 terms used
+After forward pass GRSq 0.512 RSq 0.512
+Prune backward penalty -1 nprune null: selected 3 of 3 terms, and 2 of 2 preds
+After pruning pass GRSq 0.512 RSq 0.512
+GLM true devratio 0.41 dof 3/5 iters 4
+> print(summary(eshort.weights6.reciprocal.of.rowsums))
+Call: earth(formula=true.false6~x1+x2, data=short6,
+            weights=1/rowSums(true.false6), trace=1,
+            glm=list(family="binomial"), linpreds=TRUE, thresh=0, penalty=-1)
+
+GLM coefficients
+                   true
+(Intercept) -2.75047847
+x1           0.39024757
+x2           0.02659503
+
+GLM (family binomial, link logit):
+ nulldev df       dev df   devratio     AIC iters converged
+ 3.16533  5   1.87393  3      0.408   9.964     4         1
+
+Earth selected 3 of 3 terms, and 2 of 2 predictors
+Termination condition: No new term increases RSq at 3 terms
+Importance: x1, x2
+Number of terms at each degree of interaction: 1 2 (additive model)
+Earth GCV 0.04836798    RSS 0.2902079    GRSq 0.5119899    RSq 0.5119899
+> gshort.weights6.reciprocal.of.rowsums <- glm(true.false6~x1+x2, data=short6, family="binomial",
++                          weights=1/rowSums(true.false6))
+> print(summary(gshort.weights6.reciprocal.of.rowsums))
+
+Call:
+glm(formula = true.false6 ~ x1 + x2, family = "binomial", data = short6, 
+    weights = 1/rowSums(true.false6))
+
+Deviance Residuals: 
+      1        2        3        4        5        6  
+-0.3818   0.4800  -0.7346   0.6962   0.4692  -0.5032  
+
+Coefficients:
+            Estimate Std. Error z value Pr(>|z|)
+(Intercept)  -2.7505     6.9971  -0.393    0.694
+x1            0.3902     0.4964   0.786    0.432
+x2            0.0266     0.2387   0.111    0.911
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 3.1653  on 5  degrees of freedom
+Residual deviance: 1.8739  on 3  degrees of freedom
+AIC: 9.9642
+
+Number of Fisher Scoring iterations: 4
+
+> check.earth.matches.glm(eshort.weights6.reciprocal.of.rowsums, gshort.weights6.reciprocal.of.rowsums, max=1e-6, max.residuals=1e-10)
+check eshort.weights6.reciprocal.of.rowsums vs gshort.weights6.reciprocal.of.rowsums
+> 
+> weights.short6zero <- sqrt(1:6)
+> weights.short6zero[3] <- 0
+> cat("weights.short6zero:\n")
+weights.short6zero:
+> print(weights.short6zero)
+[1] 1.000000 1.414214 0.000000 2.000000 2.236068 2.449490
+> eshort.weights6zero <- earth(true.false6~x1+x2, data=short6, glm=list(family="binomial"),
++                         weights=weights.short6zero,
++                         trace=1,
++                         linpreds=TRUE, thresh=0, penalty=-1)
+x[6,2] with colnames x1 x2
+y[6,2] with colnames true false
+weights used by earth internally: 4, 7.071, 0, 4, 6.708, 4.899
+Response columns true and false are a binomial pair (17 obs in total)
+yfrac[6,1] with colname true, and values 0.25, 0.4, 0, 1, 0.6667, 0.5
+Forward pass term 1, 2, 4, 6
+No new term increases RSq (perhaps reached numerical limits) at 5 terms, 3 terms used
+After forward pass GRSq 0.616 RSq 0.616
+Prune backward penalty -1 nprune null: selected 3 of 3 terms, and 2 of 2 preds
+After pruning pass GRSq 0.616 RSq 0.616
+GLM true devratio 0.54 dof 2/4 iters 4
+> print(summary(eshort.weights6zero))
+Call: earth(formula=true.false6~x1+x2, data=short6, weights=weights.short6zero,
+            trace=1, glm=list(family="binomial"), linpreds=TRUE, thresh=0,
+            penalty=-1)
+
+GLM coefficients
+                  true
+(Intercept) -5.7222363
+x1           0.4061112
+x2           0.2067235
+
+GLM (family binomial, link logit):
+ nulldev df       dev df   devratio     AIC iters converged
+ 7.33721  4    3.4012  2      0.536   21.15     4         1
+
+Earth selected 3 of 3 terms, and 2 of 2 predictors
+Termination condition: No new term increases RSq at 3 terms
+Importance: x1, x2
+Weights: 1, 1.414214, 0, 2, 2.236068, 2.44949
+Number of terms at each degree of interaction: 1 2 (additive model)
+Earth GCV 0.09169144    RSS 0.5501486    GRSq 0.6159334    RSq 0.6159334
+> gshort.weights6zero <- glm(true.false6~x1+x2, data=short6, family="binomial",
++                       weights=weights.short6zero)
+> print(summary(gshort.weights6zero))
+
+Call:
+glm(formula = true.false6 ~ x1 + x2, family = "binomial", data = short6, 
+    weights = weights.short6zero)
+
+Deviance Residuals: 
+      1        2        3        4        5        6  
+-1.4583   0.4750   0.0000   0.9763   0.3096   0.0000  
+
+Coefficients:
+            Estimate Std. Error z value Pr(>|z|)  
+(Intercept)  -5.7222     3.7137  -1.541   0.1234  
+x1            0.4061     0.2349   1.729   0.0838 .
+x2            0.2067     0.1497   1.381   0.1673  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 7.3372  on 4  degrees of freedom
+Residual deviance: 3.4012  on 2  degrees of freedom
+AIC: 21.155
+
+Number of Fisher Scoring iterations: 4
+
+> # max.residuals has to be big because of the way earth handles zero weights
+> check.earth.matches.glm(eshort.weights6zero, gshort.weights6zero)
+check eshort.weights6zero vs gshort.weights6zero
+> 
+> cat("\n===short and long data with hinges===\n")
+
+===short and long data with hinges===
+> # test without linpreds=TRUE (to avoid int-only model, need thresh=0, penalty=-1)
+> elong.hinge <- earth(true~x1+x2, data=long, glm=list(family="binomial"),
++                      thresh=0, penalty=-1)
+> print(summary(elong.hinge))
+Call: earth(formula=true~x1+x2, data=long, glm=list(family="binomial"),
+            thresh=0, penalty=-1)
+
+GLM coefficients
+                 true
+(Intercept) 36.033525
+x2          -1.816060
+h(5-x1)     -0.039261
+h(x1-5)      4.713438
+
+GLM (family binomial, link logit):
+ nulldev df       dev df   devratio     AIC iters converged
+ 20.7277 14   16.2908 11      0.214   24.29    17         1
+
+Earth selected 4 of 4 terms, and 2 of 2 predictors
+Termination condition: No new term increases RSq at 4 terms
+Importance: x1, x2
+Number of terms at each degree of interaction: 1 3 (additive model)
+Earth GCV 0.1942857    RSS 2.914286    GRSq 0.2193878    RSq 0.2193878
+> eshort.hinge <- earth(true.false~x1+x2, data=short, glm=list(family="binomial"),
++                       thresh=0, penalty=-1)
+> print(summary(eshort.hinge))
+Call: earth(formula=true.false~x1+x2, data=short, glm=list(family="binomial"),
+            thresh=0, penalty=-1)
+
+GLM coefficients
+                 true
+(Intercept) 40.033524
+x2          -2.016060
+h(5-x1)     -0.039261
+h(x1-5)      5.297520
+
+GLM (family binomial, link logit):
+ nulldev df       dev df   devratio     AIC iters converged
+ 5.67982  4   1.24295  1      0.781   14.72    19         1
+
+Earth selected 4 of 4 terms, and 2 of 2 predictors
+Termination condition: No new term increases RSq at 4 terms
+Importance: x1, x2
+Number of terms at each degree of interaction: 1 3 (additive model)
+Earth GCV 0.05952381    RSS 0.297619    GRSq 0.7334755    RSq 0.7334755
+> eshort.hinge2 <- earth(true+false~x1+x2, data=short, glm=list(family="binomial"),
++                       thresh=0, penalty=-1)
+> check.models.equal(eshort.hinge, eshort.hinge2, "eshort.hinge, eshort.hinge2, ", newdata=short[2:3,])
+eshort.hinge, eshort.hinge2, : models not identical
+
+Formulas differ: true.false ~ x1 + x2
+and:             ~true + false + (x1 + x2)
+
+eshort.hinge, eshort.hinge2, : glm submodel formula strings are identical: yarg ~ `h(x1-5)` + `h(5-x1)` + x2
+eshort.hinge, eshort.hinge2, : but the actual glm submodel formulas differ (classes are "formula" and "formula")
+eshort.hinge, eshort.hinge2, : glm submodels not identical (but coefs, residuals, fitted.values are the same)
+eshort.hinge, eshort.hinge2, : Models are equivalent, within numerical tolerances
+
+> if(OLD.EARTH) {
++     stopifnot(identical(eshort.hinge$dirs[order(rownames(eshort.hinge$dirs)),],
++                         elong.hinge$dirs [order(rownames(elong.hinge$dirs)),]))
++ } else
++     stopifnot(identical(eshort.hinge$dirs, elong.hinge$dirs))
+> 
+> par(mfrow=c(2,2))
+> plotres(elong.hinge, do.par=0, which=c(1,3), main="elong.hinge", legend.pos="topleft")
+> plotres(eshort.hinge, do.par=0, which=c(1,3), main="eshort.hinge", legend.pos="topleft")
+> 
+> par(mfrow=c(2,2))
+> plotmo(elong.hinge, do.par=0, ndiscrete=0)
+ plotmo grid:    x1 x2
+                  5 20
+> plotmo(eshort.hinge, do.par=0, ndiscrete=0)
+ plotmo grid:    x1 x2
+                  5 20
+> par(org.par)
+> 
+> # test with a y with a binomial pair row with both entries equal to 0
+> x.short.with.zeros <- data.frame(x1=c(5,2,2,9,5,9), x2=c(20,20,30,20,20,30))
+> y.short.with.zeros <- data.frame(true=c(1,2,0,2,2,0), false=c(3,3,1,0,1,0))
+> short.with.zeros <- data.frame(x.short.with.zeros, y.short.with.zeros)
+> true.false.with.zeros <- cbind(true=short.with.zeros$true, false=short.with.zeros$false)
+> eshort.with.zeros <- earth(true.false.with.zeros~x1+x2, data=short.with.zeros, glm=list(family="binomial"),
++                            linpreds=TRUE, thresh=0, penalty=-1)
+> gshort.with.zeros <- glm(true.false.with.zeros~x1+x2, data=short.with.zeros, family="binomial")
+> check.earth.matches.glm(eshort.with.zeros, gshort.with.zeros)
+check eshort.with.zeros vs gshort.with.zeros
+> par(mfrow=c(2,2))
+> plotres(eshort.with.zeros, do.par=0, which=c(1,3), main="eshort.with.zeros", legend.pos="topleft")
+> empty.plot()
+> plotres(gshort.with.zeros, do.par=0, which=3, main="gshort.with.zeros")
+> par(mfrow=c(2,2))
+> plotmo(eshort.with.zeros, do.par=0, ndiscrete=0)
+ plotmo grid:    x1 x2
+                  5 20
+> plotmo(gshort.with.zeros, do.par=0, ndiscrete=0)
+ plotmo grid:    x1 x2
+                  5 20
+> par(org.par)
+> eshort.with.zeros.plus <- earth(true+false~x1+x2, data=short.with.zeros, glm=list(family="binomial"),
++                                 linpreds=TRUE, thresh=0, penalty=-1, trace=1)
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[6,2] with colnames x1 x2
+y[6,2] with colnames true false
+Note: Both entries in row 6 of the true and false response are zero
+weights used by earth internally: 4, 5, 1, 2, 3, 0
+Response columns true and false are a binomial pair (15 obs in total)
+yfrac[6,1] with colname true, and values 0.25, 0.4, 0, 1, 0.6667, 0
+Forward pass term 1, 2, 4, 6
+No new term increases RSq (perhaps reached numerical limits) at 5 terms, 3 terms used
+After forward pass GRSq 0.578 RSq 0.578
+Prune backward penalty -1 nprune null: selected 3 of 3 terms, and 2 of 2 preds
+After pruning pass GRSq 0.578 RSq 0.578
+GLM true devratio 0.54 dof 2/4 iters 18
+> check.models.equal(eshort.with.zeros, eshort.with.zeros.plus, "eshort.with.zeros, eshort.with.zeros.plus", newdata=short.with.zeros[2:3,])
+eshort.with.zeros, eshort.with.zeros.plus: models not identical
+
+Formulas differ: true.false.with.zeros ~ x1 + x2
+and:             ~true + false + (x1 + x2)
+
+eshort.with.zeros, eshort.with.zeros.plus: glm submodel formula strings are identical: yarg ~ x1 + x2
+eshort.with.zeros, eshort.with.zeros.plus: but the actual glm submodel formulas differ (classes are "formula" and "formula")
+eshort.with.zeros, eshort.with.zeros.plus: glm submodels not identical (but coefs, residuals, fitted.values are the same)
+eshort.with.zeros, eshort.with.zeros.plus: Models are equivalent, within numerical tolerances
+
+> 
+> eshort.with.zeros.plus.quasibinomial <- earth(true+false~x1+x2, data=short.with.zeros, glm=list(family="quasibinomial"),
++                                 linpreds=TRUE, thresh=0, penalty=-1, trace=1)
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[6,2] with colnames x1 x2
+y[6,2] with colnames true false
+Note: Both entries in row 6 of the true and false response are zero
+weights used by earth internally: 4, 5, 1, 2, 3, 0
+Response columns true and false are a binomial pair (15 obs in total)
+yfrac[6,1] with colname true, and values 0.25, 0.4, 0, 1, 0.6667, 0
+Forward pass term 1, 2, 4, 6
+No new term increases RSq (perhaps reached numerical limits) at 5 terms, 3 terms used
+After forward pass GRSq 0.578 RSq 0.578
+Prune backward penalty -1 nprune null: selected 3 of 3 terms, and 2 of 2 preds
+After pruning pass GRSq 0.578 RSq 0.578
+GLM true devratio 0.54 dof 2/4 iters 18
+> check.models.equal(eshort.with.zeros.plus, eshort.with.zeros.plus.quasibinomial, "eshort.with.zeros.plus eshort.with.zeros.plus.quasibinomial", newdata=short.with.zeros[1:3,])
+eshort.with.zeros.plus eshort.with.zeros.plus.quasibinomial: models not identical
+
+eshort.with.zeros.plus eshort.with.zeros.plus.quasibinomial: glm submodel formula strings are identical: yarg ~ x1 + x2
+eshort.with.zeros.plus eshort.with.zeros.plus.quasibinomial: but the actual glm submodel formulas differ (classes are "formula" and "formula")
+eshort.with.zeros.plus eshort.with.zeros.plus.quasibinomial: glm submodels not identical (but coefs, residuals, fitted.values are the same)
+eshort.with.zeros.plus eshort.with.zeros.plus.quasibinomial: Models are equivalent, within numerical tolerances
+
+> # print(summary(eshort.with.zeros.plus))
+> # print(summary(eshort.with.zeros.plus.quasibinomial))
+> # print(summary(eshort.with.zeros.plus$glm.list[[1]]))
+> # print(summary(eshort.with.zeros.plus.quasibinomial$glm.list[[1]]))
+> 
+> cat("\n===compare with model where yfrac is generated manually===\n")
+
+===compare with model where yfrac is generated manually===
+> bpairs.frac <- function(y)
++ {
++     stopifnot(NCOL(y) == 2)         # binomial pairs y has two columns
++     stopifnot(is.numeric(y[,1]) ||is.logical(y[,1]))
++     stopifnot(is.numeric(y[,2]) ||is.logical(y[,2]))
++     stopifnot(all(y >= 0))          # all y values non-negative
++     stopifnot(round(y) == y)        # all y values integers
++     weights <- y[,1] + y[,2]
++     if(length(weights > 1) == 0)
++         warning("no rows of y sum to greater than 1 (earth will not consider y to be a binomial pair")
++     y[weights == 0, 2] <- 1         # so all-zero rows will be treated as fraction=0
++     # we return y as a one column mat (not a vector) so we can give it a colname
++     frac <- matrix(y[, 1] / (y[,1] + y[,2]), ncol=1) # fraction true
++     colnames(frac) <- colnames(y)[1]
++     nchar <- nchar(colnames(frac))
++     if(length(nchar) == 0 || nchar == 0)
++         colnames(frac) <- "frac"
++     list(frac=frac, weights=weights)
++ }
+> ret <- bpairs.frac(cbind(short.with.zeros$true, short.with.zeros$false))
+> print(ret)
+$frac
+          frac
+[1,] 0.2500000
+[2,] 0.4000000
+[3,] 0.0000000
+[4,] 1.0000000
+[5,] 0.6666667
+[6,] 0.0000000
+
+$weights
+[1] 4 5 1 2 3 0
+
+> stopifnot(identical(colnames(ret$frac), "frac")) # column name added automatically
+> ret <- bpairs.frac(short.with.zeros[,c("true", "false")])
+> print(ret)
+$frac
+          true
+[1,] 0.2500000
+[2,] 0.4000000
+[3,] 0.0000000
+[4,] 1.0000000
+[5,] 0.6666667
+[6,] 0.0000000
+
+$weights
+[1] 4 5 1 2 3 0
+
+> stopifnot(identical(colnames(ret$frac), "true"))
+> frac <- ret$frac
+> weights <- ret$weights
+> options(warn=2)
+> # expect warning: non-integer #successes in a binomial glm
+> expect.err(try(earth(frac~x1+x2, data=short.with.zeros, glm=list(family="binomial"),
++                linpreds=TRUE, thresh=0, penalty=-1)), "non-integer #successes in a binomial glm")
+Error in eval(family$initialize) : 
+  (converted from warning) non-integer #successes in a binomial glm!
+Got expected error from try(earth(frac ~ x1 + x2, data = short.with.zeros, glm = list(family = "binomial"),     linpreds = TRUE, thresh = 0, penalty = -1))
+> # warning goes away if we use quasibinomial
+> eshort.with.zeros.frac.quasibinomial <- earth(frac~x1+x2, data=short.with.zeros, weights=weights, glm=list(family="quasibinomial"),
++                                 linpreds=TRUE, thresh=0, penalty=-1, trace=1)
+x[6,2] with colnames x1 x2
+y[6,1] with colname frac, and values 0.25, 0.4, 0, 1, 0.6667, 0
+earth and glm weights[6]: 4, 5, 1, 2, 3, 0
+Forward pass term 1, 2, 4, 6
+No new term increases RSq (perhaps reached numerical limits) at 5 terms, 3 terms used
+After forward pass GRSq 0.578 RSq 0.578
+Prune backward penalty -1 nprune null: selected 3 of 3 terms, and 2 of 2 preds
+After pruning pass GRSq 0.578 RSq 0.578
+GLM frac devratio 0.54 dof 2/4 iters 18
+> options(warn=1)
+> check.models.equal(eshort.with.zeros.frac.quasibinomial, eshort.with.zeros.plus, "eshort.frac, eshort.with.zeros.plus", newdata=short.with.zeros[2:3,], allow.different.names=TRUE)
+eshort.frac, eshort.with.zeros.plus: models not identical
+
+mod1 coefficients 
+[1] "frac"
+mod2 coefficients 
+[1] "true"
+
+Warning: coefficients has different column names but is otherwise identical, see above messages
+
+mod1 residuals 
+[1] "frac"
+mod2 residuals 
+[1] "true"
+
+Warning: residuals has different column names but is otherwise identical, see above messages
+
+mod1 predict with no newdata, default type 
+[1] "frac"
+mod2 predict with no newdata, default type 
+[1] "true"
+
+Warning: predict with no newdata, default type has different column names but is otherwise identical, see above messages
+
+mod1 predict with no newdata, type="link" 
+[1] "frac"
+mod2 predict with no newdata, type="link" 
+[1] "true"
+
+Warning: predict with no newdata, type="link" has different column names but is otherwise identical, see above messages
+
+mod1 predict with no newdata, type="response" 
+[1] "frac"
+mod2 predict with no newdata, type="response" 
+[1] "true"
+
+Warning: predict with no newdata, type="response" has different column names but is otherwise identical, see above messages
+
+mod1 predict with no newdata, type="earth" 
+[1] "frac"
+mod2 predict with no newdata, type="earth" 
+[1] "true"
+
+Warning: predict with no newdata, type="earth" has different column names but is otherwise identical, see above messages
+
+mod1 predict with newdata, default type 
+[1] "frac"
+mod2 predict with newdata, default type 
+[1] "true"
+
+Warning: predict with newdata, default type has different column names but is otherwise identical, see above messages
+
+mod1 predict with newdata, , type="link" 
+[1] "frac"
+mod2 predict with newdata, , type="link" 
+[1] "true"
+
+Warning: predict with newdata, , type="link" has different column names but is otherwise identical, see above messages
+
+mod1 predict with newdata, , type="response" 
+[1] "frac"
+mod2 predict with newdata, , type="response" 
+[1] "true"
+
+Warning: predict with newdata, , type="response" has different column names but is otherwise identical, see above messages
+
+mod1 predict with newdata, , type="earth" 
+[1] "frac"
+mod2 predict with newdata, , type="earth" 
+[1] "true"
+
+Warning: predict with newdata, , type="earth" has different column names but is otherwise identical, see above messages
+
+Formulas differ: frac ~ x1 + x2
+and:             ~true + false + (x1 + x2)
+
+eshort.frac, eshort.with.zeros.plus: glm submodel formula strings are identical: yarg ~ x1 + x2
+eshort.frac, eshort.with.zeros.plus: but the actual glm submodel formulas differ (classes are "formula" and "formula")
+eshort.frac, eshort.with.zeros.plus: glm submodels not identical (but coefs, residuals, fitted.values are the same)
+eshort.frac, eshort.with.zeros.plus: Models are equivalent, within numerical tolerances
+
+> eshort.with.zeros.frac.binomial <- earth(frac~x1+x2, data=short.with.zeros, weights=weights, glm=list(family="binomial"),
++                                          linpreds=TRUE, thresh=0, penalty=-1)
+> # # compare stats like deviance etc (all identical here except no AIC for quasibinomial,
+> # #                                  and standard deviations of glm submodels differ)
+> # cat("eshort.with.zeros.frac.binomial:\n")
+> # print(summary(eshort.with.zeros.frac.binomial))
+> # cat("eshort.with.zeros.frac.quasibinomial:\n")
+> # print(summary(eshort.with.zeros.frac.quasibinomial))
+> # cat("---------------------------------------------------\n")
+> # print(summary(eshort.with.zeros.frac.binomial$glm.list[[1]]))
+> # print(summary(eshort.with.zeros.frac.quasibinomial$glm.list[[1]]))
+> 
+> # lizard data used in McCullagh and Nelder GLM book (2nd ed)
+> # this has an entry with both responses equal to zero (similar to the above data):
+> #    site.shade diameter.wide height.tall  time grahami opalinus
+> # 11      FALSE          TRUE        TRUE   Mid       0        0
+> 
+> cat("\n===lizards===\n")
+
+===lizards===
+> 
+> shade <- factor(x=c(
++     "sun", "sun", "sun", "sun", "sun", "sun", "sun", "sun", "sun", "sun", "sun", "sun",
++     "shade", "shade", "shade", "shade", "shade", "shade", "shade", "shade", "shade", "shade", "shade", "shade"),
++     levels=c("sun", "shade"))
+> diameter.wide <- as.logical(c(
++     0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
++     0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1))
+> height.tall <- as.logical(c(
++     0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1,
++     0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1))
+> time <- factor(x=c(
++       "Early", "Mid", "Late",
++       "Early", "Mid", "Late",
++       "Early", "Mid", "Late",
++       "Early", "Mid", "Late",
++       "Early", "Mid", "Late",
++       "Early", "Mid", "Late",
++       "Early", "Mid", "Late",
++       "Early", "Mid", "Late"),
++     levels=c("Early", "Mid", "Late"), ordered=FALSE)
+> grahami <- c(
++     20, 8, 4, 13, 8, 12, 8, 4, 5, 6, 0, 1,
++     34, 69, 18, 31, 55, 13, 17, 60, 8, 12, 21, 4)
+> opalinus <- c(
++     2, 1, 4, 0, 0, 0, 3, 1, 3, 0, 0, 1, 11,
++     20, 10, 5, 4, 3, 15, 32, 8, 1, 5, 4)
+> lizards <- data.frame(
++     shade=shade,
++     wide=diameter.wide,
++     tall=height.tall,
++     time=time,
++     grahami=grahami,
++     opalinus=opalinus)
+> 
+> grahami.opalinus <- cbind(grahami=lizards$grahami, opalinus=lizards$opalinus)
+> eliz <- earth(grahami.opalinus~as.numeric(shade)+wide+tall*time,
++               data=lizards, glm=list(family="binomial"),
++               linpreds=TRUE, thresh=0, penalty=-1, trace=1)
+x[24,7] with colnames as.numeric(shade) wideTRUE tallTRUE timeMid timeLate tall...
+y[24,2] with colnames grahami opalinus
+Note: Both entries in row 11 of the grahami and opalinus response are zero
+weights used by earth internally: 22, 9, 8, 13, 8, 12, 11, 5, 8, 6, 0, 2, 45, 89,...
+Response columns grahami and opalinus are a binomial pair (564 obs in total)
+yfrac[24,1] with colname grahami, and values 0.9091, 0.8889, 0.5, 1, 1, 1,...
+Forward pass term 1, 2, 4, 6, 8, 10, 12, 14, 16
+No new term increases RSq (perhaps reached numerical limits) at 15 terms, 8 terms used
+After forward pass GRSq 0.852 RSq 0.852
+Prune backward penalty -1 nprune null: selected 8 of 8 terms, and 7 of 7 preds
+After pruning pass GRSq 0.852 RSq 0.852
+GLM grahami devratio 0.80 dof 15/22 iters 4
+> print(summary(eliz))
+Call: earth(formula=grahami.opalinus~as.numeric(shade)+wide+tall*time,
+            data=lizards, trace=1, glm=list(family="binomial"), linpreds=TRUE,
+            thresh=0, penalty=-1)
+
+GLM coefficients
+                     grahami
+(Intercept)        2.7497470
+as.numeric(shade) -0.8524139
+wideTRUE          -0.7615229
+tallTRUE           1.3647511
+timeMid            0.2788588
+timeLate          -0.6100012
+tallTRUE:timeMid  -0.2352590
+tallTRUE:timeLate -0.4958645
+
+GLM (family binomial, link logit):
+ nulldev df       dev df   devratio     AIC iters converged
+ 70.1018 22    13.682 15      0.805   86.51     4         1
+
+Earth selected 8 of 8 terms, and 7 of 7 predictors
+Termination condition: No new term increases RSq at 8 terms
+Importance: tallTRUE, wideTRUE, timeLate, as.numeric(shade), timeMid, ...
+Number of terms at each degree of interaction: 1 7 (additive model)
+Earth GCV 0.06803856    RSS 1.632925    GRSq 0.852299    RSq 0.852299
+> eliz.Formula <- earth(grahami+opalinus~as.numeric(shade)+wide+tall*time,
++               data=lizards, glm=list(family="binomial"),
++               linpreds=TRUE, thresh=0, penalty=-1, trace=1)
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[24,7] with colnames as.numeric(shade) wideTRUE tallTRUE timeMid timeLate tall...
+y[24,2] with colnames grahami opalinus
+Note: Both entries in row 11 of the grahami and opalinus response are zero
+weights used by earth internally: 22, 9, 8, 13, 8, 12, 11, 5, 8, 6, 0, 2, 45, 89,...
+Response columns grahami and opalinus are a binomial pair (564 obs in total)
+yfrac[24,1] with colname grahami, and values 0.9091, 0.8889, 0.5, 1, 1, 1,...
+Forward pass term 1, 2, 4, 6, 8, 10, 12, 14, 16
+No new term increases RSq (perhaps reached numerical limits) at 15 terms, 8 terms used
+After forward pass GRSq 0.852 RSq 0.852
+Prune backward penalty -1 nprune null: selected 8 of 8 terms, and 7 of 7 preds
+After pruning pass GRSq 0.852 RSq 0.852
+GLM grahami devratio 0.80 dof 15/22 iters 4
+> print(summary(eliz.Formula))
+Call: earth(formula=grahami+opalinus~as.numeric(shade)+wide+tall*time,
+            data=lizards, trace=1, glm=list(family="binomial"), linpreds=TRUE,
+            thresh=0, penalty=-1)
+
+GLM coefficients
+                     grahami
+(Intercept)        2.7497470
+as.numeric(shade) -0.8524139
+wideTRUE          -0.7615229
+tallTRUE           1.3647511
+timeMid            0.2788588
+timeLate          -0.6100012
+tallTRUE:timeMid  -0.2352590
+tallTRUE:timeLate -0.4958645
+
+GLM (family binomial, link logit):
+ nulldev df       dev df   devratio     AIC iters converged
+ 70.1018 22    13.682 15      0.805   86.51     4         1
+
+Earth selected 8 of 8 terms, and 7 of 7 predictors
+Termination condition: No new term increases RSq at 8 terms
+Importance: tallTRUE, wideTRUE, timeLate, as.numeric(shade), timeMid, ...
+Number of terms at each degree of interaction: 1 7 (additive model)
+Earth GCV 0.06803856    RSS 1.632925    GRSq 0.852299    RSq 0.852299
+> gliz <- glm(grahami.opalinus~as.numeric(shade)+wide+tall*time,
++             data=lizards, family="binomial")
+> print(summary(gliz))
+
+Call:
+glm(formula = grahami.opalinus ~ as.numeric(shade) + wide + tall * 
+    time, family = "binomial", data = lizards)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-1.7630  -0.3617   0.1213   0.5962   1.6214  
+
+Coefficients:
+                  Estimate Std. Error z value Pr(>|z|)    
+(Intercept)         2.7497     0.6226   4.416    1e-05 ***
+as.numeric(shade)  -0.8524     0.3219  -2.648 0.008095 ** 
+wideTRUE           -0.7615     0.2115  -3.601 0.000317 ***
+tallTRUE            1.3648     0.4842   2.819 0.004820 ** 
+timeMid             0.2789     0.2789   1.000 0.317437    
+timeLate           -0.6100     0.3467  -1.759 0.078494 .  
+tallTRUE:timeMid   -0.2353     0.6215  -0.379 0.705032    
+tallTRUE:timeLate  -0.4959     0.6885  -0.720 0.471368    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 70.102  on 22  degrees of freedom
+Residual deviance: 13.682  on 15  degrees of freedom
+AIC: 86.506
+
+Number of Fisher Scoring iterations: 4
+
+> 
+> check.earth.matches.glm(eliz, gliz, newdata=lizards[c(2:5),], max=1e-12)
+check eliz vs gliz
+> check.earth.matches.glm(eliz.Formula, gliz, newdata=lizards[c(2:5),], max=1e-12)
+check eliz.Formula vs gliz
+> print(evimp(eliz))
+                  nsubsets   gcv    rss
+tallTRUE                 7 100.0  100.0
+wideTRUE                 6  72.7   72.7
+timeLate                 5  53.5   53.5
+as.numeric(shade)        4  35.8   35.8
+timeMid                  3  13.0   13.0
+tallTRUE:timeMid         2   5.5    5.5
+tallTRUE:timeLate        1   0.7    0.7
+> par(mfrow=c(3,2))
+> plotres(eliz,         do.par=0, which=c(1,3), main="eliz",         legend.pos="topleft")
+> plotres(eliz.Formula, do.par=0, which=c(1,3), main="eliz.Formula", legend.pos="topleft")
+> empty.plot()
+> plotres(gliz,         do.par=0, which=3, main="gliz")
+> par(org.par)
+> plotmo(eliz, ndiscrete=0, SHOWCALL=TRUE)
+ plotmo grid:    shade  wide  tall  time
+                   sun FALSE FALSE Early
+> plotmo(eliz.Formula, ndiscrete=0, SHOWCALL=TRUE)
+ plotmo grid:    shade  wide  tall  time
+                   sun FALSE FALSE Early
+> plotmo(gliz, ndiscrete=0, SHOWCALL=TRUE)
+ plotmo grid:    shade  wide  tall  time
+                   sun FALSE FALSE Early
+> 
+> cat("\n===incorrect bpairs (error handling for bad data)===\n")
+
+===incorrect bpairs (error handling for bad data)===
+> test.incorrect.bpairs <- function(msg, expect.err, trace, y.short)
++ {
++     printf("\ntest.incorrect.bpairs: %s\n", msg)
++     x.short <- data.frame(x1=as.double(1:5))
++     short <- data.frame(x.short, y.short)
++     true.false <- cbind(true=short$true, false=short$false)
++     if(expect.err)
++         expect.err(try(earth(true.false~x1, data=short, glm=list(family="binomial"), trace=trace)), "Binomial response (see above): all values should be between 0 and 1, or a binomial pair")
++     else
++         earth(true.false~x1, data=short, glm=list(family="binomial"), trace=trace)
++ }
+> test.incorrect.bpairs("non integral, greater than 1", expect.err=TRUE, trace=1,
++                      data.frame(true=as.double(c(0,1,0,1,0)), false=as.double(c(1,0,1,0,1.1))))
+
+test.incorrect.bpairs: non integral, greater than 1
+x[5,1] with colname x1, and values 1, 2, 3, 4, 5
+y[5,2] with colnames true false
+
+print(head(y)):
+     true false
+[1,]    0   1.0
+[2,]    1   0.0
+[3,]    0   1.0
+[4,]    1   0.0
+[5,]    0   1.1
+
+Response has two columns but is not a binomial pair because not all values are integers
+Earth will build two GLM models with responses "true" and "false"
+
+
+print(head(y)):
+     true false
+[1,]    0   1.0
+[2,]    1   0.0
+[3,]    0   1.0
+[4,]    1   0.0
+[5,]    0   1.1
+
+Error : Binomial response (see above): all values should be between 0 and 1, or a binomial pair
+       Response has two columns but is not a binomial pair because not all values are integers
+Got expected error from try(earth(true.false ~ x1, data = short, glm = list(family = "binomial"),     trace = trace))
+> test.incorrect.bpairs("non integral but in range 0...1", expect.err=FALSE, trace=1,
++                      data.frame(true=as.double(c(0,1,0,1,0)), false=as.double(c(1,0,1,0,.1))))
+
+test.incorrect.bpairs: non integral but in range 0...1
+x[5,1] with colname x1, and values 1, 2, 3, 4, 5
+y[5,2] with colnames true false
+
+print(head(y)):
+     true false
+[1,]    0   1.0
+[2,]    1   0.0
+[3,]    0   1.0
+[4,]    1   0.0
+[5,]    0   0.1
+
+Response has two columns but is not a binomial pair because not all values are integers
+Earth will build two GLM models with responses "true" and "false"
+
+Forward pass term 1, 2
+GRSq -Inf at 1 term
+After forward pass GRSq -in RSq 0.363
+Prune backward penalty 2 nprune null: selected 1 of 1 terms, and 0 of 1 preds
+After pruning pass GRSq 0 RSq 0
+earth.glm: intercept-only earth model
+GLM true devratio 0.00 dof 4/4 iters 4
+Warning in eval(family$initialize) :
+  non-integer #successes in a binomial glm!
+GLM false devratio 0.00 dof 4/4 iters 4
+GLM (family binomial, link logit):
+      nulldev df       dev df   devratio     AIC iters converged
+true  6.73012  4   6.73012  4          0   8.730     4         1
+false 6.15275  4   6.15275  4          0   8.738     4         1
+
+Earth selected 1 of 1 terms, and 0 of 1 predictors
+Termination condition: GRSq -Inf at 1 term
+Importance: x1-unused
+Number of terms at each degree of interaction: 1 (intercept only model)
+
+Earth
+         GCV   RSS GRSq RSq
+true  0.3750 1.200    0   0
+false 0.3525 1.128    0   0
+All   0.7275 2.328    0   0
+> test.incorrect.bpairs("non integral but in range 0...1", expect.err=FALSE, trace=0,
++                      data.frame(true=as.double(c(0,1,0,1,0)), false=as.double(c(1,0,1,0,.1))))
+
+test.incorrect.bpairs: non integral but in range 0...1
+
+print(head(y)):
+     true false
+[1,]    0   1.0
+[2,]    1   0.0
+[3,]    0   1.0
+[4,]    1   0.0
+[5,]    0   0.1
+
+Response has two columns but is not a binomial pair because not all values are integers
+Earth will build two GLM models with responses "true" and "false"
+
+Warning in eval(family$initialize) :
+  non-integer #successes in a binomial glm!
+GLM (family binomial, link logit):
+      nulldev df       dev df   devratio     AIC iters converged
+true  6.73012  4   6.73012  4          0   8.730     4         1
+false 6.15275  4   6.15275  4          0   8.738     4         1
+
+Earth selected 1 of 1 terms, and 0 of 1 predictors
+Termination condition: GRSq -Inf at 1 term
+Importance: x1-unused
+Number of terms at each degree of interaction: 1 (intercept only model)
+
+Earth
+         GCV   RSS GRSq RSq
+true  0.3750 1.200    0   0
+false 0.3525 1.128    0   0
+All   0.7275 2.328    0   0
+> test.incorrect.bpairs("negative value", expect.err=TRUE, trace=1,
++                      data.frame(true=as.double(c(0,1,0,1,0)), false=as.double(c(1,0,1,0,-2))))
+
+test.incorrect.bpairs: negative value
+x[5,1] with colname x1, and values 1, 2, 3, 4, 5
+y[5,2] with colnames true false
+Response has two columns but is not a binomial pair because some values are negative
+
+print(head(y)):
+     true false
+[1,]    0     1
+[2,]    1     0
+[3,]    0     1
+[4,]    1     0
+[5,]    0    -2
+
+Error : Binomial response (see above): all values should be between 0 and 1, or a binomial pair
+       Response has two columns but is not a binomial pair because some values are negative
+Got expected error from try(earth(true.false ~ x1, data = short, glm = list(family = "binomial"),     trace = trace))
+> test.incorrect.bpairs("no rows sum to greater than 1", expect.err=FALSE, trace=1,
++                      data.frame(true=as.double(c(0,1,0,1,0)), false=as.double(c(1,0,1,0,0))))
+
+test.incorrect.bpairs: no rows sum to greater than 1
+x[5,1] with colname x1, and values 1, 2, 3, 4, 5
+y[5,2] with colnames true false
+Response has two columns but is not a binomial pair because no rows sum to greater than 1
+Earth will build two GLM models with responses "true" and "false"
+
+Forward pass term 1, 2
+GRSq -Inf at 1 term
+After forward pass GRSq -in RSq 0.375
+Prune backward penalty 2 nprune null: selected 1 of 1 terms, and 0 of 1 preds
+After pruning pass GRSq 0 RSq 0
+earth.glm: intercept-only earth model
+GLM true devratio 0.00 dof 4/4 iters 4
+GLM false devratio 0.00 dof 4/4 iters 4
+GLM (family binomial, link logit):
+      nulldev df       dev df   devratio     AIC iters converged
+true  6.73012  4   6.73012  4          0    8.73     4         1
+false 6.73012  4   6.73012  4          0    8.73     4         1
+
+Earth selected 1 of 1 terms, and 0 of 1 predictors
+Termination condition: GRSq -Inf at 1 term
+Importance: x1-unused
+Number of terms at each degree of interaction: 1 (intercept only model)
+
+Earth
+        GCV RSS GRSq RSq
+true  0.375 1.2    0   0
+false 0.375 1.2    0   0
+All   0.750 2.4    0   0
+> printf("\n")
+
+> 
+> #--------------------------------------------------------
+> 
+> ldose <- rep(0:5, 2) - 2 # Venables and Ripley 4th edition page 191
+> sex <- factor(rep(c("male", "female"), times=c(6,6)))
+> numdead <- c(1,4,9,13,18,20,0,2,6,10,12,16)
+> numalive = 20 - numdead
+> pair <- cbind(numalive, numdead)
+> # following uses formula not Formula
+> pairmod <- earth(pair ~ sex + ldose, trace=1, pmethod="none",
++                   glm=list(family=binomial))
+x[12,2] with colnames sexmale ldose
+y[12,2] with colnames numalive numdead
+earth and glm: unweighted
+Response columns numalive and numdead are a binomial pair (240 obs in total)
+yfrac[12,1] with colname numalive, and values 0.95, 0.8, 0.55, 0.35, 0.1, 0...
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms, 3 terms used (DeltaRSq 0)
+After forward pass GRSq 0.907 RSq 0.981
+Prune none penalty 2 nprune null: selected 3 of 3 terms, and 2 of 2 preds
+After pruning pass GRSq 0.952 RSq 0.981
+GLM numalive devratio 0.95 dof 9/11 iters 4
+> stopifnot(attr(terms(pairmod), "response") == 1)
+> stopifnot(is.null(attr(terms(pairmod), "Response")))
+> glm.weights <- 1 * c(.8,1,1,.5,1,1,1,1,1,1,1,1) # will change model slightly
+> pairmod.weights <- earth(pair ~ sex + ldose, weights=glm.weights,
++                          trace=0, pmethod="none",
++                          glm=list(family=binomial))
+> # build a model using a global variables
+> # following uses Formula not formula because of "+"
+> pairmod2 <- earth(numalive + numdead ~ sex + ldose, trace=1, pmethod="none",
++                    glm=list(family=binomial))
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[12,2] with colnames sexmale ldose
+y[12,2] with colnames numalive numdead
+earth and glm: unweighted
+Response columns numalive and numdead are a binomial pair (240 obs in total)
+yfrac[12,1] with colname numalive, and values 0.95, 0.8, 0.55, 0.35, 0.1, 0...
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms, 3 terms used (DeltaRSq 0)
+After forward pass GRSq 0.907 RSq 0.981
+Prune none penalty 2 nprune null: selected 3 of 3 terms, and 2 of 2 preds
+After pruning pass GRSq 0.952 RSq 0.981
+GLM numalive devratio 0.95 dof 9/11 iters 4
+> stopifnot(attr(terms(pairmod2), "response") == 0)
+> stopifnot(attr(terms(pairmod2), "Response") == c(1,2))
+> check.models.equal(pairmod2, pairmod, "pairmod2, pairmod", newdata=data.frame(sex="male", ldose=3))
+pairmod2, pairmod: models not identical
+
+Formulas differ: ~numalive + numdead + (sex + ldose)
+and:             pair ~ sex + ldose
+
+pairmod2, pairmod: glm submodel formula strings are identical: yarg ~ ldose + sexmale
+pairmod2, pairmod: but the actual glm submodel formulas differ (classes are "formula" and "formula")
+pairmod2, pairmod: glm submodels not identical (but coefs, residuals, fitted.values are the same)
+pairmod2, pairmod: Models are equivalent, within numerical tolerances
+
+> plot(pairmod2, info=TRUE, SHOWCALL=TRUE)
+> pairmod2.weights <- earth(numalive + numdead ~ sex + ldose, weights=glm.weights,
++                          trace=0, pmethod="none",
++                          glm=list(family=binomial))
+> plot(pairmod2.weights, info=TRUE, SHOWCALL=TRUE)
+> check.models.equal(pairmod2.weights, pairmod.weights, "pairmod2.weights, pairmod.weights", newdata=data.frame(sex="male", ldose=3))
+pairmod2.weights, pairmod.weights: models not identical
+
+Formulas differ: ~numalive + numdead + (sex + ldose)
+and:             pair ~ sex + ldose
+
+pairmod2.weights, pairmod.weights: glm submodel formula strings are identical: yarg ~ `h(ldose-0)` + `h(0-ldose)` + sexmale
+pairmod2.weights, pairmod.weights: but the actual glm submodel formulas differ (classes are "formula" and "formula")
+pairmod2.weights, pairmod.weights: glm submodels not identical (but coefs, residuals, fitted.values are the same)
+pairmod2.weights, pairmod.weights: Models are equivalent, within numerical tolerances
+
+> plotmo(pairmod, SHOWCALL=TRUE)
+ plotmo grid:    sex ldose
+              female   0.5
+> plotmo(pairmod2, SHOWCALL=TRUE)
+ plotmo grid:    sex ldose
+              female   0.5
+> 
+> # build a model using a combo of global and data.frame data
+> df.except.numdead <- data.frame(ldose=ldose, numalive=numalive, sex=sex)
+> # change global data to invalid values so we can see if we use it by mistake
+> ldose <- rep(90:95, 2) - 2 # Venables and Ripley 4th edition page 191
+> sex <- factor(rep(c("a", "be"), times=c(6,6)))
+> numalive = NA
+> # following uses Formula not formula because of "+"
+> pairmod3 <- earth(numalive + numdead ~ sex + ldose, data=df.except.numdead, trace=0, pmethod="none",
++                    glm=list(family=binomial))
+> check.models.equal(pairmod3, pairmod2, "pairmod3, pairmod2", newdata=df.except.numdead[3:4,])
+pairmod3, pairmod2: models not identical
+
+pairmod3, pairmod2: glm submodel formula strings are identical: yarg ~ ldose + sexmale
+pairmod3, pairmod2: but the actual glm submodel formulas differ (classes are "formula" and "formula")
+pairmod3, pairmod2: glm submodels not identical (but coefs, residuals, fitted.values are the same)
+pairmod3, pairmod2: Models are equivalent, within numerical tolerances
+
+> plot(pairmod3, info=TRUE)
+> plotmo(pairmod3, SHOWCALL=TRUE)
+ plotmo grid:    sex ldose
+              female   0.5
+> 
+> # build a model using only data from a data.frame
+> df <- data.frame(df.except.numdead, numdead=numdead)
+> numdead <- 991:992 # invalidate the global data
+> # following uses Formula not formula because of "+"
+> pairmod_Formula <- earth(numalive + numdead ~ sex + ldose, data=df, trace=0, pmethod="none",
++                    glm=list(family=binomial))
+> plot(pairmod_Formula, info=TRUE)
+> check.models.equal(pairmod_Formula, pairmod2, "pairmod_Formula, pairmod2", newdata=df[5:6,])
+pairmod_Formula, pairmod2: models not identical
+
+pairmod_Formula, pairmod2: glm submodel formula strings are identical: yarg ~ ldose + sexmale
+pairmod_Formula, pairmod2: but the actual glm submodel formulas differ (classes are "formula" and "formula")
+pairmod_Formula, pairmod2: glm submodels not identical (but coefs, residuals, fitted.values are the same)
+pairmod_Formula, pairmod2: Models are equivalent, within numerical tolerances
+
+> 
+> expect.err(try(earth(20-numdead+numdead ~ sex + ldose, data=df, glm=list(family=binomial))), "invalid model formula in ExtractVars")
+Error in terms.formula(paste_formula(NULL, attr(Formula, "lhs"), rsep = "+")) : 
+  invalid model formula in ExtractVars
+Got expected error from try(earth(20 - numdead + numdead ~ sex + ldose, data = df, glm = list(family = binomial)))
+> 
+> # following uses formula not Formula
+> pairmod_formula <- earth(pair ~ sex + ldose, data=df, trace=0, pmethod="none",
++                    glm=list(family=binomial))
+> stopifnot(attr(terms(pairmod_formula), "response") == 1)
+> stopifnot(is.null(attr(terms(pairmod_formula), "Response")))
+> check.models.equal(pairmod_formula, pairmod_Formula, "pairmod_Formula, pairmod2", newdata=df[1:3,])
+pairmod_Formula, pairmod2: models not identical
+
+Formulas differ: pair ~ sex + ldose
+and:             ~numalive + numdead + (sex + ldose)
+
+pairmod_Formula, pairmod2: glm submodel formula strings are identical: yarg ~ ldose + sexmale
+pairmod_Formula, pairmod2: but the actual glm submodel formulas differ (classes are "formula" and "formula")
+pairmod_Formula, pairmod2: glm submodels not identical (but coefs, residuals, fitted.values are the same)
+pairmod_Formula, pairmod2: Models are equivalent, within numerical tolerances
+
+> 
+> # subset
+> # build a model using only data from a data.frame
+> # following uses Formula not formula because of "+"
+> subset.middle <- seq(from=2, to=nrow(df)-2)
+> pairmod_Formula_subset <- earth(numalive + numdead ~ sex + ldose, data=df, subset=subset.middle, trace=0, pmethod="none",
++                    glm=list(family=binomial))
+> plot(pairmod_Formula_subset, info=TRUE)
+> 
+> # following uses formula not Formula
+> pairmod_formula_subset <- earth(pair ~ sex + ldose, data=df, subset=subset.middle, trace=0, pmethod="none",
++                    glm=list(family=binomial))
+> stopifnot(attr(terms(pairmod_formula_subset), "response") == 1)
+> stopifnot(is.null(attr(terms(pairmod_formula_subset), "Response")))
+> check.models.equal(pairmod_formula_subset, pairmod_Formula_subset, "pairmod_Formula_subset, pairmod2", newdata=df[1:3,])
+pairmod_Formula_subset, pairmod2: models not identical
+
+Formulas differ: pair ~ sex + ldose
+and:             ~numalive + numdead + (sex + ldose)
+
+pairmod_Formula_subset, pairmod2: glm submodel formula strings are identical: yarg ~ `h(ldose-0)` + `h(0-ldose)` + sexmale
+pairmod_Formula_subset, pairmod2: but the actual glm submodel formulas differ (classes are "formula" and "formula")
+pairmod_Formula_subset, pairmod2: glm submodels not identical (but coefs, residuals, fitted.values are the same)
+pairmod_Formula_subset, pairmod2: Models are equivalent, within numerical tolerances
+
+> plot(pairmod_formula_subset, info=TRUE)
+> plotmo(pairmod_Formula_subset, SHOWCALL=TRUE)
+ plotmo grid:    sex ldose
+                male     0
+> plotmo(pairmod_formula_subset, SHOWCALL=TRUE)
+ plotmo grid:    sex ldose
+                male     0
+> 
+> # Terms on lhs like I(20-numdead) are not supported in multiple response Formulas
+> # (else `log(O3)` is included in model matrix if log(O3) is used on lhs of the Formula)
+> # Tested Sep 2020, problem in Formula package?
+> expect.err(try(earth(I(20-numdead) + numdead ~ sex + ldose, data=df, trace=1, pmethod="none",
++                glm=list(family=binomial))),
++            "terms like 'I(20 - numdead)' are not allowed on the LHS of a multiple-response formula")
+Using class "Formula" because lhs of formula has terms separated by "+"
+Error : terms like 'I(20 - numdead)' are not allowed on the LHS of a multiple-response formula
+Got expected error from try(earth(I(20 - numdead) + numdead ~ sex + ldose, data = df,     trace = 1, pmethod = "none", glm = list(family = binomial)))
+> 
+> pairmod6a <- earth(numalive + numdead ~ sex + ldose - sex, data=df, trace=1, pmethod="none")
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[12,1] with colname ldose, and values -2, -1, 0, 1, 2, 3, -2, -1, 0...
+y[12,2] with colnames numalive numdead
+Forward pass term 1, 2, 4
+RSq changed by less than 0.001 at 3 terms, 2 terms used (DeltaRSq 0)
+After forward pass GRSq 0.805 RSq 0.921
+Prune none penalty 2 nprune null: selected 2 of 2 terms, and 1 of 1 preds
+After pruning pass GRSq 0.882 RSq 0.921
+> pairmod6b <- earth(numalive + numdead ~ ldose, data=df, trace=1, pmethod="none")
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[12,1] with colname ldose, and values -2, -1, 0, 1, 2, 3, -2, -1, 0...
+y[12,2] with colnames numalive numdead
+Forward pass term 1, 2, 4
+RSq changed by less than 0.001 at 3 terms, 2 terms used (DeltaRSq 0)
+After forward pass GRSq 0.805 RSq 0.921
+Prune none penalty 2 nprune null: selected 2 of 2 terms, and 1 of 1 preds
+After pruning pass GRSq 0.882 RSq 0.921
+> print(summary(pairmod6a))
+Call: earth(formula=numalive+numdead~sex+ldose-sex, data=df, pmethod="none",
+            trace=1)
+
+             numalive  numdead
+(Intercept) 12.571429 7.428571
+ldose       -3.642857 3.642857
+
+Selected 2 of 2 terms, and 1 of 1 predictors (pmethod="none")
+Termination condition: RSq changed by less than 0.001 at 2 terms
+Importance: ldose
+Number of terms at each degree of interaction: 1 1 (additive model)
+
+              GCV      RSS      GRSq       RSq
+numalive  5.89418 39.78571 0.8821359 0.9210992
+numdead   5.89418 39.78571 0.8821359 0.9210992
+All      11.78836 79.57143 0.8821359 0.9210992
+> plot(pairmod6a, nresponse=1)
+> plotmo(pairmod6a, nresponse=1)
+ plotmo grid:    sex ldose
+              female   0.5
+> check.models.equal(pairmod6a, pairmod6b, "pairmod6a, pairmod6b", newdata=df[5:6,])
+pairmod6a, pairmod6b: models not identical
+
+Formulas differ: ~numalive + numdead + (sex + ldose - sex)
+and:             ~numalive + numdead + ldose
+
+pairmod6a, pairmod6b: Models are equivalent, within numerical tolerances
+
+> 
+> pairmod7 <- earth(numalive + numdead ~ sex * ldose, data=df, trace=1, pmethod="none")
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[12,3] with colnames sexmale ldose sexmale:ldose
+y[12,2] with colnames numalive numdead
+Forward pass term 1, 2, 4, 6, 8
+RSq changed by less than 0.001 at 7 terms, 5 terms used (DeltaRSq 0)
+After forward pass GRSq -0.057 RSq 0.991
+Prune none penalty 2 nprune null: selected 5 of 5 terms, and 3 of 3 preds
+After pruning pass GRSq 0.883 RSq 0.991
+> print(summary(pairmod7))
+Call: earth(formula=numalive+numdead~sex*ldose, data=df, pmethod="none",
+            trace=1)
+
+                     numalive    numdead
+(Intercept)        13.9619048  6.0380952
+sexmale            -2.9794486  2.9794486
+ldose              -3.2571429  3.2571429
+h(0-sexmale:ldose)  0.9533835 -0.9533835
+h(sexmale:ldose-0) -0.6639098  0.6639098
+
+Selected 5 of 5 terms, and 3 of 3 predictors (pmethod="none")
+Termination condition: RSq changed by less than 0.001 at 5 terms
+Importance: ldose, sexmale, sexmale:ldose
+Number of terms at each degree of interaction: 1 4 (additive model)
+
+               GCV      RSS      GRSq       RSq
+numalive  5.872348 4.404261 0.8825725 0.9912657
+numdead   5.872348 4.404261 0.8825725 0.9912657
+All      11.744695 8.808521 0.8825725 0.9912657
+> plot(pairmod7, nresponse=1)
+> plotmo(pairmod7, nresponse=1)
+ plotmo grid:    sex ldose
+              female   0.5
+> 
+> pairmod8 <- earth(numalive + numdead ~ ., data=df, trace=1, pmethod="none",
++                    glm=list(family=binomial))
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[12,2] with colnames ldose sexmale
+y[12,2] with colnames numalive numdead
+earth and glm: unweighted
+Response columns numalive and numdead are a binomial pair (240 obs in total)
+yfrac[12,1] with colname numalive, and values 0.95, 0.8, 0.55, 0.35, 0.1, 0...
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms, 3 terms used (DeltaRSq 0)
+After forward pass GRSq 0.907 RSq 0.981
+Prune none penalty 2 nprune null: selected 3 of 3 terms, and 2 of 2 preds
+After pruning pass GRSq 0.952 RSq 0.981
+GLM numalive devratio 0.95 dof 9/11 iters 4
+> print(summary(pairmod8))
+Call: earth(formula=numalive+numdead~., data=df, pmethod="none", trace=1,
+            glm=list(family=binomial))
+
+GLM coefficients
+             numalive
+(Intercept)  1.344727
+ldose       -1.064214
+sexmale     -1.100743
+
+GLM (family binomial, link logit):
+ nulldev df       dev df   devratio     AIC iters converged
+ 124.876 11   6.75706  9      0.946   42.87     4         1
+
+Earth selected 3 of 3 terms, and 2 of 2 predictors (pmethod="none")
+Termination condition: RSq changed by less than 0.001 at 3 terms
+Importance: ldose, sexmale
+Number of terms at each degree of interaction: 1 2 (additive model)
+Earth GCV 0.005940233    RSS 0.02425595    GRSq 0.952486    RSq 0.9807588
+> plot(pairmod8, nresponse=1)
+> plotmo(pairmod8, nresponse=1)
+ plotmo grid:    ldose    sex
+                   0.5 female
+> # following fails because predictors are in a different order in dirs, ok
+> try(check.models.equal(pairmod8, pairmod2, "pairmod8, pairmod2", newdata=df[5:6,]))
+pairmod8, pairmod2: models not identical
+
+
+m1 dirs 
+            ldose sexmale
+(Intercept)     0       0
+ldose           2       0
+sexmale         0       2
+
+m2 dirs 
+            sexmale ldose
+(Intercept)       0     0
+ldose             0     2
+sexmale           2     0
+
+difference mod1-mod2 dirs 
+            ldose sexmale
+(Intercept)     0       0
+ldose           2      -2
+sexmale        -2       2
+
+Error : dirs don't match, see above messages (max=0)
+> stopifnot(all.equal(sort(coef(pairmod8)), sort(coef(pairmod2)))) # ok
+> set.seed(2019)
+> pairmod.cv <- earth(numalive + numdead ~ ., data=df, nfold=2, trace=1, pmethod="none",
++                     keepxy=TRUE,
++                     glm=list(family=binomial))
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[12,2] with colnames ldose sexmale
+y[12,2] with colnames numalive numdead
+earth and glm: unweighted
+Response columns numalive and numdead are a binomial pair (240 obs in total)
+yfrac[12,1] with colname numalive, and values 0.95, 0.8, 0.55, 0.35, 0.1, 0...
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms, 3 terms used (DeltaRSq 0)
+After forward pass GRSq 0.907 RSq 0.981
+Prune none penalty 2 nprune null: selected 3 of 3 terms, and 2 of 2 preds
+After pruning pass GRSq 0.952 RSq 0.981
+GLM numalive devratio 0.95 dof 9/11 iters 4
+
+CV fold 1  CVRSq  0.778   n.oof  6 50%   n.infold.nz  5 83%   n.oof.nz  6 100%
+CV fold 2  CVRSq  0.707   n.oof  6 50%   n.infold.nz  6 100%   n.oof.nz  5 83%
+CV all     CVRSq  0.743                  n.infold.nz 11 92%
+
+> check.models.equal(pairmod.cv, pairmod8, "pairmod.cv, pairmod9", newdata=df[3:5,])
+pairmod.cv, pairmod9: models not identical
+
+pairmod.cv, pairmod9: glm submodel formula strings are identical: yarg ~ ldose + sexmale
+pairmod.cv, pairmod9: but the actual glm submodel formulas differ (classes are "formula" and "formula")
+pairmod.cv, pairmod9: glm submodels not identical (but coefs, residuals, fitted.values are the same)
+pairmod.cv, pairmod9: Models are equivalent, within numerical tolerances
+
+> 
+> # TODO following fails, it shouldn't (the minus sign on the rhs messes things up), cf pairmod6a
+> try(earth(numalive + numdead ~ . - ldose, data=df))
+Warning in terms.formula(form, data = data) :
+  'varlist' has changed (from nvar=2) to new 3 after EncodeVars() -- should no longer happen!
+Error in model.matrix.default(mt, data = data, ...) : 
+  model frame and formula mismatch in model.matrix()
+> 
+> newdata.dataframe <- df[1,,drop=FALSE] # data.frame
+> print(newdata.dataframe)
+  ldose numalive  sex numdead
+1    -2       19 male       1
+> predict.pairmod  <- predict(pairmod, newdata.dataframe)
+> predict.pairmod2 <- predict(pairmod2, newdata.dataframe)
+> predict.pairmod_Formula <- predict(pairmod_Formula, newdata.dataframe)
+> # predict.pairmod5 <- predict(pairmod5, newdata.dataframe)
+> check.same(predict.pairmod, 2.372412, max=1e-4)
+> check.same(predict.pairmod2, predict.pairmod, "predict pairmod2,pairmod with newdata.dataframe")
+> check.same(predict.pairmod_Formula, predict.pairmod, "predict pairmod_Formula,pairmod2 with newdata.dataframe")
+> # check.same(predict.pairmod5, predict.pairmod, "predict pairmod5,pairmod2 with newdata.dataframe", allow.different.names=TRUE)
+> 
+> newdata.vector <- df[1,,drop=TRUE] # list
+> print(newdata.vector)
+$ldose
+[1] -2
+
+$numalive
+[1] 19
+
+$sex
+[1] male
+Levels: female male
+
+$numdead
+[1] 1
+
+> predict.pairmodv  <- predict(pairmod, newdata.vector)
+> predict.pairmod2v <- predict(pairmod2, newdata.vector)
+> predict.pairmod_Formulav <- predict(pairmod_Formula, newdata.vector)
+> # predict.pairmod5v <- predict(pairmod5, newdata.vector)
+> check.same(predict.pairmodv, 2.372412, max=1e-4)
+> check.same(predict.pairmod2v, predict.pairmodv, "predict pairmod2,pairmod with newdata.vector")
+> check.same(predict.pairmod_Formulav, predict.pairmodv, "predict pairmod_Formula,pairmod2 with newdata.vector")
+> # check.same(predict.pairmod5v, predict.pairmodv, "predict pairmod5,pairmod2 with newdata.vector", allow.different.names=TRUE)
+> 
+> plotmo(pairmod_Formula, SHOWCALL=TRUE)
+ plotmo grid:    sex ldose
+              female   0.5
+> # plotmo(pairmod5, SHOWCALL=TRUE)
+> expect.err(try(plotmo(pairmod2)), "cannot get the original model predictors") # because we deleted ldose, numalive, etc.
+
+Looked unsuccessfully for the original predictors in the following places:
+
+(1) object$x: NULL
+
+(2) model.frame: variable lengths differ (found for 'numdead')
+
+(3) getCall(object)$x: NULL
+
+Error : cannot get the original model predictors
+Got expected error from try(plotmo(pairmod2))
+> expect.err(try(plotmo(pairmod2.weights)), "cannot get the original model predictors") # because we deleted ldose, numalive, etc.
+
+Looked unsuccessfully for the original predictors in the following places:
+
+(1) object$x: NULL
+
+(2) model.frame: variable lengths differ (found for 'numdead')
+
+(3) getCall(object)$x: NULL
+
+Error : cannot get the original model predictors
+Got expected error from try(plotmo(pairmod2.weights))
+> 
+> expect.err(try(earth(numalive + 20 - numdead ~ sex + ldose, data=df, glm=list(family=binomial))), "Binomial response (see above): all values should be between 0 and 1, or a binomial pair")
+
+print(head(y)):
+     numalive + 20 - numdead
+[1,]                      38
+[2,]                      32
+[3,]                      22
+[4,]                      14
+[5,]                       4
+[6,]                       0
+
+Error : Binomial response (see above): all values should be between 0 and 1, or a binomial pair
+Got expected error from try(earth(numalive + 20 - numdead ~ sex + ldose, data = df, glm = list(family = binomial)))
+> 
+> cat("\n===vignette short/long data example===\n")
+
+===vignette short/long data example===
+> ldose    <- rep(0:5, 2) - 2 # Venables and Ripley 4th edition page 191
+> sex      <- factor(rep(c("male", "female"), times=c(6,6)))
+> numdead  <- c(1,4,9,13,18,20,0,2,6,10,12,16)
+> numalive <- 20 - numdead
+> 
+> glm.short       <- glm(cbind(numalive,numdead) ~ ldose + sex, family=binomial)
+> 
+> earth.short     <- earth(cbind(numalive,numdead)  ~ ldose + sex,
++                          glm=list(family=binomial))
+> 
+> earth.short.lin <- earth(cbind(numalive,numdead)  ~ ldose + sex,
++                          glm=list(family=binomial),
++                          # coerce earth to build a linear (no hinge) model with all vars
++                          # (generated model matches the glm.short model above)
++                          linpreds=TRUE, thresh=0, penalty=-1)
+> 
+> data.short <- data.frame(numalive, numdead, ldose, sex)
+> 
+> data.long <- expand.bpairs(data.short, c("numalive", "numdead"))
+>                          # data.long$num.alive will be a fraction 0...1
+> print(data.long)
+         numalive ldose    sex
+row1.1      FALSE    -2   male
+row1.2       TRUE    -2   male
+row1.3       TRUE    -2   male
+row1.4       TRUE    -2   male
+row1.5       TRUE    -2   male
+row1.6       TRUE    -2   male
+row1.7       TRUE    -2   male
+row1.8       TRUE    -2   male
+row1.9       TRUE    -2   male
+row1.10      TRUE    -2   male
+row1.11      TRUE    -2   male
+row1.12      TRUE    -2   male
+row1.13      TRUE    -2   male
+row1.14      TRUE    -2   male
+row1.15      TRUE    -2   male
+row1.16      TRUE    -2   male
+row1.17      TRUE    -2   male
+row1.18      TRUE    -2   male
+row1.19      TRUE    -2   male
+row1.20      TRUE    -2   male
+row2.1      FALSE    -1   male
+row2.2      FALSE    -1   male
+row2.3      FALSE    -1   male
+row2.4      FALSE    -1   male
+row2.5       TRUE    -1   male
+row2.6       TRUE    -1   male
+row2.7       TRUE    -1   male
+row2.8       TRUE    -1   male
+row2.9       TRUE    -1   male
+row2.10      TRUE    -1   male
+row2.11      TRUE    -1   male
+row2.12      TRUE    -1   male
+row2.13      TRUE    -1   male
+row2.14      TRUE    -1   male
+row2.15      TRUE    -1   male
+row2.16      TRUE    -1   male
+row2.17      TRUE    -1   male
+row2.18      TRUE    -1   male
+row2.19      TRUE    -1   male
+row2.20      TRUE    -1   male
+row3.1      FALSE     0   male
+row3.2      FALSE     0   male
+row3.3      FALSE     0   male
+row3.4      FALSE     0   male
+row3.5      FALSE     0   male
+row3.6      FALSE     0   male
+row3.7      FALSE     0   male
+row3.8      FALSE     0   male
+row3.9      FALSE     0   male
+row3.10      TRUE     0   male
+row3.11      TRUE     0   male
+row3.12      TRUE     0   male
+row3.13      TRUE     0   male
+row3.14      TRUE     0   male
+row3.15      TRUE     0   male
+row3.16      TRUE     0   male
+row3.17      TRUE     0   male
+row3.18      TRUE     0   male
+row3.19      TRUE     0   male
+row3.20      TRUE     0   male
+row4.1      FALSE     1   male
+row4.2      FALSE     1   male
+row4.3      FALSE     1   male
+row4.4      FALSE     1   male
+row4.5      FALSE     1   male
+row4.6      FALSE     1   male
+row4.7      FALSE     1   male
+row4.8      FALSE     1   male
+row4.9      FALSE     1   male
+row4.10     FALSE     1   male
+row4.11     FALSE     1   male
+row4.12     FALSE     1   male
+row4.13     FALSE     1   male
+row4.14      TRUE     1   male
+row4.15      TRUE     1   male
+row4.16      TRUE     1   male
+row4.17      TRUE     1   male
+row4.18      TRUE     1   male
+row4.19      TRUE     1   male
+row4.20      TRUE     1   male
+row5.1      FALSE     2   male
+row5.2      FALSE     2   male
+row5.3      FALSE     2   male
+row5.4      FALSE     2   male
+row5.5      FALSE     2   male
+row5.6      FALSE     2   male
+row5.7      FALSE     2   male
+row5.8      FALSE     2   male
+row5.9      FALSE     2   male
+row5.10     FALSE     2   male
+row5.11     FALSE     2   male
+row5.12     FALSE     2   male
+row5.13     FALSE     2   male
+row5.14     FALSE     2   male
+row5.15     FALSE     2   male
+row5.16     FALSE     2   male
+row5.17     FALSE     2   male
+row5.18     FALSE     2   male
+row5.19      TRUE     2   male
+row5.20      TRUE     2   male
+row6.1      FALSE     3   male
+row6.2      FALSE     3   male
+row6.3      FALSE     3   male
+row6.4      FALSE     3   male
+row6.5      FALSE     3   male
+row6.6      FALSE     3   male
+row6.7      FALSE     3   male
+row6.8      FALSE     3   male
+row6.9      FALSE     3   male
+row6.10     FALSE     3   male
+row6.11     FALSE     3   male
+row6.12     FALSE     3   male
+row6.13     FALSE     3   male
+row6.14     FALSE     3   male
+row6.15     FALSE     3   male
+row6.16     FALSE     3   male
+row6.17     FALSE     3   male
+row6.18     FALSE     3   male
+row6.19     FALSE     3   male
+row6.20     FALSE     3   male
+row7.1       TRUE    -2 female
+row7.2       TRUE    -2 female
+row7.3       TRUE    -2 female
+row7.4       TRUE    -2 female
+row7.5       TRUE    -2 female
+row7.6       TRUE    -2 female
+row7.7       TRUE    -2 female
+row7.8       TRUE    -2 female
+row7.9       TRUE    -2 female
+row7.10      TRUE    -2 female
+row7.11      TRUE    -2 female
+row7.12      TRUE    -2 female
+row7.13      TRUE    -2 female
+row7.14      TRUE    -2 female
+row7.15      TRUE    -2 female
+row7.16      TRUE    -2 female
+row7.17      TRUE    -2 female
+row7.18      TRUE    -2 female
+row7.19      TRUE    -2 female
+row7.20      TRUE    -2 female
+row8.1      FALSE    -1 female
+row8.2      FALSE    -1 female
+row8.3       TRUE    -1 female
+row8.4       TRUE    -1 female
+row8.5       TRUE    -1 female
+row8.6       TRUE    -1 female
+row8.7       TRUE    -1 female
+row8.8       TRUE    -1 female
+row8.9       TRUE    -1 female
+row8.10      TRUE    -1 female
+row8.11      TRUE    -1 female
+row8.12      TRUE    -1 female
+row8.13      TRUE    -1 female
+row8.14      TRUE    -1 female
+row8.15      TRUE    -1 female
+row8.16      TRUE    -1 female
+row8.17      TRUE    -1 female
+row8.18      TRUE    -1 female
+row8.19      TRUE    -1 female
+row8.20      TRUE    -1 female
+row9.1      FALSE     0 female
+row9.2      FALSE     0 female
+row9.3      FALSE     0 female
+row9.4      FALSE     0 female
+row9.5      FALSE     0 female
+row9.6      FALSE     0 female
+row9.7       TRUE     0 female
+row9.8       TRUE     0 female
+row9.9       TRUE     0 female
+row9.10      TRUE     0 female
+row9.11      TRUE     0 female
+row9.12      TRUE     0 female
+row9.13      TRUE     0 female
+row9.14      TRUE     0 female
+row9.15      TRUE     0 female
+row9.16      TRUE     0 female
+row9.17      TRUE     0 female
+row9.18      TRUE     0 female
+row9.19      TRUE     0 female
+row9.20      TRUE     0 female
+row10.1     FALSE     1 female
+row10.2     FALSE     1 female
+row10.3     FALSE     1 female
+row10.4     FALSE     1 female
+row10.5     FALSE     1 female
+row10.6     FALSE     1 female
+row10.7     FALSE     1 female
+row10.8     FALSE     1 female
+row10.9     FALSE     1 female
+row10.10    FALSE     1 female
+row10.11     TRUE     1 female
+row10.12     TRUE     1 female
+row10.13     TRUE     1 female
+row10.14     TRUE     1 female
+row10.15     TRUE     1 female
+row10.16     TRUE     1 female
+row10.17     TRUE     1 female
+row10.18     TRUE     1 female
+row10.19     TRUE     1 female
+row10.20     TRUE     1 female
+row11.1     FALSE     2 female
+row11.2     FALSE     2 female
+row11.3     FALSE     2 female
+row11.4     FALSE     2 female
+row11.5     FALSE     2 female
+row11.6     FALSE     2 female
+row11.7     FALSE     2 female
+row11.8     FALSE     2 female
+row11.9     FALSE     2 female
+row11.10    FALSE     2 female
+row11.11    FALSE     2 female
+row11.12    FALSE     2 female
+row11.13     TRUE     2 female
+row11.14     TRUE     2 female
+row11.15     TRUE     2 female
+row11.16     TRUE     2 female
+row11.17     TRUE     2 female
+row11.18     TRUE     2 female
+row11.19     TRUE     2 female
+row11.20     TRUE     2 female
+row12.1     FALSE     3 female
+row12.2     FALSE     3 female
+row12.3     FALSE     3 female
+row12.4     FALSE     3 female
+row12.5     FALSE     3 female
+row12.6     FALSE     3 female
+row12.7     FALSE     3 female
+row12.8     FALSE     3 female
+row12.9     FALSE     3 female
+row12.10    FALSE     3 female
+row12.11    FALSE     3 female
+row12.12    FALSE     3 female
+row12.13    FALSE     3 female
+row12.14    FALSE     3 female
+row12.15    FALSE     3 female
+row12.16    FALSE     3 female
+row12.17     TRUE     3 female
+row12.18     TRUE     3 female
+row12.19     TRUE     3 female
+row12.20     TRUE     3 female
+> 
+> glm.long       <- glm(numalive ~ ldose + sex, data=data.long, family=binomial)
+> 
+> earth.long     <- earth(numalive ~ ldose + sex, data=data.long,
++                         glm=list(family=binomial))
+> 
+> earth.long.lin <- earth(numalive ~ ldose + sex, data=data.long,
++                         glm=list(family=binomial),
++                         linpreds=TRUE, thresh=0, penalty=-1)
+> print(summary(glm.short))
+
+Call:
+glm(formula = cbind(numalive, numdead) ~ ldose + sex, family = binomial)
+
+Deviance Residuals: 
+     Min        1Q    Median        3Q       Max  
+-1.42944  -0.48471   0.02225   0.65343   1.10540  
+
+Coefficients:
+            Estimate Std. Error z value Pr(>|z|)    
+(Intercept)   1.3447     0.2797   4.809 1.52e-06 ***
+ldose        -1.0642     0.1311  -8.119 4.70e-16 ***
+sexmale      -1.1007     0.3558  -3.093  0.00198 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 124.8756  on 11  degrees of freedom
+Residual deviance:   6.7571  on  9  degrees of freedom
+AIC: 42.867
+
+Number of Fisher Scoring iterations: 4
+
+> print(summary(earth.short))
+Call: earth(formula=cbind(numalive,numdead)~ldose+sex,
+            glm=list(family=binomial))
+
+GLM coefficients
+             numalive
+(Intercept)  1.344727
+ldose       -1.064214
+sexmale     -1.100743
+
+GLM (family binomial, link logit):
+ nulldev df       dev df   devratio     AIC iters converged
+ 124.876 11   6.75706  9      0.946   42.87     4         1
+
+Earth selected 3 of 3 terms, and 2 of 2 predictors
+Termination condition: RSq changed by less than 0.001 at 3 terms
+Importance: ldose, sexmale
+Number of terms at each degree of interaction: 1 2 (additive model)
+Earth GCV 0.005940233    RSS 0.02425595    GRSq 0.952486    RSq 0.9807588
+> print(summary(earth.short.lin))
+Call: earth(formula=cbind(numalive,numdead)~ldose+sex,
+            glm=list(family=binomial), linpreds=TRUE, thresh=0, penalty=-1)
+
+GLM coefficients
+             numalive
+(Intercept)  1.344727
+ldose       -1.064214
+sexmale     -1.100743
+
+GLM (family binomial, link logit):
+ nulldev df       dev df   devratio     AIC iters converged
+ 124.876 11   6.75706  9      0.946   42.87     4         1
+
+Earth selected 3 of 3 terms, and 2 of 2 predictors
+Termination condition: No new term increases RSq at 3 terms
+Importance: ldose, sexmale
+Number of terms at each degree of interaction: 1 2 (additive model)
+Earth GCV 0.002021329    RSS 0.02425595    GRSq 0.9807588    RSq 0.9807588
+> print(summary(glm.long))
+
+Call:
+glm(formula = numalive ~ ldose + sex, family = binomial, data = data.long)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-2.2338  -0.5410   0.2472   0.6806   2.0129  
+
+Coefficients:
+            Estimate Std. Error z value Pr(>|z|)    
+(Intercept)   1.3447     0.2797   4.809 1.52e-06 ***
+ldose        -1.0642     0.1311  -8.119 4.70e-16 ***
+sexmale      -1.1007     0.3558  -3.093  0.00198 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 331.36  on 239  degrees of freedom
+Residual deviance: 213.24  on 237  degrees of freedom
+AIC: 219.24
+
+Number of Fisher Scoring iterations: 5
+
+> print(summary(earth.long))
+Call: earth(formula=numalive~ldose+sex, data=data.long,
+            glm=list(family=binomial))
+
+GLM coefficients
+             numalive
+(Intercept) -1.107855
+sexmale     -1.087416
+h(2-ldose)   1.196265
+
+GLM (family binomial, link logit):
+ nulldev  df       dev  df   devratio     AIC iters converged
+ 331.359 239   215.878 237      0.349   221.9     5         1
+
+Earth selected 3 of 5 terms, and 2 of 2 predictors
+Termination condition: RSq changed by less than 0.001 at 5 terms
+Importance: ldose, sexmale
+Number of terms at each degree of interaction: 1 2 (additive model)
+Earth GCV 0.1541512    RSS 35.47083    GRSq 0.3850639    RSq 0.4054752
+> print(summary(earth.long.lin))
+Call: earth(formula=numalive~ldose+sex, data=data.long,
+            glm=list(family=binomial), linpreds=TRUE, thresh=0, penalty=-1)
+
+GLM coefficients
+             numalive
+(Intercept)  1.344727
+ldose       -1.064214
+sexmale     -1.100743
+
+GLM (family binomial, link logit):
+ nulldev  df       dev  df   devratio     AIC iters converged
+ 331.359 239   213.241 237      0.356   219.2     5         1
+
+Earth selected 3 of 3 terms, and 2 of 2 predictors
+Termination condition: No new term increases RSq at 3 terms
+Importance: ldose, sexmale
+Number of terms at each degree of interaction: 1 2 (additive model)
+Earth GCV 0.145563    RSS 34.93512    GRSq 0.4144543    RSq 0.4144543
+> 
+> print(coef(glm.short))
+(Intercept)       ldose     sexmale 
+   1.344727   -1.064214   -1.100743 
+> stopifnot(max(coef(earth.short.lin) - coef(glm.short)) < 1e-12)  # same
+> stopifnot(max(coef(glm.long) - coef(glm.short)) < 1e-12)         # same
+> stopifnot(max(coef(earth.long.lin) - coef(glm.short)) < 1e-12)   # same
+> coef(earth.short)     # different
+(Intercept)       ldose     sexmale 
+   1.344727   -1.064214   -1.100743 
+> coef(earth.long)      # different
+(Intercept)  h(2-ldose)     sexmale 
+  -1.107855    1.196265   -1.087416 
+> 
+> cat("\n===cross validated binomial pair model===\n")
+
+===cross validated binomial pair model===
+> # use a big enough data set for cross validation without negative GRSqs
+> n2 <- 20
+> set.seed(2019)
+> good <- pmax(round(c((1:n2),(n2:1)) + rnorm(2*n2)), 0)
+> bad  <- pmax(n2 - good, 0)
+> data <- data.frame(good, bad, x=1:(2 * n2))
+> set.seed(2020)
+> earth.cv <- earth(good+bad~., data=data, glm=list(family=binomial), trace=1, nfold=2, keepxy=TRUE)
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[40,1] with colname x, and values 1, 2, 3, 4, 5, 6, 7, 8, 9, 10...
+y[40,2] with colnames good bad
+earth and glm: unweighted
+Response columns good and bad are a binomial pair (800 obs in total)
+yfrac[40,1] with colname good, and values 0.1, 0.05, 0.05, 0.25, 0.2, 0...
+Forward pass term 1, 2, 4, 6, 8, 10, 12
+RSq changed by less than 0.001 at 11 terms, 7 terms used (DeltaRSq 0.00011)
+After forward pass GRSq 0.923 RSq 0.968
+Prune backward penalty 2 nprune null: selected 4 of 7 terms, and 1 of 1 preds
+After pruning pass GRSq 0.949 RSq 0.963
+GLM good devratio 0.93 dof 36/39 iters 4
+
+CV fold 1  CVRSq  0.923   n.oof 21 48%   n.infold.nz 21 100%   n.oof.nz 19 100%
+CV fold 2  CVRSq  0.928   n.oof 19 52%   n.infold.nz 19 100%   n.oof.nz 21 100%
+CV all     CVRSq  0.926                  n.infold.nz 40 100%
+
+> cat("cross validated model:\n")
+cross validated model:
+> print(summary(earth.cv))
+Call: earth(formula=good+bad~., data=data, keepxy=TRUE, trace=1,
+            glm=list(family=binomial), nfold=2)
+
+GLM coefficients
+                  good
+(Intercept)  2.6553682
+h(20-x)     -0.2657911
+h(x-23)     -0.5420035
+h(x-26)      0.3168845
+
+GLM (family binomial, link logit):
+ nulldev df       dev df   devratio     AIC iters converged
+ 324.951 39   23.0641 36      0.929     145     4         1
+
+Earth selected 4 of 7 terms, and 1 of 1 predictors
+Termination condition: RSq changed by less than 0.001 at 7 terms
+Importance: x
+Number of terms at each degree of interaction: 1 3 (additive model)
+Earth GCV 0.004633736  RSS 0.1261535  GRSq 0.9488392  RSq 0.9633701  CVRSq 0.9256185
+
+Note: the cross-validation sd's below are standard deviations across folds
+
+Cross validation:   nterms 3.50 sd 0.71    nvars 1.00 sd 0.00
+
+ CVRSq    sd MaxErr    sd   AUC    sd MeanDev    sd CalibInt    sd CalibSlope
+ 0.926 0.004 -0.208 0.289 0.994 0.008    1.04 0.132   -0.052 0.401       1.08
+    sd
+ 0.243
+> cat("first fold model:\n")
+first fold model:
+> print(summary(earth.cv$cv.list[[1]]))
+Call: earth(x=infold.x, y=infold.y, weights=infold.weights, wp=wp,
+            subset=subset, pmethod=if(pmethod=="cv")"backward"elsepmethod,
+            keepxy=(keepxy==2), trace=trace, glm=glm.arg, degree=degree,
+            nfold=0, ncross=0, varmod.method="none", Scale.y=Scale.y)
+
+GLM coefficients
+                  good
+(Intercept)  3.0769321
+h(21-x)     -0.2770319
+h(x-21)     -0.2732809
+
+GLM (family binomial, link logit):
+ nulldev df       dev df   devratio     AIC iters converged
+ 206.311 20   10.5272 18      0.949   72.58     4         1
+
+Earth selected 3 of 3 terms, and 1 of 1 predictors
+Termination condition: RSq changed by less than 0.001 at 3 terms
+Importance: x
+Number of terms at each degree of interaction: 1 2 (additive model)
+Earth GCV 0.004101511    RSS 0.04999937    GRSq 0.9637956    RSq 0.9768292
+> par(mfrow = c(2, 2), mar = c(3, 3, 3, 1), mgp = c(1.5, 0.5, 0))
+> set.seed(2019)
+> plotmo(earth.cv, type="earth", pt.col=2, do.par=0)
+> empty.plot()
+> plot.earth.models(list(earth.cv, earth.cv$cv.list[[1]], earth.cv$cv.list[[2]]), which=1:2, do.par=0)
+> 
+> # try plotmo on one of the fold models
+> expect.err(try(plotmo(earth.cv$cv.list[[1]])), "cannot get the original model predictors (use keepxy=2 in the call to earth)")
+
+Looked unsuccessfully for the original predictors in the following places:
+
+(1) object$x: NULL
+
+(2) model.frame: no formula in getCall(object)
+
+(3) getCall(object)$x: object 'infold.x' not found
+
+Error : cannot get the original model predictors (use keepxy=2 in the call to earth)
+Got expected error from try(plotmo(earth.cv$cv.list[[1]]))
+> # can plotmo on a fold model if we use keepxy=2 in call to earth
+> set.seed(2020)
+> earth.cv.keepxy2 <- earth(good+bad~., data=data, glm=list(family=binomial), trace=.5, nfold=2, keepxy=2)
+Model with pmethod="backward": GRSq 0.949 RSq 0.963 nterms 4
+CV fold 1  CVRSq  0.923   n.oof 21 48%   n.infold.nz 21 100%   n.oof.nz 19 100%
+CV fold 2  CVRSq  0.928   n.oof 19 52%   n.infold.nz 19 100%   n.oof.nz 21 100%
+CV all     CVRSq  0.926                  n.infold.nz 40 100%
+
+> plotmo(earth.cv.keepxy2$cv.list[[1]], type="earth", SHOWCALL=TRUE)
+> 
+> source("test.epilog.R")

@@ -1,0 +1,224 @@
+Date-arithmetic         Arithmetic: date
+Date-getters            Getters: date
+Date-setters            Setters: date
+as-zoned-time-Date      Convert to a zoned-time from a date
+as-zoned-time-naive-time
+                        Convert to a zoned-time from a naive-time
+as-zoned-time-posixt    Convert to a zoned-time from a date-time
+as-zoned-time-sys-time
+                        Convert to a zoned-time from a sys-time
+as_date                 Convert to a date
+as_date_time            Convert to a date-time
+as_duration             Convert to a duration
+as_iso_year_week_day    Convert to iso-year-week-day
+as_naive_time           Convert to a naive-time
+as_sys_time             Convert to a sys-time
+as_weekday              Convert to a weekday
+as_year_day             Convert to year-day
+as_year_month_day       Convert to year-month-day
+as_year_month_weekday   Convert to year-month-weekday
+as_year_quarter_day     Convert to year-quarter-day
+as_year_week_day        Convert to year-week-day
+as_zoned_time           Convert to a zoned-time
+calendar-boundary       Boundaries: calendars
+calendar-count-between
+                        Counting: calendars
+calendar_group          Group calendar components
+calendar_leap_year      Is the calendar year a leap year?
+calendar_month_factor   Convert a calendar to an ordered factor of
+                        month names
+calendar_narrow         Narrow a calendar to a less precise precision
+calendar_precision      Precision: calendar
+calendar_spanning_seq   Spanning sequence: calendars
+calendar_widen          Widen a calendar to a more precise precision
+clock-arithmetic        Clock arithmetic
+clock-codes             Integer codes
+clock-getters           Calendar getters
+clock-invalid           Invalid calendar dates
+clock-setters           Calendar setters
+clock_labels            Create or retrieve date related labels
+clock_locale            Create a clock locale
+date-and-date-time-boundary
+                        Boundaries: date and date-time
+date-and-date-time-rounding
+                        Date and date-time rounding
+date-and-date-time-shifting
+                        Shifting: date and date-time
+date-boundary           Boundaries: date
+date-count-between      Counting: date
+date-formatting         Formatting: date
+date-group              Group date components
+date-rounding           Rounding: date
+date-sequence           Sequences: date
+date-shifting           Shifting: date
+date-time-parse         Parsing: date-time
+date-time-zone          Get or set the time zone
+date-today              Current date and date-time
+date_build              Building: date
+date_count_between      Counting: date and date-time
+date_format             Formatting: date and date-time
+date_group              Group date and date-time components
+date_leap_year          Is the year a leap year?
+date_month_factor       Convert a date or date-time to an ordered
+                        factor of month names
+date_parse              Parsing: date
+date_seq                Sequences: date and date-time
+date_spanning_seq       Spanning sequence: date and date-time
+date_time_build         Building: date-time
+date_time_info          Info: date-time
+date_weekday_factor     Convert a date or date-time to a weekday factor
+duration-arithmetic     Arithmetic: duration
+duration-helper         Construct a duration
+duration-rounding       Duration rounding
+duration_cast           Cast a duration between precisions
+duration_precision      Precision: duration
+duration_spanning_seq   Spanning sequence: duration
+format.clock_zoned_time
+                        Formatting: zoned-time
+is_duration             Is 'x' a duration?
+is_iso_year_week_day    Is 'x' a iso-year-week-day?
+is_naive_time           Is 'x' a naive-time?
+is_sys_time             Is 'x' a sys-time?
+is_weekday              Is 'x' a weekday?
+is_year_day             Is 'x' a year-day?
+is_year_month_day       Is 'x' a year-month-day?
+is_year_month_weekday   Is 'x' a year-month-weekday?
+is_year_quarter_day     Is 'x' a year-quarter-day?
+is_year_week_day        Is 'x' a year-week-day?
+is_zoned_time           Is 'x' a zoned-time?
+iso-year-week-day-arithmetic
+                        Arithmetic: iso-year-week-day
+iso-year-week-day-boundary
+                        Boundaries: iso-year-week-day
+iso-year-week-day-count-between
+                        Counting: iso-year-week-day
+iso-year-week-day-getters
+                        Getters: iso-year-week-day
+iso-year-week-day-group
+                        Grouping: iso-year-week-day
+iso-year-week-day-narrow
+                        Narrow: iso-year-week-day
+iso-year-week-day-setters
+                        Setters: iso-year-week-day
+iso-year-week-day-widen
+                        Widen: iso-year-week-day
+iso_year_week_day       Calendar: iso-year-week-day
+naive_time_info         Info: naive-time
+naive_time_parse        Parsing: naive-time
+posixt-arithmetic       Arithmetic: date-time
+posixt-boundary         Boundaries: date-time
+posixt-count-between    Counting: date-times
+posixt-formatting       Formatting: date-time
+posixt-getters          Getters: date-time
+posixt-group            Group date-time components
+posixt-rounding         Rounding: date-time
+posixt-sequence         Sequences: date-time
+posixt-setters          Setters: date-time
+posixt-shifting         Shifting: date and date-time
+seq.clock_duration      Sequences: duration
+seq.clock_iso_year_week_day
+                        Sequences: iso-year-week-day
+seq.clock_time_point    Sequences: time points
+seq.clock_year_day      Sequences: year-day
+seq.clock_year_month_day
+                        Sequences: year-month-day
+seq.clock_year_month_weekday
+                        Sequences: year-month-weekday
+seq.clock_year_quarter_day
+                        Sequences: year-quarter-day
+seq.clock_year_week_day
+                        Sequences: year-week-day
+sys-parsing             Parsing: sys-time
+sys_time_info           Info: sys-time
+sys_time_now            What is the current sys-time?
+time-point-arithmetic   Arithmetic: Time points
+time-point-rounding     Time point rounding
+time_point_cast         Cast a time point between precisions
+time_point_count_between
+                        Counting: time point
+time_point_precision    Precision: time point
+time_point_shift        Shifting: time point
+time_point_spanning_seq
+                        Spanning sequence: time points
+vec_arith.clock_year_day
+                        Support for vctrs arithmetic
+weekday                 Construct a weekday vector
+weekday-arithmetic      Arithmetic: weekday
+weekday_code            Extract underlying weekday codes
+weekday_factor          Convert a weekday to an ordered factor
+year-day-arithmetic     Arithmetic: year-day
+year-day-boundary       Boundaries: year-day
+year-day-count-between
+                        Counting: year-day
+year-day-getters        Getters: year-day
+year-day-group          Grouping: year-day
+year-day-narrow         Narrow: year-day
+year-day-setters        Setters: year-day
+year-day-widen          Widen: year-day
+year-month-day-arithmetic
+                        Arithmetic: year-month-day
+year-month-day-boundary
+                        Boundaries: year-month-day
+year-month-day-count-between
+                        Counting: year-month-day
+year-month-day-getters
+                        Getters: year-month-day
+year-month-day-group    Grouping: year-month-day
+year-month-day-narrow   Narrow: year-month-day
+year-month-day-setters
+                        Setters: year-month-day
+year-month-day-widen    Widen: year-month-day
+year-month-weekday-arithmetic
+                        Arithmetic: year-month-weekday
+year-month-weekday-boundary
+                        Boundaries: year-month-weekday
+year-month-weekday-count-between
+                        Counting: year-month-weekday
+year-month-weekday-getters
+                        Getters: year-month-weekday
+year-month-weekday-group
+                        Grouping: year-month-weekday
+year-month-weekday-narrow
+                        Narrow: year-month-weekday
+year-month-weekday-setters
+                        Setters: year-month-weekday
+year-month-weekday-widen
+                        Widen: year-month-weekday
+year-quarter-day-arithmetic
+                        Arithmetic: year-quarter-day
+year-quarter-day-boundary
+                        Boundaries: year-quarter-day
+year-quarter-day-count-between
+                        Counting: year-quarter-day
+year-quarter-day-getters
+                        Getters: year-quarter-day
+year-quarter-day-group
+                        Grouping: year-quarter-day
+year-quarter-day-narrow
+                        Narrow: year-quarter-day
+year-quarter-day-setters
+                        Setters: year-quarter-day
+year-quarter-day-widen
+                        Widen: year-quarter-day
+year-week-day-arithmetic
+                        Arithmetic: year-week-day
+year-week-day-boundary
+                        Boundaries: year-week-day
+year-week-day-count-between
+                        Counting: year-week-day
+year-week-day-getters   Getters: year-week-day
+year-week-day-group     Grouping: year-week-day
+year-week-day-narrow    Narrow: year-week-day
+year-week-day-setters   Setters: year-week-day
+year-week-day-widen     Widen: year-week-day
+year_day                Calendar: year-day
+year_month_day          Calendar: year-month-day
+year_month_day_parse    Parsing: year-month-day
+year_month_weekday      Calendar: year-month-weekday
+year_quarter_day        Calendar: year-quarter-day
+year_week_day           Calendar: year-week-day
+zoned-parsing           Parsing: zoned-time
+zoned-zone              Get or set the time zone
+zoned_time_info         Info: zoned-time
+zoned_time_now          What is the current zoned-time?
+zoned_time_precision    Precision: zoned-time

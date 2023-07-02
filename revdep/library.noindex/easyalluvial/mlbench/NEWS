@@ -1,0 +1,111 @@
+Changes in Version 2.1-2
+
+  o Moved Data-Administration.R to inst/notes
+
+  o fixed NAMESPACE problems
+
+  o added registration of C functions
+
+
+Changes in Version 2.1-1
+
+  o Added a NAMESPACE.
+
+
+Changes in Version 2.1-0
+
+  o Removed dependencies on e1071 and scatterplot3d (the latter replaced by 
+    cloud() from lattice). 
+
+  o mlbench.corners() has been renamed to mlbench.hypercube().
+
+  o New function mlbench.simplex() by Manuel Eugster and Sebastian Kaiser.
+
+  o Bugfixes in the bayesclass() methods for ringnorm and threenorm 
+    submitted by Julia Schiffer. 
+
+
+Changes in Version 2.0-0
+
+  o Changed license of complete package to GPL-2.
+
+  o Recompressed all data sets using xz.
+
+  o Added examples to all help pages.
+
+  o Added info about UCI repository to mlbench.waveform.Rd.
+
+
+Changes in Version 1.1-6
+
+  o Improve CITATION.
+
+
+Changes in Version 1.1-5
+
+  o Fixed Rd bug and renamed README to LICENSE.
+
+
+Changes in Version 1.1-4
+
+  o Fixed documentation of S3 objects.
+
+
+Changes in Version 1.1-3
+
+  o Bugfix: data sets that are loaded using R code did not close the
+    corresponding connections.
+
+
+Changes in Version 1.1-2
+
+  o New data set Zoo.
+
+
+Changes in Version 1.1-2
+
+  o Converted the 'chas' columns of BostonHousing2 to a factor.
+
+  o Added a corrected version of PimaIndiansDiabetes as PimaIndiansDiabetes2.
+ 
+  o Added correct citation for UCI repository in various places.
+
+
+Changes in Version 1.1-1
+
+  o Add '...' argument to as.data.frame() methods for consistency
+    with R 2.4.0 or later.
+
+
+Changes in Version 1.1-0
+
+  o New artificial classification problems mlbench.shapes() and
+    mlbench.corners()
+
+  o Added corrected version of Boston housing data (thanks to
+    John Maindonald). 
+
+	
+Changes in Version 1.0-1
+
+  o Minor fixes in BostonHousing.Rd.
+
+
+Changes in Version 1.0-1
+
+  o Fixed a Bug in the waveform function (thanks to Karsten Lübke).
+
+  o Added a "ZipData: No" to the DESCRIPTION file.
+
+  o All data files are now in compressed format.
+  
+
+Changes in Version 1.0-0
+
+  o New function mlbench.smiley().
+
+  o Version 1.0-0 is not really different from the previous release
+    (version 0.5-10), but we decided that it is stupid to have a
+    version number smaller than 1.0 for a package that is stable and
+    useful.
+

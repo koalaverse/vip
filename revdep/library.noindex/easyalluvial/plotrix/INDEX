@@ -1,0 +1,188 @@
+ablineclip              Add a straight line to a plot
+add.ps                  add p-values from t-tests
+addtable2plot           Add a table of values to a plot
+arctext                 Display text on a circular arc
+axis.break              Place a "break" mark on an axis
+axis.mult               Display an axis with values having a multiplier
+barNest                 Display a nested breakdown of numeric values
+barlabels               Label the bars on a barplot
+barp                    A bar plotting routine
+battleship.plot         Display a matrix of values as the widths of
+                        stacked rectangles
+bin.wind.records        Classify wind direction and speed records
+binciW                  Binomial confidence limits
+binciWl                 Lower binomial confidence limit
+binciWu                 Upper binomial confidence limit
+box.heresy              Display a sort of box plot
+boxed.labels            Place labels in boxes
+brkdn.plot              A point/line plotting routine
+brkdnNest               Perform a nested breakdown of numeric values
+bumpchart               Display a "bumps" (sequential ranking) chart
+categoryReshape         Convert object label/attribute label coding.
+centipede.plot          Display a centipede plot
+clean.args              Remove inappropriate arguments from an argument
+                        list
+clock24.plot            Plot values on a 24 hour "clockface"
+clplot                  Plot lines with colors determined by values.
+cluster.overplot        Shift overlying points into clusters
+clustered.dotplots      Display the frequencies of two categories
+color.axis              Display an axis in a specified color
+color.gradient          Calculate an arbitrary sequence of colors
+color.id                Identify closest match to a color
+color.legend            Legend matching categories or values to colors
+color.scale             Turn values into colors.
+color.scale.lines       Line segments with scaled colors
+color2D.matplot         Display a numeric matrix as color matrix
+corner.label            Find corner locations and optionally display a
+                        label
+count.overplot          Show overlying points as counts
+cylindrect              Display an apparent cylinder
+death_reg               Death registrations from 1996 to 2010
+dendroPlot              Display distributions as dendrites
+densityGrid             Display a matrix of cell values as symbols.
+diamondplot             Plot multiple variables as polygons on a radial
+                        grid
+dispersion              Display a measure of dispersion.
+do.first                Execute a graphic function on a plot
+dotplot.mtb             Minitab style dotplots.
+draw.arc                Draw arc
+draw.circle             Draw a circle
+draw.ellipse            Draw ellipse
+draw.radial.line        Draw a radial line
+draw.tilted.sector      Display a 3D pie sector
+drawNestedBars          Display nested bars
+drawSectorAnnulus       Display a radial pie sector
+ehplot                  Engelmann-Hecker-Plot - EH-Plot
+election                Assign party members to seats
+emptyspace              Find an empty space on a plot
+fan.plot                Display a fan plot
+feather.plot            Display vectors along a horizontal reference
+                        line
+fill.corner             Fill a "corner" of a matrix with values
+find_max_cell           Maximum (or minimum) value cell in a matrix.
+floating.pie            Display a floating pie chart
+fullaxis                Add an axis with a line to the edge of the plot
+gantt.chart             Display a Gantt chart
+gap.barplot             Display a barplot with a gap (missing range) on
+                        one axis
+gap.boxplot             Display a boxplot with a gap (missing range)
+gap.plot                Display a plot with one or two gaps (missing
+                        ranges) on one axis
+gap_barp                Display a barplot with a gap (missing range) on
+                        one axis
+get.breaks              Get the breakpoints for a weighted histogram
+get.gantt.info          Gather the information to create a Gantt chart
+get.segs                Calculate the midpoints and limits for a
+                        centipede plot
+get.soil.texture        Enter soil texture data
+get.tablepos            Get the position for a legend or table
+get.triprop             Enter three proportion data - usually soil
+                        textures
+getFigCtr               Get coordinates in the figure region in user
+                        units.
+getIntersectList        Enter a set intersection list
+getMarginWidth          Find the margin width necessary to fit text or
+                        a legend next to a plot
+getYmult                Correct for aspect and coordinate ratio
+get_axispos3d           Get axis positions on a 3D plot
+gradient.rect           Display a rectangle filled with an arbitrary
+                        color gradient
+hexagon                 Draw a hexagon
+histStack               Histogram "stacked" by categories
+intersectDiagram        Display set intersections
+jiggle                  Calculate equally spaced values within a range.
+joyPlot                 Display a series of density curves.
+kiteChart               Magnitude by position chart.
+l2010                   World lightning strike data from 2010
+labbePlot               Display a L'Abbe plot
+ladderplot              Ladder Plot
+legendg                 Legend with grouped bars, lines or symbols
+lengthKey               Key for interpreting lengths in a plot
+makeDensityMatrix       Compute a matrix of counts from a list of x,y
+                        positions
+makeIntersectList       Count set intersections
+maxEmptyRect            Find an empty space on a plot
+mtext3d                 Display text in the margins of a 3D plot
+multhist                Plot a multiple histogram, as a barplot
+multivari               Function to draw a multivari chart
+multsymbolbox           Draw boxes filled with symbols
+oz.windrose             Display an Australian wind rose
+oz.windrose.legend      Display an Australian wind rose legend
+p2p_arrows              Draw arrows between points
+panes                   Prepare a "panel" type layout
+pasteCols               Paste the columns of a matrix together
+paxis3d                 Display text in the margins of a 3D plot
+perspx                  Display perspective plot
+pie.labels              Place labels on a pie chart
+pie3D                   Display a 3D pie chart
+pie3D.labels            Display labels on a 3D pie chart
+placeLabels             Place labels in boxes
+plotCI                  Plot confidence intervals/error bars
+plotH                   Scatterplot with histogram-like bars.
+plot_bg                 Add a background color to a plot
+plotrix-package         Specialized plots and plotting accessories
+polar.plot              Plot values on a circular grid of 0 to 360
+                        degrees
+polygon.shadow          Display a shadow effect for an arbitrary
+                        polygon
+print.brklist           Display the output of brkdnNest
+propbrk                 Calculate the proportion of specified values in
+                        a vector
+psegments3d             Draw segments on a 3D plot
+ptext3d                 Display text on a 3D plot
+pyramid.plot            Pyramid plot
+radial.grid             Display a radial grid
+radial.pie              Plot sectors/annuli on a circular grid of 0 to
+                        2*pi radians
+radial.plot             Plot values on a circular grid of 0 to 2*pi
+                        radians
+radial.plot.labels      Display labels on a circular grid
+radialtext              Display text in a radial line
+raw.means.plot          raw.means.plot: Raw-Means Plots for
+                        Experimental Designs
+rectFill                Draw a rectangle filled with symbols
+rescale                 Scale numbers into a new range
+revaxis                 Plot with axis direction(s) reversed
+ruginv                  Add an Inverse Rug to a Plot
+seats                   Arrange N seats in M semicircular rows
+size_n_color            Display circles with specified size and color
+sizeplot                Plot with repeated symbols by size
+sizetree                Display a hierarchical breakdown of disjunct
+                        categories
+sliceArray              Slice an array
+smoothColors            Build a vector of color values
+soil.texture            Soil texture triangle plot
+soil.texture.uk         Soil texture triangle plot using UK conventions
+soils                   Soil texture data from 125 soils
+spread.labels           Spread labels for irregularly spaced values
+spreadout               Spread out a vector of numbers to a minimum
+                        interval
+stackpoly               Display the columns of a matrix or data frame
+                        as stacked polygons
+staircase.plot          Display a staircase plot
+staircasePlot           Display a staircase plot
+starPie                 A pie-like graphic object
+staxlab                 Place staggered or angled labels on an axis
+std.error               Calculate standard error of the mean
+sumbrk                  Count specified values in a vector
+symbolbarplot           barplot filled with symbols
+symbolbox               Draw a box filled with symbols
+tab.title               Display the title of a plot as a colored tab
+taylor.diagram          Taylor diagram
+textbox                 Add text box
+thigmophobe             Find the direction away from the closest point
+thigmophobe.labels      Place labels away from the nearest point
+triax.abline            Lines for triangle plot
+triax.fill              Triangle plot fill
+triax.frame             Triangle plot frame
+triax.plot              Triangle plot
+triax.points            Triangle plot points
+tsxpos                  Calculate equispaced x positions.
+twoord.plot             Plot with two ordinates
+twoord.stackplot        Multiple (stack) plot with two ordinates
+valid.n                 Find the number of valid (not NA) values
+vectorField             Display magnitude/direction vectors
+violin_plot             Display a "violin" plot
+weighted.hist           Display a weighted histogram
+zoomInPlot              Display a plot with a rectangular section
+                        expanded in an adjacent plot

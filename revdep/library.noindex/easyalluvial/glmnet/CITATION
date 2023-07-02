@@ -1,0 +1,43 @@
+bibentry(bibtype = "Article",
+  title        = "Regularization Paths for Generalized Linear Models via Coordinate Descent",
+  author       = c(person(given = "Jerome", family = "Friedman"),
+                   person(given = "Robert", family = "Tibshirani"),
+                   person(given = "Trevor", family = "Hastie")),
+  journal      = "Journal of Statistical Software",
+  year         = "2010",
+  volume       = "33",
+  number       = "1",
+  pages        = "1--22",
+  doi          = "10.18637/jss.v033.i01",
+  header       = "To cite glmnet in publications use:"
+)
+
+bibentry(bibtype = "Article",
+  title        = "Regularization Paths for Cox's Proportional Hazards Model via Coordinate Descent",
+  author       = c(person(given = "Noah", family = "Simon"),
+                   person(given = "Jerome", family = "Friedman"),
+                   person(given = "Robert", family = "Tibshirani"),
+                   person(given = "Trevor", family = "Hastie")),
+  journal      = "Journal of Statistical Software",
+  year         = "2011",
+  volume       = "39",
+  number       = "5",
+  pages        = "1--13",
+  doi          = "10.18637/jss.v039.i05",
+  header       = "If coxnet is used, please also cite:"
+)
+
+bibentry(bibtype = "Article",
+  title        = "Elastic Net Regularization Paths for All Generalized Linear Models",
+  author       = c(person(given = c("J.", "Kenneth"), family = "Tay", email = "kjytay@stanford.edu"),
+                   person(given = "Balasubramanian", family = "Narasimhan", email = "naras@stanford.edu"),
+                   person(given = "Trevor", family = "Hastie", email = "hastie@stanford.edu")),
+  journal      = "Journal of Statistical Software",
+  year         = "2023",
+  volume       = "106",
+  number       = "1",
+  pages        = "1--31",
+  doi          = "10.18637/jss.v106.i01",
+  header       = "If glmnet is used for generalized linear models, please also cite:"
+)
+

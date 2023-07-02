@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>List Environments</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/styles/github.min.css">
+<script src="https://cdn.jsdelivr.net/combine/gh/highlightjs/cdn-release@11.6.0/build/highlight.min.js,npm/@xiee/utils/js/load-highlight.js" async></script>
+
+
+
+<style type="text/css">
+body, td {
+  font-family: sans-serif;
+  background-color: white;
+  font-size: 13px;
+}
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 1.5;
+}
+tt, code, pre {
+  font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+a:visited { color: #80007f; }
+pre, img { max-width: 100%; }
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+code[class] { background-color: #F8F8F8; }
+code.language-undefined { background-color: inherit; }
+table {
+  margin: auto;
+  border-top: 1px solid #666;
+  border-bottom: 1px solid #666;
+}
+table thead th { border-bottom: 1px solid #ddd; }
+th, td { padding: 5px; }
+thead, tfoot, tr:nth-child(even) { background: #eee; }
+blockquote {
+  color:#666;
+  margin:0;
+  padding-left: 1em;
+  border-left: 0.5em #eee solid;
+}
+hr { border: 1px #ddd dashed; }
+
+@media print {
+  * {
+    background: transparent !important;
+    color: black !important;
+    filter:none !important;
+  }
+  body {
+    font-size: 12pt;
+    max-width: 100%;
+  }
+  a, a:visited { text-decoration: underline; }
+  hr {
+    visibility: hidden;
+    page-break-before: always;
+  }
+  pre, blockquote {
+    padding-right: 1em;
+    page-break-inside: avoid;
+  }
+  tr, img { page-break-inside: avoid; }
+  img { max-width: 100% !important; }
+  @page :left { margin: 15mm 20mm 15mm 10mm; }
+  @page :right { margin: 15mm 10mm 15mm 20mm; }
+  p, h2, h3 { orphans: 3; widows: 3; }
+  h2, h3 { page-break-after: avoid; }
+}
+</style>
+
+<meta name="keywords" content="R, package, vignette, listenv">
+<meta name="author" content="Henrik Bengtsson">
+
+</head>
+
+<body>
+<h1>List Environments</h1>
+<h2>Summary</h2>
+<p><em>List environments</em> are environments that have list-like properties.  They are implemented by the <a href="https://cran.r-project.org/package=listenv">listenv</a> package.  The main features of a list environment are summarized in the below table:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th align="center">list environments</th>
+<th align="center">lists</th>
+<th align="center">environments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Number of elements, e.g. <code>length()</code></td>
+<td align="center">yes</td>
+<td align="center">yes</td>
+<td align="center">yes</td>
+</tr>
+<tr>
+<td>Named elements, e.g. <code>names()</code>, <code>x$a</code> and <code>x[[&quot;a&quot;]]</code></td>
+<td align="center">yes</td>
+<td align="center">yes</td>
+<td align="center">yes</td>
+</tr>
+<tr>
+<td>Duplicated names</td>
+<td align="center">yes</td>
+<td align="center">yes</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>Element names are optional</td>
+<td align="center">yes</td>
+<td align="center">yes</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>Indexed elements, e.g. <code>x[[4]]</code></td>
+<td align="center">yes</td>
+<td align="center">yes</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>Dimensions, e.g. <code>dim(x)</code>, <code>t(x)</code>, and <code>aperm(x, c(3,1,2))</code></td>
+<td align="center">yes</td>
+<td align="center">yes</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>Names of dimensions, e.g. <code>dimnames(x)</code></td>
+<td align="center">yes</td>
+<td align="center">yes</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>Indexing by dimensions, e.g. <code>x[[2, 4]]</code> and <code>x[[2, &quot;D&quot;]]</code></td>
+<td align="center">yes</td>
+<td align="center">yes</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>Multi-element subsetting, e.g. <code>x[c(&quot;a&quot;, &quot;c&quot;)]</code>, <code>x[-1]</code> and <code>x[2:1, , 3]</code></td>
+<td align="center">yes</td>
+<td align="center">yes</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>Multi-element subsetting preserves element names</td>
+<td align="center">yes</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>Resizing, e.g. <code>length(x) &lt;- 6</code></td>
+<td align="center">yes</td>
+<td align="center">yes</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>Removing elements by assigning NULL, e.g. <code>x$c &lt;- NULL</code> and <code>x[1:3] &lt;- NULL</code></td>
+<td align="center">yes</td>
+<td align="center">yes</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>Removing parts of dimensions by assigning NULL, e.g. <code>x[,2] &lt;- NULL</code></td>
+<td align="center">yes</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>Mutable, e.g. <code>y &lt;- x; y$a &lt;- 3; identical(y, x)</code></td>
+<td align="center">yes</td>
+<td align="center"></td>
+<td align="center">yes</td>
+</tr>
+<tr>
+<td>Compatible* with <code>assign()</code>, <code>delayedAssign()</code>, <code>get()</code> and <code>exists()</code></td>
+<td align="center">yes</td>
+<td align="center"></td>
+<td align="center">yes</td>
+</tr>
+</tbody>
+</table>
+<p>For example,</p>
+<pre><code class="language-r">&gt; x &lt;- listenv(a = 1, b = 2, c = &quot;hello&quot;)
+&gt; x
+A ‘listenv’ vector with 3 elements (‘a’, ‘b’, ‘c’).
+&gt; length(x)
+[1] 3
+&gt; names(x)
+[1] &quot;a&quot; &quot;b&quot; &quot;c&quot;
+&gt; x$a
+[1] 1
+&gt; x[[3]] &lt;- toupper(x[[3]])
+&gt; x$c
+[1] &quot;HELLO&quot;
+&gt; y &lt;- x
+&gt; y$d &lt;- y$a + y[[&quot;b&quot;]]
+&gt; names(y)[2] &lt;- &quot;a&quot;
+&gt; y$a
+[1] 1
+&gt; y
+A ‘listenv’ vector with 4 elements (‘a’, ‘a’, ‘c’, ‘d’).
+&gt; identical(y, x)
+[1] TRUE
+&gt; for (ii in seq_along(x)) {
++     cat(sprintf(&quot;Element %d (%s): %s\n&quot;, ii, sQuote(names(x)[ii]), 
++         x[[ii]]))
++ }
+Element 1 (‘a’): 1
+Element 2 (‘a’): 2
+Element 3 (‘c’): HELLO
+Element 4 (‘d’): 3
+&gt; x[c(1, 3)] &lt;- list(2, &quot;Hello world!&quot;)
+&gt; x
+A ‘listenv’ vector with 4 elements (‘a’, ‘a’, ‘c’, ‘d’).
+&gt; y &lt;- as.list(x)
+&gt; str(y)
+List of 4
+ $ a: num 2
+ $ a: num 2
+ $ c: chr &quot;Hello world!&quot;
+ $ d: num 3
+&gt; z &lt;- as.listenv(y)
+&gt; z
+A ‘listenv’ vector with 4 elements (‘a’, ‘a’, ‘c’, ‘d’).
+&gt; identical(z, x)
+[1] FALSE
+&gt; all.equal(z, x)
+[1] TRUE
+</code></pre>
+<h2>Creating list environments</h2>
+<p>List environments are created similarly to lists but also similarly to environments.  To create an empty list environment, use</p>
+<pre><code class="language-r">&gt; x &lt;- listenv()
+&gt; x
+A ‘listenv’ vector with 0 elements (unnamed).
+</code></pre>
+<p>This can later can be populated using named assignments,</p>
+<pre><code class="language-r">&gt; x$a &lt;- 1
+&gt; x
+A ‘listenv’ vector with 1 element (‘a’).
+</code></pre>
+<p>comparable to how both lists and environments work.  Similarly to lists, they can also be populated using indices, e.g.</p>
+<pre><code class="language-r">&gt; x[[2]] &lt;- 2
+&gt; x$c &lt;- 3
+&gt; x
+A ‘listenv’ vector with 3 elements (‘a’, ‘’, ‘c’).
+</code></pre>
+<p>Just as for lists, a list environment is expanded with <code>NULL</code> elements whenever a new element is added that is beyond the current length plus one, e.g.</p>
+<pre><code class="language-r">&gt; x[[5]] &lt;- 5
+&gt; x
+A ‘listenv’ vector with 5 elements (‘a’, ‘’, ‘c’, ‘’, ‘’).
+&gt; x[[4]]
+NULL
+</code></pre>
+<p>As with lists, the above list environment can also be created from the start, e.g.</p>
+<pre><code class="language-r">&gt; x &lt;- listenv(a = 1, 3, c = 4, NULL, 5)
+&gt; x
+A ‘listenv’ vector with 5 elements (‘a’, ‘’, ‘c’, ‘’, ‘’).
+</code></pre>
+<p>As for lists, the length of a list environment can at any time be increased or decreased by assigning it a new length.
+If decreased, elements are dropped, e.g.</p>
+<pre><code class="language-r">&gt; x
+A ‘listenv’ vector with 5 elements (‘a’, ‘’, ‘c’, ‘’, ‘’).
+&gt; length(x) &lt;- 2
+&gt; x
+A ‘listenv’ vector with 2 elements (‘a’, ‘’).
+&gt; x[[1]]
+[1] 1
+&gt; x[[2]]
+[1] 3
+</code></pre>
+<p>If increased, new elements are populated with unnamed elements of <code>NULL</code>, e.g.</p>
+<pre><code class="language-r">&gt; length(x) &lt;- 4
+&gt; x
+A ‘listenv’ vector with 4 elements (‘a’, ‘’, ‘’, ‘’).
+&gt; x[[3]]
+NULL
+&gt; x[[4]]
+NULL
+</code></pre>
+<p>To allocate an “empty” list environment (with all <code>NULL</code>:s) of a given length, do</p>
+<pre><code class="language-r">&gt; x &lt;- listenv()
+&gt; length(x) &lt;- 4
+&gt; x
+A ‘listenv’ vector with 4 elements (unnamed).
+</code></pre>
+<p><em>Note</em>: Unfortunately, it is <em>not</em> possible to use <code>x &lt;- vector(&quot;listenv&quot;, length = 4)</code>; that construct is only supported for the basic data types.</p>
+<p>Elements can be dropped by assigning <code>NULL</code>, e.g. to drop the first and third element of a list environment, do:</p>
+<pre><code class="language-r">&gt; x[c(1, 3)] &lt;- NULL
+&gt; x
+A ‘listenv’ vector with 2 elements (unnamed).
+</code></pre>
+<h2>Iterating over elements</h2>
+<h3>Iterating over elements by names</h3>
+<p>Analogously to lists and plain environments, it is possible to iterate over elements of list environments by the element names.  For example,</p>
+<pre><code class="language-r">&gt; x &lt;- listenv(a = 1, b = 2, c = 3)
+&gt; for (name in names(x)) {
++     cat(sprintf(&quot;Element %s: %s\n&quot;, sQuote(name), x[[name]]))
++ }
+Element ‘a’: 1
+Element ‘b’: 2
+Element ‘c’: 3
+</code></pre>
+<h3>Iterating over elements by indices</h3>
+<p>Analogously to lists, but contrary to plain environments, it is also possible to iterate over elements by their indices.  For example,</p>
+<pre><code class="language-r">&gt; x &lt;- listenv(a = 1, b = 2, c = 3)
+&gt; for (ii in seq_along(x)) {
++     cat(sprintf(&quot;Element %d: %s\n&quot;, ii, x[[ii]]))
++ }
+Element 1: 1
+Element 2: 2
+Element 3: 3
+</code></pre>
+<h2>Coercion to and from list environments</h2>
+<h3>Coercing to lists and vectors</h3>
+<p>Coercing a list environment to a list:</p>
+<pre><code class="language-r">&gt; x &lt;- listenv(a = 2, b = 3, c = &quot;hello&quot;)
+&gt; x
+A ‘listenv’ vector with 3 elements (‘a’, ‘b’, ‘c’).
+&gt; y &lt;- as.list(x)
+&gt; str(y)
+List of 3
+ $ a: num 2
+ $ b: num 3
+ $ c: chr &quot;hello&quot;
+</code></pre>
+<p>Coercing a list to a list environment:</p>
+<pre><code class="language-r">&gt; z &lt;- as.listenv(y)
+&gt; z
+A ‘listenv’ vector with 3 elements (‘a’, ‘b’, ‘c’).
+&gt; identical(z, x)
+[1] FALSE
+&gt; all.equal(z, x)
+[1] TRUE
+</code></pre>
+<p>Unlisting:</p>
+<pre><code class="language-r">&gt; unlist(x)
+      a       b       c 
+    &quot;2&quot;     &quot;3&quot; &quot;hello&quot; 
+&gt; unlist(x[-3])
+a b 
+2 3 
+&gt; unlist(x[1:2], use.names = FALSE)
+[1] 2 3
+</code></pre>
+<h2>Multi-dimensional list environments</h2>
+<p>Analogously to lists, and contrary to plain environments, list environments can have dimensions with corresponding names.  For example,</p>
+<pre><code class="language-r">&gt; x &lt;- as.listenv(1:6)
+&gt; dim(x) &lt;- c(2, 3)
+&gt; dimnames(x) &lt;- list(c(&quot;a&quot;, &quot;b&quot;), c(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;))
+&gt; x
+A ‘listenv’ matrix with 6 elements (unnamed) arranged in 2x3 rows (‘a’, ‘b’) and columns (‘A’, ‘B’, ‘C’).
+</code></pre>
+<p>An easy way to quickly get an overview is to coerce to a list, e.g.</p>
+<pre><code class="language-r">&gt; as.list(x)
+  A B C
+a 1 3 5
+b 2 4 6
+</code></pre>
+<p>Individual elements of a list environment can be accessed using standard subsetting syntax, e.g.</p>
+<pre><code class="language-r">&gt; x[[&quot;a&quot;, &quot;B&quot;]]
+[1] 3
+&gt; x[[1, 2]]
+[1] 3
+&gt; x[[1, &quot;B&quot;]]
+[1] 3
+</code></pre>
+<p>We can assign individual elements similarly, e.g.</p>
+<pre><code class="language-r">&gt; x[[&quot;b&quot;, &quot;B&quot;]] &lt;- -x[[&quot;b&quot;, &quot;B&quot;]]
+&gt; as.list(x)
+  A B  C
+a 1 3  5
+b 2 -4 6
+</code></pre>
+<p>We can also assign multiple elements through dimensional subsetting, e.g.</p>
+<pre><code class="language-r">&gt; x[2, -1] &lt;- 98:99
+&gt; as.list(x)
+  A B  C 
+a 1 3  5 
+b 2 98 99
+&gt; x[&quot;a&quot;, c(1, 3)] &lt;- list(97, &quot;foo&quot;)
+&gt; as.list(x)
+  A  B  C    
+a 97 3  &quot;foo&quot;
+b 2  98 99   
+&gt; x[] &lt;- 1:6
+&gt; as.list(x)
+  A B C
+a 1 3 5
+b 2 4 6
+</code></pre>
+<p>Concurrently with dimensional names it is possible to have names of the individual elements just as for list environments without dimensions.  For example,</p>
+<pre><code class="language-r">&gt; names(x) &lt;- letters[seq_along(x)]
+&gt; x
+A ‘listenv’ matrix with 6 elements (‘a’, ‘b’, ‘c’, ..., ‘f’) arranged in 2x3 rows (‘a’, ‘b’) and columns (‘A’, ‘B’, ‘C’).
+&gt; x[[&quot;a&quot;]]
+[1] 1
+&gt; x[[&quot;f&quot;]]
+[1] 6
+&gt; x[c(&quot;a&quot;, &quot;f&quot;)]
+A ‘listenv’ vector with 2 elements (‘a’, ‘f’).
+&gt; unlist(x)
+a b c d e f 
+1 2 3 4 5 6 
+&gt; as.list(x)
+  A B C
+a 1 3 5
+b 2 4 6
+attr(,&quot;names&quot;)
+[1] &quot;a&quot; &quot;b&quot; &quot;c&quot; &quot;d&quot; &quot;e&quot; &quot;f&quot;
+</code></pre>
+<p>Contrary to lists, element names are preserved also with multi-dimensional subsetting, e.g.</p>
+<pre><code class="language-r">&gt; x[1, 2]
+A ‘listenv’ vector with 1 element (‘c’).
+&gt; x[1, 2, drop = FALSE]
+A ‘listenv’ matrix with 1 element (‘c’) arranged in 1x1 rows (‘a’) and columns (‘B’).
+&gt; x[1:2, 2:1]
+A ‘listenv’ matrix with 4 elements (‘c’, ‘d’, ‘a’, ‘b’) arranged in 2x2 rows (‘a’, ‘b’) and columns (‘B’, ‘A’).
+&gt; x[2, ]
+A ‘listenv’ vector with 3 elements (‘b’, ‘d’, ‘f’).
+&gt; x[2, , drop = FALSE]
+A ‘listenv’ matrix with 3 elements (‘b’, ‘d’, ‘f’) arranged in 1x3 rows (‘b’) and columns (‘A’, ‘B’, ‘C’).
+&gt; x[&quot;b&quot;, -2, drop = FALSE]
+A ‘listenv’ matrix with 2 elements (‘b’, ‘f’) arranged in 1x2 rows (‘b’) and columns (‘A’, ‘C’).
+</code></pre>
+<p>Note, whenever dimensions are set using <code>dim(x) &lt;- dims</code> both the dimensional names and the element names are removed, e.g.</p>
+<pre><code class="language-r">&gt; dim(x) &lt;- NULL
+&gt; names(x)
+NULL
+</code></pre>
+<p>This behavior is by design, cf. <code>help(&quot;dim&quot;, package=&quot;base&quot;)</code>.</p>
+<p>To allocate an “empty” list environment array (with all <code>NULL</code>:s) of a given dimension, do</p>
+<pre><code class="language-r">&gt; x &lt;- listenv()
+&gt; dim(x) &lt;- c(2, 3)
+&gt; dimnames(x) &lt;- list(c(&quot;a&quot;, &quot;b&quot;), c(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;))
+&gt; x
+A ‘listenv’ matrix with 6 elements (unnamed) arranged in 2x3 rows (‘a’, ‘b’) and columns (‘A’, ‘B’, ‘C’).
+</code></pre>
+<p>Rows and columns can be dropped by assigning <code>NULL</code>, e.g. to drop the first and third column of a list-environment matrix, do:</p>
+<pre><code class="language-r">&gt; x[, c(1, 3)] &lt;- NULL
+&gt; x
+A ‘listenv’ matrix with 2 elements (unnamed) arranged in 2x1 rows (‘a’, ‘b’) and columns (‘B’).
+</code></pre>
+<h2>Important about environments</h2>
+<p>List environments are as their name suggests <em>environments</em>.  Whenever working with environments in R, it is important to understand that <em>environments are mutable</em> whereas all other of the basic data types in R are immutable.  For example, consider the following function that assigns zero to element <code>a</code> of object <code>x</code>:</p>
+<pre><code class="language-r">&gt; setA &lt;- function(x) {
++     x$a &lt;- 0
++     x
++ }
+</code></pre>
+<p>If we pass a regular list to this function,</p>
+<pre><code class="language-r">&gt; x &lt;- list(a = 1)
+&gt; y &lt;- setA(x)
+&gt; x$a
+[1] 1
+&gt; y$a
+[1] 0
+</code></pre>
+<p>we see that <code>x</code> is unaffected by the assignment.  This is because <em>lists are immutable</em> in R.  However, if we pass an environment instead,</p>
+<pre><code class="language-r">&gt; x &lt;- new.env()
+&gt; x$a &lt;- 1
+&gt; y &lt;- setA(x)
+&gt; x$a
+[1] 0
+&gt; y$a
+[1] 0
+</code></pre>
+<p>we find that <code>x</code> was affected by the assignment.  This is because <em>environments are mutable</em> in R.  Since list environments inherits from environments, this also goes for them, e.g.</p>
+<pre><code class="language-r">&gt; x &lt;- listenv(a = 1)
+&gt; y &lt;- setA(x)
+&gt; x$a
+[1] 0
+&gt; y$a
+[1] 0
+</code></pre>
+<p>What is also important to understand is that it is not just the <em>content</em> of an environment that is mutable but also its <em>attributes</em>.  For example,</p>
+<pre><code class="language-r">&gt; x &lt;- listenv(a = 1)
+&gt; y &lt;- x
+&gt; attr(y, &quot;foo&quot;) &lt;- &quot;Hello!&quot;
+&gt; attr(x, &quot;foo&quot;)
+[1] &quot;Hello!&quot;
+</code></pre>
+<p>More importantly, since dimensions and their names are also attributes, this also means they are mutable.  For example,</p>
+<pre><code class="language-r">&gt; x &lt;- as.listenv(1:6)
+&gt; dim(x) &lt;- c(2, 3)
+&gt; x
+A ‘listenv’ matrix with 6 elements (unnamed) arranged in 2x3 unnamed rows and columns.
+&gt; y &lt;- x
+&gt; dim(y) &lt;- c(3, 2)
+&gt; x
+A ‘listenv’ matrix with 6 elements (unnamed) arranged in 3x2 unnamed rows and columns.
+</code></pre>
+<hr />
+<p>Copyright Henrik Bengtsson, 2015-2018</p>
+
+
+<script src="https://cdn.jsdelivr.net/combine/npm/@xiee/utils/js/center-img.min.js" async></script>
+</body>
+
+</html>

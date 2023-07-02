@@ -1,0 +1,28 @@
+Aus_athletes            Australian athletes
+Catalan_elections       Results from Catalan regional elections
+                        (1980-2015)
+geom_density_line       Smoothed density estimates drawn with a
+                        ridgeline rather than area
+geom_density_ridges     Create ridgeline plot
+geom_ridgeline          Plot a ridgeline (line with filled area
+                        underneath)
+geom_ridgeline_gradient
+                        Plot ridgelines and ridgeline plots with fill
+                        gradients along the x axis
+geom_vridgeline         Plot a vertical ridgeline (ridgeline rotated 90
+                        degrees)
+lincoln_weather         Weather in Lincoln, Nebraska in 2016.
+position_points_jitter
+                        Randomly jitter the points in a ridgeline plot
+position_points_sina    Randomly distribute points in a ridgeline plot
+                        between baseline and ridgeline
+position_raincloud      Create a cloud of randomly jittered points
+                        below a ridgeline plot
+scale_colour_cyclical   Create a discrete scale that cycles between
+                        values
+scale_point_shape       Scales for point aesthetics
+scale_vline_linetype    Scales for vline aesthetics
+stat_binline            Stat for histogram ridgeline plots
+stat_density_ridges     Stat for density ridgeline plots
+theme_ridges            A custom theme specifically for use with
+                        ridgeline plots

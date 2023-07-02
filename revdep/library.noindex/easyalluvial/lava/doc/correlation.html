@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Klaus Kähler Holst" />
+
+<meta name="date" content="2023-02-25" />
+
+<title>Estimating partial correlations with lava</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Estimating partial correlations with
+lava</h1>
+<h4 class="author">Klaus Kähler Holst</h4>
+<h4 class="date">2023-02-25</h4>
+
+
+
+<!-- correlation.Rmd is generated from correlation.org. Please edit that file -->
+<p><span class="math display">\[
+\newcommand{\arctanh}{\operatorname{arctanh}}
+\]</span></p>
+<p>This document illustrates how to estimate partial correlation
+coefficients using <code>lava</code>.</p>
+<p>Assume that <span class="math inline">\(Y_{1}\)</span> and <span class="math inline">\(Y_{2}\)</span> are conditionally normal
+distributed given <span class="math inline">\(\mathbf{X}\)</span> with
+the following linear structure <span class="math display">\[Y_1 =
+\mathbf{\beta}_1^{t}\mathbf{X} + \epsilon_1\]</span> <span class="math display">\[Y_2 = \mathbf{\beta}_2^{t}\mathbf{X} +
+\epsilon_2\]</span> with covariates <span class="math inline">\(\mathbf{X} = (X_1,\ldots,X_k)^{t}\)</span> and
+measurement errors <span class="math display">\[\begin{pmatrix}
+    \epsilon_{1} \\
+    \epsilon_{2}
+    \end{pmatrix} \sim \mathcal{N}\left(0, \mathbf{\Sigma} \right),
+\quad \mathbf{\Sigma}
+    =
+    \begin{pmatrix}
+    \sigma_1^2 &amp; \rho\sigma_{1}\sigma_{2} \\
+    \rho\sigma_{1}\sigma_{2} &amp; \sigma_2^2
+    \end{pmatrix}.\]</span></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&#39;lava&#39;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>m0 <span class="ot">&lt;-</span> <span class="fu">lvm</span>(y1<span class="sc">+</span>y2 <span class="sc">~</span> x, y1 <span class="sc">~</span><span class="er">~</span> y2)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">edgelabels</span>(m0, y1 <span class="sc">+</span> y2 <span class="sc">~</span> x) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">expression</span>(beta[<span class="dv">1</span>]), <span class="fu">expression</span>(beta[<span class="dv">2</span>]))</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">edgelabels</span>(m0, y1 <span class="sc">~</span> y2) <span class="ot">&lt;-</span> <span class="fu">expression</span>(rho)</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">plot</span>(m0, <span class="at">layoutType=</span><span class="st">&quot;circo&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>Here we focus on inference with respect to the correlation parameter
+<span class="math inline">\(\rho\)</span>.</p>
+<div id="simulation" class="section level1">
+<h1>Simulation</h1>
+<p>As an example, we will simulate data from this model with a single
+covariate. First we load the necessary libraries:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&#39;lava&#39;</span>)</span></code></pre></div>
+<p>The model can be specified (here using the pipe notation) with the
+following syntax where the correlation parameter here is given the label
+‘<code>r</code>’:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>m0 <span class="ot">&lt;-</span> <span class="fu">lvm</span>() <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">covariance</span>(y1 <span class="sc">~</span> y2, <span class="at">value=</span><span class="st">&#39;r&#39;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="fu">regression</span>(y1 <span class="sc">+</span> y2 <span class="sc">~</span> x)</span></code></pre></div>
+<p>To simulate from the model we can now simply use the <code>sim</code>
+method. The parameters of the models are set through the argument
+<code>p</code> which must be a named numeric vector of parameters of the
+model. The parameter names can be inspected with the <code>coef</code>
+method</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">coef</span>(m0, <span class="at">labels=</span><span class="cn">TRUE</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt;       m1       m2       p1       p2       p3       p4       p5 </span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt;     &quot;y1&quot;     &quot;y2&quot;   &quot;y1~x&quot;   &quot;y2~x&quot; &quot;y1~~y1&quot; &quot;y2~~y2&quot;      &quot;r&quot;</span></span></code></pre></div>
+<p>The default simulation parameters are zero for all intercepts
+(<code>y1</code>, <code>y2</code>) and one for all regression
+coefficients (<code>y1~x</code>, <code>y2~x</code>) and residual
+variance parameters (<code>y1~~y1</code>, <code>y2~~y2</code>).</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">sim</span>(m0, <span class="dv">500</span>, <span class="at">p=</span><span class="fu">c</span>(<span class="at">r=</span><span class="fl">0.9</span>), <span class="at">seed=</span><span class="dv">1</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">head</span>(d)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt;           y1         y2           x</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt; 1  0.6452154  0.8677628  1.13496509</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; 2  1.1098723  0.9579211  1.11193185</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; 3 -2.2072258 -2.3171509 -0.87077763</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; 4  1.5684365  1.0675354  0.21073159</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; 5  0.8752209  1.0845932  0.06939565</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; 6 -1.5113072 -0.7477956 -1.66264885</span></span></code></pre></div>
+<p>Under Gaussian and coarsening at random assumptions we can also
+consistently estimate the correlation in the presence of censoring or
+missing data. To illustrate this, we add left and right censored data
+types to the model output using the <code>transform</code> method.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>cens1 <span class="ot">&lt;-</span> <span class="cf">function</span>(threshold,<span class="at">type=</span><span class="st">&#39;right&#39;</span>) {</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="cf">function</span>(x) {</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">unlist</span>(x)</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>    <span class="cf">if</span> (type<span class="sc">==</span><span class="st">&#39;left&#39;</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>      <span class="fu">return</span>( survival<span class="sc">::</span><span class="fu">Surv</span>(<span class="fu">pmax</span>(x,threshold), x<span class="sc">&gt;=</span>threshold, <span class="at">type=</span><span class="st">&#39;left&#39;</span>) )</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>      <span class="fu">return</span> ( survival<span class="sc">::</span><span class="fu">Surv</span>(<span class="fu">pmin</span>(x,threshold), x<span class="sc">&lt;=</span>threshold) )</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>  }</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>}</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>m0 <span class="ot">&lt;-</span> </span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>  <span class="fu">transform</span>(m0, s1 <span class="sc">~</span> y1, <span class="fu">cens1</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="st">&#39;left&#39;</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>  <span class="fu">transform</span>(s2 <span class="sc">~</span> y2, <span class="fu">cens1</span>(<span class="dv">2</span>,  <span class="st">&#39;right&#39;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">sim</span>(m0, <span class="dv">500</span>, <span class="at">p=</span><span class="fu">c</span>(<span class="at">r=</span><span class="fl">0.9</span>), <span class="at">seed=</span><span class="dv">1</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">head</span>(d)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt;           y1         y2           x          s1         s2</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt; 1  0.6452154  0.8677628  1.13496509   0.6452154  0.8677628</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt; 2  1.1098723  0.9579211  1.11193185   1.1098723  0.9579211</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt; 3 -2.2072258 -2.3171509 -0.87077763 -2.0000000- -2.3171509</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt; 4  1.5684365  1.0675354  0.21073159   1.5684365  1.0675354</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt; 5  0.8752209  1.0845932  0.06939565   0.8752209  1.0845932</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt; 6 -1.5113072 -0.7477956 -1.66264885  -1.5113072 -0.7477956</span></span></code></pre></div>
+</div>
+<div id="estimation-and-inference" class="section level1">
+<h1>Estimation and inference</h1>
+<p>The Maximum Likelihood Estimate can be obtainted using the
+<code>estimate</code> method:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lvm</span>() <span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>     <span class="fu">regression</span>(y1 <span class="sc">+</span> y2 <span class="sc">~</span> x) <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>     <span class="fu">covariance</span>(y1 <span class="sc">~</span> y2)</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">estimate</span>(m, <span class="at">data=</span>d)</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>e</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt;                     Estimate Std. Error  Z-value  P-value</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt; Regressions:                                             </span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt;    y1~x              0.93300    0.04443 20.99871   &lt;1e-12</span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt;     y2~x             0.91652    0.04527 20.24500   &lt;1e-12</span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co">#&gt; Intercepts:                                              </span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt;    y1               -0.00541    0.04482 -0.12076   0.9039</span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt;    y2               -0.02715    0.04566 -0.59457   0.5521</span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#&gt; Residual Variances:                                      </span></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt;    y1                1.00419    0.06351 15.81139         </span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co">#&gt;    y1~~y2            0.91221    0.06130 14.88041   &lt;1e-12</span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co">#&gt;    y2                1.04252    0.06593 15.81139</span></span></code></pre></div>
+<p>The estimate <code>y1~~y2</code> gives us the estimated covariance
+between the residual terms in the model. To estimate the correlation we
+can apply the delta method using the <code>estimate</code> method
+again</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">estimate</span>(e, <span class="cf">function</span>(p) p[<span class="st">&#39;y1~~y2&#39;</span>]<span class="sc">/</span>(p[<span class="st">&#39;y1~~y1&#39;</span>]<span class="sc">*</span>p[<span class="st">&#39;y2~~y2&#39;</span>])<span class="sc">^</span>.<span class="dv">5</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co">#&gt;        Estimate  Std.Err   2.5%  97.5% P-value</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">#&gt; y1~~y2   0.8915 0.008703 0.8745 0.9086       0</span></span></code></pre></div>
+<p>Alternatively, the correlations can be extracted using the
+<code>correlation</code> method</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">correlation</span>(e)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt;       Estimate Std.Err   2.5%  97.5%   P-value</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co">#&gt; y1~y2   0.8915         0.8721 0.9082 3.58e-224</span></span></code></pre></div>
+<p>Note, that in this case the confidence intervals are constructed by
+using a variance stabilizing transformation, Fishers <span class="math inline">\(z\)</span>-transform
+<sup id="bd9fb723a778b8030b92a040cc4acf52"><a href="#lehmann_romano_2005" title="Lehmann \&amp; Romano, Testing statistical hypotheses, Springer (2005).">lehmann_romano_2005</a></sup>,</p>
+<p><span class="math display">\[z = \arctanh(\widehat{\rho}) =
+  \frac{1}{2}\log\left(\frac{1+\widehat{\rho}}{1-\widehat{\rho}}\right)\]</span>
+where <span class="math inline">\(\widehat{\rho}\)</span> is the MLE.
+This estimate has an approximate asymptotic normal distribution <span class="math inline">\(\mathcal{N}(\arctanh(\rho),\frac{1}{n-3-k})\)</span>.
+Hence a asymptotic 95% confidence interval is given by <span class="math display">\[\widehat{z} \pm
+\frac{1.96}{\sqrt{n-3-k}}\]</span> and the confidence interval for <span class="math inline">\(\widehat{\rho}\)</span> can directly be calculated
+by the inverse transformation: <span class="math display">\[\widehat{\rho} = \tanh(z) =
+\frac{e^{2z}-1}{e^{2z}+1}.\]</span></p>
+<p>This is equivalent to the direct calculations using the delta method
+(except for the small sample bias correction <span class="math inline">\(3+k\)</span>) where the estimate and confidence
+interval are transformed back to the original scale using the
+<code>back.transform</code> argument.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">estimate</span>(e, <span class="cf">function</span>(p) <span class="fu">atanh</span>(p[<span class="st">&#39;y1~~y2&#39;</span>]<span class="sc">/</span>(p[<span class="st">&#39;y1~~y1&#39;</span>]<span class="sc">*</span>p[<span class="st">&#39;y2~~y2&#39;</span>])<span class="sc">^</span>.<span class="dv">5</span>), <span class="at">back.transform=</span>tanh)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co">#&gt;        Estimate Std.Err   2.5%  97.5%    P-value</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co">#&gt; y1~~y2   0.8915         0.8732 0.9074 7.445e-249</span></span></code></pre></div>
+<p>The transformed confidence interval will generally have improved
+coverage especially near the boundary <span class="math inline">\(\rho
+\approx \pm 1\)</span>.</p>
+<p>While the estimates of this particular model can be obtained in
+closed form, this is generally not the case when for example considering
+parameter constraints, latent variables, or missing and censored
+observations. The MLE is therefore obtained using iterative optimization
+procedures (typically Fisher scoring or Newton-Raphson methods). To
+ensure that the estimated variance parameters leads to a meaningful
+positive definite structure and to avoid potential problems with
+convergence it can often be a good idea to parametrize the model in a
+way that such parameter constraints are naturally fulfilled. This can be
+achieved with the <code>constrain</code> method.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> m <span class="sc">|&gt;</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>    <span class="fu">parameter</span>(<span class="sc">~</span> l1 <span class="sc">+</span> l2 <span class="sc">+</span> z) <span class="sc">|&gt;</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>    <span class="fu">variance</span>(<span class="sc">~</span> y1 <span class="sc">+</span> y2, <span class="at">value=</span><span class="fu">c</span>(<span class="st">&#39;v1&#39;</span>,<span class="st">&#39;v2&#39;</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>    <span class="fu">covariance</span>(y1 <span class="sc">~</span> y2, <span class="at">value=</span><span class="st">&#39;c&#39;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>    <span class="fu">constrain</span>(v1 <span class="sc">~</span> l1, <span class="at">fun=</span>exp) <span class="sc">|&gt;</span></span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>    <span class="fu">constrain</span>(v2 <span class="sc">~</span> l2, <span class="at">fun=</span>exp) <span class="sc">|&gt;</span></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>    <span class="fu">constrain</span>(c <span class="sc">~</span> z<span class="sc">+</span>l1<span class="sc">+</span>l2, <span class="at">fun=</span><span class="cf">function</span>(x) <span class="fu">tanh</span>(x[<span class="dv">1</span>])<span class="sc">*</span><span class="fu">sqrt</span>(<span class="fu">exp</span>(x[<span class="dv">2</span>])<span class="sc">*</span><span class="fu">exp</span>(x[<span class="dv">3</span>])))</span></code></pre></div>
+<p>In the above code, we first add new parameters <code>l1</code> and
+<code>l2</code> to hold the log-variance parameters, and <code>z</code>
+which will be the z-transform of the correlation parameter. Next we
+label the variances and covariances: The variance of <code>y1</code> is
+called <code>v1</code>; the variance of <code>y2</code> is called
+<code>v2</code>; the covariance of <code>y1</code> and <code>y2</code>
+is called <code>c</code>. Finally, these parameters are tied to the
+previously defined parameters using the <code>constrain</code> method
+such that <code>v1</code> := <span class="math inline">\(\exp(\mathtt{l1})\)</span> <code>v2</code> :=
+<span class="math inline">\(\exp(\mathtt{l1})\)</span> and
+<code>z</code> := <span class="math inline">\(\tanh(\mathtt{z})\sqrt{\mathtt{v1}\mathtt{v2}}\)</span>.
+In this way there is no constraints on the actual estimated parameters
+<code>l1</code>, <code>l2</code>, and <code>z</code> which can take any
+values in <span class="math inline">\(\R^{3}\)</span>, while we at the
+same time are guaranteed a proper covariance matrix which is positive
+definite.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>e2 <span class="ot">&lt;-</span> <span class="fu">estimate</span>(m2, d)</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>e2</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co">#&gt;                        Estimate Std. Error  Z-value  P-value</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co">#&gt; Regressions:                                                </span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co">#&gt;    y1~x                 0.93300    0.04443 20.99871   &lt;1e-12</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt;     y2~x                0.91652    0.04527 20.24500   &lt;1e-12</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt; Intercepts:                                                 </span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co">#&gt;    y1                  -0.00541    0.04482 -0.12076   0.9039</span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="co">#&gt;    y2                  -0.02715    0.04566 -0.59457   0.5521</span></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co">#&gt; Additional Parameters:                                      </span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co">#&gt;    l1                   0.00418    0.06325  0.06617   0.9472</span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="co">#&gt;    l2                   0.04164    0.06325  0.65832   0.5103</span></span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="co">#&gt;    z                    1.42942    0.04472 31.96286   &lt;1e-12</span></span></code></pre></div>
+<p>The correlation coefficient can then be obtained as</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">estimate</span>(e2, <span class="st">&#39;z&#39;</span>, <span class="at">back.transform=</span>tanh)</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="co">#&gt;     Estimate Std.Err   2.5%  97.5%    P-value</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="co">#&gt; [z]   0.8915         0.8729 0.9076 5.606e-243</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co">#&gt;  Null Hypothesis: </span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="co">#&gt;   [z] = 0</span></span></code></pre></div>
+<p>In practice, a much shorter syntax can be used to obtain the above
+parametrization. We can simply use the argument <code>constrain</code>
+when specifying the covariances (the argument <code>rname</code>
+specifies the parameter name of the <span class="math inline">\(\arctanh\)</span> transformed correlation
+coefficient, and <code>lname</code>, <code>lname2</code> can be used to
+specify the parameter names for the log variance parameters):</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lvm</span>() <span class="sc">|&gt;</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>  <span class="fu">regression</span>(y1 <span class="sc">+</span> y2 <span class="sc">~</span> x) <span class="sc">|&gt;</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="fu">covariance</span>(y1 <span class="sc">~</span> y2, <span class="at">constrain=</span><span class="cn">TRUE</span>, <span class="at">rname=</span><span class="st">&#39;z&#39;</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>e2 <span class="ot">&lt;-</span> <span class="fu">estimate</span>(m2, <span class="at">data=</span>d)</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>e2</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="co">#&gt;                        Estimate Std. Error  Z-value  P-value</span></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="co">#&gt; Regressions:                                                </span></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co">#&gt;    y1~x                 0.93300    0.04443 20.99871   &lt;1e-12</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="co">#&gt;     y2~x                0.91652    0.04527 20.24500   &lt;1e-12</span></span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a><span class="co">#&gt; Intercepts:                                                 </span></span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="co">#&gt;    y1                  -0.00541    0.04482 -0.12076   0.9039</span></span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a><span class="co">#&gt;    y2                  -0.02715    0.04566 -0.59457   0.5521</span></span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a><span class="co">#&gt; Additional Parameters:                                      </span></span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a><span class="co">#&gt;    l1                   0.00418    0.06325  0.06617   0.9472</span></span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a><span class="co">#&gt;    l2                   0.04164    0.06325  0.65832   0.5103</span></span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a><span class="co">#&gt;    z                    1.42942    0.04472 31.96286   &lt;1e-12</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">estimate</span>(e2, <span class="st">&#39;z&#39;</span>, <span class="at">back.transform=</span>tanh)</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="co">#&gt;     Estimate Std.Err   2.5%  97.5%    P-value</span></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co">#&gt; [z]   0.8915         0.8729 0.9076 5.606e-243</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="co">#&gt;  Null Hypothesis: </span></span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="co">#&gt;   [z] = 0</span></span></code></pre></div>
+<p>As an alternative to the Wald confidence intervals (with or without
+transformation) is to profile the likelihood. The profile likelihood
+confidence intervals can be obtained with the <code>confint</code>
+method:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">tanh</span>(<span class="fu">confint</span>(e2, <span class="st">&#39;z&#39;</span>, <span class="at">profile=</span><span class="cn">TRUE</span>))</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="co">#&gt;       2.5 %    97.5 %</span></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="co">#&gt; z 0.8720834 0.9081964</span></span></code></pre></div>
+<p>Finally, a non-parametric bootstrap (in practice a larger number of
+replications would be needed) can be calculated in the following way</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">bootstrap</span>(e2, <span class="at">data=</span>d, <span class="at">R=</span><span class="dv">50</span>, <span class="at">mc.cores=</span><span class="dv">1</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="co">#&gt; Warning: UNRELIABLE VALUE: One of the &#39;future.apply&#39; iterations</span></span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="co">#&gt; (&#39;future_lapply-1&#39;) unexpectedly generated random numbers without declaring so.</span></span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a><span class="co">#&gt; There is a risk that those random numbers are not statistically sound and the</span></span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="co">#&gt; overall results might be invalid. To fix this, specify &#39;future.seed=TRUE&#39;. This</span></span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a><span class="co">#&gt; ensures that proper, parallel-safe random numbers are produced via the</span></span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a><span class="co">#&gt; L&#39;Ecuyer-CMRG method. To disable this check, use &#39;future.seed = NULL&#39;, or set</span></span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a><span class="co">#&gt; option &#39;future.rng.onMisuse&#39; to &quot;ignore&quot;.</span></span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>b</span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a><span class="co">#&gt; Non-parametric bootstrap statistics (R=50):</span></span>
+<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb18-13"><a href="#cb18-13" tabindex="-1"></a><span class="co">#&gt;      Estimate      Bias          Std.Err       2.5 %         97.5 %       </span></span>
+<span id="cb18-14"><a href="#cb18-14" tabindex="-1"></a><span class="co">#&gt; y1   -0.0054119135 -0.0009992036  0.0467447038 -0.0932389998  0.0770206657</span></span>
+<span id="cb18-15"><a href="#cb18-15" tabindex="-1"></a><span class="co">#&gt; y2   -0.0271494916  0.0002650151  0.0467360144 -0.1211337493  0.0483704809</span></span>
+<span id="cb18-16"><a href="#cb18-16" tabindex="-1"></a><span class="co">#&gt; y1~x  0.9330043509 -0.0149098949  0.0515360969  0.8309736543  0.9998117487</span></span>
+<span id="cb18-17"><a href="#cb18-17" tabindex="-1"></a><span class="co">#&gt; y2~x  0.9165185250 -0.0054613364  0.0515815250  0.8206914258  1.0057939308</span></span>
+<span id="cb18-18"><a href="#cb18-18" tabindex="-1"></a><span class="co">#&gt; l1    0.0041846522 -0.0207541703  0.0680010956 -0.1521461170  0.0970349017</span></span>
+<span id="cb18-19"><a href="#cb18-19" tabindex="-1"></a><span class="co">#&gt; l2    0.0416361064 -0.0172477586  0.0645290353 -0.1102270167  0.1486146877</span></span>
+<span id="cb18-20"><a href="#cb18-20" tabindex="-1"></a><span class="co">#&gt; z     1.4294227061 -0.0086990013  0.0431164145  1.3409919820  1.4973573361</span></span>
+<span id="cb18-21"><a href="#cb18-21" tabindex="-1"></a><span class="co">#&gt; v1    1.0041934200 -0.0184096665  0.0664333005  0.8588861834  1.1019310023</span></span>
+<span id="cb18-22"><a href="#cb18-22" tabindex="-1"></a><span class="co">#&gt; v2    1.0425150452 -0.0157357318  0.0662409478  0.8956329451  1.1602357905</span></span>
+<span id="cb18-23"><a href="#cb18-23" tabindex="-1"></a><span class="co">#&gt; c1    0.9122097186 -0.0171972063  0.0627102019  0.7706302260  1.0085879892</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">quantile</span>(<span class="fu">tanh</span>(b<span class="sc">$</span>coef[,<span class="st">&#39;z&#39;</span>]), <span class="fu">c</span>(.<span class="dv">025</span>,.<span class="dv">975</span>))</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a><span class="co">#&gt;      2.5%     97.5% </span></span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a><span class="co">#&gt; 0.8719025 0.9046521</span></span></code></pre></div>
+<div id="censored-observations" class="section level2">
+<h2>Censored observations</h2>
+<p>Letting one of the variables be right-censored (Tobit-type model) we
+can proceed in exactly the same
+way<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>. The only
+difference is that the variables that are censored must all be defined
+as <code>Surv</code> objects (from the <code>survival</code> package
+which is automatically loaded when using the <code>mets</code> package)
+in the data frame.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">lvm</span>() <span class="sc">|&gt;</span></span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>  <span class="fu">regression</span>(y1 <span class="sc">+</span> s2 <span class="sc">~</span> x) <span class="sc">|&gt;</span></span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>  <span class="fu">covariance</span>(y1 <span class="sc">~</span> s2, <span class="at">constrain=</span><span class="cn">TRUE</span>, <span class="at">rname=</span><span class="st">&#39;z&#39;</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a>e3 <span class="ot">&lt;-</span> <span class="fu">estimate</span>(m3, d)</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>e3</span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="co">#&gt;                        Estimate Std. Error  Z-value  P-value</span></span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="co">#&gt; Regressions:                                                </span></span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a><span class="co">#&gt;    y1~x                 0.93301    0.04443 20.99873   &lt;1e-12</span></span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a><span class="co">#&gt;     s2~x                0.92402    0.04643 19.90115   &lt;1e-12</span></span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a><span class="co">#&gt; Intercepts:                                                 </span></span>
+<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a><span class="co">#&gt;    y1                  -0.00542    0.04482 -0.12083   0.9038</span></span>
+<span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a><span class="co">#&gt;    s2                  -0.02119    0.04638 -0.45688   0.6478</span></span>
+<span id="cb21-9"><a href="#cb21-9" tabindex="-1"></a><span class="co">#&gt; Additional Parameters:                                      </span></span>
+<span id="cb21-10"><a href="#cb21-10" tabindex="-1"></a><span class="co">#&gt;    l1                   0.00419    0.06325  0.06617   0.9472</span></span>
+<span id="cb21-11"><a href="#cb21-11" tabindex="-1"></a><span class="co">#&gt;    l2                   0.06317    0.06492  0.97309   0.3305</span></span>
+<span id="cb21-12"><a href="#cb21-12" tabindex="-1"></a><span class="co">#&gt;    z                    1.42834    0.04546 31.41827   &lt;1e-12</span></span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">estimate</span>(e3, <span class="st">&#39;z&#39;</span>, <span class="at">back.transform=</span>tanh)</span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="co">#&gt;     Estimate Std.Err  2.5%  97.5%    P-value</span></span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a><span class="co">#&gt; [z]   0.8913         0.872 0.9079 1.501e-226</span></span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a><span class="co">#&gt;  Null Hypothesis: </span></span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a><span class="co">#&gt;   [z] = 0</span></span></code></pre></div>
+<p>And here the same analysis with <code>s1</code> being left-censored
+and <code>s2</code> right-censored:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>m3b <span class="ot">&lt;-</span> <span class="fu">lvm</span>() <span class="sc">|&gt;</span></span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>  <span class="fu">regression</span>(s1 <span class="sc">+</span> s2 <span class="sc">~</span> x) <span class="sc">|&gt;</span></span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>  <span class="fu">covariance</span>(s1 <span class="sc">~</span> s2, <span class="at">constrain=</span><span class="cn">TRUE</span>, <span class="at">rname=</span><span class="st">&#39;z&#39;</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a>e3b <span class="ot">&lt;-</span> <span class="fu">estimate</span>(m3b, d)</span>
+<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a>e3b</span>
+<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a><span class="co">#&gt;                        Estimate Std. Error  Z-value  P-value</span></span>
+<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a><span class="co">#&gt; Regressions:                                                </span></span>
+<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a><span class="co">#&gt;    s1~x                 0.92835    0.04479 20.72751   &lt;1e-12</span></span>
+<span id="cb23-10"><a href="#cb23-10" tabindex="-1"></a><span class="co">#&gt;     s2~x                0.92466    0.04648 19.89526   &lt;1e-12</span></span>
+<span id="cb23-11"><a href="#cb23-11" tabindex="-1"></a><span class="co">#&gt; Intercepts:                                                 </span></span>
+<span id="cb23-12"><a href="#cb23-12" tabindex="-1"></a><span class="co">#&gt;    s1                  -0.00233    0.04492 -0.05197   0.9585</span></span>
+<span id="cb23-13"><a href="#cb23-13" tabindex="-1"></a><span class="co">#&gt;    s2                  -0.02083    0.04641 -0.44874   0.6536</span></span>
+<span id="cb23-14"><a href="#cb23-14" tabindex="-1"></a><span class="co">#&gt; Additional Parameters:                                      </span></span>
+<span id="cb23-15"><a href="#cb23-15" tabindex="-1"></a><span class="co">#&gt;    l1                  -0.00076    0.06500 -0.01165   0.9907</span></span>
+<span id="cb23-16"><a href="#cb23-16" tabindex="-1"></a><span class="co">#&gt;    l2                   0.06424    0.06498  0.98859   0.3229</span></span>
+<span id="cb23-17"><a href="#cb23-17" tabindex="-1"></a><span class="co">#&gt;    z                    1.42627    0.04609 30.94242   &lt;1e-12</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>e3b</span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a><span class="co">#&gt;                        Estimate Std. Error  Z-value  P-value</span></span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a><span class="co">#&gt; Regressions:                                                </span></span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a><span class="co">#&gt;    s1~x                 0.92835    0.04479 20.72751   &lt;1e-12</span></span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a><span class="co">#&gt;     s2~x                0.92466    0.04648 19.89526   &lt;1e-12</span></span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a><span class="co">#&gt; Intercepts:                                                 </span></span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a><span class="co">#&gt;    s1                  -0.00233    0.04492 -0.05197   0.9585</span></span>
+<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a><span class="co">#&gt;    s2                  -0.02083    0.04641 -0.44874   0.6536</span></span>
+<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a><span class="co">#&gt; Additional Parameters:                                      </span></span>
+<span id="cb24-10"><a href="#cb24-10" tabindex="-1"></a><span class="co">#&gt;    l1                  -0.00076    0.06500 -0.01165   0.9907</span></span>
+<span id="cb24-11"><a href="#cb24-11" tabindex="-1"></a><span class="co">#&gt;    l2                   0.06424    0.06498  0.98859   0.3229</span></span>
+<span id="cb24-12"><a href="#cb24-12" tabindex="-1"></a><span class="co">#&gt;    z                    1.42627    0.04609 30.94242   &lt;1e-12</span></span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="fu">estimate</span>(e3b, <span class="st">&#39;z&#39;</span>, <span class="at">back.transform=</span>tanh)</span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a><span class="co">#&gt;     Estimate Std.Err   2.5%  97.5%    P-value</span></span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a><span class="co">#&gt; [z]   0.8909         0.8713 0.9077 9.008e-222</span></span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a><span class="co">#&gt;  Null Hypothesis: </span></span>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a><span class="co">#&gt;   [z] = 0</span></span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">tanh</span>(<span class="fu">confint</span>(e3b, <span class="st">&#39;z&#39;</span>, <span class="at">profile=</span><span class="cn">TRUE</span>))</span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="co">#&gt;       2.5 %    97.5 %</span></span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a><span class="co">#&gt; z 0.8706426 0.9080912</span></span></code></pre></div>
+</div>
+</div>
+<div id="sessioninfo" class="section level1">
+<h1>SessionInfo</h1>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a><span class="co">#&gt; R version 4.2.2 (2022-10-31)</span></span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a><span class="co">#&gt; Platform: aarch64-apple-darwin22.1.0 (64-bit)</span></span>
+<span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a><span class="co">#&gt; Running under: macOS Ventura 13.2.1</span></span>
+<span id="cb27-5"><a href="#cb27-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb27-6"><a href="#cb27-6" tabindex="-1"></a><span class="co">#&gt; Matrix products: default</span></span>
+<span id="cb27-7"><a href="#cb27-7" tabindex="-1"></a><span class="co">#&gt; BLAS:   /opt/homebrew/Cellar/openblas/0.3.21/lib/libopenblasp-r0.3.21.dylib</span></span>
+<span id="cb27-8"><a href="#cb27-8" tabindex="-1"></a><span class="co">#&gt; LAPACK: /opt/homebrew/Cellar/r/4.2.2_1/lib/R/lib/libRlapack.dylib</span></span>
+<span id="cb27-9"><a href="#cb27-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb27-10"><a href="#cb27-10" tabindex="-1"></a><span class="co">#&gt; locale:</span></span>
+<span id="cb27-11"><a href="#cb27-11" tabindex="-1"></a><span class="co">#&gt; [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8</span></span>
+<span id="cb27-12"><a href="#cb27-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb27-13"><a href="#cb27-13" tabindex="-1"></a><span class="co">#&gt; attached base packages:</span></span>
+<span id="cb27-14"><a href="#cb27-14" tabindex="-1"></a><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
+<span id="cb27-15"><a href="#cb27-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb27-16"><a href="#cb27-16" tabindex="-1"></a><span class="co">#&gt; other attached packages:</span></span>
+<span id="cb27-17"><a href="#cb27-17" tabindex="-1"></a><span class="co">#&gt; [1] lava_1.7.2.1</span></span>
+<span id="cb27-18"><a href="#cb27-18" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb27-19"><a href="#cb27-19" tabindex="-1"></a><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span id="cb27-20"><a href="#cb27-20" tabindex="-1"></a><span class="co">#&gt;  [1] Rcpp_1.0.10         progressr_0.13.0    bslib_0.4.2        </span></span>
+<span id="cb27-21"><a href="#cb27-21" tabindex="-1"></a><span class="co">#&gt;  [4] compiler_4.2.2      jquerylib_0.1.4     highr_0.10         </span></span>
+<span id="cb27-22"><a href="#cb27-22" tabindex="-1"></a><span class="co">#&gt;  [7] tools_4.2.2         mets_1.3.3          digest_0.6.31      </span></span>
+<span id="cb27-23"><a href="#cb27-23" tabindex="-1"></a><span class="co">#&gt; [10] jsonlite_1.8.4      evaluate_0.20       lattice_0.20-45    </span></span>
+<span id="cb27-24"><a href="#cb27-24" tabindex="-1"></a><span class="co">#&gt; [13] rlang_1.0.6         Matrix_1.5-3        graph_1.76.0       </span></span>
+<span id="cb27-25"><a href="#cb27-25" tabindex="-1"></a><span class="co">#&gt; [16] cli_3.6.0           Rgraphviz_2.42.0    yaml_2.3.7         </span></span>
+<span id="cb27-26"><a href="#cb27-26" tabindex="-1"></a><span class="co">#&gt; [19] parallel_4.2.2      mvtnorm_1.1-3       xfun_0.36          </span></span>
+<span id="cb27-27"><a href="#cb27-27" tabindex="-1"></a><span class="co">#&gt; [22] fastmap_1.1.0       knitr_1.42          sass_0.4.5         </span></span>
+<span id="cb27-28"><a href="#cb27-28" tabindex="-1"></a><span class="co">#&gt; [25] globals_0.16.2      stats4_4.2.2        grid_4.2.2         </span></span>
+<span id="cb27-29"><a href="#cb27-29" tabindex="-1"></a><span class="co">#&gt; [28] listenv_0.9.0       R6_2.5.1            timereg_2.0.5      </span></span>
+<span id="cb27-30"><a href="#cb27-30" tabindex="-1"></a><span class="co">#&gt; [31] future.apply_1.10.0 parallelly_1.34.0   survival_3.5-0     </span></span>
+<span id="cb27-31"><a href="#cb27-31" tabindex="-1"></a><span class="co">#&gt; [34] rmarkdown_2.20      codetools_0.2-18    htmltools_0.5.4    </span></span>
+<span id="cb27-32"><a href="#cb27-32" tabindex="-1"></a><span class="co">#&gt; [37] splines_4.2.2       BiocGenerics_0.44.0 future_1.30.0      </span></span>
+<span id="cb27-33"><a href="#cb27-33" tabindex="-1"></a><span class="co">#&gt; [40] numDeriv_2016.8-1.1 cachem_1.0.6</span></span></code></pre></div>
+</div>
+<div id="bibliography" class="section level1">
+<h1>Bibliography</h1>
+<p><a id="lehmann_romano_2005"></a>[lehmann_romano_2005] Lehmann &amp;
+Romano, Testing statistical hypotheses, Springer (2005). <a href="#bd9fb723a778b8030b92a040cc4acf52">↩︎</a></p>
+</div>
+<div id="footnotes" class="section level1">
+<h1>Footnotes</h1>
+<p><sup><a id="fn.1" href="#fnr.1">1</a></sup> This functionality is
+only available with the <code>mets</code> package installed (available
+from CRAN)</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

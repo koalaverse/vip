@@ -1,0 +1,36 @@
+Package: ggridges
+Type: Package
+Title: Ridgeline Plots in 'ggplot2'
+Version: 0.5.4
+Authors@R: 
+    person(
+      given = "Claus O.",
+      family = "Wilke",
+      role = c("aut", "cre"),
+      email = "wilke@austin.utexas.edu",
+      comment = c(ORCID = "0000-0002-7470-9261")
+    )
+Description: Ridgeline plots provide a convenient way of visualizing changes in distributions over time or space. This package enables the creation of such plots in 'ggplot2'.
+URL: https://wilkelab.org/ggridges/
+BugReports: https://github.com/wilkelab/ggridges/issues
+Depends: R (>= 3.2)
+Imports: ggplot2 (>= 3.0.0), grid (>= 3.0.0), scales (>= 0.4.1), withr
+        (>= 2.1.1)
+License: GPL-2 | file LICENSE
+LazyData: true
+Suggests: covr, dplyr, patchwork, ggplot2movies, forcats, knitr,
+        rmarkdown, testthat, vdiffr
+VignetteBuilder: knitr
+Collate: 'data.R' 'ggridges.R' 'geoms.R' 'geomsv.R' 'geoms-gradient.R'
+        'geom-density-line.R' 'position.R' 'scale-cyclical.R'
+        'scale-point.R' 'scale-vline.R' 'stats.R' 'theme.R'
+        'utils_ggplot2.R' 'utils.R'
+RoxygenNote: 7.2.1
+Encoding: UTF-8
+NeedsCompilation: no
+Packaged: 2022-09-22 21:53:29 UTC; clauswilke
+Author: Claus O. Wilke [aut, cre] (<https://orcid.org/0000-0002-7470-9261>)
+Maintainer: Claus O. Wilke <wilke@austin.utexas.edu>
+Repository: CRAN
+Date/Publication: 2022-09-26 08:00:02 UTC
+Built: R 4.2.0; ; 2022-09-26 10:12:29 UTC; unix

@@ -1,0 +1,267 @@
+* Estimation and simulation of latent variable models
+
+** Model building 
+
+addvar                  Add variable to (model) object
+addvar<-                -
+adjMat                  Extract adjancey matrix from model/graph
+ancestors               Extract ancestors of nodes
+baptize                 Label elements of object
+cancel                  Remove assocation between variables
+cancel<-                -
+categorical             Define categorical variables (predictors)
+categorical<-           -
+children                Extract children or parent elements of object
+constrain               Add non-linear constraints to latent variable model
+constrain<-             -
+covariance              Add covariance structure to Latent Variable Model
+covariance<-            -
+covfix                  -
+covfix<-                -
+variance                -
+variance<-              -
+descendants             Extract descendants of nodes
+describecoef            Show parameter names
+distribution            Define distribution of variables
+distribution<-          -
+edgeList                Extract edge list from model/graph
+edgelabels              Define labels on edges of graph
+edgelabels<-            -
+edgeList                Extract edges of 'lvm' object
+endogenous              Extract endogenous variables
+exogenous               Extract/define exogenous variables
+exogenous<-             -
+eventTime               Add an observed event time outcome to a latent variable model
+eventTime<-             -
+fixsome                 Constrain parameters in measurement models (identifiability)
+functional              Add non-linear associations (for simulation only)
+functional<-            -
+intercept               Fix mean parameters in 'lvm'-object
+intercept<-             -
+intfix                  -
+intfix<-                -
+intervention            Define intervention variable
+intervention<-          -
+rmvar                   Remove variables from (model) object.
+rmvar<-                 -
+kill                    -
+kill<-                  -
+labels                  Define labels of graph
+labels<-                -
+latent                  Define latent variable
+latent<-                -
+lvm                     Initialize new latent variable model
+makemissing             Create random missing data
+manifest                Extract observed variables
+measurement             Extract measurement models
+merge                   Merge model objects (lvm, estimate, ...)
+multigroup              Define multiple group object
+nodecolor               Set node colours
+nodecolor<-             -
+ordinal                 Define variables as ordinal
+ordinal<-               -
+parameter               Define additional parameters of the model
+parameter<-             -
+parfix                  Fix parameters of model
+parfix<-                -
+parpos                  Generic method for finding indeces of model parameters
+pars                    Extract model parameter names
+parents                 Extract parents of nodes
+path                    Extract pathways in model graph
+plot.lvm                Plot path diagram
+Range.lvm               Define range constraints of parameters
+randomslope             Define random slope component
+randomslope<-           -
+regression              Add regression association to latent variable model
+regression<-            -
+regfix                  -
+regfix<-                -
+roots                   Extract root nodes of graph
+sinks                   Extract sink nodes of graph
+subset.lvm              Extract subset of latent variable model
+timedep                 Time-dependent parameters
+timedep<-               -
+transform               Create non-linear parameter constraints
+transform<-             -
+vars                    Extract variable names from latent variable model
+
+** Model inference
+
+backdoor                Check backdoor criterion
+bootstrap               Generic bootstrap method
+bootstrap.lvm           Calculate bootstrap estimates of a lvm object
+closed.testing          Closed testing procedure
+confint.lvmfit          Calculate confidence limits for parameters
+contr                   Create contrast matrices
+compare                 Statistical tests Performs Likelihood-ratio, Wald and score tests
+complik                 Composite likelihood inference
+confpred                Conformal prediction limits
+correlation             Generic method for extracting correlation coefficients of model object
+cv                      Cross-validation function
+dsep                    Check d-separation criterion in graph
+equivalence             Identify candidates of equivalent models
+effects                 Mediation; calculate indirect, direct and total effects
+totaleffects            -
+estimate.default        Aggregation of parameters and data
+estimate.lvm            Estimation of parameters in a Latent Variable Model (lvm)
+gof                     Extract model summaries and GOF statistics for model object
+gkgamma                 Kruskal-Gamma for contigency tables
+Graph                   Extract graph
+Graph<-                 -
+IC                      Extract i.i.d. decomposition (influence function) from model object
+iid                     - (obsolete)
+information             Calculate information matrix
+IV                      Instrumental variables estimator (2SLS)
+kappa                   Cohens kappa
+lava.options            Set global options for 'lava'
+measurement.error       Two-stage estimator for (non-linear) measurement error models
+Model                   Extract model
+Model<-                 -
+modelPar                Extract model parameters
+modelVar                Extract variance structure
+modelsearch             Model searching
+moments                 Estimate model-specific mean and variance
+multinomial             Estimate probabilities in contingency table
+mvnmix                  Estimate multivariate normal mixture model
+nonlinear               Define non-linear associations (see 'twostage')
+nonlinear<-             -
+ordreg                  Ordinal regression models
+partialcor              Calculate partial correlations
+p.correct               Multiple testing adjustment
+pcor                    Polychoric correlations
+plot.estimate           Forest-plot or regression line plot
+predict.lvm             Prediction in structural equation models
+profile                 Profile likelihood
+mixture                 Estimate mixture latent variable model
+residuals               Extract residuals
+riskcomp                Calculate association measure (see also 'OR,'Diff','Ratio')
+Diff                    -
+OR                      -
+Ratio                   -
+odds                    -
+expit                   -
+logit                   -
+tigol                   -
+scheffe                 Simulatenous confidence bands (lm)
+score                   Extract score function of model fit
+stack.estimate          Stack estimating equations
+sim                     Simulate model
+sim.default             Wrapper function for mclapply
+as.sim                  Cast matrix as 'sim' object
+startvalues             Starting values
+starter.multigroup      -
+startvalues0            -
+startvalues1            -
+startvalues2            -
+twostage                Two-stage estimator (non-linear SEM)
+twostageCV              Cross-validation for non-linear SEM mixture models
+wkm                     Weighted k-means algorithm
+zibreg                  Regression model for binomial data with unknown group of unaffected
+
+** Utilities
+
+%++%                    Concatenation operator
+%ni%                    Matching operator (x not in y) oposed to the '%in%'-operator (x in y)
+blockdiag               Combine matrices to block diagonal structure
+By                      Apply a Function to a Data Frame Split by Factors
+click                   Identify points on plot
+wait                    -
+Col                     Generate a transparent RGB color
+Combine                 Report estimates across different models
+commutation             Finds the unique commutation matrix
+csplit                  Define random folds of data
+foldr                   -
+curly                   Add curly brackets to plot
+Expand                  Create a Data Frame from All Combinations of Factors
+fplot                   Faster plots of large data via rgl
+forestplot              Forest plots (confidence/prediciton limits visualization)
+getSAS                  Read SAS output (ODS)
+getMplus                Read Mplus output
+ksmooth2                Estimate and visualize bivariate density
+PD                      Dose response calculation for binomial regression models
+colsel                  Select colour(s) interactively
+colorbar                Add colorbar to plot
+confband                Add Confidence limits bar to plot
+plot_region             -
+devcoords               Returns device-coordinates and plot-region
+diagtest                Calculate diagnostic tests for 2x2 table
+images                  Organize several image calls (for visualizing categorical data)
+Inverse                 Generalized inverse
+org                     Convert object to ascii suitable for org-mode
+parsedesign             Create contrast matrix from expression
+plotConf                Plot regression lines
+pdfconvert              Convert pdf to raster format
+procformula             Process formula
+revdiag                 Create/extract 'reverse'-diagonal matrix
+revdiag<-               -
+surface                 Visualize function surface
+offdiag                 Extract or set off-diagonal elements of matrix
+offdiag<-               -
+density.sim             Plot sim object
+spaghettu               Plot longitudinal data
+toformula               Converts strings to formula
+tr                      Trace operator
+trim                    Trim tring of (leading/trailing/all) white spaces
+vec                     vec operator
+wrapvec                 Wrap vector
+x2NA                    Convert vector to/from NA
+NA2x                    -
+na.pass0                Handle missing data by setting NA to zero
+
+** Distributions
+
+Missing                 Add missing mechanism to model
+Missing<-               -
+normal.lvm              Normal distribution
+gaussian.lvm            -
+lognormal.lvm           Log-normal distribution
+poisson.lvm             Poisson distribution
+threshold.lvm           Threshold model (e.g., Probit)
+binomial.lvm            Binomial family / Bernoulli distribution
+logit.lvm               -
+probit.lvm              -
+Gamma.lvm               Gamma distribution
+loggamma.lvm            Log-Gamma distribution
+chisq.lvm               Chi-squared distribution
+student.lvm             Student-t distribution
+uniform.lvm             Uniform (continuous or discrete) distribution
+weibull.lvm             Weibull distribution
+id.lvm                  Sequence of integers 1:n
+Sequence.lvm            -
+ones.lvm                Fixed sequence of zeros and ones
+constant.lvm            Fixed single value
+binary.lvm              -
+Binary.lvm              -
+beta.lvm                Beta distribution
+multinomial.lvm         Multinomial distribution
+mvn.lvm                 Multivariate normal distribution
+GM2.lvm                 Gaussian mixture distribution
+GM3.lvm                 -
+coxWeibull.lvm          Cox-model (Weibull baseline)
+coxExponential.lvm      Cox-model (Exponential baseline)
+coxGompertz.vlm         Cox-model (Gompertz baseline)
+aalenExponential.lvm    Aalen additive model
+heavytail.lvm           Heavy-tailed distribution
+heavytail<-             -
+binomial.rd             Binomial odds-product model (risk difference)
+binomial.rr             Binomial odds-product model (relative risk)
+pareto.lvm              Pareto distribution
+none.lvm                Deterministic variable (fixed at its mean-structure)
+
+** Datasets
+
+bmd                     Longitudinal Bone Mineral Density Data (Wide format)
+bmidata                 Data
+brisa                   Simulated data
+calcium                 Longitudinal Bone Mineral Density Data
+hubble                  Hubble data
+hubble2                 Hubble data
+indoorenv               Data
+nldata                  Example data (nonlinear model)
+missingdata             Data
+nsem                    Example SEM data (nonlinear)
+semdata                 Example SEM data
+serotonin               Serotonin data
+serotonin2              Data
+twindata                Twin menarche data
+

@@ -1,0 +1,30 @@
+Package: modelenv
+Title: Provide Tools to Register Models for Use in 'tidymodels'
+Version: 0.1.1
+Authors@R: c(
+    person("Emil", "Hvitfeldt", , "emil.hvitfeldt@posit.co", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-0679-1945")),
+    person(given = "Posit Software, PBC", role = c("cph", "fnd"))
+  )
+Description: An developer focused, low dependency package in 'tidymodels' that
+    provides functions to register how models are to be used. Functions to
+    register models are complimented with accessor functions to retrieve
+    registered model information to aid in model fitting and error handling.
+License: MIT + file LICENSE
+Encoding: UTF-8
+RoxygenNote: 7.2.3
+Imports: glue, rlang, tibble, vctrs
+Suggests: covr, testthat (>= 3.0.0)
+Config/Needs/website: tidyverse/tidytemplate
+Config/testthat/edition: 3
+URL: https://github.com/tidymodels/modelenv,
+        http://modelenv.tidymodels.org/
+BugReports: https://github.com/tidymodels/modelenv/issues
+NeedsCompilation: no
+Packaged: 2023-03-08 20:36:01 UTC; emilhvitfeldt
+Author: Emil Hvitfeldt [aut, cre] (<https://orcid.org/0000-0002-0679-1945>),
+  Posit Software, PBC [cph, fnd]
+Maintainer: Emil Hvitfeldt <emil.hvitfeldt@posit.co>
+Repository: CRAN
+Date/Publication: 2023-03-08 23:10:02 UTC
+Built: R 4.2.0; ; 2023-03-09 00:48:31 UTC; unix

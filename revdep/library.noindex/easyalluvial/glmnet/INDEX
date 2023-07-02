@@ -1,0 +1,72 @@
+BinomialExample         Synthetic dataset with binary response
+Cindex                  compute C index for a Cox model
+CoxExample              Synthetic dataset with right-censored survival
+                        response
+MultiGaussianExample    Synthetic dataset with multiple Gaussian
+                        responses
+MultinomialExample      Synthetic dataset with multinomial response
+PoissonExample          Synthetic dataset with count response
+QuickStartExample       Synthetic dataset with Gaussian response
+SparseExample           Synthetic dataset with sparse design matrix
+assess.glmnet           assess performance of a 'glmnet' object using
+                        test data.
+beta_CVX                Simulated data for the glmnet vignette
+bigGlm                  fit a glm with all the options in 'glmnet'
+coef.glmnet             Extract coefficients from a glmnet object
+cox.fit                 Fit a Cox regression model with elastic net
+                        regularization for a single value of lambda
+cox.path                Fit a Cox regression model with elastic net
+                        regularization for a path of lambda values
+cox_obj_function        Elastic net objective function value for Cox
+                        regression model
+coxgrad                 Compute gradient for Cox model
+coxnet.deviance         Compute deviance for Cox model
+cv.glmnet               Cross-validation for glmnet
+dev_function            Elastic net deviance value
+deviance.glmnet         Extract the deviance from a glmnet object
+elnet.fit               Solve weighted least squares (WLS) problem for
+                        a single lambda value
+fid                     Helper function for Cox deviance and gradient
+get_cox_lambda_max      Get lambda max for Cox regression model
+get_eta                 Helper function to get etas (linear
+                        predictions)
+get_start               Get null deviance, starting mu and lambda max
+glmnet                  fit a GLM with lasso or elasticnet
+                        regularization
+glmnet-package          Elastic net model paths for some generalized
+                        linear models
+glmnet.control          internal glmnet parameters
+glmnet.fit              Fit a GLM with elastic net regularization for a
+                        single value of lambda
+glmnet.measures         Display the names of the measures used in CV
+                        for different "glmnet" families
+glmnet.path             Fit a GLM with elastic net regularization for a
+                        path of lambda values
+makeX                   convert a data frame to a data matrix with
+                        one-hot encoding
+mycoxph                 Helper function to fit coxph model for
+                        survfit.coxnet
+mycoxpred               Helper function to amend ... for new data in
+                        survfit.coxnet
+na.replace              Replace the missing entries in a matrix
+                        columnwise with the entries in a supplied
+                        vector
+obj_function            Elastic net objective function value
+pen_function            Elastic net penalty value
+plot.cv.glmnet          plot the cross-validation curve produced by
+                        cv.glmnet
+plot.glmnet             plot coefficients from a "glmnet" object
+predict.cv.glmnet       make predictions from a "cv.glmnet" object.
+predict.glmnetfit       Get predictions from a 'glmnetfit' fit object
+print.cv.glmnet         print a cross-validated glmnet object
+print.glmnet            print a glmnet object
+response.coxnet         Make response for coxnet
+rmult                   Generate multinomial samples from a probability
+                        matrix
+stratifySurv            Add strata to a Surv object
+survfit.coxnet          Compute a survival curve from a coxnet object
+survfit.cv.glmnet       Compute a survival curve from a cv.glmnet
+                        object
+use.cox.path            Check if glmnet should call cox.path
+weighted_mean_sd        Helper function to compute weighted mean and
+                        standard deviation

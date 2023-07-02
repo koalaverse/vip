@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head><title>R: Lasso and Elastic-Net Regularized Generalized Linear Models</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+<h1> Lasso and Elastic-Net Regularized Generalized Linear Models
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]" />
+</h1>
+<hr/>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]" /></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]" /></a>
+</div><h2>Documentation for package &lsquo;glmnet&rsquo; version 4.1-7</h2>
+
+<ul><li><a href="../DESCRIPTION">DESCRIPTION file</a>.</li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation.</a></li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="glmnet-package.html">glmnet-package</a></td>
+<td>Elastic net model paths for some generalized linear models</td></tr>
+<tr><td style="width: 25%;"><a href="assess.glmnet.html">assess.glmnet</a></td>
+<td>assess performance of a 'glmnet' object using test data.</td></tr>
+<tr><td style="width: 25%;"><a href="beta_CVX.html">beta_CVX</a></td>
+<td>Simulated data for the glmnet vignette</td></tr>
+<tr><td style="width: 25%;"><a href="bigGlm.html">bigGlm</a></td>
+<td>fit a glm with all the options in 'glmnet'</td></tr>
+<tr><td style="width: 25%;"><a href="BinomialExample.html">BinomialExample</a></td>
+<td>Synthetic dataset with binary response</td></tr>
+<tr><td style="width: 25%;"><a href="Cindex.html">Cindex</a></td>
+<td>compute C index for a Cox model</td></tr>
+<tr><td style="width: 25%;"><a href="predict.cv.glmnet.html">coef.cv.glmnet</a></td>
+<td>make predictions from a "cv.glmnet" object.</td></tr>
+<tr><td style="width: 25%;"><a href="predict.cv.glmnet.html">coef.cv.relaxed</a></td>
+<td>make predictions from a "cv.glmnet" object.</td></tr>
+<tr><td style="width: 25%;"><a href="predict.glmnet.html">coef.glmnet</a></td>
+<td>Extract coefficients from a glmnet object</td></tr>
+<tr><td style="width: 25%;"><a href="predict.glmnet.html">coef.relaxed</a></td>
+<td>Extract coefficients from a glmnet object</td></tr>
+<tr><td style="width: 25%;"><a href="assess.glmnet.html">confusion.glmnet</a></td>
+<td>assess performance of a 'glmnet' object using test data.</td></tr>
+<tr><td style="width: 25%;"><a href="cox.fit.html">cox.fit</a></td>
+<td>Fit a Cox regression model with elastic net regularization for a single value of lambda</td></tr>
+<tr><td style="width: 25%;"><a href="cox.path.html">cox.path</a></td>
+<td>Fit a Cox regression model with elastic net regularization for a path of lambda values</td></tr>
+<tr><td style="width: 25%;"><a href="CoxExample.html">CoxExample</a></td>
+<td>Synthetic dataset with right-censored survival response</td></tr>
+<tr><td style="width: 25%;"><a href="coxgrad.html">coxgrad</a></td>
+<td>Compute gradient for Cox model</td></tr>
+<tr><td style="width: 25%;"><a href="coxnet.deviance.html">coxnet.deviance</a></td>
+<td>Compute deviance for Cox model</td></tr>
+<tr><td style="width: 25%;"><a href="cox_obj_function.html">cox_obj_function</a></td>
+<td>Elastic net objective function value for Cox regression model</td></tr>
+<tr><td style="width: 25%;"><a href="cv.glmnet.html">cv.glmnet</a></td>
+<td>Cross-validation for glmnet</td></tr>
+<tr><td style="width: 25%;"><a href="deviance.glmnet.html">deviance.glmnet</a></td>
+<td>Extract the deviance from a glmnet object</td></tr>
+<tr><td style="width: 25%;"><a href="dev_function.html">dev_function</a></td>
+<td>Elastic net deviance value</td></tr>
+<tr><td style="width: 25%;"><a href="elnet.fit.html">elnet.fit</a></td>
+<td>Solve weighted least squares (WLS) problem for a single lambda value</td></tr>
+<tr><td style="width: 25%;"><a href="fid.html">fid</a></td>
+<td>Helper function for Cox deviance and gradient</td></tr>
+<tr><td style="width: 25%;"><a href="get_cox_lambda_max.html">get_cox_lambda_max</a></td>
+<td>Get lambda max for Cox regression model</td></tr>
+<tr><td style="width: 25%;"><a href="get_eta.html">get_eta</a></td>
+<td>Helper function to get etas (linear predictions)</td></tr>
+<tr><td style="width: 25%;"><a href="get_start.html">get_start</a></td>
+<td>Get null deviance, starting mu and lambda max</td></tr>
+<tr><td style="width: 25%;"><a href="glmnet.html">glmnet</a></td>
+<td>fit a GLM with lasso or elasticnet regularization</td></tr>
+<tr><td style="width: 25%;"><a href="glmnet.control.html">glmnet.control</a></td>
+<td>internal glmnet parameters</td></tr>
+<tr><td style="width: 25%;"><a href="glmnet.fit.html">glmnet.fit</a></td>
+<td>Fit a GLM with elastic net regularization for a single value of lambda</td></tr>
+<tr><td style="width: 25%;"><a href="glmnet.measures.html">glmnet.measures</a></td>
+<td>Display the names of the measures used in CV for different "glmnet" families</td></tr>
+<tr><td style="width: 25%;"><a href="glmnet.path.html">glmnet.path</a></td>
+<td>Fit a GLM with elastic net regularization for a path of lambda values</td></tr>
+<tr><td style="width: 25%;"><a href="makeX.html">makeX</a></td>
+<td>convert a data frame to a data matrix with one-hot encoding</td></tr>
+<tr><td style="width: 25%;"><a href="MultiGaussianExample.html">MultiGaussianExample</a></td>
+<td>Synthetic dataset with multiple Gaussian responses</td></tr>
+<tr><td style="width: 25%;"><a href="MultinomialExample.html">MultinomialExample</a></td>
+<td>Synthetic dataset with multinomial response</td></tr>
+<tr><td style="width: 25%;"><a href="mycoxph.html">mycoxph</a></td>
+<td>Helper function to fit coxph model for survfit.coxnet</td></tr>
+<tr><td style="width: 25%;"><a href="mycoxpred.html">mycoxpred</a></td>
+<td>Helper function to amend ... for new data in survfit.coxnet</td></tr>
+<tr><td style="width: 25%;"><a href="na.replace.html">na.replace</a></td>
+<td>Replace the missing entries in a matrix columnwise with the entries in a supplied vector</td></tr>
+<tr><td style="width: 25%;"><a href="obj_function.html">obj_function</a></td>
+<td>Elastic net objective function value</td></tr>
+<tr><td style="width: 25%;"><a href="pen_function.html">pen_function</a></td>
+<td>Elastic net penalty value</td></tr>
+<tr><td style="width: 25%;"><a href="plot.cv.glmnet.html">plot.cv.glmnet</a></td>
+<td>plot the cross-validation curve produced by cv.glmnet</td></tr>
+<tr><td style="width: 25%;"><a href="plot.cv.glmnet.html">plot.cv.relaxed</a></td>
+<td>plot the cross-validation curve produced by cv.glmnet</td></tr>
+<tr><td style="width: 25%;"><a href="plot.glmnet.html">plot.glmnet</a></td>
+<td>plot coefficients from a "glmnet" object</td></tr>
+<tr><td style="width: 25%;"><a href="plot.glmnet.html">plot.mrelnet</a></td>
+<td>plot coefficients from a "glmnet" object</td></tr>
+<tr><td style="width: 25%;"><a href="plot.glmnet.html">plot.multnet</a></td>
+<td>plot coefficients from a "glmnet" object</td></tr>
+<tr><td style="width: 25%;"><a href="plot.glmnet.html">plot.relaxed</a></td>
+<td>plot coefficients from a "glmnet" object</td></tr>
+<tr><td style="width: 25%;"><a href="PoissonExample.html">PoissonExample</a></td>
+<td>Synthetic dataset with count response</td></tr>
+<tr><td style="width: 25%;"><a href="predict.glmnet.html">predict.coxnet</a></td>
+<td>Extract coefficients from a glmnet object</td></tr>
+<tr><td style="width: 25%;"><a href="predict.cv.glmnet.html">predict.cv.glmnet</a></td>
+<td>make predictions from a "cv.glmnet" object.</td></tr>
+<tr><td style="width: 25%;"><a href="predict.cv.glmnet.html">predict.cv.relaxed</a></td>
+<td>make predictions from a "cv.glmnet" object.</td></tr>
+<tr><td style="width: 25%;"><a href="predict.glmnet.html">predict.elnet</a></td>
+<td>Extract coefficients from a glmnet object</td></tr>
+<tr><td style="width: 25%;"><a href="predict.glmnet.html">predict.fishnet</a></td>
+<td>Extract coefficients from a glmnet object</td></tr>
+<tr><td style="width: 25%;"><a href="predict.glmnet.html">predict.glmnet</a></td>
+<td>Extract coefficients from a glmnet object</td></tr>
+<tr><td style="width: 25%;"><a href="predict.glmnetfit.html">predict.glmnetfit</a></td>
+<td>Get predictions from a 'glmnetfit' fit object</td></tr>
+<tr><td style="width: 25%;"><a href="predict.glmnet.html">predict.lognet</a></td>
+<td>Extract coefficients from a glmnet object</td></tr>
+<tr><td style="width: 25%;"><a href="predict.glmnet.html">predict.mrelnet</a></td>
+<td>Extract coefficients from a glmnet object</td></tr>
+<tr><td style="width: 25%;"><a href="predict.glmnet.html">predict.multnet</a></td>
+<td>Extract coefficients from a glmnet object</td></tr>
+<tr><td style="width: 25%;"><a href="predict.glmnet.html">predict.relaxed</a></td>
+<td>Extract coefficients from a glmnet object</td></tr>
+<tr><td style="width: 25%;"><a href="print.glmnet.html">print.bigGlm</a></td>
+<td>print a glmnet object</td></tr>
+<tr><td style="width: 25%;"><a href="print.cv.glmnet.html">print.cv.glmnet</a></td>
+<td>print a cross-validated glmnet object</td></tr>
+<tr><td style="width: 25%;"><a href="print.cv.glmnet.html">print.cv.relaxed</a></td>
+<td>print a cross-validated glmnet object</td></tr>
+<tr><td style="width: 25%;"><a href="print.glmnet.html">print.glmnet</a></td>
+<td>print a glmnet object</td></tr>
+<tr><td style="width: 25%;"><a href="print.glmnet.html">print.relaxed</a></td>
+<td>print a glmnet object</td></tr>
+<tr><td style="width: 25%;"><a href="QuickStartExample.html">QuickStartExample</a></td>
+<td>Synthetic dataset with Gaussian response</td></tr>
+<tr><td style="width: 25%;"><a href="glmnet.html">relax.glmnet</a></td>
+<td>fit a GLM with lasso or elasticnet regularization</td></tr>
+<tr><td style="width: 25%;"><a href="response.coxnet.html">response.coxnet</a></td>
+<td>Make response for coxnet</td></tr>
+<tr><td style="width: 25%;"><a href="rmult.html">rmult</a></td>
+<td>Generate multinomial samples from a probability matrix</td></tr>
+<tr><td style="width: 25%;"><a href="assess.glmnet.html">roc.glmnet</a></td>
+<td>assess performance of a 'glmnet' object using test data.</td></tr>
+<tr><td style="width: 25%;"><a href="SparseExample.html">SparseExample</a></td>
+<td>Synthetic dataset with sparse design matrix</td></tr>
+<tr><td style="width: 25%;"><a href="stratifySurv.html">stratifySurv</a></td>
+<td>Add strata to a Surv object</td></tr>
+<tr><td style="width: 25%;"><a href="survfit.coxnet.html">survfit.coxnet</a></td>
+<td>Compute a survival curve from a coxnet object</td></tr>
+<tr><td style="width: 25%;"><a href="survfit.cv.glmnet.html">survfit.cv.glmnet</a></td>
+<td>Compute a survival curve from a cv.glmnet object</td></tr>
+<tr><td style="width: 25%;"><a href="use.cox.path.html">use.cox.path</a></td>
+<td>Check if glmnet should call cox.path</td></tr>
+<tr><td style="width: 25%;"><a href="weighted_mean_sd.html">weighted_mean_sd</a></td>
+<td>Helper function to compute weighted mean and standard deviation</td></tr>
+<tr><td style="width: 25%;"><a href="beta_CVX.html">x</a></td>
+<td>Simulated data for the glmnet vignette</td></tr>
+<tr><td style="width: 25%;"><a href="beta_CVX.html">y</a></td>
+<td>Simulated data for the glmnet vignette</td></tr>
+</table>
+</div></body></html>

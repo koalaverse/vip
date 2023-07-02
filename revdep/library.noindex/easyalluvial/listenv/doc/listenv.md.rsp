@@ -1,0 +1,395 @@
+<%@meta language="R-vignette" content="--------------------------------
+%\VignetteIndexEntry{List Environments}
+%\VignetteAuthor{Henrik Bengtsson}
+%\VignetteKeyword{R}
+%\VignetteKeyword{package}
+%\VignetteKeyword{vignette}
+%\VignetteKeyword{listenv}
+%\VignetteEngine{R.rsp::rsp}
+%\VignetteTangle{FALSE}
+--------------------------------------------------------------------"%>
+<%
+R.utils::use("R.utils")
+use("listenv")
+options("withCapture/newline" = FALSE)
+%>
+# <%@meta name="title"%>
+
+## Summary
+
+_List environments_ are environments that have list-like properties.  They are implemented by the [listenv] package.  The main features of a list environment are summarized in the below table:
+
+| Property                                                                     | list environments |  lists | environments |
+|------------------------------------------------------------------------------|:-----------------:|:------:|:------------:|
+| Number of elements, e.g. `length()`                                          |              yes  |   yes  |         yes  |
+| Named elements, e.g. `names()`, `x$a` and `x[["a"]]`                         |              yes  |   yes  |         yes  |
+| Duplicated names                                                             |              yes  |   yes  |              |
+| Element names are optional                                                   |              yes  |   yes  |              |
+| Indexed elements, e.g. `x[[4]]`                                              |              yes  |   yes  |              |
+| Dimensions, e.g. `dim(x)`, `t(x)`, and `aperm(x, c(3,1,2))`                  |              yes  |   yes  |              |
+| Names of dimensions, e.g. `dimnames(x)`                                      |              yes  |   yes  |              |
+| Indexing by dimensions, e.g. `x[[2, 4]]` and `x[[2, "D"]]`                   |              yes  |   yes  |              |
+| Multi-element subsetting, e.g. `x[c("a", "c")]`, `x[-1]` and `x[2:1, , 3]`   |              yes  |   yes  |              |
+| Multi-element subsetting preserves element names                             |              yes  |        |              |
+| Resizing, e.g. `length(x) <- 6`                                              |              yes  |   yes  |              |
+| Removing elements by assigning NULL, e.g. `x$c <- NULL` and `x[1:3] <- NULL` |              yes  |   yes  |              |
+| Removing parts of dimensions by assigning NULL, e.g. `x[,2] <- NULL`         |              yes  |        |              |
+| Mutable, e.g. `y <- x; y$a <- 3; identical(y, x)`                            |              yes  |        |         yes  |
+| Compatible* with `assign()`, `delayedAssign()`, `get()` and `exists()`       |              yes  |        |         yes  |
+
+For example,
+```r
+<%=withCapture({
+x <- listenv(a = 1, b = 2, c = "hello")
+x
+
+length(x)
+names(x)
+x$a
+x[[3]] <- toupper(x[[3]])
+x$c
+
+y <- x
+y$d <- y$a + y[["b"]]
+names(y)[2] <- "a"
+y$a
+y
+identical(y, x)
+
+for (ii in seq_along(x)) {
+  cat(sprintf("Element %d (%s): %s\n", ii, sQuote(names(x)[ii]), x[[ii]]))
+}
+
+x[c(1, 3)] <- list(2, "Hello world!")
+
+x
+y <- as.list(x)
+str(y)
+z <- as.listenv(y)
+z
+identical(z, x)
+all.equal(z, x)
+})%>
+```
+
+## Creating list environments
+List environments are created similarly to lists but also similarly to environments.  To create an empty list environment, use
+```r
+<%=withCapture({
+x <- listenv()
+x
+})%>
+```
+This can later can be populated using named assignments,
+```r
+<%=withCapture({
+x$a <- 1
+x
+})%>
+```
+comparable to how both lists and environments work.  Similarly to lists, they can also be populated using indices, e.g.
+```r
+<%=withCapture({
+x[[2]] <- 2
+x$c <- 3
+x
+})%>
+```
+Just as for lists, a list environment is expanded with `NULL` elements whenever a new element is added that is beyond the current length plus one, e.g.
+```r
+<%=withCapture({
+x[[5]] <- 5
+x
+x[[4]]
+})%>
+```
+
+As with lists, the above list environment can also be created from the start, e.g.
+```r
+<%=withCapture({
+x <- listenv(a = 1, 3, c = 4, NULL, 5)
+x
+})%>
+```
+
+
+As for lists, the length of a list environment can at any time be increased or decreased by assigning it a new length.
+If decreased, elements are dropped, e.g.
+```r
+<%=withCapture({
+x
+length(x) <- 2
+x
+x[[1]]
+x[[2]]
+})%>
+```
+If increased, new elements are populated with unnamed elements of `NULL`, e.g.
+```r
+<%=withCapture({
+length(x) <- 4
+x
+x[[3]]
+x[[4]]
+})%>
+```
+
+To allocate an "empty" list environment (with all `NULL`:s) of a given length, do
+```r
+<%=withCapture({
+x <- listenv()
+length(x) <- 4
+x
+})%>
+```
+_Note_: Unfortunately, it is _not_ possible to use `x <- vector("listenv", length = 4)`; that construct is only supported for the basic data types.
+
+Elements can be dropped by assigning `NULL`, e.g. to drop the first and third element of a list environment, do:
+```r
+<%=withCapture({
+x[c(1, 3)] <- NULL
+x
+})%>
+```
+
+
+## Iterating over elements
+
+### Iterating over elements by names
+Analogously to lists and plain environments, it is possible to iterate over elements of list environments by the element names.  For example,
+```r
+<%=withCapture({
+x <- listenv(a = 1, b = 2, c = 3)
+for (name in names(x)) {
+  cat(sprintf("Element %s: %s\n", sQuote(name), x[[name]]))
+}
+})%>
+```
+
+### Iterating over elements by indices
+Analogously to lists, but contrary to plain environments, it is also possible to iterate over elements by their indices.  For example,
+```r
+<%=withCapture({
+x <- listenv(a = 1, b = 2, c = 3)
+for (ii in seq_along(x)) {
+  cat(sprintf("Element %d: %s\n", ii, x[[ii]]))
+}
+})%>
+```
+
+
+## Coercion to and from list environments
+
+### Coercing to lists and vectors
+
+Coercing a list environment to a list:
+```r
+<%=withCapture({
+x <- listenv(a = 2, b = 3, c = "hello")
+x
+y <- as.list(x)
+str(y)
+})%>
+```
+
+Coercing a list to a list environment:
+```r
+<%=withCapture({
+z <- as.listenv(y)
+z
+identical(z, x)
+all.equal(z, x)
+})%>
+```
+
+Unlisting:
+```r
+<%=withCapture({
+unlist(x)
+unlist(x[-3])
+unlist(x[1:2], use.names=FALSE)
+})%>
+```
+
+
+## Multi-dimensional list environments
+
+Analogously to lists, and contrary to plain environments, list environments can have dimensions with corresponding names.  For example,
+```r
+<%=withCapture({
+x <- as.listenv(1:6)
+dim(x) <- c(2, 3)
+dimnames(x) <- list(c("a", "b"), c("A", "B","C"))
+x
+})%>
+```
+An easy way to quickly get an overview is to coerce to a list, e.g.
+```r
+<%=withCapture({
+as.list(x)
+})%>
+```
+Individual elements of a list environment can be accessed using standard subsetting syntax, e.g.
+```r
+<%=withCapture({
+x[["a", "B"]]
+x[[1, 2]]
+x[[1, "B"]]
+})%>
+```
+We can assign individual elements similarly, e.g.
+```r
+<%=withCapture({
+x[["b", "B"]] <- -x[["b", "B"]]
+as.list(x)
+})%>
+```
+We can also assign multiple elements through dimensional subsetting, e.g.
+```r
+<%=withCapture({
+x[2, -1] <- 98:99
+as.list(x)
+x["a", c(1, 3)] <- list(97, "foo")
+as.list(x)
+x[] <- 1:6
+as.list(x)
+})%>
+```
+
+Concurrently with dimensional names it is possible to have names of the individual elements just as for list environments without dimensions.  For example,
+```r
+<%=withCapture({
+names(x) <- letters[seq_along(x)]
+x
+x[["a"]]
+x[["f"]]
+x[c("a", "f")]
+unlist(x)
+as.list(x)
+})%>
+```
+Contrary to lists, element names are preserved also with multi-dimensional subsetting, e.g.
+```r
+<%=withCapture({
+x[1, 2]
+x[1, 2, drop = FALSE]
+x[1:2, 2:1]
+x[2, ]
+x[2, , drop = FALSE]
+x["b", -2, drop = FALSE]
+})%>
+```
+
+
+Note, whenever dimensions are set using `dim(x) <- dims` both the dimensional names and the element names are removed, e.g.
+```r
+> dim(x) <- NULL
+> names(x)
+NULL
+```
+This behavior is by design, cf. `help("dim", package="base")`.
+
+
+To allocate an "empty" list environment array (with all `NULL`:s) of a given dimension, do
+```r
+<%=withCapture({
+x <- listenv()
+dim(x) <- c(2, 3)
+dimnames(x) <- list(c("a", "b"), c("A", "B", "C"))
+x
+})%>
+```
+Rows and columns can be dropped by assigning `NULL`, e.g. to drop the first and third column of a list-environment matrix, do:
+```r
+<%=withCapture({
+x[, c(1, 3)] <- NULL
+x
+})%>
+```
+
+
+<%---
+Because of this, the listenv package provides the `undim()` function, which removes the dimensions but preserves the names, e.g.
+```r
+<%=withCapture({
+x <- undim(x)
+names(x)
+})%>
+```
+_Warning_: Since list environments _and their attributes_ are mutable, calling
+```r
+undim(x)
+```
+will have the same effect as
+```r
+x <- undim(x)
+```
+That is, the dimension attributes of `x` will be changed.  The reason for this is explained in Section 'Important about environments' above.
+---%>
+
+
+## Important about environments
+List environments are as their name suggests _environments_.  Whenever working with environments in R, it is important to understand that _environments are mutable_ whereas all other of the basic data types in R are immutable.  For example, consider the following function that assigns zero to element `a` of object `x`:
+```r
+<%=withCapture({
+setA <- function(x) {
+  x$a <- 0
+  x
+}
+})%>
+```
+If we pass a regular list to this function,
+```r
+<%=withCapture({
+x <- list(a = 1)
+y <- setA(x)
+x$a
+y$a
+})%>
+```
+we see that `x` is unaffected by the assignment.  This is because _lists are immutable_ in R.  However, if we pass an environment instead,
+```r
+<%=withCapture({
+x <- new.env()
+x$a <- 1
+y <- setA(x)
+x$a
+y$a
+})%>
+```
+we find that `x` was affected by the assignment.  This is because _environments are mutable_ in R.  Since list environments inherits from environments, this also goes for them, e.g.
+```r
+<%=withCapture({
+x <- listenv(a = 1)
+y <- setA(x)
+x$a
+y$a
+})%>
+```
+
+What is also important to understand is that it is not just the _content_ of an environment that is mutable but also its _attributes_.  For example,
+```r
+<%=withCapture({
+x <- listenv(a = 1)
+y <- x
+attr(y, "foo") <- "Hello!"
+attr(x, "foo")
+})%>
+```
+More importantly, since dimensions and their names are also attributes, this also means they are mutable.  For example,
+```r
+<%=withCapture({
+x <- as.listenv(1:6)
+dim(x) <- c(2, 3)
+x
+y <- x
+dim(y) <- c(3, 2)
+x
+})%>
+```
+
+
+[listenv]: https://cran.r-project.org/package=listenv
+
+---
+Copyright Henrik Bengtsson, 2015-2018

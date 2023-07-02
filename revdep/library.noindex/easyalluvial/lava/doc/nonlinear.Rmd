@@ -1,0 +1,340 @@
+---
+# YAML header created by ox-ravel
+title: Non-linear latent variable models and error-in-variable models
+author: Klaus Kähler Holst
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{Non-linear latent variable models and error-in-variable models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+<!-- nonlinear.Rmd is generated from nonlinear.org. Please edit that file -->
+
+```{r  include=FALSE }
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+mets <- lava:::versioncheck('mets', 1)
+fullVignette <- Sys.getenv("_R_FULL_VIGNETTE_") %in% c("1","TRUE")
+```
+
+```{r  load, results="hide",message=FALSE,warning=FALSE }
+library('lava')
+```
+
+We consider the measurement models given by
+
+\[X_{j} = \eta_{1} + \epsilon_{j}^{x}, \quad j=1,2,3\]
+\[Y_{j} = \eta_{2} + \epsilon_{j}^{y}, \quad j=1,2,3\]
+and with a structural model given by
+\[\eta_{2} = f(\eta_{1}) + Z + \zeta_{2}\label{ex:eta2}\]
+\[\eta_{1} = Z + \zeta_{1}\label{ex:eta1}\]
+with iid measurement errors
+\(\epsilon_{j}^{x},\epsilon_{j}^{y},\zeta_{1},\zeta_{2}\sim\mathcal{N}(0,1),
+j=1,2,3.\) and standard normal distributed covariate \(Z\).  To
+simulate from this model we use the following syntax:
+
+```{r  sim }
+f <- function(x) cos(1.25*x) + x - 0.25*x^2
+m <- lvm(x1+x2+x3 ~ eta1, y1+y2+y3 ~ eta2, latent=~eta1+eta2)
+regression(m) <- eta1+eta2 ~ z
+functional(m, eta2~eta1) <- f
+
+d <- sim(m, n=200, seed=42) # Default is all parameters are 1
+```
+
+```{r   }
+plot(m, plot.engine="visNetwork")
+```
+
+We refer to <sup id="915607a5e4b7965311f3b3d4e0ccb7d7"><a href="#holst_budtzjorgensen_2013" title="Holst \&amp; Budtz-J\orgensen, Linear latent variable models: the lava-package, {Computational Statistics}, v(4), 1385--1452 (2013).">holst_budtzjorgensen_2013</a></sup> for details on the syntax for
+model specification.
+
+
+# Estimation
+
+To estimate the parameters using the two-stage estimator described in <sup id="67e17d4cdc94644cb044c767cf392c2d"><a href="#holst_budtzjorgensen_2020" title="Klaus K&#228;hler Holst \&amp; Esben Budtz-J&#248;rgensen, A two-stage estimation procedure for non-linear structural equation models, {Biostatistics}, v(), (2020).">holst_budtzjorgensen_2020</a></sup>,  the first step is now to specify the measurement models
+
+```{r  specifymodels }
+m1 <- lvm(x1+x2+x3 ~ eta1, eta1 ~ z, latent=~eta1)
+m2 <- lvm(y1+y2+y3 ~ eta2, eta2 ~ z, latent=~eta2)
+```
+
+Next, we specify a quadratic relationship between the two latent variables
+
+```{r   }
+nonlinear(m2, type="quadratic") <- eta2 ~ eta1
+```
+
+and the model can then be estimated using the two-stage estimator
+
+```{r  twostage1 }
+e1 <- twostage(m1, m2, data=d)
+e1
+```
+
+We see a clear statistically significant effect of the second order
+term (`eta2~eta1_2`). For comparison we can also estimate the full MLE
+of the linear model:
+
+```{r  linear_mle }
+e0 <- estimate(regression(m1%++%m2, eta2~eta1), d)
+estimate(e0,keep="^eta2~[a-z]",regex=TRUE) ## Extract coef. matching reg.ex.
+```
+
+Next, we calculate predictions from the quadratic model using the estimated parameter coefficients
+\[
+\mathbb{E}_{\widehat{\theta}_{2}}(\eta_{2} \mid \eta_{1}, Z=0),
+\]
+
+```{r  pred1 }
+newd <- expand.grid(eta1=seq(-4, 4, by=0.1), z=0)
+pred1 <- predict(e1, newdata=newd, x=TRUE)
+head(pred1)
+```
+
+To obtain a potential better fit we next proceed with a natural cubic spline
+
+```{r  spline_twostage }
+kn <- seq(-3,3,length.out=5)
+nonlinear(m2, type="spline", knots=kn) <- eta2 ~ eta1
+e2 <- twostage(m1, m2, data=d)
+e2
+```
+
+Confidence limits can be obtained via the Delta method using the `estimate` method:
+
+```{r  spline_ci }
+p <- cbind(eta1=newd$eta1,
+	  estimate(e2,f=function(p) predict(e2,p=p,newdata=newd))$coefmat)
+head(p)
+```
+
+The fitted function can be obtained with the following code:
+
+```{r  fig:pred2 }
+plot(I(eta2-z) ~ eta1, data=d, col=Col("black",0.5), pch=16,
+     xlab=expression(eta[1]), ylab=expression(eta[2]), xlim=c(-4,4))
+lines(Estimate ~ eta1, data=as.data.frame(p), col="darkblue", lwd=5)
+confband(p[,1], lower=p[,4], upper=p[,5], polygon=TRUE,
+	 border=NA, col=Col("darkblue",0.2))
+```
+
+
+# Cross-validation
+
+A more formal comparison of the different models can be obtained by
+cross-validation. Here we specify linear, quadratic and cubic spline
+models with 4 and 9 degrees of freedom.
+
+```{r  spline_several }
+m2a <- nonlinear(m2, type="linear", eta2~eta1)
+m2b <- nonlinear(m2, type="quadratic", eta2~eta1)
+kn1 <- seq(-3,3,length.out=5)
+kn2 <- seq(-3,3,length.out=8)
+m2c <- nonlinear(m2, type="spline", knots=kn1, eta2~eta1)
+m2d <- nonlinear(m2, type="spline", knots=kn2, eta2~eta1)
+```
+
+To assess the model fit average RMSE is estimated with 5-fold
+cross-validation repeated two times
+
+```{r  cv_fit, cache=TRUE, eval=fullVignette }
+## Scale models in stage 2 to allow for a fair RMSE comparison
+d0 <- d
+for (i in endogenous(m2))
+    d0[,i] <- scale(d0[,i],center=TRUE,scale=TRUE)
+## Repeated 5-fold cross-validation:
+ff <- lapply(list(linear=m2a,quadratic=m2b,spline4=m2c,spline6=m2d),
+	    function(m) function(data,...) twostage(m1,m,data=data,stderr=FALSE,control=list(start=coef(e0),contrain=TRUE)))
+fit.cv <- cv(ff,data=d,K=5,rep=2,mc.cores=parallel::detectCores(),seed=1)
+```
+
+```{r  results="hide", echo=FALSE }
+## To save time building the vignettes on CRAN, we cache time consuming computations
+if (fullVignette) {
+  fit.cv$fit <- NULL
+  saveRDS(fit.cv, "data/nonlinear_fitcv.rds")
+} else {
+  fit.cv <- readRDS("data/nonlinear_fitcv.rds")
+}
+```
+
+```{r   }
+summary(fit.cv)
+```
+
+Here the RMSE is in favour of the splines model with 4 degrees of freedom:
+
+```{r  multifit }
+fit <- lapply(list(m2a,m2b,m2c,m2d),
+	     function(x) {
+		 e <- twostage(m1,x,data=d)
+		 pr <- cbind(eta1=newd$eta1,predict(e,newdata=newd$eta1,x=TRUE))
+		 return(list(estimate=e,predict=as.data.frame(pr)))
+	     })
+
+plot(I(eta2-z) ~ eta1, data=d, col=Col("black",0.5), pch=16,
+     xlab=expression(eta[1]), ylab=expression(eta[2]), xlim=c(-4,4))
+col <- c("orange","darkred","darkgreen","darkblue")
+lty <- c(3,4,1,5)
+for (i in seq_along(fit)) {
+    with(fit[[i]]$pr, lines(eta2 ~ eta1, col=col[i], lwd=4, lty=lty[i]))
+}
+legend("bottomright",
+      c("linear","quadratic","spline(df=4)","spline(df=6)"),
+      col=col, lty=lty, lwd=3)
+```
+
+For convenience, the function `twostageCV` can be used to do the
+cross-validation (also for choosing the mixture distribution via the \`\`nmix\`\` argument, see the section
+below). For example,
+
+```{r  twostageCV, cache=TRUE, eval=fullVignette }
+selmod <- twostageCV(m1, m2, data=d, df=2:4, nmix=1:2,
+	    nfolds=2, rep=1, mc.cores=parallel::detectCores())
+```
+
+```{r  results="hide", echo=FALSE }
+## To save time building the vignettes on CRAN, we cache time consuming computations
+if (fullVignette) {
+  saveRDS(summary(selmod), "data/nonlinear_selmod.rds")
+} else {
+  selmod <- readRDS("data/nonlinear_selmod.rds")
+}
+```
+
+applies cross-validation (here just 2 folds for simplicity) to select the best splines with
+degrees of freedom varying from from 1-3 (the linear model is
+automatically included)
+
+```{r   }
+selmod
+```
+
+
+# Specification of general functional forms
+
+Next, we show how to specify a general functional relation of
+multiple different latent or exogenous variables. This is achieved via
+the `predict.fun` argument. To illustrate this we include interactions
+between the latent variable \(\eta_{1}\) and a dichotomized version of
+the covariate \(z\)
+
+```{r   }
+d$g <- (d$z<0)*1 ## Group variable
+mm1 <- regression(m1, ~g)  # Add grouping variable as exogenous variable (effect specified via 'predict.fun')
+mm2 <- regression(m2, eta2~ u1+u2+u1:g+u2:g+z)
+pred <- function(mu,var,data,...) {
+    cbind("u1"=mu[,1],"u2"=mu[,1]^2+var[1],
+	  "u1:g"=mu[,1]*data[,"g"],"u2:g"=(mu[,1]^2+var[1])*data[,"g"])
+}
+ee1 <- twostage(mm1, model2=mm2, data=d, predict.fun=pred)
+estimate(ee1,keep="eta2~u",regex=TRUE)
+```
+
+A formal test show no statistically significant effect of this interaction
+
+```{r   }
+summary(estimate(ee1,keep="(:g)", regex=TRUE))
+```
+
+
+# Mixture models
+
+Lastly, we demonstrate how the distributional assumptions of stage 1
+model can be relaxed by letting the conditional distribution of the
+latent variable given covariates follow a Gaussian mixture
+distribution. The following code explictly defines the parameter
+constraints of the model by setting the intercept of the first
+indicator variable, \(x_{1}\), to zero and the factor loading
+parameter of the same variable to one.
+
+```{r   }
+m1 <- baptize(m1)  ## Label all parameters
+intercept(m1, ~x1+eta1) <- list(0,NA) ## Set intercept of x1 to zero. Remove the label of eta1
+regression(m1,x1~eta1) <- 1 ## Factor loading fixed to 1
+```
+
+The mixture model may then be estimated using the `mixture` method
+(note, this requires the `mets` package to be installed), where the
+Parameter names shared across the different mixture components given
+in the `list` will be constrained to be identical in the mixture
+model. Thus, only the intercept of \(\eta_{1}\) is allowed to vary
+between the mixtures.
+
+```{r  mixture1, cache=TRUE, eval=fullVignette }
+set.seed(1)
+em0 <- mixture(m1, k=2, data=d)
+```
+
+To decrease the risk of using a local maximizer of the likelihood we
+can rerun the estimation with different random starting values
+
+```{r  estmixture, cache=TRUE,warnings=FALSE,messages=FALSE,eval=FALSE }
+em0 <- NULL
+ll <- c()
+for (i in 1:5) {
+    set.seed(i)
+    em <- mixture(m1, k=2, data=d, control=list(trace=0))
+    ll <- c(ll,logLik(em))
+    if (is.null(em0) || logLik(em0)<tail(ll,1))
+	em0 <- em
+}
+```
+
+```{r  results="hide", echo=FALSE }
+## To save time building the vignettes on CRAN, we cache time consuming computations
+if (fullVignette) {
+  saveRDS(em0, "data/nonlinear_em0.rds")
+} else {
+  em0 <- readRDS("data/nonlinear_em0.rds")
+}
+```
+
+```{r   }
+summary(em0)
+```
+
+Measured by AIC there is a slight improvement in the model fit using the mixture model
+
+```{r  eval=mets }
+e0 <- estimate(m1,data=d)
+AIC(e0,em0)
+```
+
+The spline model may then be estimated as before with the `two-stage` method
+
+```{r  eval=mets }
+em2 <- twostage(em0,m2,data=d)
+em2
+```
+
+In this example the results are very similar to the Gaussian model:
+
+```{r  mixturefit, eval=mets }
+plot(I(eta2-z) ~ eta1, data=d, col=Col("black",0.5), pch=16,
+     xlab=expression(eta[1]), ylab=expression(eta[2]))
+
+lines(Estimate ~ eta1, data=as.data.frame(p), col="darkblue", lwd=5)
+confband(p[,1], lower=p[,4], upper=p[,5], polygon=TRUE,
+	 border=NA, col=Col("darkblue",0.2))
+
+pm <- cbind(eta1=newd$eta1,
+	    estimate(em2, f=function(p) predict(e2,p=p,newdata=newd))$coefmat)
+lines(Estimate ~ eta1, data=as.data.frame(pm), col="darkred", lwd=5)
+confband(pm[,1], lower=pm[,4], upper=pm[,5], polygon=TRUE,
+	 border=NA, col=Col("darkred",0.2))
+legend("bottomright", c("Gaussian","Mixture"),
+       col=c("darkblue","darkred"), lwd=2, bty="n")
+```
+
+
+# Bibliography
+<a id="holst_budtzjorgensen_2013"></a>[holst_budtzjorgensen_2013] Holst & Budtz-J\orgensen, Linear latent variable models: the lava-package, <i>Computational Statistics</i>, <b>28(4)</b>, 1385-1452 (2013). <a href="http://dx.doi.org/10.1007/s00180-012-0344-y">doi</a>. [↩](#915607a5e4b7965311f3b3d4e0ccb7d7)
+
+<a id="holst_budtzjorgensen_2020"></a>[holst_budtzjorgensen_2020] Klaus Kähler Holst & Esben Budtz-Jørgensen, A two-stage estimation procedure for non-linear structural equation models, <i>Biostatistics</i>, <b>(in press)</b>, (2020). <a href="http://dx.doi.org/10.1093/biostatistics/kxy082">doi</a>. [↩](#67e17d4cdc94644cb044c767cf392c2d)

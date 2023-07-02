@@ -1,0 +1,25 @@
+MDSplot                 Multi-dimensional Scaling Plot of Proximity
+                        matrix from randomForest
+classCenter             Prototypes of groups.
+combine                 Combine Ensembles of Trees
+getTree                 Extract a single tree from a forest.
+grow                    Add trees to an ensemble
+importance              Extract variable importance measure
+imports85               The Automobile Data
+margin                  Margins of randomForest Classifier
+na.roughfix             Rough Imputation of Missing Values
+outlier                 Compute outlying measures
+partialPlot             Partial dependence plot
+plot.randomForest       Plot method for randomForest objects
+predict.randomForest    predict method for random forest objects
+randomForest            Classification and Regression with Random
+                        Forest
+rfImpute                Missing Value Imputations by randomForest
+rfNews                  Show the NEWS file
+rfcv                    Random Forest Cross-Valdidation for feature
+                        selection
+treesize                Size of trees in an ensemble
+tuneRF                  Tune randomForest for the optimal mtry
+                        parameter
+varImpPlot              Variable Importance Plot
+varUsed                 Variables used in a random forest

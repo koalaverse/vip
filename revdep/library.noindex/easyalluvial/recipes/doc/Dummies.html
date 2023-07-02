@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Handling categorical predictors</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Handling categorical predictors</h1>
+
+
+
+<p>Recipes can be different from their base R counterparts such as
+<code>model.matrix</code>. This vignette describes the different methods
+for encoding categorical predictors with special attention to
+interaction terms and contrasts.</p>
+<div id="creating-dummy-variables" class="section level2">
+<h2>Creating Dummy Variables</h2>
+<p>Let’s start, of course, with <code>iris</code> data. This has four
+numeric columns and a single factor column with three levels:
+<code>&#39;setosa&#39;</code>, <code>&#39;versicolor&#39;</code>, and
+<code>&#39;virginica&#39;</code>. Our initial recipe will have no outcome:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(recipes)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co"># make a copy for use below</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>iris <span class="ot">&lt;-</span> iris <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">original =</span> Species)</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>iris_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>( <span class="sc">~</span> ., <span class="at">data =</span> iris)</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="fu">summary</span>(iris_rec)</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 4</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co">#&gt;   variable     type      role      source  </span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;list&gt;    &lt;chr&gt;     &lt;chr&gt;   </span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co">#&gt; 1 Sepal.Length &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="co">#&gt; 2 Sepal.Width  &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="co">#&gt; 3 Petal.Length &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="co">#&gt; 4 Petal.Width  &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="co">#&gt; 5 Species      &lt;chr [3]&gt; predictor original</span></span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="co">#&gt; 6 original     &lt;chr [3]&gt; predictor original</span></span></code></pre></div>
+<p>A <a href="https://en.wikipedia.org/wiki/Contrast_(statistics)">contrast
+function</a> in R is a method for translating a column with categorical
+values into one or more numeric columns that take the place of the
+original. This can also be known as an encoding method or a
+parameterization function.</p>
+<p>The default approach is to create dummy variables using the
+“reference cell” parameterization. This means that, if there are
+<em>C</em> levels of the factor, there will be <em>C</em> - 1 dummy
+variables created and all but the first factor level are made into new
+columns:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>ref_cell <span class="ot">&lt;-</span> </span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  iris_rec <span class="sc">%&gt;%</span> </span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="fu">step_dummy</span>(Species) <span class="sc">%&gt;%</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="fu">prep</span>(<span class="at">training =</span> iris)</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="fu">summary</span>(ref_cell)</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt; # A tibble: 7 × 4</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt;   variable           type      role      source  </span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;              &lt;list&gt;    &lt;chr&gt;     &lt;chr&gt;   </span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt; 1 Sepal.Length       &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt; 2 Sepal.Width        &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt; 3 Petal.Length       &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt; 4 Petal.Width        &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#&gt; 5 original           &lt;chr [3]&gt; predictor original</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co">#&gt; 6 Species_versicolor &lt;chr [2]&gt; predictor derived </span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co">#&gt; 7 Species_virginica  &lt;chr [2]&gt; predictor derived</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co"># Get a row for each factor level</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="fu">bake</span>(ref_cell, <span class="at">new_data =</span> <span class="cn">NULL</span>, original, <span class="fu">starts_with</span>(<span class="st">&quot;Species&quot;</span>)) <span class="sc">%&gt;%</span> <span class="fu">distinct</span>()</span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 3</span></span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co">#&gt;   original   Species_versicolor Species_virginica</span></span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt;                   &lt;dbl&gt;             &lt;dbl&gt;</span></span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a><span class="co">#&gt; 1 setosa                      0                 0</span></span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a><span class="co">#&gt; 2 versicolor                  1                 0</span></span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a><span class="co">#&gt; 3 virginica                   0                 1</span></span></code></pre></div>
+<p>Note that the column that was used to make the new columns
+(<code>Species</code>) is no longer there. See the section below on
+obtaining the entire set of <em>C</em> columns.</p>
+<p>There are different types of contrasts that can be used for different
+types of factors. The defaults are:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>param <span class="ot">&lt;-</span> <span class="fu">getOption</span>(<span class="st">&quot;contrasts&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>param</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt;         unordered           ordered </span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; &quot;contr.treatment&quot;      &quot;contr.poly&quot;</span></span></code></pre></div>
+<p>Looking at <code>?contrast</code>, there are other options. One
+alternative is the little known Helmert contrast:</p>
+<blockquote>
+<p><code>contr.helmert</code> returns Helmert contrasts, which contrast
+the second level with the first, the third with the average of the first
+two, and so on.</p>
+</blockquote>
+<p>To get this encoding, the global option for the contrasts can be
+changed and saved. <a href="https://recipes.tidymodels.org/reference/step_dummy.html"><code>step_dummy</code></a>
+picks up on this and makes the correct calculations:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># change it:</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>go_helmert <span class="ot">&lt;-</span> param</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>go_helmert[<span class="st">&quot;unordered&quot;</span>] <span class="ot">&lt;-</span> <span class="st">&quot;contr.helmert&quot;</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="fu">options</span>(<span class="at">contrasts =</span> go_helmert)</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co"># now make dummy variables with new parameterization</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>helmert <span class="ot">&lt;-</span> </span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>  iris_rec <span class="sc">%&gt;%</span> </span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>  <span class="fu">step_dummy</span>(Species) <span class="sc">%&gt;%</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>  <span class="fu">prep</span>(<span class="at">training =</span> iris)</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="fu">summary</span>(helmert)</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt; # A tibble: 7 × 4</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt;   variable     type      role      source  </span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;list&gt;    &lt;chr&gt;     &lt;chr&gt;   </span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; 1 Sepal.Length &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt; 2 Sepal.Width  &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt; 3 Petal.Length &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co">#&gt; 4 Petal.Width  &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co">#&gt; 5 original     &lt;chr [3]&gt; predictor original</span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt; 6 Species_X1   &lt;chr [2]&gt; predictor derived </span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co">#&gt; 7 Species_X2   &lt;chr [2]&gt; predictor derived</span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="fu">bake</span>(helmert, <span class="at">new_data =</span> <span class="cn">NULL</span>, original, <span class="fu">starts_with</span>(<span class="st">&quot;Species&quot;</span>)) <span class="sc">%&gt;%</span> <span class="fu">distinct</span>()</span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 3</span></span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="co">#&gt;   original   Species_X1 Species_X2</span></span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt;           &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a><span class="co">#&gt; 1 setosa             -1         -1</span></span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a><span class="co">#&gt; 2 versicolor          1         -1</span></span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a><span class="co">#&gt; 3 virginica           0          2</span></span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a><span class="co"># Yuk; go back to the original method</span></span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a><span class="fu">options</span>(<span class="at">contrasts =</span> param)</span></code></pre></div>
+<p>Note that the column names do not reference a specific level of the
+species variable. This contrast function has columns that can involve
+multiple levels; level-specific columns wouldn’t make sense.</p>
+<p>If no columns are selected (perhaps due to an earlier
+<code>step_zv()</code>), the <code>bake()</code> function will return
+the data as-is (e.g. with no dummy variables).</p>
+<p>Finally, <code>step_dummy()</code> has an option called
+<code>keep_original_cols</code> that can be used to keep the original
+columns that are being used to create the dummy variables.</p>
+</div>
+<div id="interactions-with-dummy-variables" class="section level2">
+<h2>Interactions with Dummy Variables</h2>
+<p>Creating interactions with recipes requires the use of a model
+formula, such as</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>iris_int <span class="ot">&lt;-</span> </span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  iris_rec <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="fu">step_interact</span>( <span class="sc">~</span> Sepal.Width<span class="sc">:</span>Sepal.Length) <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="fu">prep</span>(<span class="at">training =</span> iris)</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="fu">summary</span>(iris_int)</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; # A tibble: 7 × 4</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt;   variable                   type      role      source  </span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                      &lt;list&gt;    &lt;chr&gt;     &lt;chr&gt;   </span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; 1 Sepal.Length               &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt; 2 Sepal.Width                &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt; 3 Petal.Length               &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt; 4 Petal.Width                &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt; 5 Species                    &lt;chr [3]&gt; predictor original</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt; 6 original                   &lt;chr [3]&gt; predictor original</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt; 7 Sepal.Width_x_Sepal.Length &lt;chr [2]&gt; predictor derived</span></span></code></pre></div>
+<p>In <a href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/formula.html">R
+model formulae</a>, using a <code>*</code> between two variables would
+expand to <code>a*b = a + b + a:b</code> so that the main effects are
+included. In <a href="https://recipes.tidymodels.org/reference/step_interact.html"><code>step_interact</code></a>,
+you can do use <code>*</code>, but only the interactions are recorded as
+columns that needs to be created.</p>
+<p>One thing that <code>recipes</code> does differently than base R is
+to construct the design matrix in sequential iterations. This is
+relevant when thinking about interactions between continuous and
+categorical predictors.</p>
+<p>For example, if you were to use the standard formula interface, the
+creation of the dummy variables happens at the same time as the
+interactions are created:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">model.matrix</span>(<span class="sc">~</span> Species<span class="sc">*</span>Sepal.Length, <span class="at">data =</span> iris) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="co"># show a few specific rows</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">51</span>, <span class="dv">101</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt;     (Intercept) Speciesversicolor Speciesvirginica Sepal.Length</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt; 1             1                 0                0          5.1</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; 51            1                 1                0          7.0</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; 101           1                 0                1          6.3</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt;     Speciesversicolor:Sepal.Length Speciesvirginica:Sepal.Length</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt; 1                                0                           0.0</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt; 51                               7                           0.0</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co">#&gt; 101                              0                           6.3</span></span></code></pre></div>
+<p>With recipes, you create them sequentially. This raises an issue: do
+I have to type out all of the interaction effects by their specific
+names when using dummy variable?</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Must I do this?</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>iris_rec <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="fu">step_interact</span>( <span class="sc">~</span> Species_versicolor<span class="sc">:</span>Sepal.Length <span class="sc">+</span> </span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>                   Species_virginica<span class="sc">:</span>Sepal.Length) </span></code></pre></div>
+<p>Note only is this a pain, but it may not be obvious what dummy
+variables are available (especially when <a href="https://recipes.tidymodels.org/reference/step_other.html"><code>step_other</code></a>
+is used).</p>
+<p>The solution is to use a selector:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>iris_int <span class="ot">&lt;-</span> </span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  iris_rec <span class="sc">%&gt;%</span> </span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="fu">step_dummy</span>(Species) <span class="sc">%&gt;%</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="fu">step_interact</span>( <span class="sc">~</span> <span class="fu">starts_with</span>(<span class="st">&quot;Species&quot;</span>)<span class="sc">:</span>Sepal.Length) <span class="sc">%&gt;%</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="fu">prep</span>(<span class="at">training =</span> iris)</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="fu">summary</span>(iris_int)</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt; # A tibble: 9 × 4</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt;   variable                          type      role      source  </span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                             &lt;list&gt;    &lt;chr&gt;     &lt;chr&gt;   </span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt; 1 Sepal.Length                      &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co">#&gt; 2 Sepal.Width                       &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt; 3 Petal.Length                      &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt; 4 Petal.Width                       &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#&gt; 5 original                          &lt;chr [3]&gt; predictor original</span></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt; 6 Species_versicolor                &lt;chr [2]&gt; predictor derived </span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co">#&gt; 7 Species_virginica                 &lt;chr [2]&gt; predictor derived </span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co">#&gt; 8 Species_versicolor_x_Sepal.Length &lt;chr [2]&gt; predictor derived </span></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a><span class="co">#&gt; 9 Species_virginica_x_Sepal.Length  &lt;chr [2]&gt; predictor derived</span></span></code></pre></div>
+<p>What happens here is that <code>starts_with(&quot;Species&quot;)</code> is
+executed on the data that are available when the previous steps have
+been applied to the data. That means that the dummy variable columns are
+present. The results of this selectors are then translated to an
+additive function of the results. In this case, that means that</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">starts_with</span>(<span class="st">&quot;Species&quot;</span>)</span></code></pre></div>
+<p>becomes</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>(Species_versicolor <span class="sc">+</span> Species_virginica)</span></code></pre></div>
+<p>The entire interaction formula is shown here:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>iris_int</span></code></pre></div>
+<p>For interactions between multiple sets of dummy variables, the
+formula could include multiple selectors
+(e.g. <code>starts_with(&quot;x_&quot;):starts_with(&quot;y_&quot;)</code>).</p>
+</div>
+<div id="warning" class="section level2">
+<h2>Warning!</h2>
+<p>Would it work if I didn’t convert species to a factor and used the
+interactions step?</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>iris_int <span class="ot">&lt;-</span> </span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  iris_rec <span class="sc">%&gt;%</span> </span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="fu">step_interact</span>( <span class="sc">~</span> Species<span class="sc">:</span>Sepal.Length) <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="fu">prep</span>(<span class="at">training =</span> iris)</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="fu">summary</span>(iris_int)</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="co">#&gt; # A tibble: 8 × 4</span></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="co">#&gt;   variable                         type      role      source  </span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                            &lt;list&gt;    &lt;chr&gt;     &lt;chr&gt;   </span></span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="co">#&gt; 1 Sepal.Length                     &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="co">#&gt; 2 Sepal.Width                      &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a><span class="co">#&gt; 3 Petal.Length                     &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a><span class="co">#&gt; 4 Petal.Width                      &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a><span class="co">#&gt; 5 Species                          &lt;chr [3]&gt; predictor original</span></span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a><span class="co">#&gt; 6 original                         &lt;chr [3]&gt; predictor original</span></span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a><span class="co">#&gt; 7 Speciesversicolor_x_Sepal.Length &lt;chr [2]&gt; predictor derived </span></span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a><span class="co">#&gt; 8 Speciesvirginica_x_Sepal.Length  &lt;chr [2]&gt; predictor derived</span></span></code></pre></div>
+<p>The columns <code>Species</code> isn’t affected and a warning is
+issued. Basically, you only get half of what <code>model.matrix</code>
+does and that could really be problematic in subsequent steps.</p>
+</div>
+<div id="getting-all-of-the-indicator-variables" class="section level2">
+<h2>Getting All of the Indicator Variables</h2>
+<p>As mentioned above, if there are <em>C</em> levels of the factor,
+there will be <em>C</em> - 1 dummy variables created. You might want to
+get all of them back.</p>
+<p>Historically, <em>C</em> - 1 are used so that a linear dependency is
+avoided in the design matrix; all <em>C</em> dummy variables would add
+up row-wise to the intercept column and the inverse matrix for linear
+regression can’t be computed. This technical term for a the design
+matrix like this is “less than full rank”.</p>
+<p>There are models (e.g. <code>glmnet</code> and others) that can avoid
+this issue so you might want to get all of the columns. To do this,
+<code>step_dummy</code> has an option called <code>one_hot</code> that
+will make sure that all <em>C</em> are produced:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>iris_rec <span class="sc">%&gt;%</span> </span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="fu">step_dummy</span>(Species, <span class="at">one_hot =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="fu">prep</span>(<span class="at">training =</span> iris) <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  <span class="fu">bake</span>(original, <span class="at">new_data =</span> <span class="cn">NULL</span>, <span class="fu">starts_with</span>(<span class="st">&quot;Species&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>  <span class="fu">distinct</span>()</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 4</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt;   original   Species_setosa Species_versicolor Species_virginica</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt;               &lt;dbl&gt;              &lt;dbl&gt;             &lt;dbl&gt;</span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="co">#&gt; 1 setosa                  1                  0                 0</span></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co">#&gt; 2 versicolor              0                  1                 0</span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co">#&gt; 3 virginica               0                  0                 1</span></span></code></pre></div>
+<p>The option is named that way since this is that the computer
+scientists call <a href="https://www.google.com/search?q=one-hot+encoding">“one-hot
+encoding”</a>.</p>
+<p><strong><em>Warning!</em></strong> (again)</p>
+<p>This will give you the full set of indicators and, when you use the
+typical contrast function, it does. It might do some seemingly weird
+(but legitimate) things when used with other contrasts:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>hot_reference <span class="ot">&lt;-</span> </span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  iris_rec <span class="sc">%&gt;%</span> </span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  <span class="fu">step_dummy</span>(Species, <span class="at">one_hot =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="fu">prep</span>(<span class="at">training =</span> iris) <span class="sc">%&gt;%</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>  <span class="fu">bake</span>(original, <span class="at">new_data =</span> <span class="cn">NULL</span>, <span class="fu">starts_with</span>(<span class="st">&quot;Species&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>  <span class="fu">distinct</span>()</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>hot_reference</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 4</span></span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="co">#&gt;   original   Species_setosa Species_versicolor Species_virginica</span></span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt;               &lt;dbl&gt;              &lt;dbl&gt;             &lt;dbl&gt;</span></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="co">#&gt; 1 setosa                  1                  0                 0</span></span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="co">#&gt; 2 versicolor              0                  1                 0</span></span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a><span class="co">#&gt; 3 virginica               0                  0                 1</span></span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a><span class="co"># from above</span></span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="fu">options</span>(<span class="at">contrasts =</span> go_helmert)</span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a>hot_helmert <span class="ot">&lt;-</span> </span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a>  iris_rec <span class="sc">%&gt;%</span> </span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a>  <span class="fu">step_dummy</span>(Species, <span class="at">one_hot =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a>  <span class="fu">prep</span>(<span class="at">training =</span> iris) <span class="sc">%&gt;%</span></span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a>  <span class="fu">bake</span>(original, <span class="at">new_data =</span> <span class="cn">NULL</span>, <span class="fu">starts_with</span>(<span class="st">&quot;Species&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a>  <span class="fu">distinct</span>()</span>
+<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a></span>
+<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a>hot_helmert</span>
+<span id="cb14-27"><a href="#cb14-27" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 4</span></span>
+<span id="cb14-28"><a href="#cb14-28" tabindex="-1"></a><span class="co">#&gt;   original   Species_setosa Species_versicolor Species_virginica</span></span>
+<span id="cb14-29"><a href="#cb14-29" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt;               &lt;dbl&gt;              &lt;dbl&gt;             &lt;dbl&gt;</span></span>
+<span id="cb14-30"><a href="#cb14-30" tabindex="-1"></a><span class="co">#&gt; 1 setosa                  1                  0                 0</span></span>
+<span id="cb14-31"><a href="#cb14-31" tabindex="-1"></a><span class="co">#&gt; 2 versicolor              0                  1                 0</span></span>
+<span id="cb14-32"><a href="#cb14-32" tabindex="-1"></a><span class="co">#&gt; 3 virginica               0                  0                 1</span></span></code></pre></div>
+<p>Since this contrast doesn’t make sense using all <em>C</em> columns,
+it reverts back to the default encoding.</p>
+</div>
+<div id="novel-levels" class="section level2">
+<h2>Novel Levels</h2>
+<p>When a recipe is used with new samples, some factors may have
+acquired new levels that were not present when <code>prep</code> was
+run. If <code>step_dummy</code> encounters this situation, a warning is
+issues (“There are new levels in a factor”) and the indicator variables
+that correspond to the factor are assigned missing values.</p>
+<p>One way around this is to use <code>step_other</code>. This step can
+convert infrequently occurring levels to a new category (that defaults
+to “other”). This step can also be used to convert new factor levels to
+“other” also.</p>
+<p>Also, <code>step_integer</code> has functionality similar to <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.LabelEncoder.html"><code>LabelEncoder</code></a>
+and encodes new values as zero.</p>
+<p>The <a href="https://github.com/tidymodels/embed"><code>embed</code></a>
+package can also handle novel factors levels within a recipe.
+<code>step_embed</code> and <code>step_tfembed</code> assign a common
+numeric score to novel levels.</p>
+</div>
+<div id="other-steps-related-to-dummy-variables" class="section level2">
+<h2>Other Steps Related to Dummy Variables</h2>
+<p>There are a bunch of steps related to going in-between factors and
+dummy variables:</p>
+<ul>
+<li><a href="https://recipes.tidymodels.org/reference/step_unknown.html"><code>step_unknown</code></a>
+assigns missing factor values into an <code>&#39;unknown&#39;</code>
+category.</li>
+<li><a href="https://recipes.tidymodels.org/reference/step_other.html"><code>step_other</code></a>
+can collapse infrequently occurring levels into
+<code>&#39;other&#39;</code>.</li>
+<li><a href="https://recipes.tidymodels.org/reference/step_regex.html"><code>step_regex</code></a>
+will create a single dummy variable based on applying a regular
+expression to a text field. Similarly, <a href="https://recipes.tidymodels.org/reference/step_count.html"><code>step_count</code></a>
+does the same but counts the occurrences of the pattern in the
+string.</li>
+<li><a href="https://recipes.tidymodels.org/reference/step_holiday.html"><code>step_holiday</code></a>
+creates dummy variables from date fields to capture holidays.</li>
+<li><a href="https://recipes.tidymodels.org/reference/step_lincomb.html"><code>step_lincomb</code></a>
+can be useful if you <em>over-specify</em> interactions and need to
+remove linear dependencies.</li>
+<li><a href="https://recipes.tidymodels.org/reference/step_zv.html"><code>step_zv</code></a>
+can remove dummy variables that never show a 1 in the column (i.e. is
+zero-variance).</li>
+<li><a href="https://recipes.tidymodels.org/reference/step_bin2factor.html"><code>step_bin2factor</code></a>
+takes a binary indicator and makes a factor variable. This can be useful
+when using naive Bayes models.</li>
+<li><code>step_embed</code>, <code>step_lencode_glm</code>,
+<code>step_lencode_bayes</code> and others in the <a href="https://github.com/tidymodels/embed"><code>embed</code></a>
+package can use one or more (non-binary) values to encode factor
+predictors into a numeric form.</li>
+<li><code>step_dummy_extract</code> can create binary indicators from
+strings and is especially useful for multiple choice columns.</li>
+</ul>
+<p><a href="https://recipes.tidymodels.org/reference/step_dummy.html"><code>step_dummy</code></a>
+also works with <em>ordered factors</em>. As seen above, the default
+encoding is to create a series of polynomial variables. There are also a
+few steps for ordered factors:</p>
+<ul>
+<li><a href="https://recipes.tidymodels.org/reference/step_ordinalscore.html"><code>step_ordinalscore</code></a>
+can translate the levels to a single numeric score.</li>
+<li><a href="https://recipes.tidymodels.org/reference/step_unorder.html"><code>step_unorder</code></a>
+can convert to an unordered factor.</li>
+</ul>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

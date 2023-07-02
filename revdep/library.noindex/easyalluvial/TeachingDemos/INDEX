@@ -1,0 +1,114 @@
+%<%                     Less than or Less than and equal operators that
+                        can be chained together.
+HWidentify              Show label for point being Hovered over.
+Pvalue.norm.sim         Simulate P-values
+SensSpec.demo           Demonstrate Sensitivity, Specificity, PPV, and
+                        NPV
+SnowsCorrectlySizedButOtherwiseUselessTestOfAnything
+                        Snow's Correctly Sized But Otherwise Useless
+                        Test of Anything
+SnowsPenultimateNormalityTest
+                        Test the uninteresting question of whether the
+                        data represents an exact normal distribution.
+TeachingDemos-package   Various functions for demonstration and
+                        learning.
+TkApprox                Plot a set of data in a Tk window and
+                        interactively move lines to see predicted
+                        y-values corresponding to selected x-values.
+TkBuildDist             Interactively create a probability
+                        distribution.
+TkListView              Interactivly view structures of list and list
+                        like objects.
+TkPredict               Plot predicted values from a model against one
+                        of the predictors for a given value of the othe
+                        predictors
+TkSpline                Plot a set of data in a Tk window and
+                        interactively move a line to see predicted
+                        y-values from a spline fit corresponding to
+                        selected x-values.
+USCrimes                US Crime Statistics
+bct                     Box-Cox Transforms
+cal                     Plot a month or year calendar
+char2seed               Convert a character string into a random seed
+chisq.detail            Print details of a chi-squared test
+ci.examp                Plot examples of Confidence Intervals
+clipplot                Clip plotting to a rectangular region
+clt.examp               Plot Examples of the Central Limit Theorem
+cnvrt.coords            Convert between the 5 different coordinate
+                        sytems on a graphical device
+coin.faces              Designs for coin faces for use with
+                        plot.rgl.coin
+col2grey                Convert colors to grey/grayscale
+cor.rect.plot           Plot a visualization of the correlation using
+                        colored rectangles
+dice                    Simulate rolling dice
+digits                  Return the digits that make up an integer
+dots                    Create a quick dotchart (histogram)
+dynIdentify             Interacively place labels for points in a plot
+evap                    Data on soil evaporation.
+faces                   Chernoff Faces
+faces2                  Chernoff Faces
+fagan.plot              Create a Fagan plot to demonstrate Bayes
+                        Theorem and screening tests
+gp.open                 Alpha version functions to send plotting
+                        commands to GnuPlot
+hpd                     Compute Highest Posterior Density Intervals
+lattice.demo            Interactively explore the conditioned panels in
+                        lattice plots.
+ldsgrowth               Growth of The Church of Jesus Christ of
+                        Latter-day Saints.
+loess.demo              Demonstrate the internals of loess curve fits
+mle.demo                Demonstrate the basic concept of Maximum
+                        Likelihood Estimation
+ms.polygram             Symbol functions/data to be passed as symb
+                        argument to my.symbols
+my.symbols              Draw Symbols (User Defined) on a Plot
+outliers                Outliers data
+pairs2                  Create part of a scatterplot matrix
+panel.my.symbols        Draw Symbols (User Defined) on a Lattice Plot
+petals                  Play the Petals Around the Rose game
+plot2script             Create a script from the current plot
+power.examp             Graphically illustrate the concept of power.
+put.points.demo         Demonstrate Correlation and Regression by
+                        placing and moving data points
+rgl.Map                 Plot a map in an rgl window
+rgl.coin                Animated die roll or coin flip
+roc.demo                Demonstrate ROC curves by interactively
+                        building one
+rotate.cloud            Interactively rotate 3D plots
+run.cor.examp           Interactively demonstrate correlations
+run.hist.demo           Create a histogram and interactively change the
+                        number of bars.
+shadowtext              Add text to a plot with a contrasting
+                        background.
+sigma.test              One sample Chi-square test for a population
+                        variance
+simfun                  Create a function to simulate data
+slider                  slider / button control widgets
+sliderv                 Create a Tk slider window
+spread.labs             Spread out close points for labeling in plots
+squishplot              Squish the plotting area to a specified aspect
+                        ratio
+steps                   Steps data
+stork                   Neyman's Stork data
+subplot                 Embed a new plot within an existing plot
+tkBrush                 Change the Color and Styles of points
+                        interactively
+tkexamp                 Create Tk dialog boxes with controls to show
+                        examples of changing parameters on a graph.
+towork                  Sample data downloaded and converted from a GPS
+                        unit
+tree.demo               Interactively demonstrate regression trees
+triplot                 Create or add to a Trilinear Plot
+txtStart                Save a transcript of commands and/or output to
+                        a text file.
+updateusr               Updates the 'usr' coordinates in the current
+                        plot.
+vis.binom               Plot various distributions then interactivly
+                        adjust the parameters.
+vis.boxcox              Interactively visualize Box-Cox transformations
+vis.test                Do a Visual test of a null hypothesis by
+                        choosing the graph that does not belong.
+z.test                  Z test for known population standard deviation
+zoomplot                Zoom or unzoom an existing plot in the plot
+                        window

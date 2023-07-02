@@ -1,0 +1,44 @@
+Package: ggalluvial
+Type: Package
+Title: Alluvial Plots in 'ggplot2'
+Version: 0.12.5
+Authors@R: c(
+    person(given = "Jason Cory",
+           family = "Brunson",
+           role = c("aut", "cre"),
+           email = "cornelioid@gmail.com"),
+    person(given = "Quentin D.",
+           family = "Read",
+           role = 'aut'))
+Maintainer: Jason Cory Brunson <cornelioid@gmail.com>
+Description: Alluvial plots use variable-width ribbons and stacked bar plots to
+    represent multi-dimensional or repeated-measures data with categorical or
+    ordinal variables; see Riehmann, Hanfler, and Froehlich (2005)
+    <doi:10.1109/INFVIS.2005.1532152> and Rosvall and Bergstrom (2010)
+    <doi:10.1371/journal.pone.0008694>.
+    Alluvial plots are statistical graphics in the sense of Wilkinson (2006)
+    <doi:10.1007/0-387-28695-0>; they share elements with Sankey diagrams and
+    parallel sets plots but are uniquely determined from the data and a small
+    set of parameters. This package extends Wickham's (2010)
+    <doi:10.1198/jcgs.2009.07098> layered grammar of graphics to generate
+    alluvial plots from tidy data.
+Depends: R (>= 3.6), ggplot2 (>= 2.2)
+Imports: stats, dplyr (>= 0.7), tidyr (>= 0.7), lazyeval, rlang,
+        tidyselect
+Suggests: grid, alluvial, testthat, knitr, rmarkdown, babynames,
+        sessioninfo, ggrepel, shiny (>= 1.4.0.2), htmltools, sp (>=
+        1.4-0), ggfittext (>= 0.6), vdiffr (>= 0.2)
+License: GPL-3
+LazyData: true
+URL: http://corybrunson.github.io/ggalluvial/
+BugReports: https://github.com/corybrunson/ggalluvial/issues
+VignetteBuilder: knitr
+RoxygenNote: 7.2.3
+Encoding: UTF-8
+NeedsCompilation: no
+Packaged: 2023-02-13 15:44:19 UTC; jason.brunson
+Author: Jason Cory Brunson [aut, cre],
+  Quentin D. Read [aut]
+Repository: CRAN
+Date/Publication: 2023-02-22 09:50:02 UTC
+Built: R 4.2.0; ; 2023-02-22 11:47:10 UTC; unix

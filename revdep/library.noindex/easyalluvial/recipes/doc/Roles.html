@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Roles in recipes</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Roles in recipes</h1>
+
+
+
+<p><code>recipes</code> can assign one or more roles to each column in
+the data. The roles are not restricted to a predefined set; they can be
+anything. For most conventional situations, they are typically
+“predictor” and/or “outcome”. Additional roles enable targeted step
+operations on specific variables or groups of variables.</p>
+<div id="the-formula-method" class="section level2">
+<h2>The Formula Method</h2>
+<p>When a recipe is created using the formula interface, this defines
+the roles for all columns of the data set. <code>summary()</code> can be
+used to view a tibble containing information regarding the roles.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(recipes)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">recipe</span>(Species <span class="sc">~</span> ., <span class="at">data =</span> iris) <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 4</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co">#&gt;   variable     type      role      source  </span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;list&gt;    &lt;chr&gt;     &lt;chr&gt;   </span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co">#&gt; 1 Sepal.Length &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co">#&gt; 2 Sepal.Width  &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co">#&gt; 3 Petal.Length &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co">#&gt; 4 Petal.Width  &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co">#&gt; 5 original     &lt;chr [3]&gt; predictor original</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="co">#&gt; 6 Species      &lt;chr [3]&gt; outcome   original</span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="fu">recipe</span>( <span class="sc">~</span> Species, <span class="at">data =</span> iris) <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 4</span></span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="co">#&gt;   variable type      role      source  </span></span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;list&gt;    &lt;chr&gt;     &lt;chr&gt;   </span></span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a><span class="co">#&gt; 1 Species  &lt;chr [3]&gt; predictor original</span></span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a><span class="fu">recipe</span>(Sepal.Length <span class="sc">+</span> Sepal.Width <span class="sc">~</span> ., <span class="at">data =</span> iris) <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 4</span></span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a><span class="co">#&gt;   variable     type      role      source  </span></span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;list&gt;    &lt;chr&gt;     &lt;chr&gt;   </span></span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a><span class="co">#&gt; 1 Petal.Length &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a><span class="co">#&gt; 2 Petal.Width  &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a><span class="co">#&gt; 3 Species      &lt;chr [3]&gt; predictor original</span></span>
+<span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a><span class="co">#&gt; 4 original     &lt;chr [3]&gt; predictor original</span></span>
+<span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a><span class="co">#&gt; 5 Sepal.Length &lt;chr [2]&gt; outcome   original</span></span>
+<span id="cb1-29"><a href="#cb1-29" tabindex="-1"></a><span class="co">#&gt; 6 Sepal.Width  &lt;chr [2]&gt; outcome   original</span></span></code></pre></div>
+<p>These roles can be updated despite this initial assignment.
+<code>update_role()</code> can modify a single existing role:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(modeldata)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">data</span>(biomass)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="fu">recipe</span>(HHV <span class="sc">~</span> ., <span class="at">data =</span> biomass) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="fu">update_role</span>(dataset, <span class="at">new_role =</span> <span class="st">&quot;dataset split variable&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>  <span class="fu">update_role</span>(sample, <span class="at">new_role =</span> <span class="st">&quot;sample ID&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  <span class="fu">summary</span>()</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt; # A tibble: 8 × 4</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt;   variable type      role                   source  </span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;list&gt;    &lt;chr&gt;                  &lt;chr&gt;   </span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt; 1 sample   &lt;chr [3]&gt; sample ID              original</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt; 2 dataset  &lt;chr [3]&gt; dataset split variable original</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#&gt; 3 carbon   &lt;chr [2]&gt; predictor              original</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co">#&gt; 4 hydrogen &lt;chr [2]&gt; predictor              original</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co">#&gt; 5 oxygen   &lt;chr [2]&gt; predictor              original</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co">#&gt; 6 nitrogen &lt;chr [2]&gt; predictor              original</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt; 7 sulfur   &lt;chr [2]&gt; predictor              original</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co">#&gt; 8 HHV      &lt;chr [2]&gt; outcome                original</span></span></code></pre></div>
+<p>When you want to get rid of a role for a column, use
+<code>remove_role()</code>.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">recipe</span>(HHV <span class="sc">~</span> ., <span class="at">data =</span> biomass) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">remove_role</span>(sample, <span class="at">old_role =</span> <span class="st">&quot;predictor&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="fu">summary</span>()</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; # A tibble: 8 × 4</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt;   variable type      role      source  </span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;list&gt;    &lt;chr&gt;     &lt;chr&gt;   </span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; 1 sample   &lt;chr [3]&gt; &lt;NA&gt;      original</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; 2 dataset  &lt;chr [3]&gt; predictor original</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt; 3 carbon   &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt; 4 hydrogen &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; 5 oxygen   &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; 6 nitrogen &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; 7 sulfur   &lt;chr [2]&gt; predictor original</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt; 8 HHV      &lt;chr [2]&gt; outcome   original</span></span></code></pre></div>
+<p>It represents the lack of a role as <code>NA</code>, which means that
+the variable is used in the recipe, but does not yet have a declared
+role. Setting the role manually to <code>NA</code> is not allowed:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">recipe</span>(HHV <span class="sc">~</span> ., <span class="at">data =</span> biomass) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="fu">update_role</span>(sample, <span class="at">new_role =</span> <span class="cn">NA_character_</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt; Error in `single_chr()`:</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; ! `new_role` must not be `NA`.</span></span></code></pre></div>
+<p>When there are cases when a column will be used in more than one
+context, <code>add_role()</code> can create additional roles:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>multi_role <span class="ot">&lt;-</span> <span class="fu">recipe</span>(HHV <span class="sc">~</span> ., <span class="at">data =</span> biomass) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="fu">update_role</span>(dataset, <span class="at">new_role =</span> <span class="st">&quot;dataset split variable&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="fu">update_role</span>(sample, <span class="at">new_role =</span> <span class="st">&quot;sample ID&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="co"># Roles below from https://wordcounter.net/random-word-generator</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="fu">add_role</span>(sample, <span class="at">new_role =</span> <span class="st">&quot;jellyfish&quot;</span>) </span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>multi_role <span class="sc">%&gt;%</span> </span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  <span class="fu">summary</span>()</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; # A tibble: 9 × 4</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt;   variable type      role                   source  </span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;list&gt;    &lt;chr&gt;                  &lt;chr&gt;   </span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt; 1 sample   &lt;chr [3]&gt; sample ID              original</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt; 2 sample   &lt;chr [3]&gt; jellyfish              original</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt; 3 dataset  &lt;chr [3]&gt; dataset split variable original</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt; 4 carbon   &lt;chr [2]&gt; predictor              original</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co">#&gt; 5 hydrogen &lt;chr [2]&gt; predictor              original</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="co">#&gt; 6 oxygen   &lt;chr [2]&gt; predictor              original</span></span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="co">#&gt; 7 nitrogen &lt;chr [2]&gt; predictor              original</span></span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="co">#&gt; 8 sulfur   &lt;chr [2]&gt; predictor              original</span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="co">#&gt; 9 HHV      &lt;chr [2]&gt; outcome                original</span></span></code></pre></div>
+<p>If a variable has multiple existing roles and you want to update one
+of them, the additional <code>old_role</code> argument to
+<code>update_role()</code> must be used to resolve any ambiguity.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>multi_role <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="fu">update_role</span>(sample, <span class="at">new_role =</span> <span class="st">&quot;flounder&quot;</span>, <span class="at">old_role =</span> <span class="st">&quot;jellyfish&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="fu">summary</span>()</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt; # A tibble: 9 × 4</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt;   variable type      role                   source  </span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;list&gt;    &lt;chr&gt;                  &lt;chr&gt;   </span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt; 1 sample   &lt;chr [3]&gt; sample ID              original</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; 2 sample   &lt;chr [3]&gt; flounder               original</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; 3 dataset  &lt;chr [3]&gt; dataset split variable original</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; 4 carbon   &lt;chr [2]&gt; predictor              original</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt; 5 hydrogen &lt;chr [2]&gt; predictor              original</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt; 6 oxygen   &lt;chr [2]&gt; predictor              original</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co">#&gt; 7 nitrogen &lt;chr [2]&gt; predictor              original</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt; 8 sulfur   &lt;chr [2]&gt; predictor              original</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt; 9 HHV      &lt;chr [2]&gt; outcome                original</span></span></code></pre></div>
+<p>Additional variable roles allow you to use <code>has_role()</code> in
+combination with other selection methods (see <code>?selections</code>)
+to target specific variables in subsequent processing steps. For
+example, in the following recipe, by adding the role
+<code>&quot;nocenter&quot;</code> to the <code>HHV</code> predictor, you can use
+<code>-has_role(&quot;nocenter&quot;)</code> to exclude <code>HHV</code> when
+centering <code>all_predictors()</code>.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>multi_role <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="fu">add_role</span>(HHV, <span class="at">new_role =</span> <span class="st">&quot;nocenter&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="fu">step_center</span>(<span class="fu">all_predictors</span>(), <span class="sc">-</span><span class="fu">has_role</span>(<span class="st">&quot;nocenter&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="fu">prep</span>(<span class="at">training =</span> biomass, <span class="at">retain =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="fu">bake</span>(<span class="at">new_data =</span> <span class="cn">NULL</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="fu">head</span>()</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 8</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt;   sample                 dataset  carbon hydrogen oxygen nitrogen  sulfur   HHV</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt;                  &lt;fct&gt;     &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt; 1 Akhrot Shell           Training  1.52    0.181    4.37  -0.667  -0.234   20.0</span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt; 2 Alabama Oak Wood Waste Training  1.21    0.241    2.73  -0.877  -0.234   19.2</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">#&gt; 3 Alder                  Training -0.475   0.341    7.68  -0.967  -0.214   18.3</span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="co">#&gt; 4 Alfalfa                Training -3.19   -0.489   -2.97   2.22   -0.0736  18.2</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt; 5 Alfalfa Seed Straw     Training -1.53   -0.0586   2.15  -0.0772 -0.214   18.4</span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co">#&gt; 6 Alfalfa Stalks         Training -2.89    0.291    1.63   0.963  -0.134   18.5</span></span></code></pre></div>
+<p>The selector <code>all_numeric_predictors()</code> can also be used
+in place of the compound specification above.</p>
+</div>
+<div id="the-non-formula-interface" class="section level2">
+<h2>The Non-Formula Interface</h2>
+<p>You can start a recipe without any roles:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">recipe</span>(biomass) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="fu">summary</span>()</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; # A tibble: 8 × 4</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt;   variable type      role  source  </span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;list&gt;    &lt;chr&gt; &lt;chr&gt;   </span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; 1 sample   &lt;chr [3]&gt; &lt;NA&gt;  original</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt; 2 dataset  &lt;chr [3]&gt; &lt;NA&gt;  original</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt; 3 carbon   &lt;chr [2]&gt; &lt;NA&gt;  original</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt; 4 hydrogen &lt;chr [2]&gt; &lt;NA&gt;  original</span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt; 5 oxygen   &lt;chr [2]&gt; &lt;NA&gt;  original</span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co">#&gt; 6 nitrogen &lt;chr [2]&gt; &lt;NA&gt;  original</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt; 7 sulfur   &lt;chr [2]&gt; &lt;NA&gt;  original</span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt; 8 HHV      &lt;chr [2]&gt; &lt;NA&gt;  original</span></span></code></pre></div>
+<p>and roles can be added in bulk as needed:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">recipe</span>(biomass) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="fu">update_role</span>(<span class="fu">contains</span>(<span class="st">&quot;gen&quot;</span>), <span class="at">new_role =</span> <span class="st">&quot;lunchroom&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="fu">update_role</span>(sample, HHV, <span class="at">new_role =</span> <span class="st">&quot;snail&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="fu">summary</span>()</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co">#&gt; # A tibble: 8 × 4</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co">#&gt;   variable type      role      source  </span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;list&gt;    &lt;chr&gt;     &lt;chr&gt;   </span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co">#&gt; 1 sample   &lt;chr [3]&gt; snail     original</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="co">#&gt; 2 dataset  &lt;chr [3]&gt; &lt;NA&gt;      original</span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="co">#&gt; 3 carbon   &lt;chr [2]&gt; &lt;NA&gt;      original</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co">#&gt; 4 hydrogen &lt;chr [2]&gt; lunchroom original</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="co">#&gt; 5 oxygen   &lt;chr [2]&gt; lunchroom original</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="co">#&gt; 6 nitrogen &lt;chr [2]&gt; lunchroom original</span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="co">#&gt; 7 sulfur   &lt;chr [2]&gt; &lt;NA&gt;      original</span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co">#&gt; 8 HHV      &lt;chr [2]&gt; snail     original</span></span></code></pre></div>
+</div>
+<div id="role-inheritance" class="section level2">
+<h2>Role Inheritance</h2>
+<p>All recipes steps have a <code>role</code> argument that lets you set
+the role of <em>new</em> columns generated by the step. When a recipe
+modifies a column in-place, the role is never modified. For example,
+<code>?step_center</code> has the documentation:</p>
+<blockquote>
+<p><code>role</code>: Not used by this step since no new variables are
+created</p>
+</blockquote>
+<p>In other cases, the roles are defaulted to a relevant value based the
+context. For example, <code>?step_dummy</code> has</p>
+<blockquote>
+<p><code>role</code>: For model terms created by this step, what
+analysis role should they be assigned?. By default, the function assumes
+that the binary dummy variable columns created by the original variables
+will be used as predictors in a model.</p>
+</blockquote>
+<p>So, by default, they are predictors but don’t have to be:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">recipe</span>( <span class="sc">~</span> ., <span class="at">data =</span> iris) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="fu">step_dummy</span>(Species) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="fu">prep</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="fu">bake</span>(<span class="at">new_data =</span> <span class="cn">NULL</span>, <span class="fu">all_predictors</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">starts_with</span>(<span class="st">&quot;Species&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>  <span class="fu">names</span>()</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Species_X1&quot; &quot;Species_X2&quot;</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co"># or something else</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="fu">recipe</span>( <span class="sc">~</span> ., <span class="at">data =</span> iris) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>  <span class="fu">step_dummy</span>(Species, <span class="at">role =</span> <span class="st">&quot;trousers&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>  <span class="fu">prep</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>  <span class="fu">bake</span>(<span class="at">new_data =</span> <span class="cn">NULL</span>, <span class="fu">has_role</span>(<span class="st">&quot;trousers&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>  <span class="fu">names</span>()</span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Species_X1&quot; &quot;Species_X2&quot;</span></span></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -3,57 +3,67 @@
 #' Compute variable importance scores for the predictors in a model.
 #'
 #' @param object A fitted model object (e.g., a
-#' [randomForest][randomForest::randomForest] object) or
-#' an object that inherits from class \code{"vi"}.
+#' [randomForest][randomForest::randomForest] object) or an object that inherits
+#' from class `"vi"`.
 #'
 #' @param method Character string specifying the type of variable importance
-#' (VI) to compute. Current options are \code{"model"} (the default), for
-#' model-specific VI scores (see \code{\link{vi_model}} for details),
-#' \code{"firm"}, for variance-based VI scores (see \code{\link{vi_firm}} for
-#' details), \code{"permute"}, for permutation-based VI scores (see '
-#' \code{\link{vi_permute}} for details), or \code{"shap"}, for Shapley-based
-#' VI scores. For more details on the variance-based methods, see
-#' \href{https://arxiv.org/abs/1805.04755}{Greenwell et al. (2018)} and
-#' \href{https://arxiv.org/abs/1904.03959}{Scholbeck et al. (2019)}.
+#' (VI) to compute. Current options are:
+#'
+#' * `"model"` (the default), for model-specific VI scores (see
+#' [vi_model][vip::vi_model] for details).
+#'
+#' * `"firm"`, for variance-based VI scores (see [vi_firm][vip::vi_firm] for
+#' details).
+#'
+#' * `"permute"`, for permutation-based VI scores (see
+#' [vi_permute][vip::vi_permute] for details).
+#'
+#' * `"shap"`, for Shapley-based VI scores (see [vi_shap][vip::vi_shap] for
+#' details).
 #'
 #' @param feature_names Character string giving the names of the predictor
 #' variables (i.e., features) of interest.
 #'
 #' @param abbreviate_feature_names Integer specifying the length at which to
-#' abbreviate feature names. Default is \code{NULL} which results in no
+#' abbreviate feature names. Default is `NULL` which results in no
 #' abbreviation (i.e., the full name of each feature will be printed).
 #'
 #' @param sort Logical indicating whether or not to order the sort the variable
-#' importance scores. Default is \code{TRUE}.
+#' importance scores. Default is `TRUE`.
 #'
 #' @param decreasing Logical indicating whether or not the variable importance
-#' scores should be sorted in descending (\code{TRUE}) or ascending
-#' (\code{FALSE}) order of importance. Default is \code{TRUE}.
+#' scores should be sorted in descending (`TRUE`) or ascending
+#' (\code{FALSE}) order of importance. Default is `TRUE`.
 #'
 #' @param scale Logical indicating whether or not to scale the variable
-#' importance scores so that the largest is 100. Default is \code{FALSE}.
+#' importance scores so that the largest is 100. Default is `FALSE`.
 #'
 #' @param rank Logical indicating whether or not to rank the variable
-#' importance scores (i.e., convert to integer ranks). Default is \code{FALSE}.
+#' importance scores (i.e., convert to integer ranks). Default is `FALSE`.
 #' Potentially useful when comparing variable importance scores across different
 #' models using different methods.
 #'
 #' @param ... Additional optional arguments to be passed on to
-#' \code{\link{vi_model}}, \code{\link{vi_firm}}, \code{\link{vi_permute}},
-#' or \code{\link{vi_shap}}; see their respective help pages for details.
+#' [vi_model][vip::vi_model], [vi_firm][vip::vi_firm],
+#' [vi_permute][vip::vi_permute], or [vi_shap][vip::vi_shap]; see their
+#' respective help pages for details.
 #'
-#' @return A tidy data frame (i.e., a \code{"tibble"} object) with at least two
-#' columns: \code{Variable} and \code{Importance}. For \code{"lm"/"glm"}-like
-#' objects, an additional column, called \code{Sign}, is also included which
-#' includes the sign (i.e., POS/NEG) of the original coefficient. If
-#' \code{method = "permute"} and  \code{nsim > 1}, then an additional column,
-#' \code{StDev}, giving the standard deviation of the permutation-based
-#' variable importance scores is included.
+#' @return A tidy data frame (i.e., a [tibble][tibble::tibble] object) with two
+#' columns:
 #'
-#' @references
-#' Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J. A Simple
-#' and Effective Model-Based Variable Importance Measure. arXiv preprint
-#' arXiv:1805.04755 (2018).
+#' * `Variable` - the corresponding feature name;
+#' * `Importance` - the associated importance, computed as the average change in
+#' performance after a random permutation (or permutations, if `nsim > 1`) of
+#' the feature in question.
+#'
+#' For [lm][stats::lm]/[glm][stats::glm]-like objects, whenever
+#' `method = "model"`, the sign (i.e., POS/NEG) of the original coefficient is
+#' also included in a column called `Sign`.
+#'
+#' If `method = "permute"` and `nsim > 1`, then an additional column (`StDev`)
+#' containing the standard deviation of the individual permutation scores for
+#' each feature is also returned; this helps assess the stability/variation of
+#' the individual permutation importance for each feature.
 #'
 #' @rdname vi
 #'

@@ -1,0 +1,78 @@
+a-compatibility-note-for-saveRDS-save
+                        Do not use 'saveRDS' or 'save' for long-term
+                        archival of models. Instead, use 'xgb.save' or
+                        'xgb.save.raw'.
+agaricus.test           Test part from Mushroom Data Set
+agaricus.train          Training part from Mushroom Data Set
+callbacks               Callback closures for booster training.
+cb.cv.predict           Callback closure for returning cross-validation
+                        based predictions.
+cb.early.stop           Callback closure to activate the early
+                        stopping.
+cb.evaluation.log       Callback closure for logging the evaluation
+                        history
+cb.gblinear.history     Callback closure for collecting the model
+                        coefficients history of a gblinear booster
+                        during its training.
+cb.print.evaluation     Callback closure for printing the result of
+                        evaluation
+cb.reset.parameters     Callback closure for resetting the booster's
+                        parameters at each iteration.
+cb.save.model           Callback closure for saving a model file.
+dim.xgb.DMatrix         Dimensions of xgb.DMatrix
+dimnames.xgb.DMatrix    Handling of column names of 'xgb.DMatrix'
+getinfo                 Get information of an xgb.DMatrix object
+normalize               Scale feature value to have mean 0, standard
+                        deviation 1
+predict.xgb.Booster     Predict method for eXtreme Gradient Boosting
+                        model
+prepare.ggplot.shap.data
+                        Combine and melt feature values and SHAP
+                        contributions for sample observations.
+print.xgb.Booster       Print xgb.Booster
+print.xgb.DMatrix       Print xgb.DMatrix
+print.xgb.cv.synchronous
+                        Print xgb.cv result
+setinfo                 Set information of an xgb.DMatrix object
+slice                   Get a new DMatrix containing the specified rows
+                        of original xgb.DMatrix object
+xgb.Booster.complete    Restore missing parts of an incomplete
+                        xgb.Booster object.
+xgb.DMatrix             Construct xgb.DMatrix object
+xgb.DMatrix.save        Save xgb.DMatrix object to binary file
+xgb.attr                Accessors for serializable attributes of a
+                        model.
+xgb.config              Accessors for model parameters as JSON string.
+xgb.create.features     Create new features from a previously learned
+                        model
+xgb.cv                  Cross Validation
+xgb.dump                Dump an xgboost model in text format.
+xgb.gblinear.history    Extract gblinear coefficients history.
+xgb.ggplot.deepness     Plot model trees deepness
+xgb.ggplot.importance   Plot feature importance as a bar graph
+xgb.ggplot.shap.summary
+                        SHAP contribution dependency summary plot
+xgb.importance          Importance of features in a model.
+xgb.load                Load xgboost model from binary file
+xgb.load.raw            Load serialised xgboost model from R's raw
+                        vector
+xgb.model.dt.tree       Parse a boosted tree model text dump
+xgb.parameters<-        Accessors for model parameters.
+xgb.plot.multi.trees    Project all trees on one tree and plot it
+xgb.plot.shap           SHAP contribution dependency plots
+xgb.plot.tree           Plot a boosted tree model
+xgb.save                Save xgboost model to binary file
+xgb.save.raw            Save xgboost model to R's raw vector, user can
+                        call xgb.load.raw to load the model back from
+                        raw vector
+xgb.serialize           Serialize the booster instance into R's raw
+                        vector.  The serialization method differs from
+                        'xgb.save.raw' as the latter one saves only the
+                        model but not parameters.  This serialization
+                        format is not stable across different xgboost
+                        versions.
+xgb.set.config, xgb.get.config
+                        Set and get global configuration
+xgb.train               eXtreme Gradient Boosting Training
+xgb.unserialize         Load the instance back from 'xgb.serialize'
+xgboost-deprecated      Deprecation notices.

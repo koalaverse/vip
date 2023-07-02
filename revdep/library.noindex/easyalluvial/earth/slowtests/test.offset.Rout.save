@@ -1,0 +1,834 @@
+> # test.offset.R
+> 
+> source("test.prolog.R")
+> library(earth)
+Loading required package: Formula
+Loading required package: plotmo
+Loading required package: plotrix
+Loading required package: TeachingDemos
+> 
+> almost.equal <- function(x, y, max=1e-8)
++ {
++     stopifnot(max >= 0 && max <= .01)
++     length(x) == length(y) && max(abs(x - y)) < max
++ }
+> # check that earth model matches lm model in all essential details
+> check.earth.matches.lm <- function(earth, lm, newdata=data[c(3,1,9),],
++                                    check.coef.names=TRUE,
++                                    check.casenames=TRUE,
++                                    max=1e-8,
++                                    max.residuals=1e-8)
++ {
++     check.names <- function(earth.names, lm.names)
++     {
++         if(check.casenames &&
++         # lm always adds rownames even if "1", "2", "3": this seems
++         # wasteful and not particulary helpful, so earth doesn't do
++         # this, hence the first !isTRUE(all.equal) below
++            !isTRUE(all.equal(lm.names, paste(1:length(lm.names)))) &&
++            !isTRUE(all.equal(earth.names, lm.names))) {
++             print(earth.names)
++             print(lm.names)
++             stop(deparse(substitute(earth.names)), " != ",
++                  deparse(substitute(lm.names)))
++         }
++     }
++     cat0("check ", deparse(substitute(earth)), " vs ",
++          deparse(substitute(lm)), "\n")
++ 
++     # sort is needed because earth may reorder predictors based in importance
++     stopifnot(almost.equal(sort(coef(earth)), sort(coef(lm)), max=max))
++     if(check.coef.names)
++         stopifnot(identical(sort(names(coef(earth))), sort(names(coef(lm)))))
++ 
++     stopifnot(length(earth$coefficients) == length(lm$coefficients))
++     stopifnot(almost.equal(sort(earth$coefficients), sort(lm$coefficients), max=max))
++ 
++     stopifnot(length(earth$residuals) == length(lm$residuals))
++     stopifnot(almost.equal(earth$residuals, lm$residuals, max=max.residuals))
++ 
++     stopifnot(length(earth$fitted.values) == length(lm$fitted.values))
++     stopifnot(almost.equal(earth$fitted.values, lm$fitted.values, max=max))
++ 
++     stopifnot(almost.equal(fitted(earth), fitted(lm), max=max))
++     if(!is.null(names(fitted(earth))) && !is.null(names(fitted(lm))))
++         check.names(names(fitted(earth)), names(fitted(lm)))
++     stopifnot(almost.equal(residuals(earth), residuals(lm), max=max.residuals))
++     if(!is.null(names(residuals(earth))) && !is.null(names(residuals(lm))))
++         check.names(names(residuals(earth)), names(residuals(lm)))
++ 
++     predict.earth <- predict(earth)
++     predict.lm    <- predict(lm)
++     stopifnot(almost.equal(predict.earth, predict.lm, max=max))
++     if(!is.null(names(predict.earth)) && !is.null(names(predict.lm)))
++         check.names(names(predict.earth), names(predict.lm))
++ 
++     predict.earth <- predict(earth, newdata=newdata)
++     predict.lm    <- predict(lm, newdata=newdata)
++     stopifnot(almost.equal(predict.earth, predict.lm, max=max))
++     if(!is.null(names(predict.earth)) && !is.null(names(predict.lm)))
++         check.names(names(predict.earth), names(predict.lm))
++     # we calculate earth rsq manually to match the rsq technique of lm
++     # this is necessary to get the same rsq when an offset is used
++     if(is.null(earth$offset)) {
++         earth.rsq <- earth$rsq
++         rss <- if (is.null(earth$weights))
++                    sum(earth$residuals^2)
++                else
++                    sum(earth$weights * earth$residuals^2)
++     } else {
++         if (is.null(earth$weights)) {
++             mss <- sum((earth$fitted.values - mean(earth$fitted.values))^2)
++             rss <- sum(earth$residuals^2)
++         } else {
++             stopifnot(almost.equal(lm$weights, earth$weights, max=max))
++             m <- sum(earth$weights * earth$fitted.values /sum(earth$weights))
++             mss <- sum(earth$weights * (earth$fitted.values - m)^2)
++             rss <- sum(earth$weights * earth$residuals^2)
++         }
++         earth.rsq <- mss / (mss + rss)
++     }
++     stopifnot(almost.equal(earth.rsq, summary(lm)$r.squared, max=max))
++ 
++     # check internal consistency of earth model
++     stopifnot(earth$gcv == earth$gcv[1])
++     stopifnot(almost.equal(earth$rsq.per.response[1], earth$rsq, max=1e-15))
++     stopifnot(almost.equal(earth$grsq.per.response[1], earth$grsq, max=1e-15))
++     if(is.null(earth$weights))
++         stopifnot(almost.equal(earth$rss.per.response, earth$rss, max=1e-10))
++ }
+> # check that earth-glm model matches glm model in all essential details
+> check.earth.matches.glm <- function(earth, glm, newdata=data[c(3,1,9),],
++                                    check.coef.names=TRUE,
++                                    check.casenames=FALSE,
++                                    max=1e-8,
++                                    max.residuals=1e-8)
++ {
++     check.names <- function(earth.names, glm.names)
++     {
++         if(check.casenames &&
++         # glm always adds rownames even if "1", "2", "3": this seems
++         # wasteful and not particulary helpful, so earth doesn't do
++         # this, hence the first !isTRUE(all.equal) below
++            !isTRUE(all.equal(glm.names, paste(1:length(glm.names)))) &&
++            !isTRUE(all.equal(earth.names, glm.names))) {
++             print(earth.names)
++             print(glm.names)
++             stop(deparse(substitute(earth.names)), " != ",
++                  deparse(substitute(glm.names)))
++         }
++     }
++     cat0("check ", deparse(substitute(earth)), " vs ",
++          deparse(substitute(glm)), "\n")
++ 
++     # sort is needed because earth may reorder predictors based in importance
++     earth.glm <- earth$glm.list[[1]]
++     stopifnot(!is.null(earth.glm))
++     stopifnot(almost.equal(sort(coef(earth.glm)), sort(coef(glm)), max=max))
++     if(check.coef.names)
++         stopifnot(identical(sort(names(coef(earth.glm))), sort(names(coef(glm)))))
++ 
++     stopifnot(length(earth.glm$coefficients) == length(glm$coefficients))
++     stopifnot(almost.equal(sort(earth.glm$coefficients), sort(glm$coefficients), max=max))
++ 
++     stopifnot(length(earth.glm$residuals) == length(glm$residuals))
++     stopifnot(almost.equal(earth.glm$residuals, glm$residuals, max=max))
++ 
++     stopifnot(length(earth.glm$fitted.values) == length(glm$fitted.values))
++     stopifnot(almost.equal(earth.glm$fitted.values, glm$fitted.values, max=max))
++ 
++     stopifnot(almost.equal(fitted(earth.glm), fitted(glm), max=max))
++     if(!is.null(names(fitted(earth.glm))) && !is.null(names(fitted(glm))))
++         check.names(names(fitted(earth.glm)), names(fitted(glm)))
++ 
++     stopifnot(almost.equal(residuals(earth.glm), residuals(glm), max=max.residuals))
++     if(!is.null(names(residuals(earth.glm))) && !is.null(names(residuals(glm))))
++         check.names(names(residuals(earth.glm)), names(residuals(glm)))
++ 
++     stopifnot(almost.equal(residuals(earth, type="response"),     residuals(glm, type="response"), max=max.residuals))
++     stopifnot(almost.equal(residuals(earth, type="glm.response"), residuals(glm, type="response"), max=max.residuals))
++     stopifnot(almost.equal(residuals(earth, type="deviance"),     residuals(glm, type="deviance"), max=max.residuals))
++     stopifnot(almost.equal(residuals(earth, type="glm.pearson"),  residuals(glm, type="pearson"), max=max.residuals))
++     stopifnot(almost.equal(residuals(earth, type="glm.working"),  residuals(glm, type="working"), max=max.residuals))
++     # commented out because partial residuals don't match (because factors are expanded differently?)
++     # stopifnot(almost.equal(residuals(earth, type="glm.partial"),  residuals(glm, type="partial"), max=max.residuals))
++ 
++     # predict without newdata
++     predict.glm    <- predict(glm)
++     predict.earth <- predict(earth)
++     stopifnot(almost.equal(predict.earth, predict.glm, max=max))
++     if(!is.null(names(predict.earth)) && !is.null(names(predict.glm)))
++         check.names(names(predict.earth), names(predict.glm))
++ 
++     # predict type=default
++     predict.glm   <- predict(glm, newdata=newdata)
++     predict.earth <- predict(earth, newdata=newdata)
++     stopifnot(almost.equal(predict.earth, predict.glm, max=max))
++     if(!is.null(names(predict.earth)) && !is.null(names(predict.glm)))
++         check.names(names(predict.earth), names(predict.glm))
++ 
++     # predict type="response"
++     predict.glm.response   <- predict(glm, newdata=newdata, type="response")
++     predict.earth.response <- predict(earth, newdata=newdata, type="response")
++     if(!is.null(names(predict.earth)) && !is.null(names(predict.glm)))
++         check.names(names(predict.earth), names(predict.glm))
++     stopifnot(almost.equal(predict.earth.response, predict.glm.response, max=max))
++     if(!is.null(names(predict.earth.response)) && !is.null(names(predict.glm.response)))
++         check.names(names(predict.earth.response), names(predict.glm.response))
++ 
++     # predict type="link"
++     predict.earth.link <- predict(earth, newdata=newdata, type="link")
++     predict.glm.link   <- predict(glm, newdata=newdata, type="link")
++     stopifnot(almost.equal(predict.earth.link, predict.glm.link, max=max))
++     if(!is.null(names(predict.earth)) && !is.null(names(predict.lm)))
++         check.names(names(predict.earth), names(predict.glm))
++ 
++     # check internal consistency of earth model
++     stopifnot(earth$gcv == earth$gcv[1])
++     stopifnot(almost.equal(earth$rsq.per.response[1], earth$rsq, max=1e-15))
++     stopifnot(almost.equal(earth$grsq.per.response[1], earth$grsq, max=1e-15))
++     if(is.null(earth$weights))
++         stopifnot(almost.equal(earth$rss.per.response, earth$rss, max=1e-10))
++ }
+> devratio <- function(mod)
++ {
++     if(is.null(mod$deviance))
++         mod <- mod$glm.list[[1]]
++     stopifnot(!is.null(mod))
++     stopifnot(!is.null(mod$deviance))
++     stopifnot(!is.null(mod$null.deviance))
++     sprint("devratio %.2f", 1 - mod$deviance / mod$null.deviance)
++ }
+> print.devratio <- function(s, mod)
++ {
++     printf("%-22s %s\n", s, devratio(mod))
++ }
+> #------------------------------------------------------------------------------
+> # linear model
+> 
+> n <- 100
+> set.seed(2019)
+> x1 <- ((1:n) + runif(n, min=0, max=10)) / n
+> set.seed(2019)
+> x2 <- ((1:n) + runif(n, min=0, max=10)) / n
+> y <- 3 * x1 + rnorm(n)
+> 
+> myoffset <- (1:n) / n
+> data <- data.frame(y=y, x1=x1, myoffset=myoffset)
+> 
+> lm.weights <- lm(y ~ x1, data=data, weights=sin(myoffset))
+> earth.weights <- earth(y ~ x1, data=data, weights=sin(myoffset),
++                 linpreds=TRUE, thresh=0, penalty=-1)
+> check.earth.matches.lm(earth.weights, lm.weights)
+check earth.weights vs lm.weights
+> 
+> myoffset <- (1:n) / n
+> data <- data.frame(y=y, x1=x1, myoffset=myoffset)
+> lm4 <- lm(y ~ x1 + offset(myoffset), data=data)
+> earth4 <- earth(y ~ x1 + offset(myoffset), data=data,
++                 linpreds=TRUE, thresh=0, penalty=-1)
+> check.earth.matches.lm(earth4, lm4)
+check earth4 vs lm4
+> cat("==print(earth4)==\n")
+==print(earth4)==
+> print(earth4)
+Selected 2 of 2 terms, and 1 of 1 predictors
+Termination condition: No new term increases RSq at 2 terms
+Importance: x1
+Offset: myoffset with values 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0...
+Number of terms at each degree of interaction: 1 1 (additive model)
+GCV 0.8799077    RSS 87.99077    GRSq 0.312992    RSq 0.312992
+> cat("==summary(earth4)==\n")
+==summary(earth4)==
+> print(summary(earth4))
+Call: earth(formula=y~x1+offset(myoffset), data=data, linpreds=TRUE, thresh=0,
+            penalty=-1)
+
+            coefficients
+(Intercept)   -0.1235607
+x1             2.1524642
+
+Selected 2 of 2 terms, and 1 of 1 predictors
+Termination condition: No new term increases RSq at 2 terms
+Importance: x1
+Offset: myoffset with values 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0...
+Number of terms at each degree of interaction: 1 1 (additive model)
+GCV 0.8799077    RSS 87.99077    GRSq 0.312992    RSq 0.312992
+> cat("==summary(earth4, details=TRUE)==\n")
+==summary(earth4, details=TRUE)==
+> print(summary(earth4, details=TRUE))
+Call: earth(formula=y~x1+offset(myoffset), data=data, linpreds=TRUE, thresh=0,
+            penalty=-1)
+
+            coefficients
+(Intercept)   -0.1235607
+x1             2.1524642
+
+Selected 2 of 2 terms, and 1 of 1 predictors
+Termination condition: No new term increases RSq at 2 terms
+Importance: x1
+Offset: myoffset with values 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0...
+Number of terms at each degree of interaction: 1 1 (additive model)
+GCV 0.8799077    RSS 87.99077    GRSq 0.312992    RSq 0.312992
+> 
+> par(mfrow=c(4, 2), mar=c(3, 3, 3, 1), mgp=c(1.5, 0.5, 0), oma=c(0, 0, 5, 0))
+> set.seed(2019)
+> plotmo(lm4, trace=0, pt.col=2, do.par=FALSE)
+ plotmo grid:    x1 myoffset
+          0.5369945    0.505
+> mtext(
++     "row1: lm4\nrow2: earth4\nrow3: lm4   grid.levels=list(myoffset=-3)\nrow4: earth4   grid.levels=list(myoffset=-3)",
++     outer=TRUE, cex=.8)
+> set.seed(2019)
+> plotmo(earth4, trace=0, pt.col=2, do.par=FALSE)
+Note: the offset in the formula is not plotted
+      (use all1=TRUE to plot the offset, or use trace=-1 to silence this message)
+
+ plotmo grid:    x1 myoffset
+          0.5369945    0.505
+> empty.plot()
+> set.seed(2019)
+> plotmo(lm4, trace=0, pt.col=2, do.par=FALSE, grid.levels=list(myoffset=-3))
+ plotmo grid:    x1 myoffset
+          0.5369945       -3
+> set.seed(2019)
+> plotmo(earth4, trace=0, pt.col=2, do.par=FALSE, grid.levels=list(myoffset=-3))
+Note: the offset in the formula is not plotted
+      (use all1=TRUE to plot the offset, or use trace=-1 to silence this message)
+
+ plotmo grid:    x1 myoffset
+          0.5369945       -3
+> par(org.par)
+> 
+> plotres(lm4)
+> plotres(earth4)
+> 
+> # linear model with weights and offset
+> 
+> lm4.weights <- lm(y ~ x1 + offset(exp(myoffset)), data=data, weights=sin(myoffset))
+> earth4.weights <- earth(y ~ x1 + offset(exp(myoffset)), data=data, weights=sin(myoffset),
++                 linpreds=TRUE, thresh=0, penalty=-1)
+> check.earth.matches.lm(earth4.weights, lm4.weights)
+check earth4.weights vs lm4.weights
+> print(earth4.weights)
+Selected 2 of 2 terms, and 1 of 1 predictors
+Termination condition: No new term increases RSq at 2 terms
+Importance: x1
+Offset: exp(myoffset) with values 1.01005, 1.020201, 1.030455, 1.040811,...
+Weights: 0.009999833, 0.01999867, 0.0299955, 0.03998933, 0.04997917, 0.0...
+Number of terms at each degree of interaction: 1 1 (additive model)
+GCV 0.4651571    RSS 46.51571    GRSq 0.1327794    RSq 0.1327794
+> print(summary(earth4.weights))
+Call: earth(formula=y~x1+offset(exp(myoffset)), data=data,
+            weights=sin(myoffset), linpreds=TRUE, thresh=0, penalty=-1)
+
+            coefficients
+(Intercept)    -1.065071
+x1              1.594748
+
+Selected 2 of 2 terms, and 1 of 1 predictors
+Termination condition: No new term increases RSq at 2 terms
+Importance: x1
+Offset: exp(myoffset) with values 1.01005, 1.020201, 1.030455, 1.040811,...
+Weights: 0.009999833, 0.01999867, 0.0299955, 0.03998933, 0.04997917, 0.0...
+Number of terms at each degree of interaction: 1 1 (additive model)
+GCV 0.4651571    RSS 46.51571    GRSq 0.1327794    RSq 0.1327794
+> 
+> #------------------------------------------------------------------------------
+> # error handling
+> 
+> data <- data.frame(y=y, x1=x1)
+> expect.err(try(earth(y ~ x1 + offset(myoffset), data=data)), "the offset variable 'myoffset' in 'offset(myoffset)' must be in the data")
+Error : the offset variable 'myoffset' in 'offset(myoffset)' must be in the data
+Got expected error from try(earth(y ~ x1 + offset(myoffset), data = data))
+> expect.err(try(earth(y ~ x1 + offset(myoffset))), "if an offset is specified in the formula, the 'data' argument must be used")
+Error : if an offset is specified in the formula, the 'data' argument must be used
+Got expected error from try(earth(y ~ x1 + offset(myoffset)))
+> 
+> data <- data.frame(y=y, x1=x1, offset0=rep(0, length.out=n), offset1=rep(1, length.out=n))
+> expect.err(try(earth(y ~ x1 + offset(offset0) + offset(offset1), data=data)), "only one offset is allowed")
+Error : only one offset is allowed
+Got expected error from try(earth(y ~ x1 + offset(offset0) + offset(offset1), data = data))
+> 
+> #------------------------------------------------------------------------------
+> # poisson model with and without linear predictors
+> 
+> library(MASS)
+> data(Insurance)
+> Ins <- Insurance
+> Ins$Claims[Ins$Claims > 100] <- 100
+> Ins$day <- (1:nrow(Insurance)) / nrow(Insurance) # non linear term (like a seasonal effect)
+> Ins$Claims <- round(Ins$Claims * (1 + sin(2 * pi * Ins$day)))
+> pois <- glm(Claims ~ offset(log(Holders)) + Group + Age + day,
++             data = Ins, family = poisson)
+> earth.pois.linpreds <- earth(Claims ~ offset(log(Holders)) + Group + Age + day,
++                              data = Ins, glm=list(family = poisson),
++                              linpreds=TRUE, thresh=0, penalty=-1)
+> 
+> stopifnot(isTRUE(all.equal(coef(earth.pois.linpreds), coefficients(earth.pois.linpreds))))
+> stopifnot(isTRUE(all.equal(coef(earth.pois.linpreds, type="glm"), coefficients(earth.pois.linpreds, type="glm"))))
+> stopifnot(isTRUE(all.equal(coef(earth.pois.linpreds, type="earth"), coefficients(earth.pois.linpreds, type="earth"))))
+> stopifnot(identical(names(coef(earth.pois.linpreds)), rownames(earth.pois.linpreds$coefficients)))
+> stopifnot(identical(names(coef(earth.pois.linpreds)), rownames(earth.pois.linpreds$glm.coefficients)))
+> stopifnot(identical(names(coef(earth.pois.linpreds, type="glm")), rownames(earth.pois.linpreds$glm.coefficients)))
+> stopifnot(max(abs(coef(earth.pois.linpreds) - earth.pois.linpreds$glm.coefficients)) == 0)
+> stopifnot(max(abs(coef(earth.pois.linpreds, type="response") - earth.pois.linpreds$glm.coefficients)) == 0)
+> stopifnot(max(abs(coef(earth.pois.linpreds, type="earth") - earth.pois.linpreds$coefficients)) == 0)
+> stopifnot(max(abs(coef(earth.pois.linpreds) - earth.pois.linpreds$glm.list[[1]]$coefficients)) == 0)
+> stopifnot(max(abs(coef(earth.pois.linpreds, type="glm") - earth.pois.linpreds$coefficients)) > 99)
+> 
+> check.earth.matches.glm(earth.pois.linpreds, pois, newdata=Ins[4:6,])
+check earth.pois.linpreds vs pois
+> earth.pois <- earth(Claims ~ Group + Age  + day + offset(log(Holders)),
++                     data = Ins, glm=list(family = poisson))
+> cat("==print(earth.pois)==\n")
+==print(earth.pois)==
+> print(earth.pois)
+GLM (family poisson, link log):
+ nulldev df       dev df   devratio     AIC iters converged
+ 1935.72 63   462.414 58      0.761   753.7     5         1
+
+Earth selected 6 of 14 terms, and 3 of 7 predictors
+Termination condition: Reached nk 21
+Importance: day, Age.L, Group.L, Group.Q-unused, Group.C-unused, ...
+Offset: log(Holders) with values log(197), log(264), log(246), log(1680)...
+Number of terms at each degree of interaction: 1 5 (additive model)
+Earth GCV 1037.405    RSS 45532.35    GRSq 0.6401826    RSq 0.7453446
+> cat("==summary(earth.pois)==\n")
+==summary(earth.pois)==
+> print(summary(earth.pois))
+Call: earth(formula=Claims~Group+Age+day+offset(log(Holders)), data=Ins,
+            glm=list(family=poisson))
+
+GLM coefficients
+                           Claims
+(Intercept)            -1.6274033
+h(-0.223607-Group.L)    0.6591962
+h(Group.L- -0.223607)   1.2356444
+h(Age.L-0.223607)      -2.1045753
+h(day-0.421875)       -10.3890623
+h(day-0.578125)        12.8123676
+
+GLM (family poisson, link log):
+ nulldev df       dev df   devratio     AIC iters converged
+ 1935.72 63   462.414 58      0.761   753.7     5         1
+
+Earth selected 6 of 14 terms, and 3 of 7 predictors
+Termination condition: Reached nk 21
+Importance: day, Age.L, Group.L, Group.Q-unused, Group.C-unused, ...
+Offset: log(Holders) with values log(197), log(264), log(246), log(1680)...
+Number of terms at each degree of interaction: 1 5 (additive model)
+Earth GCV 1037.405    RSS 45532.35    GRSq 0.6401826    RSq 0.7453446
+> cat("==summary(earth.pois, details=TRUE)==\n")
+==summary(earth.pois, details=TRUE)==
+> print(summary(earth.pois, details=TRUE))
+Call: earth(formula=Claims~Group+Age+day+offset(log(Holders)), data=Ins,
+            glm=list(family=poisson))
+
+Earth coefficients
+                          Claims
+(Intercept)             86.23803
+h(-0.223607-Group.L)   -71.10802
+h(Group.L- -0.223607)  -38.47796
+h(Age.L-0.223607)      122.63443
+h(day-0.421875)       -545.81580
+h(day-0.578125)        583.55576
+
+GLM coefficients
+                           Claims
+(Intercept)            -1.6274033
+h(-0.223607-Group.L)    0.6591962
+h(Group.L- -0.223607)   1.2356444
+h(Age.L-0.223607)      -2.1045753
+h(day-0.421875)       -10.3890623
+h(day-0.578125)        12.8123676
+
+GLM deviance residuals:
+       Min          1Q      Median          3Q         Max  
+-6.7202654  -1.8420108  -0.2845822   1.2156207   6.5715831  
+
+GLM coefficients (family poisson, link log)
+                          Estimate   Std. Error   z value   Pr(>|z|)
+(Intercept)            -1.62740331   0.03503726 -46.44779 < 2.22e-16
+h(Age.L-0.223607)      -2.10457528   0.08442153 -24.92937 < 2.22e-16
+h(Group.L- -0.223607)   1.23564436   0.06612011  18.68788 < 2.22e-16
+h(-0.223607-Group.L)    0.65919622   0.11236250   5.86669 4.4457e-09
+h(day-0.421875)       -10.38906233   0.65640911 -15.82711 < 2.22e-16
+h(day-0.578125)        12.81236762   1.02262981  12.52884 < 2.22e-16
+
+GLM (family poisson, link log):
+ nulldev df       dev df   devratio     AIC iters converged
+ 1935.72 63   462.414 58      0.761   753.7     5         1
+
+Earth selected 6 of 14 terms, and 3 of 7 predictors
+Termination condition: Reached nk 21
+Importance: day, Age.L, Group.L, Group.Q-unused, Group.C-unused, ...
+Offset: log(Holders) with values log(197), log(264), log(246), log(1680)...
+Number of terms at each degree of interaction: 1 5 (additive model)
+Earth GCV 1037.405    RSS 45532.35    GRSq 0.6401826    RSq 0.7453446
+> earth.pois.no.penalty <- earth(Claims ~ Group + Age  + day + offset(log(Holders)),
++                                data = Ins, glm=list(family = poisson),
++                                thresh=0, penalty=-1)
+> print.devratio("pois",                  pois)
+pois                   devratio 0.62
+> print.devratio("earth.pois.linpreds",   earth.pois.linpreds$glm.list[[1]])
+earth.pois.linpreds    devratio 0.62
+> print.devratio("earth.pois",            earth.pois$glm.list[[1]])
+earth.pois             devratio 0.76
+> print.devratio("earth.pois.no.penalty", earth.pois.no.penalty$glm.list[[1]])
+earth.pois.no.penalty  devratio 0.90
+> 
+> par(mfrow=c(3, 4), mar=c(3, 3, 3, 1), mgp=c(1.5, 0.5, 0), oma=c(0, 0, 5, 0))
+> set.seed(2019)
+> plotmo(pois, trace=0, pt.col=2, do.par=FALSE, ylim=c(0,50))
+ plotmo grid:    Holders Group Age       day
+                     136   <1l <25 0.5078125
+> mtext(sprint(
++     "row1: pois (%s)\nrow2: earth.pois.linpreds (%s)\nrow3: earth.pois.linpreds(all1=TRUE)",
++     devratio(pois), devratio(earth.pois.linpreds)),
++     outer=TRUE, cex=.8)
+> set.seed(2019)
+> plotmo(earth.pois.linpreds, trace=0, pt.col=2, do.par=FALSE, ylim=c(0,50))
+Note: the offset in the formula is not plotted
+      (use all1=TRUE to plot the offset, or use trace=-1 to silence this message)
+
+ plotmo grid:    Holders Group Age       day
+                     136   <1l <25 0.5078125
+> empty.plot()
+> set.seed(2019)
+> plotmo(earth.pois.linpreds, all1=T, trace=-1, pt.col=2, do.par=FALSE, ylim=c(0,50))
+> par(org.par)
+> 
+> plotres(pois, type="response", caption='pois, type="response"')
+> plotres(earth.pois.linpreds, type="response", caption='earth.pois.linpreds, type="response"')
+> 
+> par(mfrow=c(3, 4), mar=c(3, 3, 3, 1), mgp=c(1.5, 0.5, 0), oma=c(0, 0, 5, 0))
+> set.seed(2019)
+> plotmo(pois, trace=0, pt.col=2, do.par=FALSE, ylim=c(0,50), grid.levels=list(Holders=20))
+ plotmo grid:    Holders Group Age       day
+                      20   <1l <25 0.5078125
+> mtext(
++     "----- grid.levels=list(Holders=20)) -----\nrow1: pois\nrow2: earth.pois.linpreds\nrow3: earth.pois.linpreds(all1=TRUE)",
++     outer=TRUE, cex=.8)
+> set.seed(2019)
+> plotmo(earth.pois.linpreds, trace=0, pt.col=2, do.par=FALSE, ylim=c(0,50), grid.levels=list(Holders=20))
+Note: the offset in the formula is not plotted
+      (use all1=TRUE to plot the offset, or use trace=-1 to silence this message)
+
+ plotmo grid:    Holders Group Age       day
+                      20   <1l <25 0.5078125
+> empty.plot()
+> set.seed(2019)
+> plotmo(earth.pois.linpreds, all1=T, trace=-1, pt.col=2, do.par=FALSE, ylim=c(0,50), grid.levels=list(Holders=20))
+> par(org.par)
+> 
+> plotmo(earth.pois.linpreds, pmethod="partdep", do.par=2,
++        caption=sprint("earth.pois.linpreds, pmethod=\"partdep\", %s", devratio(earth.pois.linpreds)))
+Note: the offset in the formula is not plotted
+      (use all1=TRUE to plot the offset, or use trace=-1 to silence this message)
+
+calculating partdep for Group 
+calculating partdep for Age 
+calculating partdep for day 
+> plotmo(earth.pois.linpreds, pmethod="partdep", do.par=0,
++        grid.levels=list(Age=">35"), degree1="day", main="day with Age=\">35\"")
+Note: the offset in the formula is not plotted
+      (use all1=TRUE to plot the offset, or use trace=-1 to silence this message)
+
+calculating partdep for day 
+> par(org.par)
+> plotmo(earth.pois,          pmethod="partdep",
++        caption=sprint("earth.pois, pmethod=\"partdep\", %s", devratio(earth.pois)))
+Note: the offset in the formula is not plotted
+      (use all1=TRUE to plot the offset, or use trace=-1 to silence this message)
+
+calculating partdep for Group 
+calculating partdep for Age 
+calculating partdep for day 
+> plotmo(earth.pois.no.penalty, pmethod="partdep",
++        caption=sprint("earth.pois.no.penalty, pmethod=\"partdep\", %s", devratio(earth.pois.no.penalty)))
+Note: the offset in the formula is not plotted
+      (use all1=TRUE to plot the offset, or use trace=-1 to silence this message)
+
+calculating partdep for Group 
+calculating partdep for Age 
+calculating partdep for day 
+> 
+> #------------------------------------------------------------------------------
+> # poisson model with weights
+> 
+> Ins <- Insurance
+> Ins$Claims[Ins$Claims > 100] <- 100
+> Ins$day <- (1:nrow(Insurance)) / nrow(Insurance) # non linear term (like a seasonal effect)
+> Ins$Claims <- round(Ins$Claims * (1 + sin(2 * pi * Ins$day)))
+> weights <- 1:nrow(Ins)
+> 
+> pois.weights <- glm(Claims ~ Group + Age + day,
++                     data = Ins, family = poisson, weights=weights)
+> 
+> earth.pois.linpreds.weights <- earth(Claims ~ Group + Age + day,
++                                      data = Ins, glm=list(family = poisson),
++                                      weights=weights,
++                                      linpreds=TRUE, thresh=0, penalty=-1)
+> check.earth.matches.glm(earth.pois.linpreds.weights, pois.weights, newdata=Ins[1:3,])
+check earth.pois.linpreds.weights vs pois.weights
+> 
+> #------------------------------------------------------------------------------
+> # poisson model with weights, some of which are zero
+> 
+> Ins <- Insurance
+> Ins$Claims[Ins$Claims > 100] <- 100
+> Ins$day <- (1:nrow(Insurance)) / nrow(Insurance) # non linear term (like a seasonal effect)
+> Ins$Claims <- round(Ins$Claims * (1 + sin(2 * pi * Ins$day)))
+> weights <- 1:nrow(Ins)
+> weights[4] <- 0
+> weights[8] <- 0
+> 
+> pois.weights.some.zero <- glm(Claims ~ Group + Age + day,
++                     data = Ins, family = poisson, weights=weights)
+> 
+> earth.pois.linpreds.weights.some.zero <- earth(Claims ~ Group + Age + day,
++                                      data = Ins, glm=list(family = poisson),
++                                      weights=weights,
++                                      linpreds=TRUE, thresh=0, penalty=-1)
+> check.earth.matches.glm(earth.pois.linpreds.weights.some.zero, pois.weights.some.zero, newdata=Ins[1:3,],
++                         max=1e-5, max.residuals=1e-2) # TODO why does max.residuals have to be so big here?
+check earth.pois.linpreds.weights.some.zero vs pois.weights.some.zero
+> 
+> plotres(pois.weights.some.zero, caption="pois.weights.some.zero")
+> plotres(earth.pois.linpreds.weights.some.zero, caption="earth.pois.linpreds.weights.some.zero")
+> plotmo(pois.weights.some.zero, caption="pois.weights.some.zero")
+ plotmo grid:    Group Age       day
+                   <1l <25 0.5078125
+> plotmo(earth.pois.linpreds.weights.some.zero, caption="earth.pois.linpreds.weights.some.zero")
+ plotmo grid:    Group Age       day
+                   <1l <25 0.5078125
+> 
+> #------------------------------------------------------------------------------
+> # multiple response models
+> 
+> data(trees)
+> tr <- trees
+> set.seed(2019)
+> tr$Vol2 <- tr$Volume + 10 * rnorm(nrow(tr))
+> 
+> earth10 <- earth(Volume ~ Girth + offset(log(Height)), data=tr,
++                  linpreds=TRUE, thresh=0, penalty=-1)
+> lm10 <- lm(Volume ~ Girth + offset(log(Height)), data=tr)
+> check.earth.matches.lm(earth10, lm10, newdata=tr[c(3:5),])
+check earth10 vs lm10
+> cat("earth10:\n")
+earth10:
+> print(summary(earth10))
+Call: earth(formula=Volume~Girth+offset(log(Height)), data=tr, linpreds=TRUE,
+            thresh=0, penalty=-1)
+
+            coefficients
+(Intercept)   -41.083623
+Girth           5.051736
+
+Selected 2 of 2 terms, and 1 of 1 predictors
+Termination condition: No new term increases RSq at 2 terms
+Importance: Girth
+Offset: log(Height) with values log(70), log(65), log(63), log(72), log(...
+Number of terms at each degree of interaction: 1 1 (additive model)
+GCV 16.66619    RSS 516.6518    GRSq 0.9358693    RSq 0.9358693
+> 
+> earth20 <- earth(Vol2 ~ Girth + offset(log(Height)), data=tr,
++                  linpreds=TRUE, thresh=0, penalty=-1)
+> cat("earth20:\n")
+earth20:
+> print(summary(earth20))
+Call: earth(formula=Vol2~Girth+offset(log(Height)), data=tr, linpreds=TRUE,
+            thresh=0, penalty=-1)
+
+            coefficients
+(Intercept)   -41.875132
+Girth           4.991977
+
+Selected 2 of 2 terms, and 1 of 1 predictors
+Termination condition: No new term increases RSq at 2 terms
+Importance: Girth
+Offset: log(Height) with values log(70), log(65), log(63), log(72), log(...
+Number of terms at each degree of interaction: 1 1 (additive model)
+GCV 141.1826    RSS 4376.662    GRSq 0.6271664    RSq 0.6271664
+> 
+> earth30 <- earth(cbind(Volume, Vol2) ~ Girth + offset(log(Height)), data=tr,
++                  linpreds=TRUE, thresh=0, penalty=-1)
+> cat("earth30:\n")
+earth30:
+> print(summary(earth30))
+Call: earth(formula=cbind(Volume,Vol2)~Girth+offset(log(Height)), data=tr,
+            linpreds=TRUE, thresh=0, penalty=-1)
+
+                Volume       Vol2
+(Intercept) -41.083623 -41.875132
+Girth         5.051736   4.991977
+
+Selected 2 of 2 terms, and 1 of 1 predictors
+Termination condition: No new term increases RSq at 2 terms
+Importance: Girth
+Offset: log(Height) with values log(70), log(65), log(63), log(72), log(...
+Number of terms at each degree of interaction: 1 1 (additive model)
+
+             GCV       RSS      GRSq       RSq
+Volume  16.66619  516.6518 0.9358692 0.9358692
+Vol2   141.18264 4376.6618 0.6271664 0.6271664
+All    157.84883 4893.3136 0.7528023 0.7528023
+> 
+> plotmo(lm10, all1=TRUE, pt.col=2)
+ plotmo grid:    Girth Height
+                  12.9     76
+> plotmo(earth10, all1=TRUE, pt.col=2)
+ plotmo grid:    Girth Height
+                  12.9     76
+> plotmo(earth20, all1=TRUE, pt.col=2)
+ plotmo grid:    Girth Height
+                  12.9     76
+> plotmo(earth30, nresponse=1, all1=TRUE, pt.col=2)
+ plotmo grid:    Girth Height
+                  12.9     76
+> plotmo(earth30, nresponse=2, all1=TRUE, pt.col=2)
+ plotmo grid:    Girth Height
+                  12.9     76
+> 
+> plotres(lm10)
+> plotres(earth10)
+> plotres(earth20)
+> plotres(earth30, nresponse=2)
+> plotres(earth30, nresponse=1)
+> 
+> # multiple response pois model with weights (basic test)
+> 
+> Ins <- Insurance
+> Ins$Claims[Ins$Claims > 100] <- 100
+> Ins$day <- (1:nrow(Insurance)) / nrow(Insurance) # non linear term (like a seasonal effect)
+> Ins$Claims <- round(Ins$Claims * (1 + sin(2 * pi * Ins$day)))
+> Ins$Claims2 <- Insurance$Claims2 <- round(Insurance$Claims^1.5)
+> weights <- 1:nrow(Ins)
+> weights[4] <- 0
+> weights[8] <- 0
+> 
+> earth.pois.multiple.response <-
++     earth(x=Insurance$Age, y=cbind(Insurance$Claims, Insurance$Claims2),
++           trace=1, # Insurance$Age expands to x.L x.Q x.C
++           glm=list(family = poisson), weights=weights)
+x[64,3] with colnames x.L x.Q x.C
+y[64,2] with colnames y1 y2
+earth and glm weights[64]: 1, 2, 3, 0, 5, 6, 7, 0, 9, 10, 11, 12...
+Forward pass term 1, 2, 4
+RSq changed by less than 0.001 at 3 terms (DeltaRSq 5.7e-05)
+After forward pass GRSq 0.175 RSq 0.325
+Prune backward penalty 2 nprune null: selected 2 of 3 terms, and 1 of 3 preds
+After pruning pass GRSq 0.278 RSq 0.323
+GLM y1 devratio 0.58 dof 60/61 iters 5
+GLM y2 devratio 0.57 dof 60/61 iters 6
+> cat("earth.pois.multiple.response:\n")
+earth.pois.multiple.response:
+> print(earth.pois.multiple.response)
+GLM (family poisson, link log):
+     nulldev df       dev df   devratio     AIC iters converged
+y1   94934.7 61     39830 60      0.580   49300     5         1
+y2 1613415.0 61    698038 60      0.567  710400     6         1
+
+Earth selected 2 of 3 terms, and 1 of 3 predictors
+Termination condition: RSq changed by less than 0.001 at 3 terms
+Importance: x.L, x.Q-unused, x.C-unused
+Weights: 1, 2, 3, 0, 5, 6, 7, 0, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, ...
+Number of terms at each degree of interaction: 1 1 (additive model)
+
+Earth
+           GCV       RSS      GRSq       RSq
+y1     45124.4   2623560 0.4258811 0.4617544
+y2  12454506.9 724112813 0.2772184 0.3223809
+All 12499631.2 726736372 0.2778934 0.3230137
+> cat("summary(earth.pois.multiple.response:\n")
+summary(earth.pois.multiple.response:
+> print(summary(earth.pois.multiple.response))
+Call: earth(x=Insurance$Age, y=cbind(Insurance$Claims,Insurance$Claims2),
+            weights=weights, trace=1, glm=list(family=poisson))
+
+GLM coefficients
+                      y1       y2
+(Intercept)     2.693536 4.327129
+h(x.L-0.223607) 4.045294 5.791490
+
+GLM (family poisson, link log):
+     nulldev df       dev df   devratio     AIC iters converged
+y1   94934.7 61     39830 60      0.580   49300     5         1
+y2 1613415.0 61    698038 60      0.567  710400     6         1
+
+Earth selected 2 of 3 terms, and 1 of 3 predictors
+Termination condition: RSq changed by less than 0.001 at 3 terms
+Importance: x.L, x.Q-unused, x.C-unused
+Weights: 1, 2, 3, 0, 5, 6, 7, 0, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, ...
+Number of terms at each degree of interaction: 1 1 (additive model)
+
+Earth
+           GCV       RSS      GRSq       RSq
+y1     45124.4   2623560 0.4258811 0.4617544
+y2  12454506.9 724112813 0.2772184 0.3223809
+All 12499631.2 726736372 0.2778934 0.3230137
+> plotmo(earth.pois.multiple.response, nresponse=1, pt.col=2)
+> 
+> # test update.earth with weights and offset
+> 
+> data(trees)
+> tr <- trees
+> set.seed(2019)
+> tr$Vol2 <- tr$Volume + 10 * rnorm(nrow(tr))
+> my.weights <- 1:nrow(tr)
+> my.weights[3] <- 0
+> 
+> earth30 <- earth(Volume ~ Girth + offset(log(Height)), data=tr,
++                  linpreds=TRUE, thresh=0, penalty=-1)
+> lm30 <- lm(Volume ~ Girth + offset(log(Height)), data=tr)
+> check.earth.matches.lm(earth30, lm30, newdata=tr[c(3:5),])
+check earth30 vs lm30
+> 
+> lm31 <- lm(Volume ~ Girth, data=tr)
+> earth31 <- earth(Volume ~ Girth, data=tr,
++                  linpreds=TRUE, thresh=0, penalty=-1)
+> earth31.offset <- update(earth31, formula.=Volume ~ Girth + offset(log(Height)))
+> check.earth.matches.lm(earth31.offset, lm30, newdata=tr[c(3:5),])
+check earth31.offset vs lm30
+> earth.nooffset <- update(earth31.offset, formula.=Volume ~ Girth)
+> check.earth.matches.lm(earth.nooffset, lm31, newdata=tr[c(3:5),])
+check earth.nooffset vs lm31
+> 
+> lm31.weights <- lm(Volume ~ Girth, data=tr, weights=my.weights)
+> earth31.weights <- update(earth31, weights=my.weights)
+> # lower max is needed below because of zeros in my.weights
+> check.earth.matches.lm(earth31.weights, lm31.weights, newdata=tr[c(3:5),], max=1e-6, max.residuals=1e-6)
+check earth31.weights vs lm31.weights
+> 
+> lm31.weights.offset <- lm(Volume ~ Girth + offset(log(Height)), data=tr, weights=my.weights)
+> earth31.weights.offset <- update(earth31.weights, formula=Volume ~ Girth + offset(log(Height)))
+> check.earth.matches.lm(earth31.weights.offset, lm31.weights.offset, newdata=tr[c(3:5),], max=1e-6, max.residuals=1e-6)
+check earth31.weights.offset vs lm31.weights.offset
+> cat("earth31.weights.offset:\n")
+earth31.weights.offset:
+> print(summary(earth31.weights.offset))
+Call: earth(formula=Volume~Girth+offset(log(Height)), data=tr,
+            weights=c(1,2,0,4,5,6,7...), linpreds=TRUE, thresh=0, penalty=-1)
+
+            coefficients
+(Intercept)   -49.507279
+Girth           5.594527
+
+Selected 2 of 2 terms, and 1 of 1 predictors
+Termination condition: No new term increases RSq at 2 terms
+Importance: Girth
+Offset: log(Height) with values log(70), log(65), log(63), log(72), log(...
+Weights: 1, 2, 0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, ...
+Number of terms at each degree of interaction: 1 1 (additive model)
+GCV 292.7582    RSS 9075.505    GRSq 0.9339319    RSq 0.9339319
+> cat("\nnearth31.weights.offset$modvars:\n")
+
+nearth31.weights.offset$modvars:
+> print.default(earth31.weights.offset$modvars)
+       Girth
+Girth      1
+Height  9999
+> 
+> source("test.epilog.R")

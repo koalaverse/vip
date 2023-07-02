@@ -1,0 +1,203 @@
+\documentclass[12pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+%\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{color} %% red, green, and blue (for screen display) and cyan, magenta, and yellow
+\definecolor{Navy}{rgb}{0,0,0.8}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, urlcolor={Navy}, linkcolor={Navy}, citecolor={Navy}}
+
+\parskip 7.2pt
+
+\newcommand{\compresslist}{%
+%\setlength{\itemsep}{1pt}%
+\setlength{\itemsep}{0pt}%
+\setlength{\parskip}{0pt}%
+\setlength{\parsep}{0pt}%
+}
+
+\newcommand{\pb}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\V}{\mathbb{V}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\bea}{\begin{align*}}
+\newcommand{\eea}{\end{align*}}
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+\newcommand{\be}{\begin{enumerate}}
+\newcommand{\ee}{\end{enumerate}}
+\newcommand{\bi}{\begin{itemize}}
+\newcommand{\ei}{\end{itemize}}
+\renewcommand{\baselinestretch}{1}
+
+\title{\texttt{SQUAREM}: Accelerating the Convergence of EM, MM and Other Fixed-Point Algorithms}
+\author{Ravi Varadhan}
+\date{}
+\begin{document}
+
+%\VignetteIndexEntry{SQUAREM Tutorial}
+%\VignetteDepends{setRNG}
+%\VignetteKeywords{EM algorithm, fixed-point iteration, acceleration, extrapolation}
+%\VignettePackage{SQUAREM}
+\SweaveOpts{eval=TRUE,echo=TRUE,results=verbatim,fig=FALSE,keep.source=TRUE, concordance=FALSE}
+\maketitle
+
+\section{Overview of SQUAREM}
+''SQUAREM'' is a package intended for accelerating slowly-convergent contraction mappings.  It can be used for accelerating the convergence of slow, linearly convergent contraction mappings such as the EM (expectation-maximization) algorithm, MM (majorize and minimize) algorithm, and other nonlinear fixed-point iterations such as the power method for finding the dominant eigenvector.  It uses a novel approach callled squared extrapolation method (SQUAREM) that was proposed in Varadhan and Roland (Scandinavian Journal of Statistics, 35: 335-353), and also in Roland, Vardhan, and Frangakis (Numerical Algorithms, 44: 159-172).
+
+The functions in this package are made available with:
+
+<<load>>=
+library("SQUAREM") 
+@
+
+You can look at the basic information on the package, including all the 
+available functions with
+
+<<help>>=
+help(package=SQUAREM)
+@
+
+
+The package \emph{setRNG} is not necessary, but if you want to exactly 
+reproduce the examples in this guide then do this:
+<<rng>>=
+require("setRNG") 
+setRNG(list(kind="Wichmann-Hill", normal.kind="Box-Muller", seed=123))
+@
+after which the example need to be run in the order here (or at least the parts
+that generate random numbers). For some examples the RNG is reset again
+so they can be reproduced more easily.
+
+\section{How to accelerate convergence of a fixed-point iteration with SQUAREM?}
+
+\subsection{Accelerating EM algorithm: Binary Poisson Mixture Maximum-Likelihood Estimation}
+Now, we show an example demonstrating the ability of SQUAREM to dramatically speed-up the convergence of the EM algorithm for a binary Poisson mixture estimation.   We use the example from Hasselblad (J of Amer Stat Assoc 1969)
+<<data>>=
+poissmix.dat <- data.frame(death=0:9, freq=c(162,267,271,185,111,61,27,8,3,1))
+@
+
+Generate a random initial guess for 3 parameters
+<<init>>=
+y <- poissmix.dat$freq
+tol <- 1.e-08
+
+setRNG(list(kind="Wichmann-Hill", normal.kind="Box-Muller", seed=123))
+p0 <- c(runif(1),runif(2,0,6))    
+@
+The fixed point mapping giving a single E and M step of the EM algorithm
+ 
+<<poissmix>>=
+poissmix.em <- function(p,y) {
+pnew <- rep(NA,3)
+i <- 0:(length(y)-1)
+zi <- p[1]*exp(-p[2])*p[2]^i / (p[1]*exp(-p[2])*p[2]^i + (1 - p[1])*exp(-p[3])*p[3]^i)
+pnew[1] <- sum(y*zi)/sum(y)
+pnew[2] <- sum(y*i*zi)/sum(y*zi)
+pnew[3] <- sum(y*i*(1-zi))/sum(y*(1-zi))
+p <- pnew
+return(pnew)
+}
+@
+Objective function whose local minimum is a fixed point. Here it is the negative log-likelihood of binary poisson mixture.
+
+<<loglik>>=
+poissmix.loglik <- function(p,y) {
+i <- 0:(length(y)-1)
+loglik <- y*log(p[1]*exp(-p[2])*p[2]^i/exp(lgamma(i+1)) + 
+		(1 - p[1])*exp(-p[3])*p[3]^i/exp(lgamma(i+1)))
+return ( -sum(loglik) )
+}
+@
+
+EM algorithm
+<<em>>=
+pf1 <- fpiter(p=p0, y=y, fixptfn=poissmix.em, objfn=poissmix.loglik, 
+control=list(tol=tol))
+pf1
+@
+Note the slow convergence of EM, as it uses more than 2900 iterations to converge.  Now, let us speed up the convergence with SQUAREM:
+
+<<squarem>>=
+pf2 <- squarem(p=p0, y=y, fixptfn=poissmix.em, objfn=poissmix.loglik, 
+control=list(tol=tol))
+pf2
+@
+Note the dramatically faster convergence, i.e. SQUAREM uses only 72 fixed-point evaluations to achieve convergence.  This is a speed up of a factor of 40.  
+
+We can also run SQUAREM without specifying an objective function, i.e. the negative log-likelihood.  \emph{This is usually the most efficient way to use SQUAREM.}
+
+<<squarem2>>=
+pf3 <- squarem(p=p0, y=y, fixptfn=poissmix.em, control=list(tol=tol))
+pf3
+@
+
+\subsection{Accelerating the Power Method for Finding the Dominant Eigenpair}
+
+The power method is a nonlinear fixed-point iteration for determining the dominant eigenpair, i.e. the largest eigenvalue (in terms of absolute magnitude) and the corresponding eigenvector, of a square matrix $A.$  The iteration can be programmed in R as:
+
+<<power>>=
+power.method <- function(x, A) {
+# Defines one iteration of the power method
+# x = starting guess for dominant eigenvector
+# A = a square matrix
+ax <- as.numeric(A %*% x)
+f <- ax / sqrt(as.numeric(crossprod(ax)))
+f
+}
+@
+We illustrate this for finding the dominant eigenvector of the Bodewig matrix which is a famous matrix for which power method has trouble converging.  See, for example, Sidi, Ford, and Smith (SIAM Review, 1988).  Here there are two eigenvalues that are equally dominant, but have opposite signs! Sometimes the power method finds the eigenvector corresponding to the large positive eigenvalue, but other times it finds the eigenvector corresponding to the large negative eigenvalue
+
+<<bodewig>>=
+b <- c(2, 1, 3, 4, 1,  -3,   1,   5,  3,   1,   6,  -2,  4,   5,  -2,  -1)
+bodewig.mat <- matrix(b,4,4)
+eigen(bodewig.mat)
+@
+Now, let us look at power method and its acceleration using various SQUAREM schemes:
+
+<<accelerate>>=
+p0 <- rnorm(4)
+
+# Standard power method iteration
+ans1 <- fpiter(p0, fixptfn=power.method, A=bodewig.mat)
+# re-scaling the eigenvector so that it has unit length
+ans1$par <- ans1$par / sqrt(sum(ans1$par^2))  
+# dominant eigenvector
+ans1  
+# dominant eigenvalue
+c(t(ans1$par) %*% bodewig.mat %*% ans1$par) / c(crossprod(ans1$par))  
+@
+
+Now, we try first-order SQUAREM with default settings:
+
+<<sq.bodewig>>=
+ans2 <- squarem(p0, fixptfn=power.method, A=bodewig.mat)
+ans2
+ans2$par <- ans2$par / sqrt(sum(ans2$par^2))
+c(t(ans2$par) %*% bodewig.mat %*% ans2$par) / c(crossprod(ans2$par))  
+@
+The convergence is still slow, but it converges to the dominant eigenvector.  Now, we try with a minimum steplength that is smaller than 1.
+
+<<sq2.bodewig>>=
+ans3 <- squarem(p0, fixptfn=power.method, A=bodewig.mat, control=list(step.min0 = 0.5))
+ans3
+ans3$par <- ans3$par / sqrt(sum(ans3$par^2))
+# eigenvalue
+c(t(ans3$par) %*% bodewig.mat %*% ans3$par) / c(crossprod(ans3$par))  
+@
+
+The convergence is dramatically faster now, but it converges to the second dominant eigenvector.  We try again with a higher-order SQUAREM scheme.
+
+<<sq3.bodewig>>=
+# Third-order SQUAREM
+ans4 <- squarem(p0, fixptfn=power.method, A=bodewig.mat, control=list(K=3, method="rre"))
+ans4
+ans4$par <- ans4$par / sqrt(sum(ans4$par^2))
+# eigenvalue
+c(t(ans4$par) %*% bodewig.mat %*% ans4$par) / c(crossprod(ans4$par))  
+@
+Once again we obtain the second dominant eigenvector.
+
+\end{document}

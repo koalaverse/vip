@@ -1,0 +1,22 @@
+Package: listenv
+Version: 0.9.0
+Depends: R (>= 3.1.2)
+Suggests: R.utils, R.rsp, markdown
+VignetteBuilder: R.rsp
+Title: Environments Behaving (Almost) as Lists
+Authors@R: c(person("Henrik", "Bengtsson", role=c("aut", "cre", "cph"),
+                                          email = "henrikb@braju.com"))
+Description: List environments are environments that have list-like properties.  For instance, the elements of a list environment are ordered and can be accessed and iterated over using index subsetting, e.g. 'x <- listenv(a = 1, b = 2); for (i in seq_along(x)) x[[i]] <- x[[i]] ^ 2; y <- as.list(x)'.
+License: LGPL (>= 2.1)
+LazyLoad: TRUE
+URL: https://listenv.futureverse.org,
+        https://github.com/HenrikBengtsson/listenv
+BugReports: https://github.com/HenrikBengtsson/listenv/issues
+RoxygenNote: 7.2.3
+NeedsCompilation: no
+Packaged: 2022-12-16 03:07:59 UTC; hb
+Author: Henrik Bengtsson [aut, cre, cph]
+Maintainer: Henrik Bengtsson <henrikb@braju.com>
+Repository: CRAN
+Date/Publication: 2022-12-16 07:40:02 UTC
+Built: R 4.2.0; ; 2023-04-01 09:43:57 UTC; unix

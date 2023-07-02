@@ -1,0 +1,48 @@
+Package: parsnip
+Title: A Common API to Modeling and Analysis Functions
+Version: 1.1.0
+Authors@R: c(
+    person("Max", "Kuhn", , "max@posit.co", role = c("aut", "cre")),
+    person("Davis", "Vaughan", , "davis@posit.co", role = "aut"),
+    person("Emil", "Hvitfeldt", , "emil.hvitfeldt@posit.co", role = "ctb"),
+    person("Posit Software, PBC", role = c("cph", "fnd"))
+  )
+Maintainer: Max Kuhn <max@posit.co>
+Description: A common interface is provided to allow users to specify a
+    model without having to remember the different argument names across
+    different functions or computational engines (e.g. 'R', 'Spark',
+    'Stan', 'H2O', etc).
+License: MIT + file LICENSE
+URL: https://github.com/tidymodels/parsnip,
+        https://parsnip.tidymodels.org/
+BugReports: https://github.com/tidymodels/parsnip/issues
+Depends: R (>= 3.5)
+Imports: cli, dplyr (>= 1.1.0), generics (>= 0.1.2), ggplot2, globals,
+        glue, hardhat (>= 1.1.0), lifecycle, magrittr, pillar,
+        prettyunits, purrr (>= 1.0.0), rlang (>= 0.3.1), stats, tibble
+        (>= 2.1.1), tidyr (>= 1.3.0), utils, vctrs (>= 0.6.0), withr
+Suggests: C50, covr, dials (>= 1.1.0), earth, ggrepel, keras, kernlab,
+        kknn, knitr, LiblineaR, MASS, Matrix, mgcv, modeldata, nlme,
+        prodlim, ranger (>= 0.12.0), remotes, rmarkdown, rpart,
+        sparklyr (>= 1.0.0), survival, tensorflow, testthat (>= 3.0.0),
+        xgboost (>= 1.5.0.1)
+VignetteBuilder: knitr
+ByteCompile: true
+Config/Needs/website: C50, dbarts, earth, glmnet, keras, kernlab, kknn,
+        LiblineaR, mgcv, nnet, parsnip, randomForest, ranger, rpart,
+        rstanarm, tidymodels/tidymodels, tidyverse/tidytemplate,
+        rstudio/reticulate, xgboost
+Config/rcmdcheck/ignore-inconsequential-notes: true
+Config/testthat/edition: 3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.3
+NeedsCompilation: no
+Packaged: 2023-04-11 12:04:14 UTC; max
+Author: Max Kuhn [aut, cre],
+  Davis Vaughan [aut],
+  Emil Hvitfeldt [ctb],
+  Posit Software, PBC [cph, fnd]
+Repository: CRAN
+Date/Publication: 2023-04-12 16:20:09 UTC
+Built: R 4.2.0; ; 2023-04-13 01:34:31 UTC; unix

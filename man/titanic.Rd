@@ -6,19 +6,19 @@
 \title{Survival of Titanic passengers}
 \format{
 A data frame with 1309 observations on the following 6 variables:
-\describe{
-\item{survived}{binary with levels \code{"yes"} for survived and \code{"no"}
-otherwise;}
-\item{pclass}{integer giving the corresponding passenger (i.e., ticket)
-class with values 1--3;}
-\item{age}{the age in years of the corresponding passenger (with 263
-missing values);}
-\item{sex}{factor giving the sex of each passenger with levels
-\code{"male"} and \code{"female"};}
-\item{sibsp}{integer giving the number of siblings/spouses aboard for each
-passenger (ranges from 0--8);}
-\item{parch}{integer giving the number of parents/children aboard for each
-passenger (ranges from 0--9).}
+\itemize{
+\item \code{survived} - binary with levels \code{"yes"} for survived and \code{"no"}
+otherwise;
+\item \code{pclass} - integer giving the corresponding passenger (i.e., ticket)
+class with values 1--3;
+\item \code{age} - the age in years of the corresponding passenger (with 263
+missing values);
+\item \code{age} - factor giving the sex of each passenger with levels
+\code{"male"} and \code{"female"};
+\item \code{sibsp} - integer giving the number of siblings/spouses aboard for each
+passenger (ranges from 0--8);
+\item \code{parch} - integer giving the number of parents/children aboard for each
+passenger (ranges from 0--9).
 }
 }
 \source{

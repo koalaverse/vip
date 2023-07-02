@@ -1,0 +1,47 @@
+Package: lattice
+Version: 0.21-8
+Date: 2023-04-05
+Priority: recommended
+Title: Trellis Graphics for R
+Authors@R: c(person("Deepayan", "Sarkar", role = c("aut", "cre"),
+	            email = "deepayan.sarkar@r-project.org",
+		    comment = c(ORCID = "0000-0003-4107-1553")),
+              person("Felix", "Andrews", role = "ctb"),
+	      person("Kevin", "Wright", role = "ctb", comment = "documentation"),
+	      person("Neil", "Klepeis", role = "ctb"),
+	      person("Johan", "Larsson", role = "ctb", comment = "miscellaneous improvements"),
+              person("Zhijian (Jason)", "Wen", role = "cph", comment = "filled contour code"),
+              person("Paul", "Murrell", role = "ctb", email = "paul@stat.auckland.ac.nz"),
+	      person("Stefan", "Eng", role = "ctb", comment = "violin plot improvements"),
+	      person("Achim", "Zeileis", role = "ctb", comment = "modern colors")
+	      )
+Description: A powerful and elegant high-level data visualization
+  system inspired by Trellis graphics, with an emphasis on
+  multivariate data. Lattice is sufficient for typical graphics needs,
+  and is also flexible enough to handle most nonstandard requirements.
+  See ?Lattice for an introduction.
+Depends: R (>= 4.0.0)
+Suggests: KernSmooth, MASS, latticeExtra, colorspace
+Imports: grid, grDevices, graphics, stats, utils
+Enhances: chron
+LazyLoad: yes
+LazyData: yes
+License: GPL (>= 2)
+URL: https://lattice.r-forge.r-project.org/
+BugReports: https://github.com/deepayan/lattice/issues
+NeedsCompilation: yes
+Packaged: 2023-04-05 15:31:40 UTC; deepayan
+Author: Deepayan Sarkar [aut, cre] (<https://orcid.org/0000-0003-4107-1553>),
+  Felix Andrews [ctb],
+  Kevin Wright [ctb] (documentation),
+  Neil Klepeis [ctb],
+  Johan Larsson [ctb] (miscellaneous improvements),
+  Zhijian (Jason) Wen [cph] (filled contour code),
+  Paul Murrell [ctb],
+  Stefan Eng [ctb] (violin plot improvements),
+  Achim Zeileis [ctb] (modern colors)
+Maintainer: Deepayan Sarkar <deepayan.sarkar@r-project.org>
+Repository: CRAN
+Date/Publication: 2023-04-05 17:43:19 UTC
+Built: R 4.2.0; aarch64-apple-darwin20; 2023-04-05 19:50:48 UTC; unix
+Archs: lattice.so.dSYM

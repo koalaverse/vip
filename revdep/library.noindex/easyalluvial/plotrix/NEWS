@@ -1,0 +1,540 @@
+version 3.8-2
+
+        fixed showcount option in sizetree
+        log10 plotting added to radial.plot family (thanks to Keziah Conroy)
+        added X and Y axis labels in gap.boxplot
+
+version 3.8-1
+
+        dropped makeDendrite, plotDendrite and sumDendrite functions
+
+version 3.7-8
+
+        Either axis in barp can now be omitted using the stax* arguments
+        HH:MM to decimal hour conversion with hm2dec argument in clock24.plot
+        Improved the placement of top.labels in pyramid.plot
+        Fixed color problem in floating.pie when zero or NA present
+         (thanks to Christoffer Flensburg)
+        Fixed label problem in radial.plot.labels
+         (thanks to Fabio Parracho Silva)
+        Added gap_barp function that will eventually replace gap.barplot
+         (thanks to Pamela Rueda-Cediel)
+
+version 3.7-7
+
+        twoord.plot now calls axis.POSIXct for the x-axis if appropriate
+        fixed problem with conditional statements using "class"
+
+version 3.7-6
+
+        fixed color.axis when "at" values are outside the plot limits
+
+version 3.7-5
+
+        fixed the "empty list" bug in listDepth (thanks to Tingting Zhan)
+        new and elegant thigmophobe function (thanks to Bill Venables)
+        adjusted text size and placement in taylor.diagram for pos.cor=FALSE
+        added makeDensityMatrix and densityGrid functions
+        fixed functions that called 'barplot' (thanks to Martin Maechler)
+
+version 3.7-4
+
+        fixed the dimension loss in color.scale when xrange specified
+
+version 3.7-3
+
+        enhancement for gradient.rect function (thanks to Rod Lamming)
+        fix for gantt.chart function (thanks to Andrius Getzinis)
+        improvement to thigmophobe (thanks to Duncan Murdoch)
+        fixed specified legend position in the barp function
+
+version 3.7-2
+
+        align plotrix-package.Rd with DESCRIPTION file
+        added user-specified labels to bumpchart
+
+version 3.7-1
+
+        fix for the multivari function (thanks to Ulrike Groemping)
+        added the plotH function (thanks to Derek Ogle)
+
+version 3.7
+
+        fixed brkdnNest due to changes arriving in R-3.4.3
+        added the joyPlot function
+        multivari plot function added (thanks to Ulrike Groemping)
+
+version 3.6-6
+
+        added fill arguments to draw.circle (thanks to David Winsemius)
+        color2D.matplot now adds trailing zeros to values (thanks to Yuan Zhou)
+        a few ehancements to gantt.chart (thanks to Suman Khanal)
+        fixed the problem of asking for "l" type in polar.plot (thanks to Alex Pal)
+        improved version of violin_plot (thanks to Darshan Baral)
+
+version 3.6-5
+
+        added the clustered.dotplots and violin_plot functions
+        fixed the extra call to plot in soil.texture (thanks to Dylan Beaudette)
+        added an option to radial.grid to allow it to display a blank grid
+        fixed a mysterious problem with equating one argument to another
+        in the box.heresy function
+
+version 3.6-4
+
+        fixed a typo in twoord.plot that caused an error when the range
+        of the right axis went negative
+        added the jiggle function
+        changed the show.nulls argument in intersectDiagram to the nulls label
+        fixed the "fill" problem in textbox (thanks to Kohleth Chia)
+        added the placeLabels function
+        enhancement to raw.means.plot (thanks to Henrik Singmann)
+        added the binciW function, which fixes an error (thanks to Marc Girondot)
+        fixed the bug with displaying dispersion in barNest
+
+version 3.6-3
+
+        fixed the errant y label in radial.pie
+        fixed the problem with degrees/radians in draw.ellipse (thanks to Wouter vander Bijl)
+
+version 3.6-2
+
+        fixed the call to clip in rectFill (thanks to Cheng Zhou)
+        fixed the incorrect placing of some text in arctext (thanks to Mark Heckmann)
+        fixed the misbehaving y axis in brkdn.plot
+        improved the circumferential labels in clock24.plot
+
+version 3.6-1
+
+	updated ehplot function (thanks to Robby Englemann)
+	pyramid.plot now displays trailing zeros (thanks to Simon Thornley)
+	problem with time/date x values in vectorField fixed
+	colors and staggering added to plot.dendrite (thanks to Marna Wagley)
+
+version 3.6
+
+	fixed the missing left axis ticks in pyramid.plot (thanks to Jacob Clark)
+	corrected addtable2plot for log y plots (thanks to Andrew Metcalfe)
+	made the axis label and axis tick expansions the same in twoord.plot (thanks to wxj)
+	made the axis label and tick labels the same color as the axis in twoord.plot
+	added stack labels to the sizetree function
+	added imports now necessary for R CMD check
+
+version 3.5-12
+
+	added choice of time axis (1 or 3) to gantt.chart (thanks to Mathias Collins)
+	added outlined error bars to the dispersion function (thanks to Michael Eisenring)
+	added a check for no variation in values to color.scale and color2D.matplot (thanks to Diego Calzolari)
+
+version 3.5-11
+
+	changed my email address
+
+version 3.5-10
+
+	added calculation method for SD in taylor.diagram (thanks to Melanie Moeller)
+	added the assembly seat distribution functions "seats" and "election"
+	  (thanks to Barry Rowlingson and Duncan Murdoch)
+	fixed the rectangle border problem in legendg (thanks to Christian Graul)
+
+version 3.5-9
+
+	added tangential labels to radial.plot
+
+version 3.5-8
+
+	fixed the line length bug in feather.plot (thanks to Dr. Kazama)
+
+version 3.5-6
+
+	added optional radial lines to the radial.grid function (thanks to Darren Obbard)
+
+version 3.5-5
+
+	fixed the radial label bug in the radial.* functions (thanks to Mayeul Kauffmann)
+	changed the circumferential label suppress value in the radial.* functions to NULL
+	added the color.axis function
+	added log correction for boxed.labels (thanks to Flemming Skjøth)
+	fixed the breaks bug in histStack.default (thanks to Derek Ogle)
+	added scaled bar widths to barNest
+
+version 3.5-3
+
+	fixed the problems with data frames and margins in battleship.plot (thanks to David Carlson)
+	set xpd=TRUE for the boxed.labels function (thanks to Francois Rousseu)
+	changed the pie.labels function to call text and adjust in x and y
+	added plain text labelling to pie.labels
+	tested for a current device in cluster.overplot and count.overplot (thanks to Markus Elze)
+
+version 3.5-2
+
+	added the get.tablepos function (thanks to Peter Murakami)
+	passed the ... argument(s) to points and dispersion in brkdn.plot (thanks to Peter Mandeville)
+	added text adjustment for the circumferential labels to radial.plot
+	added the fill.corner function to do waffle plots (thanks to Zhao Jin)
+
+version 3.5-1
+
+	added the tsxpos function (thanks to Prof J C Nash)
+	added a warning for off-axis labels to staxlab (thanks again to Prof Nash)
+	added the arrows argument to bumpchart (thanks to Jie)
+	added the axes argument to gap.boxplot (thanks to Shane Carey)
+
+version 3.4-8
+
+	fixed a minor bug in the ylim argument of gap.plot
+	twoord.plot had some bugs cleaned up and now has a do.first argument
+	fixed the missing background colors in addtable2plot
+	allowed floating.pie to ignore zero and NA values (thanks to Jose deSantos)
+	added the "stax" argument to gap.plot (thanks to Zheng Lu)
+	fixed the problem with "yaxlab" in gap.barplot (thanks to Giorgio Galetti)
+	added the "histStack" and "plotH" functions (thanks to Derek Ogle)
+
+version 3.4-7
+
+	added automatic spreading out to pie.labels
+	fixed the "priorities extremes" bug in gantt.chart (thanks to Michael Motta)
+	pyramid.plot now accepts NA values (thanks to Susumu Tanimura)
+	radial.plot now does a rank clock plot (thanks to Don Dennerline)
+
+version 3.4-6
+
+	fixed the kite line positioning in kiteChart (thanks to Justin Dellinger)
+
+version 3.4-5
+
+	fixed the upside down character bug in arctext
+	fixed the typo in the demo function for kite chart
+
+version 3.4-4
+
+	added the radial.grid function to the NAMESPACE
+
+version 3.4-3
+
+	minor bug that counted NAs in the propbrk function fixed
+
+version 3.4-2
+
+	Character spacing and placement improved in draw.arc and arctext (thanks to Ted Toal)
+	radialtext and draw.radial.line functions added (also thanks to Ted Toal)
+	weighted.hist now allows a custom X axis to be displayed (thanks to Ben Graf)
+	Added the barlabels function
+
+version 3.4-1
+
+	Fixed the alignment problem in pie3D and rationalized angle increments
+	Added the raw.means.plot functions contributed by Henrik Singmann
+	vastly improved the speed of the sizetree function
+	added the "varpos" argument to the kiteChart function - thanks to Nikolaus Lampardariou)
+
+version 3.4
+
+	added the border argument to the sizetree function
+	multhist now returns all values from hist - thanks to John Muccigrosso
+	fixed a bug in addtable2plot that appeared on plots with a log x axis
+	fixed an almost invisible bug in drawSectorAnnulus - thanks to Denes
+	added the "mar" argument to pie3D - thanks to Qinghua Zhao
+
+version 3.3-9
+
+	Fixed the bug in centipede.plot that I introduced in v3.3-8
+
+version 3.3-8
+
+	added the horizontal grid argument to centipede plot (thanks to Colin Wahl)
+
+version 3.3-7
+
+	Fixed a color bug in plotCI (thanks to Daniel Wollschlaeger)
+
+version 3.3-6
+
+	Added the battleship plot (or Ford curve) thanks to Adam Maltese
+	Added the box.heresy function - thanks to Gianni Lavaredo
+
+version 3.3-4
+
+	Added the display.na argument to the dispersion function (thanks to Lasse Jacobsen)
+	Removed the "Overall" bar in barNest when counts are being displayed
+
+version 3.3-3
+
+	Fixed a bug in the Hinton diagram option (thanks to Xavier Fernández i Marín)
+
+version 3.3-2
+
+	color2D.matplot will now display a Hinton diagram
+	added padding for negative values in twoord.plot (thanks to Hans Borcher)
+	added the maxEmptyRect function (thanks again to Hans Borchers)
+
+version 3.3-1
+
+	expanded the color options and added top labels in sizetree
+	returned the frequency calculation in weighted.hist to what it used to be
+
+version 3.3
+
+	fixed the vertical lines color in addtable2plot
+	fixed the frequency calculation in weighted.hist (thanks to Jarad Niemi)
+	added the size_n_color plot
+
+version 3.2-8
+
+	added partitioning of intersections to intersectDiagram
+
+version 3.2-7
+
+	bug fix for the examples in ladderplot
+
+version 3.2-6
+
+	added the ruginv function after fixing some encoding problems
+
+version 3.2-5
+
+	fixed a color assignment problem in plotCI
+	added automatic color assignment in sizetree where all levels use the same colors
+
+version 3.2-4
+
+	Fixed the missing "shade" argument in pie3D (thanks to Jesse Brown)
+	Added specifiable priority legend label and extreme descriptors
+		(thanks to Pedro Reis)
+	Added the (experimental) radial.pie function
+
+version 3.2-3
+
+	Fixed a few warnings from CRAN check (dotplot.mtb, gap.boxplot, symbolbarplot)
+	Added the ruginv function (thanks to Peter Solymos)
+
+version 3.2-2
+
+	Added the labbePlot function (thanks to Whitney Melroy)
+	Fixed the showall argument problem in the barNest function
+	Fixed the problem with data frame input in the intersectDiagram function
+
+version 3.2-1
+
+	Added the sumbrk function to brkdnNest (thanks to Kevin Burnham)
+	The dispbars function (just a call to dispersion) is now gone
+	Added user specified text colors to boxed.labels (thanks to Thorn Thaler)
+	Added the ehplot function (thanks to Robby, Michael & Felix)
+
+version 3.2
+
+	Rewrote intersectDiagram to use equidistant spacing
+	Fixed a warning in oz.windrose.legend
+	Fixed default ordinate scaling in twoord.plot
+	Major rewrite of brkdnNest, barNest and drawNestedBars functions
+	Major rewrite of color.scale function
+	Added sliceArray function for barNest due to the above rewrite
+
+version 3.1-2
+
+	Fixed a minor bug in intersectDiagram
+
+version 3.1-1
+
+	Border colors added to gantt.chart (thanks to Brandon Fessler)
+	Extensive rewrite of the intersectDiagram function and helpers
+	Rewrite of the dendroPlot function
+	categoryReshape function added
+
+version 3.1
+
+	intersectDiagram zero instance levels fixed
+	intersectDiagram now invisibly returns the list of intersections
+	Spacing within levels in intersectDiagram simplified
+	makeIntersectList now discards empty levels of intersection
+	makeIntersectList color assignment fixed
+	dendroPlot function added
+
+version 3.0-9
+
+	Fixed the priority coloring problem in gantt.chart
+	Added optional vertical lines to addtable2plot (thanks to Bill Sperry)
+	Fixed the overshooting y axis for certain values of y in barp
+
+version 3.0-8
+
+	Added semi-intelligent cell labelling to the color2D.matplot function
+
+version 3.0-7
+
+	Fixed the right ordinate alignment in twoord.plot
+
+version 3.0-6
+
+	Added the "barlabels" argument to drawNestedBars
+	big fix for the makeDendrite, furc and plot.dendrite functions
+
+version 3.0-5
+
+	added Christophe Dutang's fix for the twoord.stackpoly function
+	fixed the confidence limit problem in barNest (I sincerely hope)
+
+version 3.0-4
+
+	added semi-intelligent bar labelling to the sizetree function
+	added yaxs="i" to the empty plot in twoord.plot (thanks to Giles Crane)
+	added the Wilson binomial CI functions for brkdnNest
+
+version 3.0-3
+
+	added the ladderplot function (thanks to Peter Solymos)
+
+version 3.0-2
+
+	rewrote intersectDiagram to better display missing intersections
+	added a correction for character expansion to boxed.labels
+	fixed the count method for barNest
+
+version 3.0-1
+
+	competely rewrote the barNest family of functions
+	removed labels for empty sets in intersectDiagram
+
+version 3.0
+
+	fixed some minor problems with oz.windrose (thanks to Brad Evans)
+	added a 'locator' option to zoomInPlot (thanks to Greg Snow)
+	added the 'padj' argument to stackpoly for more tick label control
+	made the 'srt' argument work for both x and y axes in staxlab
+	fixed two little bugs in thigmophobe (thanks to Stephen Milborrow)
+	added the 'add' argument to radial.plot (thanks to Evan Daugharthy)
+
+version 2.9-5
+
+	added the kiteChart function
+	added the "pos" argument to the getFigCtr function
+
+version 2.9-4
+
+	added a calculated default vector of axis tick positions to twoord.plot
+	added a "mar" argument to the taylor.diagram function
+
+version 2.9-3
+
+	added the gamma.col argument to taylor.diagram (thanks to Julian Arnold)
+	added the radial.labels function (thanks to Tali Vardi)
+	added the multiple colors per labels to gantt.chart (thanks to Nicolas Immelman)
+	added the rectFill function
+	added an option to the barp function to use rectFill
+
+version 2.9-2
+
+	fixed the margin problem in staircase.plot
+	fixed the default y-axis tick placement in barp
+
+version 2.9-1
+
+	fixed the "big gap" problem in the gap.plot function
+	added the twoord.stackplot function (thanks to Christophe Dutang)
+
+version 2.9
+
+	added the panes function
+	fixed the border bug in color2D.matplot
+	fixed the indexing bug in drawNestedBars
+
+version 2.8-4
+
+	added the triax.fill function which necessitated...
+	changed the initial plot call from triax.frame to triax.plot
+	removed the "main" argument from triax.frame
+	added brkdnNest to replace hierobrk
+	rewrote barNest to suit brkdnNest
+	added drawNestedBars for the display of barNest
+	changed all remaining hierobarp functions to barNest
+
+version 2.8-3
+
+	radical rewrite of the pyramid.plot function
+	fixed up barp example mistake
+	fixed the title position in zoomInPlot
+	rewrote the hierobarp function as barNest
+
+version 2.8-2
+
+	added the label.cex argument to the gantt.chart function
+	changed the name of the hierobarp function to barNest
+
+version 2.8-1
+
+	added the calculation of proportions to hierobarp
+
+version 2.8
+
+	added the cex argument to the staircase.plot function
+	added a bit to the plotCI function examples
+	changed \code tags to \samp and removed formatting from \link tags
+	added the ylog argument to the barp function (thanks to Fatima Kreusch)
+	added the legendg function (thanks to Primoz Peterlin)
+	removed the Piper diagram functions until they run correctly
+
+version 2.7-2
+
+	added the axislab.cex argument to the twoord.plot function
+
+version 2.7-1
+
+	added the getMarginWidth function
+	added the bracketing lines and labels to hierobarp
+	added the hierobarp.svymean and hierobarp.svyprop functions
+	added the lwd argument to stackpoly (thanks to Vaclav Varvarovsky)
+	included an example to show how to use gantt.chart without dates
+	included an example of histogram + density curve in twoord.plot
+
+version 2.7
+
+	added the getFigCtr function
+	removed the final grouping lines from hierobarp
+
+version 2.6-4
+
+	fixed the bug in hierobrk and hierobarp that got the order of
+	  breakdown factors wrong
+
+version 2.6-3
+
+	fixed the bug in gap.plot that lost the high values
+
+version 2.6-2
+
+	complete rewrite of the hierobarp and hierobrk functions
+	rewrite of barhier function and name changed to sizetree
+
+version 2.6-1
+
+	Minor bug fix in the gap.plot function.
+
+Version 2.6
+
+	Improved bar/line plotting in the twoord.plot function.
+	Added the fullaxis function.
+
+version 2.5-5
+
+	Changed the default symbol in count.overplot to "1".
+	Added bar plotting to the twoord.plot function.
+	Added fill between the confidence lines to the dispersion function.
+	Added the bumpchart function.
+	 (Thanks to Andreas Christofferson for the idea)
+	Added the spreadout function to spread out cramped labels.
+	Added table cell size correction for the cex argument.
+	 (Thanks to Brian Diggs for the patch)
+
+version 2.5-4
+
+	Fixed the bug in dotplot.mtb function.
+	
+version 2.5-3
+
+	Introduced the hierobarp function.
+	Introduced the zoomInPlot function.
+	New version of dotplot.mtb (with bug)
+	
+previous versions
+
+	You don't expect me to remember all that, do you?

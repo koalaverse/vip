@@ -1,0 +1,38 @@
+Package: tinytex
+Type: Package
+Title: Helper Functions to Install and Maintain TeX Live, and Compile
+        LaTeX Documents
+Version: 0.45
+Authors@R: c(
+  person("Yihui", "Xie", role = c("aut", "cre", "cph"), email = "xie@yihui.name", comment = c(ORCID = "0000-0003-0645-5666")),
+  person(given = "Posit Software, PBC", role = c("cph", "fnd")),
+  person("Christophe", "Dervieux", role = "ctb", comment = c(ORCID = "0000-0003-4474-2498")),
+  person("Devon", "Ryan", role = "ctb", email = "dpryan79@gmail.com", comment = c(ORCID = "0000-0002-8549-0971")),
+  person("Ethan", "Heinzen", role = "ctb"),
+  person("Fernando", "Cagua", role = "ctb"),
+  person()
+  )
+Description: Helper functions to install and maintain the 'LaTeX' distribution
+  named 'TinyTeX' (<https://yihui.org/tinytex/>), a lightweight, cross-platform,
+  portable, and easy-to-maintain version of 'TeX Live'. This package also
+  contains helper functions to compile 'LaTeX' documents, and install missing
+  'LaTeX' packages automatically.
+Imports: xfun (>= 0.29)
+Suggests: testit, rstudioapi
+License: MIT + file LICENSE
+URL: https://github.com/rstudio/tinytex
+BugReports: https://github.com/rstudio/tinytex/issues
+Encoding: UTF-8
+RoxygenNote: 7.2.3
+NeedsCompilation: no
+Packaged: 2023-04-18 13:52:40 UTC; yihui
+Author: Yihui Xie [aut, cre, cph] (<https://orcid.org/0000-0003-0645-5666>),
+  Posit Software, PBC [cph, fnd],
+  Christophe Dervieux [ctb] (<https://orcid.org/0000-0003-4474-2498>),
+  Devon Ryan [ctb] (<https://orcid.org/0000-0002-8549-0971>),
+  Ethan Heinzen [ctb],
+  Fernando Cagua [ctb]
+Maintainer: Yihui Xie <xie@yihui.name>
+Repository: CRAN
+Date/Publication: 2023-04-18 14:30:07 UTC
+Built: R 4.2.0; ; 2023-04-18 16:10:03 UTC; unix

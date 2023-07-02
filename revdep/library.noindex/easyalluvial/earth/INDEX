@@ -1,0 +1,29 @@
+contr.earth.response    Please ignore
+earth                   Multivariate Adaptive Regression Splines
+earth.object            An earth object
+etitanic                Titanic data with incomplete cases removed
+evimp                   Estimate variable importances in an earth
+                        object
+expand.bpairs           Expand binomial-pair data from short to long
+                        form
+format.earth            Format earth objects
+mars.to.earth           Convert a mars object from the mda package to
+                        an earth object
+model.matrix.earth      Get the earth basis matrix
+ozone1                  Ozone readings in Los Angeles with incomplete
+                        cases removed
+plot.earth              Plot an earth object
+plot.earth.models       Compare earth models by plotting them.
+plot.evimp              Plot an evimp object (created by the evimp
+                        function)
+plot.varmod             Plot a varmod object (created by calling earth
+                        with the varmod argument)
+plotd                   Plot the distribution of predictions for each
+                        class
+predict.earth           Predict with an earth model
+predict.varmod          Predict with a varmod model
+residuals.earth         Residuals for an earth model
+summary.earth           Summary method for earth objects
+update.earth            Update an earth model
+varmod                  Variance models for estimating prediction
+                        intervals

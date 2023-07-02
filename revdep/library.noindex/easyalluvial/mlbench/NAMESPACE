@@ -1,0 +1,21 @@
+useDynLib(mlbench)
+
+importFrom("graphics", "pairs")
+importFrom("stats", "mahalanobis", "rnorm", "runif")
+
+export(bayesclass)
+exportPattern("^mlbench.*")
+
+S3method(as.data.frame, mlbench)
+S3method(plot, mlbench)
+
+S3method(bayesclass, noerr)
+S3method(bayesclass, mlbench.2dnormals)
+S3method(bayesclass, mlbench.circle)
+S3method(bayesclass, mlbench.xor)
+S3method(bayesclass, mlbench.cassini)
+S3method(bayesclass, mlbench.cuboids)
+S3method(bayesclass, mlbench.twonorm)
+S3method(bayesclass, mlbench.threenorm)
+S3method(bayesclass, mlbench.ringnorm)
+

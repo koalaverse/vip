@@ -1,0 +1,1527 @@
+> # test.multresp.R: test multiple response models using the Formula interface
+> # Stephen Milborrow Mar 2019 Petaluma
+> 
+> source("test.prolog.R")
+> source("check.models.equal.R")
+> options(warn=1) # print warnings as they occur
+> library(earth)
+Loading required package: Formula
+Loading required package: plotmo
+Loading required package: plotrix
+Loading required package: TeachingDemos
+> show.earth.mod <- function(mod, modname, nresponses, caption, trace, ...)
++ {
++     set.seed(2019)
++     cat("\nsummary:", modname, "\n\n")
++     print(summary(mod))
++     cat("\nevimp:", modname, "\n\n")
++     evimp <- evimp(mod)
++     print(evimp)
++     cat("\n")
++     nrow <- 1 + max(1, ceiling(nresponses * nrow(evimp(mod)) / 2))
++     par(mfrow=c(nrow, 2), mar=c(3, 3, 3, 1), mgp=c(1.5, 0.5, 0), oma=c(0, 0, 5, 0))
++     if(nresponses == 1)
++         plot(mod, which=c(1,3), do.par=0, caption=caption, trace=trace)
++     else {
++         plot(mod, nresponse=1, which=3, do.par=0,
++              caption=caption, trace=trace,
++              main="Response 1: Residuals vs Fitted")
++         plot(mod, nresponse=max(nresponses), which=3, do.par=0,
++              caption=caption, trace=trace,
++              main=sprint("Response %d: Residuals vs Fitted", max(nresponses)))
++     }
++     cat("\nplotmo:", modname, "\n\n")
++     if(nresponses == 1)
++         plotmo(mod, do.par=0, pt.col="red", trace=trace)
++     else for(iresponse in 1:nresponses)
++         plotmo(mod, nresponse=iresponse, do.par=0, pt.col=iresponse+1, trace=trace)
++     par(org.par)
++     cat("-------------------------------------------------------------------------------\n\n")
++ }
+> show.earth.formula <- function(formula, data=trees, subset=NULL, nresponses=1,
++                                show=TRUE, caption=modname, trace=0, ...)
++ {
++     modname <- sprint("formula=%s (nresponses=%d)",
++                     deparse(substitute(formula)), nresponses)
++     printf("%s\n", modname)
++     # use formula, not Formula
++     mod <- earth(formula=formula, data=data, subset=subset, trace=1, keepxy=TRUE)
++     global.mod <<- mod
++     n <- if(is.null(subset)) nrow(data) else nrow(data[subset,])
++     if(!(all(dim(mod$fitted.values) == c(n, nresponses)))) {
++         cat("dim(mod$fitted.values)", dim(mod$fitted.values), "\n")
++         stop("show.earth.formula: wrong response dimensions (see above)")
++     }
++     if(show)
++         show.earth.mod(mod=mod, modname=modname, nresponses=nresponses,
++                        caption=caption, trace=trace, ...)
++     mod
++ }
+> show.earth.Formula <- function(formula, data=trees, subset=NULL, nresponses=1,
++                                show=TRUE, caption=modname, trace=0, ...)
++ {
++     modname <- sprint("Formula=%s (nresponses=%d)",
++                     deparse(substitute(formula)), nresponses)
++     printf("%s\n", modname)
++     # use Formula, not formula
++     # use trace=1 so so can that we can see trace message:
++     # Using class "Formula" because lhs of formula has terms separated by "+"
++     mod <- earth(formula=formula, data=data, subset=subset, trace=1, keepxy=TRUE)
++     global.mod <<- mod
++     if(!(all(dim(mod$fitted.values) == c(31, nresponses)))) {
++         cat("dim(mod$fitted.values)", dim(mod$fitted.values), "\n")
++         stop("show.earth.Formula: wrong response dimensions (see above)")
++     }
++     show.earth.mod(mod=mod, modname=modname, nresponses=nresponses,
++                    caption=caption, trace=trace, ...)
++     mod
++ }
+> VolNeg <- -sqrt(trees$Volume)
+> SinVol <- sin(pi * trees$Volume / max(trees$Volume))
+> global.mod <- NULL
+> 
+> # following use formula (not Formula)
+> show.earth.formula(Volume/VolNeg       ~.,  show=FALSE) # show=FALSE to save time
+formula=Volume/VolNeg ~ . (nresponses=1)
+x[31,2] with colnames Girth Height
+y[31,1] with colname Volume/VolNeg, and values -3.209, -3.209, -3.194, -4.05...
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0.00068)
+After forward pass GRSq 0.951 RSq 0.978
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.964 RSq 0.977
+Selected 4 of 5 terms, and 2 of 2 predictors
+Termination condition: RSq changed by less than 0.001 at 5 terms
+Importance: Girth, Height
+Number of terms at each degree of interaction: 1 3 (additive model)
+GCV 0.07569746    RSS 1.406508    GRSq 0.9636664    RSq 0.9767465
+> show.earth.formula(Volume/99            ~., show=FALSE)
+formula=Volume/99 ~ . (nresponses=1)
+x[31,2] with colnames Girth Height
+y[31,1] with colname Volume/99, and values 0.104, 0.104, 0.103, 0.1657, ...
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0.00087)
+After forward pass GRSq 0.947 RSq 0.976
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.96 RSq 0.974
+Selected 4 of 5 terms, and 2 of 2 predictors
+Termination condition: RSq changed by less than 0.001 at 5 terms
+Importance: Girth, Height
+Number of terms at each degree of interaction: 1 3 (additive model)
+GCV 0.00114829    RSS 0.02133597    GRSq 0.959692    RSq 0.9742029
+> show.earth.formula(Volume*99            ~., show=FALSE)
+formula=Volume * 99 ~ . (nresponses=1)
+x[31,2] with colnames Girth Height
+y[31,1] with colname Volume * 99, and values 1020, 1020, 1010, 1624, 1861,...
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0.00087)
+After forward pass GRSq 0.947 RSq 0.976
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.96 RSq 0.974
+Selected 4 of 5 terms, and 2 of 2 predictors
+Termination condition: RSq changed by less than 0.001 at 5 terms
+Importance: Girth, Height
+Number of terms at each degree of interaction: 1 3 (additive model)
+GCV 110304.3    RSS 2049525    GRSq 0.959692    RSq 0.9742029
+> show.earth.formula(Volume-99            ~., show=FALSE)
+formula=Volume - 99 ~ . (nresponses=1)
+x[31,2] with colnames Girth Height
+y[31,1] with colname Volume - 99, and values -88.7, -88.7, -88.8, -82.6, -...
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0.00087)
+After forward pass GRSq 0.947 RSq 0.976
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.96 RSq 0.974
+Selected 4 of 5 terms, and 2 of 2 predictors
+Termination condition: RSq changed by less than 0.001 at 5 terms
+Importance: Girth, Height
+Number of terms at each degree of interaction: 1 3 (additive model)
+GCV 11.25439    RSS 209.1139    GRSq 0.959692    RSq 0.9742029
+> show.earth.formula(Volume               ~., show=FALSE)
+formula=Volume ~ . (nresponses=1)
+x[31,2] with colnames Girth Height
+y[31,1] with colname Volume, and values 10.3, 10.3, 10.2, 16.4, 18.8,...
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0.00087)
+After forward pass GRSq 0.947 RSq 0.976
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.96 RSq 0.974
+Selected 4 of 5 terms, and 2 of 2 predictors
+Termination condition: RSq changed by less than 0.001 at 5 terms
+Importance: Girth, Height
+Number of terms at each degree of interaction: 1 3 (additive model)
+GCV 11.25439    RSS 209.1139    GRSq 0.959692    RSq 0.9742029
+> show.earth.formula(cbind(Volume+VolNeg)~.,  show=FALSE)
+formula=cbind(Volume + VolNeg) ~ . (nresponses=1)
+x[31,2] with colnames Girth Height
+y[31,1] with colname cbind(Volume + VolNeg), and values 7.091, 7.091, 7.006, 12.35, 1...
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0.00097)
+After forward pass GRSq 0.946 RSq 0.976
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.959 RSq 0.974
+Selected 4 of 5 terms, and 2 of 2 predictors
+Termination condition: RSq changed by less than 0.001 at 5 terms
+Importance: Girth, Height
+Number of terms at each degree of interaction: 1 3 (additive model)
+GCV 9.492807    RSS 176.3825    GRSq 0.9593466    RSq 0.9739818
+> show.earth.formula((Volume+VolNeg)     ~.,  show=FALSE)
+formula=(Volume + VolNeg) ~ . (nresponses=1)
+x[31,2] with colnames Girth Height
+y[31,1] with colname (Volume + VolNeg), and values 7.091, 7.091, 7.006, 12.35, 1...
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0.00097)
+After forward pass GRSq 0.946 RSq 0.976
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.959 RSq 0.974
+Selected 4 of 5 terms, and 2 of 2 predictors
+Termination condition: RSq changed by less than 0.001 at 5 terms
+Importance: Girth, Height
+Number of terms at each degree of interaction: 1 3 (additive model)
+GCV 9.492807    RSS 176.3825    GRSq 0.9593466    RSq 0.9739818
+> show.earth.formula(I(Volume+VolNeg)    ~.,  show=FALSE)
+formula=I(Volume + VolNeg) ~ . (nresponses=1)
+x[31,2] with colnames Girth Height
+y[31,1] with colname I(Volume + VolNeg), and values 7.091, 7.091, 7.006, 12.35, 1...
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0.00097)
+After forward pass GRSq 0.946 RSq 0.976
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.959 RSq 0.974
+Selected 4 of 5 terms, and 2 of 2 predictors
+Termination condition: RSq changed by less than 0.001 at 5 terms
+Importance: Girth, Height
+Number of terms at each degree of interaction: 1 3 (additive model)
+GCV 9.492807    RSS 176.3825    GRSq 0.9593466    RSq 0.9739818
+> show.earth.formula(VolNeg~Girth+Height,     show=FALSE)
+formula=VolNeg ~ Girth + Height (nresponses=1)
+x[31,2] with colnames Girth Height
+y[31,1] with colname VolNeg, and values -3.209, -3.209, -3.194, -4.05...
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0.00068)
+After forward pass GRSq 0.951 RSq 0.978
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.964 RSq 0.977
+Selected 4 of 5 terms, and 2 of 2 predictors
+Termination condition: RSq changed by less than 0.001 at 5 terms
+Importance: Girth, Height
+Number of terms at each degree of interaction: 1 3 (additive model)
+GCV 0.07569746    RSS 1.406508    GRSq 0.9636664    RSq 0.9767465
+> 
+> # use formula, but multiple response
+> show.earth.formula(cbind(VolNeg,    SinVol)~., nresponses=2, show=FALSE)
+formula=cbind(VolNeg, SinVol) ~ . (nresponses=2)
+x[31,3] with colnames Girth Height Volume
+y[31,2] with colnames VolNeg SinVol
+Forward pass term 1, 2, 4, 6, 8
+RSq changed by less than 0.001 at 7 terms (DeltaRSq 0.00028)
+After forward pass GRSq 0.995 RSq 0.999
+Prune backward penalty 2 nprune null: selected 5 of 7 terms, and 3 of 3 preds
+After pruning pass GRSq 0.996 RSq 0.998
+Selected 5 of 7 terms, and 3 of 3 predictors
+Termination condition: RSq changed by less than 0.001 at 7 terms
+Importance: Volume, Girth, Height
+Number of terms at each degree of interaction: 1 4 (additive model)
+
+               GCV        RSS      GRSq       RSq
+VolNeg 0.002631565 0.04108638 0.9987369 0.9993207
+SinVol 0.006303928 0.09842262 0.8684471 0.9292538
+All    0.008935494 0.13950899 0.9958075 0.9977454
+> show.earth.formula(cbind(VolNeg,    SinVol)~., nresponses=2, show=FALSE)
+formula=cbind(VolNeg, SinVol) ~ . (nresponses=2)
+x[31,3] with colnames Girth Height Volume
+y[31,2] with colnames VolNeg SinVol
+Forward pass term 1, 2, 4, 6, 8
+RSq changed by less than 0.001 at 7 terms (DeltaRSq 0.00028)
+After forward pass GRSq 0.995 RSq 0.999
+Prune backward penalty 2 nprune null: selected 5 of 7 terms, and 3 of 3 preds
+After pruning pass GRSq 0.996 RSq 0.998
+Selected 5 of 7 terms, and 3 of 3 predictors
+Termination condition: RSq changed by less than 0.001 at 7 terms
+Importance: Volume, Girth, Height
+Number of terms at each degree of interaction: 1 4 (additive model)
+
+               GCV        RSS      GRSq       RSq
+VolNeg 0.002631565 0.04108638 0.9987369 0.9993207
+SinVol 0.006303928 0.09842262 0.8684471 0.9292538
+All    0.008935494 0.13950899 0.9958075 0.9977454
+> show.earth.formula(cbind(VolNeg/33, SinVol)~., nresponses=2, show=FALSE)
+formula=cbind(VolNeg/33, SinVol) ~ . (nresponses=2)
+x[31,3] with colnames Girth Height Volume
+y[31,2] with colnames cbind(VolNeg/33, SinVol)1 SinVol
+Forward pass term 1, 2, 4, 6, 8, 10, 12
+RSq changed by less than 0.001 at 11 terms, 9 terms used (DeltaRSq 0.00019)
+After forward pass GRSq 0.740 RSq 0.958
+Prune backward penalty 2 nprune null: selected 5 of 9 terms, and 2 of 3 preds
+After pruning pass GRSq 0.894 RSq 0.943
+Selected 5 of 9 terms, and 2 of 3 predictors
+Termination condition: RSq changed by less than 0.001 at 9 terms
+Importance: Volume, Height, Girth-unused
+Number of terms at each degree of interaction: 1 4 (additive model)
+
+                                   GCV         RSS      GRSq       RSq
+cbind(VolNeg/33, SinVol)1 0.0000084012 0.000131166 0.9956087 0.9976384
+SinVol                    0.0052819329 0.082466307 0.8897745 0.9407232
+All                       0.0052903340 0.082597474 0.8938376 0.9429082
+> show.earth.formula(cbind(VolNeg+33, SinVol)~., nresponses=2, show=FALSE)
+formula=cbind(VolNeg + 33, SinVol) ~ . (nresponses=2)
+x[31,3] with colnames Girth Height Volume
+y[31,2] with colnames cbind(VolNeg + 33, SinVol)1 SinVol
+Forward pass term 1, 2, 4, 6, 8
+RSq changed by less than 0.001 at 7 terms (DeltaRSq 0.00028)
+After forward pass GRSq 0.995 RSq 0.999
+Prune backward penalty 2 nprune null: selected 5 of 7 terms, and 3 of 3 preds
+After pruning pass GRSq 0.996 RSq 0.998
+Selected 5 of 7 terms, and 3 of 3 predictors
+Termination condition: RSq changed by less than 0.001 at 7 terms
+Importance: Volume, Girth, Height
+Number of terms at each degree of interaction: 1 4 (additive model)
+
+                                    GCV        RSS      GRSq       RSq
+cbind(VolNeg + 33, SinVol)1 0.002631565 0.04108638 0.9987369 0.9993207
+SinVol                      0.006303928 0.09842262 0.8684471 0.9292538
+All                         0.008935494 0.13950899 0.9958075 0.9977454
+> show.earth.formula(cbind(VolNeg,    SinVol)~Girth,  nresponses=2, show=FALSE)
+formula=cbind(VolNeg, SinVol) ~ Girth (nresponses=2)
+x[31,1] with colname Girth, and values 8.3, 8.6, 8.8, 10.5, 10.7, 10...
+y[31,2] with colnames VolNeg SinVol
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms, 4 terms used (DeltaRSq 0)
+After forward pass GRSq 0.917 RSq 0.955
+Prune backward penalty 2 nprune null: selected 3 of 4 terms, and 1 of 1 preds
+After pruning pass GRSq 0.938 RSq 0.954
+Selected 3 of 4 terms, and 1 of 1 predictors
+Termination condition: RSq changed by less than 0.001 at 4 terms
+Importance: Girth
+Number of terms at each degree of interaction: 1 2 (additive model)
+
+              GCV       RSS      GRSq       RSq
+VolNeg 0.11498191 2.5073475 0.9448104 0.9585465
+SinVol 0.01648432 0.3594646 0.6559985 0.7416166
+All    0.13146624 2.8668121 0.9383170 0.9536692
+> randx <- c(0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0)
+> show.earth.formula(VolNeg~randx, nresponses=1) # intercept only model
+formula=VolNeg ~ randx (nresponses=1)
+x[31,1] with colname randx, and values 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,...
+y[31,1] with colname VolNeg, and values -3.209, -3.209, -3.194, -4.05...
+Forward pass term 1, 2, 4
+RSq changed by less than 0.001 at 3 terms, 2 terms used (DeltaRSq 0)
+After forward pass GRSq -0.328 RSq 0.003
+Prune backward penalty 2 nprune null: selected 1 of 2 terms, and 0 of 1 preds
+After pruning pass GRSq 0 RSq 0
+
+summary: formula=VolNeg ~ randx (nresponses=1) 
+
+Call: earth(formula=formula, data=data, subset=subset, keepxy=TRUE, trace=1)
+
+            coefficients
+(Intercept)    -5.312232
+
+Selected 1 of 2 terms, and 0 of 1 predictors
+Termination condition: RSq changed by less than 0.001 at 2 terms
+Importance: randx-unused
+Number of terms at each degree of interaction: 1 (intercept only model)
+GCV 2.083399    RSS 60.48579    GRSq 0    RSq 0
+
+evimp: formula=VolNeg ~ randx (nresponses=1) 
+
+    nsubsets   gcv    rss
+
+
+plotmo: formula=VolNeg ~ randx (nresponses=1) 
+
+-------------------------------------------------------------------------------
+
+Selected 1 of 2 terms, and 0 of 1 predictors
+Termination condition: RSq changed by less than 0.001 at 2 terms
+Importance: randx-unused
+Number of terms at each degree of interaction: 1 (intercept only model)
+GCV 2.083399    RSS 60.48579    GRSq 0    RSq 0
+> VolNeg.randx <- earth(VolNeg~randx, trace=1)   # intercept only model
+x[31,1] with colname randx, and values 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,...
+y[31,1] with colname VolNeg, and values -3.209, -3.209, -3.194, -4.05...
+Forward pass term 1, 2, 4
+RSq changed by less than 0.001 at 3 terms, 2 terms used (DeltaRSq 0)
+After forward pass GRSq -0.328 RSq 0.003
+Prune backward penalty 2 nprune null: selected 1 of 2 terms, and 0 of 1 preds
+After pruning pass GRSq 0 RSq 0
+> plotmo(VolNeg.randx)
+> VolVolNeg <- show.earth.formula(cbind(Volume, VolNeg)~Girth+Height, nresponses=2, trace=0)
+formula=cbind(Volume, VolNeg) ~ Girth + Height (nresponses=2)
+x[31,2] with colnames Girth Height
+y[31,2] with colnames Volume VolNeg
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0.00087)
+After forward pass GRSq 0.947 RSq 0.976
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.96 RSq 0.974
+
+summary: formula=cbind(Volume, VolNeg) ~ Girth + Height (nresponses=2) 
+
+Call: earth(formula=formula, data=data, subset=subset, keepxy=TRUE, trace=1)
+
+                  Volume     VolNeg
+(Intercept)   29.0599535 -5.4935391
+h(14.2-Girth) -3.4198062  0.3964215
+h(Girth-14.2)  6.2295143 -0.4313910
+h(Height-75)   0.5813644 -0.0529614
+
+Selected 4 of 5 terms, and 2 of 2 predictors
+Termination condition: RSq changed by less than 0.001 at 5 terms
+Importance: Girth, Height
+Number of terms at each degree of interaction: 1 3 (additive model)
+
+              GCV        RSS      GRSq       RSq
+Volume 11.2543915 209.113855 0.9596919 0.9742028
+VolNeg  0.0885223   1.644801 0.9575107 0.9728068
+All    11.3429138 210.758656 0.9596758 0.9741925
+
+evimp: formula=cbind(Volume, VolNeg) ~ Girth + Height (nresponses=2) 
+
+       nsubsets   gcv    rss
+Girth         3 100.0  100.0
+Height        1  10.7   11.5
+
+
+plotmo: formula=cbind(Volume, VolNeg) ~ Girth + Height (nresponses=2) 
+
+ plotmo grid:    Girth Height
+                  12.9     76
+ plotmo grid:    Girth Height
+                  12.9     76
+-------------------------------------------------------------------------------
+
+> # Use a global variable for Volume
+> trees1 <- trees
+> Volume <- trees1$Volume # global Volume
+> trees1$Volume <- NULL # Volume no longer available in trees1
+> cbind.Volume.VolNeg <- cbind(Volume, VolNeg)
+> VolGlobalVolNeg <- show.earth.formula(cbind(Volume, VolNeg)~Girth+Height, data=trees1, nresponses=2, trace=0,
++                                caption="VolGlobalVolNeg: This page should be the same as the previous page")
+formula=cbind(Volume, VolNeg) ~ Girth + Height (nresponses=2)
+x[31,2] with colnames Girth Height
+y[31,2] with colnames Volume VolNeg
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0.00087)
+After forward pass GRSq 0.947 RSq 0.976
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.96 RSq 0.974
+
+summary: formula=cbind(Volume, VolNeg) ~ Girth + Height (nresponses=2) 
+
+Call: earth(formula=formula, data=data, subset=subset, keepxy=TRUE, trace=1)
+
+                  Volume     VolNeg
+(Intercept)   29.0599535 -5.4935391
+h(14.2-Girth) -3.4198062  0.3964215
+h(Girth-14.2)  6.2295143 -0.4313910
+h(Height-75)   0.5813644 -0.0529614
+
+Selected 4 of 5 terms, and 2 of 2 predictors
+Termination condition: RSq changed by less than 0.001 at 5 terms
+Importance: Girth, Height
+Number of terms at each degree of interaction: 1 3 (additive model)
+
+              GCV        RSS      GRSq       RSq
+Volume 11.2543915 209.113855 0.9596919 0.9742028
+VolNeg  0.0885223   1.644801 0.9575107 0.9728068
+All    11.3429138 210.758656 0.9596758 0.9741925
+
+evimp: formula=cbind(Volume, VolNeg) ~ Girth + Height (nresponses=2) 
+
+       nsubsets   gcv    rss
+Girth         3 100.0  100.0
+Height        1  10.7   11.5
+
+
+plotmo: formula=cbind(Volume, VolNeg) ~ Girth + Height (nresponses=2) 
+
+ plotmo grid:    Girth Height
+                  12.9     76
+ plotmo grid:    Girth Height
+                  12.9     76
+-------------------------------------------------------------------------------
+
+> check.models.equal(VolVolNeg, VolGlobalVolNeg, msg="VolVolNeg, VolGlobalVolNeg", newdata=trees[3,])
+VolVolNeg, VolGlobalVolNeg: models not identical
+
+VolVolNeg, VolGlobalVolNeg: Models are equivalent, within numerical tolerances
+
+> 
+> # following use Formula (not formula)
+> VolVolNega <- show.earth.Formula(Volume+VolNeg~Girth+Height, nresponses=2,
++                                caption="VolVolNega: This page should be the same as the previous page")
+Formula=Volume + VolNeg ~ Girth + Height (nresponses=2)
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[31,2] with colnames Girth Height
+y[31,2] with colnames Volume VolNeg
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0.00087)
+After forward pass GRSq 0.947 RSq 0.976
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.96 RSq 0.974
+
+summary: Formula=Volume + VolNeg ~ Girth + Height (nresponses=2) 
+
+Call: earth(formula=formula, data=data, subset=subset, keepxy=TRUE, trace=1)
+
+                  Volume     VolNeg
+(Intercept)   29.0599535 -5.4935391
+h(14.2-Girth) -3.4198062  0.3964215
+h(Girth-14.2)  6.2295143 -0.4313910
+h(Height-75)   0.5813644 -0.0529614
+
+Selected 4 of 5 terms, and 2 of 2 predictors
+Termination condition: RSq changed by less than 0.001 at 5 terms
+Importance: Girth, Height
+Number of terms at each degree of interaction: 1 3 (additive model)
+
+              GCV        RSS      GRSq       RSq
+Volume 11.2543915 209.113855 0.9596919 0.9742028
+VolNeg  0.0885223   1.644801 0.9575107 0.9728068
+All    11.3429138 210.758656 0.9596758 0.9741925
+
+evimp: Formula=Volume + VolNeg ~ Girth + Height (nresponses=2) 
+
+       nsubsets   gcv    rss
+Girth         3 100.0  100.0
+Height        1  10.7   11.5
+
+
+plotmo: Formula=Volume + VolNeg ~ Girth + Height (nresponses=2) 
+
+ plotmo grid:    Girth Height
+                  12.9     76
+ plotmo grid:    Girth Height
+                  12.9     76
+-------------------------------------------------------------------------------
+
+> check.models.equal(VolVolNega, VolVolNeg, msg="VolVolNega, VolVolNeg", newdata=trees[3,])
+VolVolNega, VolVolNeg: models not identical
+
+Formulas differ: ~Volume + VolNeg + (Girth + Height)
+and:             cbind(Volume, VolNeg) ~ Girth + Height
+
+VolVolNega, VolVolNeg: Models are equivalent, within numerical tolerances
+
+> Vol.VolNeg.dot <- show.earth.Formula(Volume+VolNeg~., nresponses=2, # use dot
++                                 caption="Vol.VolNeg.dot: This page should be the same as the previous page")
+Formula=Volume + VolNeg ~ . (nresponses=2)
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[31,2] with colnames Girth Height
+y[31,2] with colnames Volume VolNeg
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0.00087)
+After forward pass GRSq 0.947 RSq 0.976
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.96 RSq 0.974
+
+summary: Formula=Volume + VolNeg ~ . (nresponses=2) 
+
+Call: earth(formula=formula, data=data, subset=subset, keepxy=TRUE, trace=1)
+
+                  Volume     VolNeg
+(Intercept)   29.0599535 -5.4935391
+h(14.2-Girth) -3.4198062  0.3964215
+h(Girth-14.2)  6.2295143 -0.4313910
+h(Height-75)   0.5813644 -0.0529614
+
+Selected 4 of 5 terms, and 2 of 2 predictors
+Termination condition: RSq changed by less than 0.001 at 5 terms
+Importance: Girth, Height
+Number of terms at each degree of interaction: 1 3 (additive model)
+
+              GCV        RSS      GRSq       RSq
+Volume 11.2543915 209.113855 0.9596919 0.9742028
+VolNeg  0.0885223   1.644801 0.9575107 0.9728068
+All    11.3429138 210.758656 0.9596758 0.9741925
+
+evimp: Formula=Volume + VolNeg ~ . (nresponses=2) 
+
+       nsubsets   gcv    rss
+Girth         3 100.0  100.0
+Height        1  10.7   11.5
+
+
+plotmo: Formula=Volume + VolNeg ~ . (nresponses=2) 
+
+ plotmo grid:    Girth Height
+                  12.9     76
+ plotmo grid:    Girth Height
+                  12.9     76
+-------------------------------------------------------------------------------
+
+> check.models.equal(Vol.VolNeg.dot, VolVolNega, msg="Vol.VolNeg.dot, VolVolNega", newdata=trees[3,])
+Vol.VolNeg.dot, VolVolNega: models not identical
+
+Formulas differ: ~Volume + VolNeg + (Girth + Height)
+and:             ~Volume + VolNeg + (Girth + Height)
+
+Vol.VolNeg.dot, VolVolNega: Models are equivalent, within numerical tolerances
+
+> 
+> trees1 <- trees
+> trees1$VolNeg <- VolNeg
+> VolVolNegc <- show.earth.Formula(Volume+VolNeg~., data=trees1, nresponses=2, # all variables on lhs in data argument (none global)
++                    caption="Vol.VolNeg.trees1: This page should be the same as the previous page")
+Formula=Volume + VolNeg ~ . (nresponses=2)
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[31,2] with colnames Girth Height
+y[31,2] with colnames Volume VolNeg
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0.00087)
+After forward pass GRSq 0.947 RSq 0.976
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.96 RSq 0.974
+
+summary: Formula=Volume + VolNeg ~ . (nresponses=2) 
+
+Call: earth(formula=formula, data=data, subset=subset, keepxy=TRUE, trace=1)
+
+                  Volume     VolNeg
+(Intercept)   29.0599535 -5.4935391
+h(14.2-Girth) -3.4198062  0.3964215
+h(Girth-14.2)  6.2295143 -0.4313910
+h(Height-75)   0.5813644 -0.0529614
+
+Selected 4 of 5 terms, and 2 of 2 predictors
+Termination condition: RSq changed by less than 0.001 at 5 terms
+Importance: Girth, Height
+Number of terms at each degree of interaction: 1 3 (additive model)
+
+              GCV        RSS      GRSq       RSq
+Volume 11.2543915 209.113855 0.9596919 0.9742028
+VolNeg  0.0885223   1.644801 0.9575107 0.9728068
+All    11.3429138 210.758656 0.9596758 0.9741925
+
+evimp: Formula=Volume + VolNeg ~ . (nresponses=2) 
+
+       nsubsets   gcv    rss
+Girth         3 100.0  100.0
+Height        1  10.7   11.5
+
+
+plotmo: Formula=Volume + VolNeg ~ . (nresponses=2) 
+
+ plotmo grid:    Girth Height
+                  12.9     76
+ plotmo grid:    Girth Height
+                  12.9     76
+-------------------------------------------------------------------------------
+
+> check.models.equal(VolVolNegc, VolVolNega, msg="VolVolNegc, VolVolNega", newdata=trees1[2:3,])
+VolVolNegc, VolVolNega: models not identical
+
+Formulas differ: ~Volume + VolNeg + (Girth + Height)
+and:             ~Volume + VolNeg + (Girth + Height)
+
+VolVolNegc, VolVolNega: Models are equivalent, within numerical tolerances
+
+> 
+> # check without using keepxy=TRUE (because show.earth.Formula uses keepxy=TRUE)
+> VolVolNega.nokeepxy <- earth(Volume+VolNeg~Girth+Height, data=trees, trace=1)
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[31,2] with colnames Girth Height
+y[31,2] with colnames Volume VolNeg
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0.00087)
+After forward pass GRSq 0.947 RSq 0.976
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.96 RSq 0.974
+> check.models.equal(VolVolNega.nokeepxy, VolVolNega, msg="VolVolNega.nokeepxy, VolVolNega", newdata=trees1[2:3,])
+VolVolNega.nokeepxy, VolVolNega: models not identical
+
+VolVolNega.nokeepxy, VolVolNega: Models are equivalent, within numerical tolerances
+
+> caption <- "VolVolNega.nokeepxy This page should be the same as the previous page"
+> par(mfrow=c(3, 2), mar=c(3, 3, 3, 1), mgp=c(1.5, 0.5, 0), oma=c(0, 0, 5, 0))
+> plot(VolVolNega.nokeepxy, nresponse=1, which=3, do.par=0,
++      caption=caption, trace=0,
++      main="Response 1: Residuals vs Fitted")
+> plot(VolVolNega.nokeepxy, nresponse=2, which=3, do.par=0,
++      caption=caption, trace=0,
++      main="Response 2: Residuals vs Fitted")
+> plotmo(VolVolNega.nokeepxy, nresponse=1, do.par=0, pt.col=2)
+ plotmo grid:    Girth Height
+                  12.9     76
+> plotmo(VolVolNega.nokeepxy, nresponse=2, do.par=0, pt.col=3)
+ plotmo grid:    Girth Height
+                  12.9     76
+> par(org.par)
+> plot(VolVolNega.nokeepxy) # Warning: Defaulting to nresponse=1, see above messages
+
+predict.earth[31,2]:
+       Volume    VolNeg
+1    8.883097 -3.154652
+2    9.909039 -3.273579
+3   10.593000 -3.352863
+... 16.406671 -4.026780
+31  75.905218 -8.889978
+
+predict.earth returned multiple columns (see above) but nresponse is not specified
+    Use the nresponse argument to specify a column.
+         Example: nresponse=2
+         Example: nresponse="VolNeg"
+
+Warning: Defaulting to nresponse=1, see above messages
+> 
+> # subset, single response
+> # TODO we don't use show.earth.formula here because there are plotmo problems
+> #      with subset and keepxy when called inside a function
+> subset2 <- seq(from=1, to=nrow(trees1), by=2)
+> Vol.formula.subset.nokeepxy <- earth(Volume~Girth+Height, data=trees1, subset=subset2, trace=1)
+x[31,2] with colnames Girth Height
+y[31,1] with colname Volume, and values 10.3, 10.3, 10.2, 16.4, 18.8,...
+16 cases after taking subset
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0)
+After forward pass GRSq 0.888 RSq 0.988
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.958 RSq 0.985
+> plot(Vol.formula.subset.nokeepxy, caption="Vol.formula.subset.nokeepxy")
+> plotmo(Vol.formula.subset.nokeepxy, nresponse=1, trace=1, pt.col=2, caption="Vol.formula.subset.nokeepxy")
+stats::predict(earth.object, NULL, type="response")
+stats::fitted(object=earth.object)
+got model response from model.frame(Volume ~ Girth + Height,
+                                    data=call$data, na.action="na.fail")
+
+ plotmo grid:    Girth Height
+                 12.45   77.5
+
+> 
+> Vol.formula.subset.keepxy <- earth(Volume~Girth+Height, data=trees1, subset=subset2, trace=1)
+x[31,2] with colnames Girth Height
+y[31,1] with colname Volume, and values 10.3, 10.3, 10.2, 16.4, 18.8,...
+16 cases after taking subset
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0)
+After forward pass GRSq 0.888 RSq 0.988
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.958 RSq 0.985
+> plotmo(Vol.formula.subset.keepxy, nresponse=1, trace=1, pt.col=2, caption="Vol.formula.subset.keepxy")
+stats::predict(earth.object, NULL, type="response")
+stats::fitted(object=earth.object)
+got model response from model.frame(Volume ~ Girth + Height,
+                                    data=call$data, na.action="na.fail")
+
+ plotmo grid:    Girth Height
+                 12.45   77.5
+
+> 
+> # subset, multiple response
+> VolVolNega.formula.subset.nokeepxy <- earth(cbind.Volume.VolNeg~Girth+Height, data=trees1, subset=subset2, trace=1)
+x[31,2] with colnames Girth Height
+y[31,2] with colnames Volume VolNeg
+16 cases after taking subset
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0)
+After forward pass GRSq 0.888 RSq 0.988
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.958 RSq 0.985
+> VolVolNega.Formula.subset.nokeepxy <- earth(Volume+VolNeg      ~Girth+Height, data=trees1, subset=subset2, trace=1)
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[31,2] with colnames Girth Height
+y[31,2] with colnames Volume VolNeg
+16 cases after taking subset
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0)
+After forward pass GRSq 0.888 RSq 0.988
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.958 RSq 0.985
+> check.models.equal(VolVolNega.formula.subset.nokeepxy, VolVolNega.Formula.subset.nokeepxy, "VolVolNega.formula.subset.nokeepxy, VolVolNega.Formula.subset.nokeepxy", newdata=trees[3,])
+VolVolNega.formula.subset.nokeepxy, VolVolNega.Formula.subset.nokeepxy: models not identical
+
+Formulas differ: cbind.Volume.VolNeg ~ Girth + Height
+and:             ~Volume + VolNeg + (Girth + Height)
+
+VolVolNega.formula.subset.nokeepxy, VolVolNega.Formula.subset.nokeepxy: Models are equivalent, within numerical tolerances
+
+> 
+> caption <- "VolVolNega.formula.subset.nokeepxy"
+> par(mfrow=c(3, 2), mar=c(3, 3, 3, 1), mgp=c(1.5, 0.5, 0), oma=c(0, 0, 5, 0))
+> plot(VolVolNega.formula.subset.nokeepxy, nresponse=1, which=3, do.par=0,
++      caption=caption, trace=1,
++      main="Response 1: Residuals vs Fitted")
+stats::residuals(object=earth.object, type="response")
+stats::fitted(object=earth.object)
+got model response from model.frame(cbind.Volume.VolNeg ~ Girth + Height,
+                                    data=call$data, na.action="na.fail")
+
+training rsq 0.98
+> plot(VolVolNega.formula.subset.nokeepxy, nresponse=2, which=3, do.par=0,
++      caption=caption, trace=1,
++      main="Response 2: Residuals vs Fitted")
+stats::residuals(object=earth.object, type="response")
+stats::fitted(object=earth.object)
+got model response from model.frame(cbind.Volume.VolNeg ~ Girth + Height,
+                                    data=call$data, na.action="na.fail")
+
+training rsq 0.98
+> plotmo(VolVolNega.formula.subset.nokeepxy, nresponse=1, do.par=0, pt.col=2)
+ plotmo grid:    Girth Height
+                 12.45   77.5
+> plotmo(VolVolNega.formula.subset.nokeepxy, nresponse=2, do.par=0, pt.col=3)
+ plotmo grid:    Girth Height
+                 12.45   77.5
+> par(org.par)
+> 
+> caption <- "VolVolNega.Formula.subset.nokeepxy"
+> par(mfrow=c(3, 2), mar=c(3, 3, 3, 1), mgp=c(1.5, 0.5, 0), oma=c(0, 0, 5, 0))
+> plot(VolVolNega.Formula.subset.nokeepxy, nresponse=1, which=3, do.par=0,
++      caption=caption, trace=1,
++      main="Response 1: Residuals vs Fitted")
+stats::residuals(object=earth.object, type="response")
+stats::fitted(object=earth.object)
+object created with Formula (not formula): using attr(terms, "Formula")
+object created with Formula (not formula): using attr(terms, "Formula")
+got model response from model.frame(Volume + VolNeg ~ Girth + Height,
+                                    data=call$data, na.action="na.fail")
+
+training rsq 0.98
+> plot(VolVolNega.Formula.subset.nokeepxy, nresponse=2, which=3, do.par=0,
++      caption=caption, trace=1,
++      main="Response 2: Residuals vs Fitted")
+stats::residuals(object=earth.object, type="response")
+stats::fitted(object=earth.object)
+object created with Formula (not formula): using attr(terms, "Formula")
+object created with Formula (not formula): using attr(terms, "Formula")
+got model response from model.frame(Volume + VolNeg ~ Girth + Height,
+                                    data=call$data, na.action="na.fail")
+
+training rsq 0.98
+> plotmo(VolVolNega.Formula.subset.nokeepxy, nresponse=1, do.par=0, pt.col=2)
+ plotmo grid:    Girth Height
+                 12.45   77.5
+> plotmo(VolVolNega.Formula.subset.nokeepxy, nresponse=2, do.par=0, pt.col=3)
+ plotmo grid:    Girth Height
+                 12.45   77.5
+> par(org.par)
+> 
+> # subset, multiple response, keepxy
+> subset2 <- seq(from=1, to=nrow(trees1), by=2)
+> VolVolNega.formula.subset.keepxy <- earth(cbind.Volume.VolNeg~Girth+Height, data=trees1, subset=subset2, trace=1, keepxy=TRUE)
+x[31,2] with colnames Girth Height
+y[31,2] with colnames Volume VolNeg
+16 cases after taking subset
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0)
+After forward pass GRSq 0.888 RSq 0.988
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.958 RSq 0.985
+> VolVolNega.Formula.subset.keepxy <- earth(Volume+VolNeg      ~Girth+Height, data=trees1, subset=subset2, trace=1, keepxy=TRUE)
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[31,2] with colnames Girth Height
+y[31,2] with colnames Volume VolNeg
+16 cases after taking subset
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0)
+After forward pass GRSq 0.888 RSq 0.988
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.958 RSq 0.985
+> check.models.equal(VolVolNega.formula.subset.nokeepxy, VolVolNega.formula.subset.keepxy, msg="VolVolNega.formula.subset.nokeepxy, VolVolNega.formula.subset.keepxy", newdata=trees1[2:3,])
+VolVolNega.formula.subset.nokeepxy, VolVolNega.formula.subset.keepxy: models not identical
+
+VolVolNega.formula.subset.nokeepxy, VolVolNega.formula.subset.keepxy: Models are equivalent, within numerical tolerances
+
+> check.models.equal(VolVolNega.Formula.subset.nokeepxy, VolVolNega.Formula.subset.keepxy, msg="VolVolNega.Formula.subset.nokeepxy, VolVolNega.Formula.subset.keepxy", newdata=trees1[2:3,])
+VolVolNega.Formula.subset.nokeepxy, VolVolNega.Formula.subset.keepxy: models not identical
+
+VolVolNega.Formula.subset.nokeepxy, VolVolNega.Formula.subset.keepxy: Models are equivalent, within numerical tolerances
+
+> check.models.equal(VolVolNega.formula.subset.keepxy, VolVolNega.Formula.subset.keepxy, msg="VolVolNega.formula.subset.keepxy, VolVolNega.Formula.subset.keepxy", newdata=trees1[2:3,])
+VolVolNega.formula.subset.keepxy, VolVolNega.Formula.subset.keepxy: models not identical
+
+Formulas differ: cbind.Volume.VolNeg ~ Girth + Height
+and:             ~Volume + VolNeg + (Girth + Height)
+
+VolVolNega.formula.subset.keepxy, VolVolNega.Formula.subset.keepxy: Models are equivalent, within numerical tolerances
+
+> 
+> caption <- "VolVolNega.formula.subset.keepxy"
+> par(mfrow=c(3, 2), mar=c(3, 3, 3, 1), mgp=c(1.5, 0.5, 0), oma=c(0, 0, 5, 0))
+> plot(VolVolNega.formula.subset.keepxy, nresponse=1, which=3, do.par=0,
++      caption=caption, trace=1,
++      main="Response 1: Residuals vs Fitted")
+stats::residuals(object=earth.object, type="response")
+stats::fitted(object=earth.object)
+got model response from object$y
+
+training rsq 0.98
+> plot(VolVolNega.formula.subset.keepxy, nresponse=2, which=3, do.par=0,
++      caption=caption, trace=1,
++      main="Response 2: Residuals vs Fitted")
+stats::residuals(object=earth.object, type="response")
+stats::fitted(object=earth.object)
+got model response from object$y
+
+training rsq 0.98
+> # TODO following fail: subset and keepxy
+> try(plotmo(VolVolNega.formula.subset.keepxy, nresponse=1, do.par=0, pt.col=2))
+
+Looked unsuccessfully for the original predictors in the following places:
+
+(1) object$x: NULL
+
+(2) model.frame: variable lengths differ (found for 'Girth')
+
+(3) getCall(object)$x: NULL
+
+Error : cannot get the original model predictors
+> try(plotmo(VolVolNega.formula.subset.keepxy, nresponse=2, do.par=0, pt.col=3))
+
+Looked unsuccessfully for the original predictors in the following places:
+
+(1) object$x: NULL
+
+(2) model.frame: variable lengths differ (found for 'Girth')
+
+(3) getCall(object)$x: NULL
+
+Error : cannot get the original model predictors
+> par(org.par)
+> 
+> caption <- "VolVolNega.Formula.subset.keepxy"
+> par(mfrow=c(3, 2), mar=c(3, 3, 3, 1), mgp=c(1.5, 0.5, 0), oma=c(0, 0, 5, 0))
+> plot(VolVolNega.Formula.subset.keepxy, nresponse=1, which=3, do.par=0,
++      caption=caption, trace=1,
++      main="Response 1: Residuals vs Fitted")
+stats::residuals(object=earth.object, type="response")
+stats::fitted(object=earth.object)
+got model response from object$y
+
+training rsq 0.98
+> plot(VolVolNega.Formula.subset.keepxy, nresponse=2, which=3, do.par=0,
++      caption=caption, trace=1,
++      main="Response 2: Residuals vs Fitted")
+stats::residuals(object=earth.object, type="response")
+stats::fitted(object=earth.object)
+got model response from object$y
+
+training rsq 0.98
+> # TODO following fail: subset and keepxy
+> try(plotmo(VolVolNega.Formula.subset.keepxy, nresponse=1, do.par=0, pt.col=2))
+Error : 'subset' is out of range, allowed values are 1 to 16
+> try(plotmo(VolVolNega.Formula.subset.keepxy, nresponse=2, do.par=0, pt.col=3))
+Error : 'subset' is out of range, allowed values are 1 to 16
+> par(org.par)
+> 
+> # subset, multiple response, weights
+> weights2 <- sqrt(1:nrow(trees1))
+> VolVolNega.formula.weights.subset.nokeepxy <- earth(cbind.Volume.VolNeg~Girth+Height, data=trees1, weights=weights2, subset=subset2, trace=1)
+x[31,2] with colnames Girth Height
+y[31,2] with colnames Volume VolNeg
+weights[31]: 1, 1.414, 1.732, 2, 2.236, 2.449, 2.646, 2.828, 3, 3.162,...
+16 cases after taking subset
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0)
+After forward pass GRSq 0.887 RSq 0.987
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.958 RSq 0.985
+> VolVolNega.Formula.weights.subset.nokeepxy <- earth(Volume+VolNeg      ~Girth+Height, data=trees1, weights=weights2, subset=subset2, trace=1)
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[31,2] with colnames Girth Height
+y[31,2] with colnames Volume VolNeg
+weights[31]: 1, 1.414, 1.732, 2, 2.236, 2.449, 2.646, 2.828, 3, 3.162,...
+16 cases after taking subset
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0)
+After forward pass GRSq 0.887 RSq 0.987
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.958 RSq 0.985
+> check.models.equal(VolVolNega.formula.weights.subset.nokeepxy, VolVolNega.Formula.weights.subset.nokeepxy, "VolVolNega.formula.weights.subset.nokeepxy, VolVolNega.Formula.weights.subset.nokeepxy")
+VolVolNega.formula.weights.subset.nokeepxy, VolVolNega.Formula.weights.subset.nokeepxy: models not identical
+
+Formulas differ: cbind.Volume.VolNeg ~ Girth + Height
+and:             ~Volume + VolNeg + (Girth + Height)
+
+VolVolNega.formula.weights.subset.nokeepxy, VolVolNega.Formula.weights.subset.nokeepxy: Models are equivalent, within numerical tolerances
+
+> 
+> caption <- "VolVolNega.formula.weights.subset.nokeepxy"
+> par(mfrow=c(3, 2), mar=c(3, 3, 3, 1), mgp=c(1.5, 0.5, 0), oma=c(0, 0, 5, 0))
+> plot(VolVolNega.formula.weights.subset.nokeepxy, nresponse=1, which=3, do.par=0,
++      caption=caption, trace=1,
++      main="Response 1: Residuals vs Fitted")
+stats::residuals(object=earth.object, type="response")
+stats::fitted(object=earth.object)
+got model response from model.frame(cbind.Volume.VolNeg ~ Girth + Height,
+                                    data=call$data, na.action="na.fail")
+
+training rsq 0.98
+> plot(VolVolNega.formula.weights.subset.nokeepxy, nresponse=2, which=3, do.par=0,
++      caption=caption, trace=1,
++      main="Response 2: Residuals vs Fitted")
+stats::residuals(object=earth.object, type="response")
+stats::fitted(object=earth.object)
+got model response from model.frame(cbind.Volume.VolNeg ~ Girth + Height,
+                                    data=call$data, na.action="na.fail")
+
+training rsq 0.98
+> plotmo(VolVolNega.formula.weights.subset.nokeepxy, nresponse=1, do.par=0, pt.col=2)
+ plotmo grid:    Girth Height
+                 12.45   77.5
+> plotmo(VolVolNega.formula.weights.subset.nokeepxy, nresponse=2, do.par=0, pt.col=3)
+ plotmo grid:    Girth Height
+                 12.45   77.5
+> par(org.par)
+> 
+> caption <- "VolVolNega.Formula.weights.subset.nokeepxy"
+> par(mfrow=c(3, 2), mar=c(3, 3, 3, 1), mgp=c(1.5, 0.5, 0), oma=c(0, 0, 5, 0))
+> plot(VolVolNega.Formula.weights.subset.nokeepxy, nresponse=1, which=3, do.par=0,
++      caption=caption, trace=1,
++      main="Response 1: Residuals vs Fitted")
+stats::residuals(object=earth.object, type="response")
+stats::fitted(object=earth.object)
+object created with Formula (not formula): using attr(terms, "Formula")
+object created with Formula (not formula): using attr(terms, "Formula")
+got model response from model.frame(Volume + VolNeg ~ Girth + Height,
+                                    data=call$data, na.action="na.fail")
+
+training rsq 0.98
+> plot(VolVolNega.Formula.weights.subset.nokeepxy, nresponse=2, which=3, do.par=0,
++      caption=caption, trace=1,
++      main="Response 2: Residuals vs Fitted")
+stats::residuals(object=earth.object, type="response")
+stats::fitted(object=earth.object)
+object created with Formula (not formula): using attr(terms, "Formula")
+object created with Formula (not formula): using attr(terms, "Formula")
+got model response from model.frame(Volume + VolNeg ~ Girth + Height,
+                                    data=call$data, na.action="na.fail")
+
+training rsq 0.98
+> plotmo(VolVolNega.Formula.weights.subset.nokeepxy, nresponse=1, do.par=0, pt.col=2)
+ plotmo grid:    Girth Height
+                 12.45   77.5
+> plotmo(VolVolNega.Formula.weights.subset.nokeepxy, nresponse=2, do.par=0, pt.col=3)
+ plotmo grid:    Girth Height
+                 12.45   77.5
+> par(org.par)
+> 
+> # examples in earth vignette
+> data(ozone1)
+> mul1 <- earth(cbind(O3,wind) ~ ., data=ozone1) # formula interface
+> mul2 <- earth(O3 + wind ~ ., data=ozone1) # use + on left of formula
+> check.models.equal(mul2, mul1, "mul2, mul1", newdata=ozone1[1:3,])
+mul2, mul1: models not identical
+
+Formulas differ: ~O3 + wind + (vh + humidity + temp + ibh + dpg + ibt + vis +     doy)
+and:             cbind(O3, wind) ~ vh + humidity + temp + ibh + dpg + ibt + vis +     doy
+
+mul2, mul1: Models are equivalent, within numerical tolerances
+
+> mul3 <- earth(ozone1[,-c(1,3)], ozone1[,c(1,3)]) # x,y interface
+> check.models.equal(mul3, mul1,"mul3, mul", newdata=ozone1[1:3,])
+mul3, mul: models not identical
+
+Formulas differ: Error in formula.default(mod1) : invalid formula
+and:             cbind(O3, wind) ~ vh + humidity + temp + ibh + dpg + ibt + vis +     doy
+
+mul3, mul: Models are equivalent, within numerical tolerances
+
+> mul4 <- earth(cbind(log.O3=log(O3),wind) ~ ., data=ozone1)
+> print(summary(mul4))
+Call: earth(formula=cbind(log.O3=log(O3),wind)~., data=ozone1)
+
+                   log.O3       wind
+(Intercept)     3.2898176  6.5858915
+h(5700-vh)     -0.0036819  0.0098936
+h(vh-5810)      0.0053975 -0.0120374
+h(32-humidity) -0.0233220  0.1003807
+h(humidity-32)  0.0026948  0.0194174
+h(temp-80)      0.0015404  0.1486489
+h(2972-ibh)     0.0001920 -0.0003352
+h(vis-250)     -0.0000692  0.0143934
+h(doy-150)     -0.0082304 -0.0103293
+h(285-doy)     -0.0071836 -0.0120143
+h(doy-318)      0.0003533 -0.0621512
+h(doy-376)     -0.0169292  0.2458606
+
+Selected 12 of 17 terms, and 6 of 8 predictors
+Termination condition: Reached nk 21
+Importance: doy, vh, ibh, temp, humidity, vis, dpg-unused, ibt-unused
+Number of terms at each degree of interaction: 1 11 (additive model)
+
+             GCV       RSS      GRSq       RSq
+log.O3 0.2031747  58.02731 0.6383106 0.6850651
+wind   3.1435625 897.81098 0.3006775 0.3910769
+All    3.3467372 955.83829 0.3381830 0.4237342
+> x1 <- ozone1$O3
+> x2 <- ozone1$win
+> x3 <- ozone1$O3
+> y1 <- ozone1$temp
+> y2 <- ozone1$doy
+> mul5 <- earth(x=data.frame(x1, x2, log.x3=log(x3)), y=data.frame(y1, y2), trace=1)
+x[330,3] with colnames x1 x2 log.x3
+y[330,2] with colnames y1 y2
+Forward pass term 1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20
+Reached nk 21
+After forward pass GRSq 0.063 RSq 0.205
+Prune backward penalty 2 nprune null: selected 5 of 14 terms, and 3 of 3 preds
+After pruning pass GRSq 0.125 RSq 0.167
+> print(summary(mul5))
+Call: earth(x=data.frame(x1,x2,log.x3=log(x3)), y=data.frame(y1,y2), trace=1)
+
+                         y1         y2
+(Intercept)       73.810483 216.683033
+h(14-x1)          -2.625043  -5.874072
+h(3-x2)           -0.562188  51.060251
+h(x2-8)           -3.262345 -40.527822
+h(1.79176-log.x3)  3.856324  93.506320
+
+Selected 5 of 14 terms, and 3 of 3 predictors
+Termination condition: Reached nk 21
+Importance: x2, x1, log.x3
+Number of terms at each degree of interaction: 1 4 (additive model)
+
+          GCV        RSS      GRSq       RSq
+y1    91.8529   28680.65 0.5619596 0.5830035
+y2  9649.8087 3013108.89 0.1169277 0.1593514
+All 9741.6616 3041789.54 0.1253067 0.1673278
+> log.x3 <- log(x3)
+> mul6 <- earth(y1 + y2 ~ x1 + x2 + log.x3, trace=1)
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[330,3] with colnames x1 x2 log.x3
+y[330,2] with colnames y1 y2
+Forward pass term 1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20
+Reached nk 21
+After forward pass GRSq 0.063 RSq 0.205
+Prune backward penalty 2 nprune null: selected 5 of 14 terms, and 3 of 3 preds
+After pruning pass GRSq 0.125 RSq 0.167
+> stopifnot(all.equal(as.vector(mul5$coefficients), as.vector(mul6$coefficients)))
+> stopifnot(all.equal(as.vector(mul5$dirs), as.vector(mul6$dirs)))
+> mul7 <- earth(y1 + y2 ~ x1 + x2 + log(x3), trace=1)
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[330,3] with colnames x1 x2 log(x3)
+y[330,2] with colnames y1 y2
+Forward pass term 1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20
+Reached nk 21
+After forward pass GRSq 0.063 RSq 0.205
+Prune backward penalty 2 nprune null: selected 5 of 14 terms, and 3 of 3 preds
+After pruning pass GRSq 0.125 RSq 0.167
+> stopifnot(all.equal(as.vector(mul5$coefficients), as.vector(mul7$coefficients)))
+> stopifnot(all.equal(as.vector(mul5$dirs), as.vector(mul7$dirs)))
+> 
+> # TODO Sep 2020: work around for model.matrix.Formula which incorrectly includes log(03) on lhs
+> expect.err(try(earth(log(O3 + wind) + ibt ~ temp, data=ozone1, trace=1)),
++            "terms like 'log(O3 + wind)' are not allowed on the LHS of a multiple-response formula")
+Using class "Formula" because lhs of formula has terms separated by "+"
+Error : terms like 'log(O3 + wind)' are not allowed on the LHS of a multiple-response formula
+Got expected error from try(earth(log(O3 + wind) + ibt ~ temp, data = ozone1, trace = 1))
+> 
+> expect.err(try(show.earth.Formula(VolNeg+Volume~1, nresponses=2)), "'x' has no columns")
+Formula=VolNeg + Volume ~ 1 (nresponses=2)
+Using class "Formula" because lhs of formula has terms separated by "+"
+x: length zero
+y[31,2] with colnames VolNeg Volume
+Error : 'x' has no columns
+Got expected error from try(show.earth.Formula(VolNeg + Volume ~ 1, nresponses = 2))
+> # use lhs on rhs TODO earth itself should give an error message, not just plotmo
+> expect.err(try(show.earth.Formula(VolNeg+Volume~Volume, nresponses=2)), "x is empty") # err from plotmo
+Formula=VolNeg + Volume ~ Volume (nresponses=2)
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[31,1] with colname Volume, and values 10.3, 10.3, 10.2, 16.4, 18.8,...
+y[31,2] with colnames VolNeg Volume
+Forward pass term 1, 2
+Reached maximum RSq 0.9990 at 3 terms (RSq 1.0000)
+After forward pass GRSq 1.000 RSq 1.000
+Prune backward penalty 2 nprune null: selected 3 of 3 terms, and 1 of 1 preds
+After pruning pass GRSq 1 RSq 1
+
+summary: Formula=VolNeg + Volume ~ Volume (nresponses=2) 
+
+Call: earth(formula=formula, data=data, subset=subset, keepxy=TRUE, trace=1)
+
+                   VolNeg Volume
+(Intercept)    -5.7604480   31.7
+h(31.7-Volume)  0.1144978   -1.0
+h(Volume-31.7) -0.0689001    1.0
+
+Selected 3 of 3 terms, and 1 of 1 predictors
+Termination condition: Reached maximum RSq 0.9990 at 3 terms
+Importance: Volume
+Number of terms at each degree of interaction: 1 2 (additive model)
+
+               GCV       RSS      GRSq       RSq
+VolNeg 0.005362325 0.1169333 0.9974262 0.9980668
+Volume 0.000000000 0.0000000 1.0000000 1.0000000
+All    0.005362325 0.1169333 0.9999809 0.9999857
+
+evimp: Formula=VolNeg + Volume ~ Volume (nresponses=2) 
+
+       nsubsets   gcv    rss
+Volume        2 281.3> 8166.5>
+
+
+plotmo: Formula=VolNeg + Volume ~ Volume (nresponses=2) 
+
+Error in plotmo(mod, nresponse = iresponse, do.par = 0, pt.col = iresponse +  : 
+  x is empty
+Got expected error from try(show.earth.Formula(VolNeg + Volume ~ Volume, nresponses = 2))
+> # formula has better error handling than Formula (model.matrix.default gives warning)
+> options(warn=2)
+> expect.err(try(show.earth.formula(Volume~Volume)), "(converted from warning) the response appeared on the right-hand side and was dropped")
+formula=Volume ~ Volume (nresponses=1)
+Error in model.matrix.default(terms, data = mf) : 
+  (converted from warning) the response appeared on the right-hand side and was dropped
+Got expected error from try(show.earth.formula(Volume ~ Volume))
+> options(warn=1) # print warnings as they occur
+> show.earth.Formula(VolNeg+Volume~Girth, nresponses=2, subset=)
+Formula=VolNeg + Volume ~ Girth (nresponses=2)
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[31,1] with colname Girth, and values 8.3, 8.6, 8.8, 10.5, 10.7, 10...
+y[31,2] with colnames VolNeg Volume
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms, 4 terms used (DeltaRSq 8.6e-05)
+After forward pass GRSq 0.931 RSq 0.963
+Prune backward penalty 2 nprune null: selected 3 of 4 terms, and 1 of 1 preds
+After pruning pass GRSq 0.949 RSq 0.962
+
+summary: Formula=VolNeg + Volume ~ Girth (nresponses=2) 
+
+Call: earth(formula=formula, data=data, subset=subset, keepxy=TRUE, trace=1)
+
+                  VolNeg    Volume
+(Intercept)   -5.4611150 28.766764
+h(13.8-Girth)  0.4054536 -3.427802
+h(Girth-13.8) -0.4767735  6.570747
+
+Selected 3 of 4 terms, and 1 of 1 predictors
+Termination condition: RSq changed by less than 0.001 at 4 terms
+Importance: Girth
+Number of terms at each degree of interaction: 1 2 (additive model)
+
+              GCV        RSS      GRSq       RSq
+VolNeg  0.1143809   2.494241 0.9450989 0.9587632
+Volume 14.2014480 309.683189 0.9491370 0.9617962
+All    14.3158289 312.177431 0.9491070 0.9617737
+
+evimp: Formula=VolNeg + Volume ~ Girth (nresponses=2) 
+
+      nsubsets   gcv    rss
+Girth        2 267.0> 7854.4>
+
+
+plotmo: Formula=VolNeg + Volume ~ Girth (nresponses=2) 
+
+-------------------------------------------------------------------------------
+
+Selected 3 of 4 terms, and 1 of 1 predictors
+Termination condition: RSq changed by less than 0.001 at 4 terms
+Importance: Girth
+Number of terms at each degree of interaction: 1 2 (additive model)
+
+              GCV        RSS      GRSq       RSq
+VolNeg  0.1143809   2.494241 0.9450989 0.9587632
+Volume 14.2014480 309.683189 0.9491370 0.9617962
+All    14.3158289 312.177431 0.9491070 0.9617737
+> show.earth.Formula(Volume+VolNeg+SinVol~., nresponses=3)
+Formula=Volume + VolNeg + SinVol ~ . (nresponses=3)
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[31,2] with colnames Girth Height
+y[31,3] with colnames Volume VolNeg SinVol
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0.00087)
+After forward pass GRSq 0.947 RSq 0.976
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.96 RSq 0.974
+
+summary: Formula=Volume + VolNeg + SinVol ~ . (nresponses=3) 
+
+Call: earth(formula=formula, data=data, subset=subset, keepxy=TRUE, trace=1)
+
+                  Volume     VolNeg      SinVol
+(Intercept)   29.0599535 -5.4935391  1.05004721
+h(14.2-Girth) -3.4198062  0.3964215 -0.11150531
+h(Girth-14.2)  6.2295143 -0.4313910 -0.10110737
+h(Height-75)   0.5813644 -0.0529614 -0.00102027
+
+Selected 4 of 5 terms, and 2 of 2 predictors
+Termination condition: RSq changed by less than 0.001 at 5 terms
+Importance: Girth, Height
+Number of terms at each degree of interaction: 1 3 (additive model)
+
+              GCV        RSS      GRSq       RSq
+Volume 11.2543915 209.113855 0.9596919 0.9742028
+VolNeg  0.0885223   1.644801 0.9575107 0.9728068
+SinVol  0.0219274   0.407425 0.5424106 0.7071428
+All    11.3648412 211.166081 0.9596047 0.9741470
+
+evimp: Formula=Volume + VolNeg + SinVol ~ . (nresponses=3) 
+
+       nsubsets   gcv    rss
+Girth         3 100.0  100.0
+Height        1  10.7   11.5
+
+
+plotmo: Formula=Volume + VolNeg + SinVol ~ . (nresponses=3) 
+
+ plotmo grid:    Girth Height
+                  12.9     76
+ plotmo grid:    Girth Height
+                  12.9     76
+ plotmo grid:    Girth Height
+                  12.9     76
+-------------------------------------------------------------------------------
+
+Selected 4 of 5 terms, and 2 of 2 predictors
+Termination condition: RSq changed by less than 0.001 at 5 terms
+Importance: Girth, Height
+Number of terms at each degree of interaction: 1 3 (additive model)
+
+              GCV        RSS      GRSq       RSq
+Volume 11.2543915 209.113855 0.9596919 0.9742028
+VolNeg  0.0885223   1.644801 0.9575107 0.9728068
+SinVol  0.0219274   0.407425 0.5424106 0.7071428
+All    11.3648412 211.166081 0.9596047 0.9741470
+> show.earth.formula(VolNeg+SinVol~randx, nresponses=2)       # intercept only model
+formula=VolNeg + SinVol ~ randx (nresponses=2)
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[31,1] with colname randx, and values 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,...
+y[31,2] with colnames VolNeg SinVol
+Forward pass term 1, 2, 4
+RSq changed by less than 0.001 at 3 terms, 2 terms used (DeltaRSq 0)
+After forward pass GRSq -0.328 RSq 0.003
+Prune backward penalty 2 nprune null: selected 1 of 2 terms, and 0 of 1 preds
+After pruning pass GRSq 0 RSq 0
+
+summary: formula=VolNeg + SinVol ~ randx (nresponses=2) 
+
+Call: earth(formula=formula, data=data, subset=subset, keepxy=TRUE, trace=1)
+
+               VolNeg   SinVol
+(Intercept) -5.312232 0.746683
+
+Selected 1 of 2 terms, and 0 of 1 predictors
+Termination condition: RSq changed by less than 0.001 at 2 terms
+Importance: randx-unused
+Number of terms at each degree of interaction: 1 (intercept only model)
+
+              GCV       RSS GRSq RSq
+VolNeg 2.08339943 60.485790    0   0
+SinVol 0.04791933  1.391206    0   0
+All    2.13131876 61.876996    0   0
+
+evimp: formula=VolNeg + SinVol ~ randx (nresponses=2) 
+
+    nsubsets   gcv    rss
+
+
+plotmo: formula=VolNeg + SinVol ~ randx (nresponses=2) 
+
+-------------------------------------------------------------------------------
+
+Selected 1 of 2 terms, and 0 of 1 predictors
+Termination condition: RSq changed by less than 0.001 at 2 terms
+Importance: randx-unused
+Number of terms at each degree of interaction: 1 (intercept only model)
+
+              GCV       RSS GRSq RSq
+VolNeg 2.08339943 60.485790    0   0
+SinVol 0.04791933  1.391206    0   0
+All    2.13131876 61.876996    0   0
+> VolNeg.SinVol.randx <- earth(VolNeg+SinVol~randx, trace=1)  # intercept only model
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[31,1] with colname randx, and values 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,...
+y[31,2] with colnames VolNeg SinVol
+Forward pass term 1, 2, 4
+RSq changed by less than 0.001 at 3 terms, 2 terms used (DeltaRSq 0)
+After forward pass GRSq -0.328 RSq 0.003
+Prune backward penalty 2 nprune null: selected 1 of 2 terms, and 0 of 1 preds
+After pruning pass GRSq 0 RSq 0
+> plotmo(VolNeg.SinVol.randx, nresponse=2)
+> 
+> # TODO following should say "invalid formula: too many terms on the left hand side", but at least it gives an error message
+> expect.err(try(earth(Volume+VolNeg|99~Girth+Height, data=trees, trace=1)), "multiple parts on left side of formula (because \"|\" was used)")
+Using class "Formula" because lhs of formula has terms separated by "+"
+Error : multiple parts on left side of formula (because "|" was used)
+Got expected error from try(earth(Volume + VolNeg | 99 ~ Girth + Height, data = trees,     trace = 1))
+> expect.err(try(earth(Volume+VolNeg~Girth+Height|Volume, data=trees, trace=1)), "multiple parts on right side of formula (because \"|\" was used)")
+Using class "Formula" because lhs of formula has terms separated by "+"
+Error : multiple parts on right side of formula (because "|" was used)
+Got expected error from try(earth(Volume + VolNeg ~ Girth + Height | Volume, data = trees,     trace = 1))
+> a1 <- earth(Volume+VolNeg~Girth+(Height|Volume), data=trees, trace=1) # ok, because | is in () (and earth will use formula, not Formula)
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[31,2] with colnames Girth Height | VolumeTRUE
+y[31,2] with colnames Volume VolNeg
+Forward pass term 1, 2, 4
+RSq changed by less than 0.001 at 3 terms (DeltaRSq 0.00011)
+After forward pass GRSq 0.940 RSq 0.962
+Prune backward penalty 2 nprune null: selected 3 of 3 terms, and 1 of 2 preds
+After pruning pass GRSq 0.949 RSq 0.961
+> stopifnot(NCOL(a1$coefficients) == 2)
+> a2 <- earth(Volume+VolNeg~Girth+I(Height|Volume), data=trees, trace=1) # ok, because | is in I()
+Using class "Formula" because lhs of formula has terms separated by "+"
+x[31,2] with colnames Girth I(Height | Volume)TRUE
+y[31,2] with colnames Volume VolNeg
+Forward pass term 1, 2, 4
+RSq changed by less than 0.001 at 3 terms (DeltaRSq 0.00011)
+After forward pass GRSq 0.940 RSq 0.962
+Prune backward penalty 2 nprune null: selected 3 of 3 terms, and 1 of 2 preds
+After pruning pass GRSq 0.949 RSq 0.961
+> stopifnot(NCOL(a2$coefficients) == 2)
+> a3 <- earth((Volume+VolNeg)~Girth+Height, data=trees, trace=1) # ok, earth will build a single response model
+x[31,2] with colnames Girth Height
+y[31,1] with colname (Volume + VolNeg), and values 7.091, 7.091, 7.006, 12.35, 1...
+Forward pass term 1, 2, 4, 6
+RSq changed by less than 0.001 at 5 terms (DeltaRSq 0.00097)
+After forward pass GRSq 0.946 RSq 0.976
+Prune backward penalty 2 nprune null: selected 4 of 5 terms, and 2 of 2 preds
+After pruning pass GRSq 0.959 RSq 0.974
+> stopifnot(NCOL(a3$coefficients) == 1)
+> # TODO it's a pity the following don't work
+> expect.err(try(earth(Volume+VolNeg*999~., data=trees, trace=1)), "invalid model formula in ExtractVars")       # use Formula
+Using class "Formula" because lhs of formula has terms separated by "+"
+Error in terms.formula(paste_formula(NULL, attr(Formula, "lhs"), rsep = "+")) : 
+  invalid model formula in ExtractVars
+Got expected error from try(earth(Volume + VolNeg * 999 ~ ., data = trees, trace = 1))
+> expect.err(try(earth(Volume+VolNeg/99+SinVol~., data=trees, trace=1)), "invalid model formula in ExtractVars") # use Formula
+Using class "Formula" because lhs of formula has terms separated by "+"
+Error in terms.formula(paste_formula(NULL, attr(Formula, "lhs"), rsep = "+")) : 
+  invalid model formula in ExtractVars
+Got expected error from try(earth(Volume + VolNeg/99 + SinVol ~ ., data = trees, trace = 1))
+> 
+> library(earth)
+> data(ozone1)
+> 
+> # TODO Sep 2020: work around for model.matrix.Formula which incorrectly includes log(03)+wind on lhs
+> expect.err(try(earth(log(O3) + wind             ~ ., data=ozone1, trace=1)),
++            "terms like 'log(O3)' are not allowed on the LHS of a multiple-response formula")
+Using class "Formula" because lhs of formula has terms separated by "+"
+Error : terms like 'log(O3)' are not allowed on the LHS of a multiple-response formula
+Got expected error from try(earth(log(O3) + wind ~ ., data = ozone1, trace = 1))
+> 
+> a1 <- earth(cbind(log.O3=log(O3),wind) ~ humidity+temp, data=ozone1)
+> options(warn=2)
+> expect.err(try(coef(a1)), "coef.earth: multiple response model: returning coefficients for just the first response")
+Error : (converted from warning) coef.earth: multiple response model: returning coefficients for just the first response
+Got expected error from try(coef(a1))
+> options(warn=1)
+> a2 <- earth(cbind(log(O3),wind) ~ humidity+temp, data=ozone1)
+> stopifnot(all.equal(as.vector(a2$coefficients), as.vector(a1$coefficients)))
+> log.O3 <- log(ozone1$O3)
+> a3 <- earth(cbind(log.O3,wind) ~ humidity+temp, data=ozone1)
+> stopifnot(all.equal(as.vector(a3$coefficients), as.vector(a1$coefficients)))
+> a4 <- earth(log.O3+wind ~ humidity+temp, data=ozone1)
+> stopifnot(all.equal(as.vector(a4$coefficients), as.vector(a1$coefficients)))
+> 
+> # TODO Sep 2020: work around for model.matrix.Formula which incorrectly includes log(03) on lhs
+> expect.err(try(earth(log(O3)+wind ~ humidity+temp, data=ozone1)),
++            "terms like 'log(O3)' are not allowed on the LHS of a multiple-response formula")
+Error : terms like 'log(O3)' are not allowed on the LHS of a multiple-response formula
+Got expected error from try(earth(log(O3) + wind ~ humidity + temp, data = ozone1))
+> 
+> # multiple responses, mixed factors and numeric
+> data(etitanic)
+> pclass.age <- earth(pclass+age~sibsp, data=etitanic)
+> plot(pclass.age, nresponse=4)
+> par(mfrow=c(2,2))
+> cat("plotmo(pclass.age, nresponse=1):\n")
+plotmo(pclass.age, nresponse=1):
+> plotmo(pclass.age, nresponse=1, main="nresponse=1, pclass1st", do.par=FALSE)
+> cat("plotmo(pclass.age, nresponse=2):\n")
+plotmo(pclass.age, nresponse=2):
+> plotmo(pclass.age, nresponse=2, main="nresponse=2, pclass2nd", do.par=FALSE)
+> cat("plotmo(pclass.age, nresponse=3):\n")
+plotmo(pclass.age, nresponse=3):
+> plotmo(pclass.age, nresponse=3, main="nresponse=3, pclass3rd", do.par=FALSE)
+> cat("plotmo(pclass.age, nresponse=4):\n")
+plotmo(pclass.age, nresponse=4):
+> plotmo(pclass.age, nresponse=4, main="nresponse=4, age", do.par=FALSE)
+> cat("plotmo(pclass.age, nresponse=5):\n")
+plotmo(pclass.age, nresponse=5):
+> options(warn=2)
+> expect.err(try(plotmo(pclass.age, nresponse=5, main="nresponse=5", do.par=FALSE)), "nresponse is 5 but the number of columns is only 4")
+Error : nresponse is 5 but the number of columns is only 4
+Got expected error from try(plotmo(pclass.age, nresponse = 5, main = "nresponse=5", do.par = FALSE))
+> options(warn=1)
+> 
+> age.pclass <- earth(age+pclass~sibsp, data=etitanic)
+> par(mfrow=c(2,2))
+> cat("plotmo(age.pclass, nresponse=1):\n")
+plotmo(age.pclass, nresponse=1):
+> plotmo(age.pclass, nresponse=1, main="nresponse=1, age", do.par=FALSE, trace=1)
+object created with Formula (not formula): using attr(terms, "Formula")
+stats::predict(earth.object, NULL, type="response")
+stats::fitted(object=earth.object)
+object created with Formula (not formula): using attr(terms, "Formula")
+object created with Formula (not formula): using attr(terms, "Formula")
+got model response from model.frame(age + pclass ~ sibsp,
+                                    data=call$data, na.action="na.fail")
+> cat("plotmo(age.pclass, nresponse=2):\n")
+plotmo(age.pclass, nresponse=2):
+> plotmo(age.pclass, nresponse=2, main="nresponse=2, pclass1st", do.par=FALSE)
+> cat("plotmo(age.pclass, nresponse=3):\n")
+plotmo(age.pclass, nresponse=3):
+> plotmo(age.pclass, nresponse=3, main="nresponse=3, pclass2nd", do.par=FALSE)
+> cat("plotmo(age.pclass, nresponse=4):\n")
+plotmo(age.pclass, nresponse=4):
+> plotmo(age.pclass, nresponse=4, main="nresponse=4, pclass3rd", do.par=FALSE)
+> cat("plotmo(age.pclass, nresponse=5):\n")
+plotmo(age.pclass, nresponse=5):
+> options(warn=2)
+> expect.err(try(plotmo(age.pclass, nresponse=5, main="nresponse=5", do.par=FALSE)), "nresponse is 5 but the number of columns is only 4")
+Error : nresponse is 5 but the number of columns is only 4
+Got expected error from try(plotmo(age.pclass, nresponse = 5, main = "nresponse=5", do.par = FALSE))
+> options(warn=1)
+> 
+> pclass.sex <- earth(pclass+sex~sibsp, data=etitanic)
+> par(mfrow=c(2,2))
+> cat("plotmo(pclass.sex, nresponse=1):\n")
+plotmo(pclass.sex, nresponse=1):
+> plotmo(pclass.sex, nresponse=1, main="nresponse=1, pclass1st", do.par=FALSE, trace=1)
+object created with Formula (not formula): using attr(terms, "Formula")
+stats::predict(earth.object, NULL, type="response")
+stats::fitted(object=earth.object)
+object created with Formula (not formula): using attr(terms, "Formula")
+object created with Formula (not formula): using attr(terms, "Formula")
+got model response from model.frame(pclass + sex ~ sibsp,
+                                    data=call$data, na.action="na.fail")
+> cat("plotmo(pclass.sex, nresponse=2):\n")
+plotmo(pclass.sex, nresponse=2):
+> plotmo(pclass.sex, nresponse=2, main="nresponse=2, pclass2nd", do.par=FALSE)
+> cat("plotmo(pclass.sex, nresponse=3):\n")
+plotmo(pclass.sex, nresponse=3):
+> plotmo(pclass.sex, nresponse=3, main="nresponse=3, pclass3rd", do.par=FALSE)
+> cat("plotmo(pclass.sex, nresponse=4):\n")
+plotmo(pclass.sex, nresponse=4):
+> plotmo(pclass.sex, nresponse=4, main="nresponse=4, age", do.par=FALSE)
+> 
+> cat("plotmo(pclass.sex, nresponse=5):\n")
+plotmo(pclass.sex, nresponse=5):
+> options(warn=2)
+> expect.err(try(plotmo(pclass.sex, nresponse=5, main="nresponse=5", do.par=FALSE)), "nresponse is 5 but the number of columns is only 4")
+Error : nresponse is 5 but the number of columns is only 4
+Got expected error from try(plotmo(pclass.sex, nresponse = 5, main = "nresponse=5", do.par = FALSE))
+> options(warn=1)
+> 
+> # try to delete a varname (expose bug in model.matrix.Formula)
+> options(warn=2)
+> expect.err(try(earth(pclass+sex~.-survived, data=etitanic)), "'varlist' has changed (from nvar=4) to new 5 after EncodeVars() -- should no longer happen!")
+Error in terms.formula(form, data = data) : 
+  (converted from warning) 'varlist' has changed (from nvar=4) to new 5 after EncodeVars() -- should no longer happen!
+Got expected error from try(earth(pclass + sex ~ . - survived, data = etitanic))
+> options(warn=1)
+> expect.err(try(earth(pclass+sex~.-survived, data=etitanic)), "model frame and formula mismatch in model.matrix()")
+Warning in terms.formula(form, data = data) :
+  'varlist' has changed (from nvar=4) to new 5 after EncodeVars() -- should no longer happen!
+Error in model.matrix.default(mt, data = data, ...) : 
+  model frame and formula mismatch in model.matrix()
+Got expected error from try(earth(pclass + sex ~ . - survived, data = etitanic))
+> 
+> # try to delete a varname not in data (expose bug in model.matrix.Formula)
+> options(warn=2)
+> expect.err(try(earth(pclass+sex~.-nonesuch, data=etitanic)), "'varlist' has changed (from nvar=5) to new 6 after EncodeVars() -- should no longer happen!")
+Error in terms.formula(fi, ...) : 
+  (converted from warning) 'varlist' has changed (from nvar=5) to new 6 after EncodeVars() -- should no longer happen!
+Got expected error from try(earth(pclass + sex ~ . - nonesuch, data = etitanic))
+> options(warn=1)
+> expect.err(try(earth(pclass+sex~.-nonesuch, data=etitanic)), "model frame and formula mismatch in model.matrix()")
+Warning in terms.formula(fi, ...) :
+  'varlist' has changed (from nvar=5) to new 6 after EncodeVars() -- should no longer happen!
+Warning in terms.formula(form, data = data) :
+  'varlist' has changed (from nvar=5) to new 6 after EncodeVars() -- should no longer happen!
+Error in model.matrix.default(mt, data = data, ...) : 
+  model frame and formula mismatch in model.matrix()
+Got expected error from try(earth(pclass + sex ~ . - nonesuch, data = etitanic))
+> 
+> source("test.epilog.R")

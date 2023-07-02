@@ -1,0 +1,36 @@
+Rigaweb                 Gulf of Riga autumn planktonic food web
+Takapotoweb             Takapoto atoll planktonic food web
+Teasel                  Population dynamics model transition matrix of
+                        teasel
+bentarrow               adds 2-segmented arrow between two points
+coordinates             coordinates of elements on a plot
+curvedarrow             adds curved arrow between two points
+diagram-package         Functions for visualising simple graphs
+                        (networks), plotting flow diagrams
+en.Resistor             electric network symbols
+openplotmat             Creates an empty plot used for diagram
+                        plotting.
+plotmat                 plots a graph (network), based on a transition
+                        matrix
+plotweb                 plots a web
+segmentarrow            adds 3-segmented arrow between two points.
+selfarrow               adds a circular, self-pointing arrow to a plot
+shadowbox               adds a box with a shadow to a plot
+splitarrow              adds a branched arrow between several points
+straightarrow           adds straight arrow between two points
+textdiamond             adds lines of text in a diamand-shaped box to a
+                        plot
+textellipse             adds lines of text in an ellipsoid box to a
+                        plot
+textempty               adds lines of text, on a colored background to
+                        a plot
+texthexa                adds lines of text in an hexagonal box to a
+                        plot
+textmulti               adds lines of text in an multigonal box to a
+                        plot
+textplain               adds lines of text to a plot
+textrect                adds lines of text in a rectangular-shaped box
+                        or in a parallelogram to a plot
+textround               adds lines of text in a rounded box to a plot
+treearrow               adds a dendrogram-like branched arrow between
+                        several points

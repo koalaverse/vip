@@ -1,0 +1,556 @@
+Wishlist (formerly TODO):
+
+* Implement the new scheme of handling classwt in classification.
+
+* Use more compact storage of proximity matrix.
+
+========================================================================
+Changes in 4.7-1:
+
+* The long-standing wishlist item of case weights (used only in sampling) 
+  is now available (thanks to urging from Robert Tishirani and implementation 
+  by Ethan Liaw).
+
+Changes in 4.6-14:
+
+* Native routines are now reigstered.
+
+Changes in 4.6-13:
+
+* The tie-breaking mechanisms in various places were not implemented correctly.
+  (Thanks to Adele Cutler and Susan Durham for reporting!)
+
+* In unsupervised mode, the synthetic data were generated without updating the
+  index matrix that trees actually operate on.
+
+* In rfcv(), the importance measures were taken from the first column of the
+  $importance component of the randomForest object.  Now corrected to use
+  importance(..., type=1).
+
+* Maximum tree size was computed incorrectly, leading to possibly smaller than
+  maxinum possible sized trees grown.
+
+* In classification code, splits on categorical variables with >=32 levels were
+  not encoded correctly.
+
+* Memory usage increase due to .C(..., DUP=FALSE) no longer being supported.
+  Work is underway to transition to .Call() to reduce memory usage.
+
+Changes in 4.6-12:
+
+* The "inbag" component of the randomForest object now records the number of
+  times an observation is included in the bootstrap sample, instead of just
+  indicating whether it is included or not.
+
+ * The "ncat" component of the "forest" component of the randomForest object
+   now always has names that are the column names of x.
+
+ * The "inbag" component is combined properly now in the combine() function.
+
+ * Housekeeping: Cleaned up the DESCRIPTION, NAMESPACE, and URLs in help files.
+
+Changes in 4.6-10:
+
+* Fixed bugs introduced in 4.6-8 and 4.6-9. Levels for ordered factors
+  in predictors are no longer checked for consistency between training
+  and test data in predict.randomForest().  In 4.6-9 the response is mean
+  centered before running the algorithm (for regression), but the mean was
+  not added back in the $y component of the return object from
+  randomForest().
+
+Changes in 4.6-9:
+
+* Categorical predictors are allowed to have up to 53 categories now.
+
+Changes in 4.6-8:
+
+* There was a bug in the handling of ordered factors in randomForest.formula().
+  (Reported by Barry Rawlingson.)
+
+* Changed randomForest.formula() and predict.randomForest() so that
+  predict() without newdata when na.action=na.exclude pads the output
+  with NAs to match the rows in the original data (suggested by Barry
+  Rawlingson.).
+
+* There was a long standing bug in randomForest(..., proximity=TRUE, oob.prox=FALSE)
+  in regression mode. (Thanks to Stefano Romano for the report.)
+
+Change in 4.6-6:
+
+* In randomForest(), proximity matrix is not computed correctly if oob.prox=TRUE.
+  (Thanks to Adele Cutler for the report!)
+
+* In rfcv(), changed the sample-splitting for regression to handle cases
+  when there are many ties in the data.
+
+* The calculation of importanceSD for classification was missing a divisor.
+  (Thanks to Abhishek Jaiantilal for the report.)
+
+? The simulated data in unsupervised randomForest() were not in the right range.
+  (Thanks to Abhishek Jaiantilal for the report.)
+
+* In rfImpute(), padded 1e-8 to the division by sum of proximities to avoid
+  division by 0.
+
+* Some R code clean up to keep R CMD check happy (complete argument names).
+
+Change in 4.6-6:
+
+* Fixed yet another bug in checking for missing classes in the in-bag sample.
+
+Change in 4.6-5:
+
+* Minor bug fix for drawing samples in classification that was introduced
+  in 4.6-4.  (Thanks to Joran Elias for reporting.)
+
+Changes in 4.6-4:
+
+* Changed the error condition added in 4.6-3 to the case when there are fewer
+  than two classes present in the in-bag sample.
+
+Changes in 4.6-3:
+
+* Fixed bugs in the tie-breaking code in various places.  (Thanks to
+  Abhishek Jaiantilal and Nathan Longbotham for the report and Abhishek
+  for the fix.)
+
+* Throw error if some class has no data after 10 sampling attempts in
+  classification.  (Thanks to Abhishek Jaiantilal for the report.)
+
+Changes in 4.6-2:
+
+* Part of the enhancement in 4.5-37 causes segfault in R-2.12.x.  That part
+  has been reverted to the older code for the time being while the problem
+  is investigated further.
+
+Changes in 4.6-1:
+
+* The package now includes the rfcv() function for feature selection.  See
+  the reference in the help page for details.
+
+* predict.randomForest() was not retaining names of observations in some
+  cases.
+
+Changes in 4.5-37:
+
+* Many repeated calls to predict.randomForest() should run faster, thanks
+  to Philip Pham and Rory Martin who pointed out some unnecessary overhead.
+
+Changes in 4.5-36:
+
+* outlier() now works when the input matrix to randomForest() has no
+  row names.  (Reported by Rau Carrio Gaspar.)
+
+* na.roughfix() is now much faster on some data (fixed based on idea from
+  Hadley Wickham; problem reported by Mike Williamson.)
+
+* Corrected typos in the description of categorical splits in ?getTree.
+
+Changes in 4.5-35:
+
+* Fixed an error in partialPlot.randomForest().  Now the partial
+  dependence plots for classification data should be more sensible.
+  (Thanks to Adele Cutler for the bug report and patch.)
+
+* Re-worded part of the help pages regarding variable importance
+  calculation.
+
+Changes in 4.5-34:
+
+* Fixed infinite loop when randomForest() is called with non-null
+  maxnodes.
+
+* Fixed a bug in margin.default() that gave nonsensical results.
+
+Changes in 4.5-33:
+
+* Fixed a _long standing_ bug (existed since the original Fortran) in
+  randomForest(): If importance=TRUE and proximity=TRUE, the proximity
+  matrix returned is incorrect.  Those computed with importance=FALSE, or
+  with predict.randomForest(..., proximity=TRUE) are correct.
+
+Changes in 4.5-32:
+
+* Fixed a bug in predict.randomForest(..., predict.all=TRUE) introduced in
+  4.5-31.  Added examples in ?predict.randomForest for the options.
+
+Changes in 4.5-31:
+
+* Added a new option `maxnodes' in randomForest() that limits the size of
+  trees.
+
+* margin() is now generic with a method for randomForest objects.
+
+* Fixed the help page for getTree() about how data are split on numeric
+  variables (`<=' instead of `<').
+
+* Fixed predict.randomForest() so that if the randomForest object is of
+  type "regression" and built from the formula interface and newdata
+  contains NAs, NAs are returned in the corresponding positions (instead
+  of being dropped altogether).
+
+Change in 4.5-30:
+
+* In regression, cases that had not been out-of-bag now gets NA as prediction
+  (as in classification).
+
+Change in 4.5-29:
+
+* Fixed a couple of benign errors in help pages spotted by the new Rd parser.
+
+Change in 4.5-28:
+
+* randomForest() would segfault if there are 32-level factors among the
+  predictor variables.
+
+Changes in 4.5-27:
+
+* Fixed handling of ordered factors in predict.randomForest().
+
+Changes in 4.5-26:
+
+* Fix formula parsing so use of functions in formula won't trigger errors.
+
+* predict.randomForest() did not work when given a matrix without column
+  names as the newdata.
+
+Changes in 4.5-25:
+
+* In regression, the out-of-bag estimate of MSE and R-squared for the
+  first few trees (for which not all observations have been OOB yet),
+  were computed wrong, leading to gross over-estimates of MSEs for the
+  first few trees.  This did not affect the final MSE and R-squared
+  for the whole forest; i.e., the first few elements of the `mse'
+  component (and thus the corresponding elements in `rsq') in the
+  randomForest object are wrong, but others are correct.
+
+  (Thanks to Ulrike Gromping for pointing out this problem, as well
+   as the one fixed in 4.5-24.)
+
+Changes in 4.5-24:
+
+* randomForest.formula() did not exclude terms preceded by -.
+
+Changes in 4.5-23:
+
+* Fixed tuneRF() to work with R version > 2.6.1.
+
+* Make predict.randomForest() more backward compatible with randomForest
+  objects created from versions older than 4.5-21.
+
+Changes in 4.5-22:
+
+* Allow unsupervised randomForest not to produce a proximity matrix (by
+  specifying proximity=FALSE), suggested by Nick Crookston.
+
+Changes in 4.5-21:
+
+* The added check for factor level consistency in predictor variables in
+  4.5-20 was not working for predictors given in a matrix (reported by
+  Ramon Diaz-Uriate).
+
+Changes in 4.5-20:
+
+* Fixed a memory bug in the C code when the test set is given and
+  proximity is requested in regression.  (Reported by Clayton Springer.)
+
+* Fixed the one-pass random tie-breaking algorithm in various places.
+
+* Added code to check consistency of levels for factors in the predictors,
+  as well as allowing missing levels of factors and extraneous variables in
+  predict(..., newdata).  (Thanks to Nick Crookston for suggesting a patch.)
+
+Changes in 4.5-19:
+
+* In classification, if sampsize is small and sampling is not stratified,
+  the actual sample might be larger than specified in some trees.  Now fixed.
+
+* Fixed combine() to work on regression randomForest objects and for
+  cases when ntree is small.
+
+* randomForest.default() for regression was unnecessarily creating
+  a matrix of 0s for localImportance when importance=TRUE but
+  localImp=FALSE.  (Thanks to Robert McGehee for reporting these
+  bugs.)
+
+* predict.randomForest(..., nodes=TRUE) now works for regression.
+
+Changes in 4.5-18:
+
+* Added S-PLUS 8 compatibility.
+
+Changes in 4.5-17:
+
+* Added `w' (for weights) to partialPlot.randomForest().
+
+Changes in 4.5-16:
+
+* Fixed some typos in the documentation source files (e.g., \note vs. \notes,
+  etc).
+
+Changes in 4.5-15:
+
+* Fixed error message call in predict.randomForest().
+
+Changes in 4.5-14:
+
+* varImpPlot() was ignoring the `type' argument.
+
+* "<" was used instead of ".lt." in Fortran code, which is not F77-compliant.
+
+Changes in 4.5-13:
+
+* Fixed a bug in randomForest() when biasCorr=TRUE for regression.
+
+* Fixed bug in predict.randomForest() when newdata is a matrix with no rownames.
+Changes in 4.5-12:
+
+* Added the `strata' argument to randomForest, which, in conjunction with
+  `sampsize', allow sampling (with or without replacement) according to a
+  strata variable (which can be something other than the class variable).
+  Currently only works in classification.
+
+Changes in 4.5-11:
+
+* Fixed partialPlot.randomForest() so that if x.var is a character, it's
+  taken as the name of the variable.
+
+* Clean up code for importance() and varImpPlot() so that if the
+  randomForest object only contains one importance measure, varImpPlot()
+  will work as intended.
+
+Changes in 4.5-10:
+
+* Renamed the first argument of randomForest.formula() to `formula', to be
+  consistent with other formula interfaces.
+
+Changes in 4.5-9:
+
+* Fixed a bug with unsupervised randomForest(..., keep.forest=TRUE).
+
+* Fixed a bug in regression that caused crash when proximiy=TRUE.
+
+* Added `keep.inbag' argument to randomForest(), which, if set to TRUE,
+  cause randomForest() to return a matrix of indicators that indicate
+  which case is included in the bootstrap sample to grow the trees.
+
+Changes in 4.5-8:
+
+* Added some code in predict.randomForest() so it works with randomForest
+  objects created in older versions of the package.
+
+* Fixed randomForest.default() so that getTree() works when the forest
+  contains only one tree.
+
+* Added the argument `labelVar' (default FALSE) to getTree() for prettier
+  output.
+
+Changes in 4.5-7:
+
+* Fixed (another!) bug in splitting on categorical variables, especially
+  impacting data with binary (categorical) variables.
+
+Changes in 4.5-6:
+
+* Fixed a bug introduced in 4.5-2 that used the wrong default class weights.
+
+Changes in 4.5-5:
+
+* Fixed a couple of bugs in C/Fortran code for splitting on categorical
+  variables in classification trees, which lead to negative or Inf
+  decrease in the Gini index.
+
+Changes in 4.5-4:
+
+* Fixed a bug in regression when there are categorical predictors.  (The
+  splits can be completely wrong!)
+
+Changes in 4.5-3:
+
+* Fixed predict.randomForest() so that it uses the class labels stored in
+  the randomForest object (for classification).
+
+Changes in 4.5-2:
+
+* New argument `cutoff' added to predict.randomForest().  The usage is
+  analogous to the same argument to randomForest().
+
+* Added `palette' and `pch' arguments to MDSplot() to allow more user control.
+
+* In randomForest(), allow the forest to be returned in `unsupervised' mode.
+
+* Fixed some inaccuracies in help pages.
+
+* Fixed the way version number of the package is found at start-up.
+
+Changes in 4.5-1:
+
+* In classification, split on a categorical predictor with more than 10
+  categories is made more efficient:  For two-class problems, the
+  heuristic presented in Section 4.2.2 of the CART book is used.
+  Otherwise 512 randomly sampled (not necessarily unique) splits are
+  tested, instead of all possible splits.
+
+* New function classCenter() has been added.  It takes a proximity matrix and
+  a vector of class labels and compute one prototype per class.
+
+* Added the `Automobile' data from UCI Machine Learning Repository.
+
+* Fixed partialPlot() for categorical predictors (wrong barplot was produced).
+
+* Some re-organization and clean-up of internal C/Fortran code is on-going.
+
+Changes in 4.4-3:
+
+* Added the nPerm argument to randomForest(), which controls the number
+  of times the out-of-bag part of each variable is permuted, per tree,
+  for computing variable importance.  (Currently only implemented for
+  regression.)
+
+* When computing the out-of-bag MSE for each tree for assessing variable
+  importance in regression, the total number of cases was wrongly used as
+  the divisor.
+
+* Fixed the default and formula methods of randomForest(), so that the
+  `call' component of the returned object calls the generic.
+
+* The `% increase in MSE' measure of variable importance in regression was
+  not being computed correctly (should divide sum of squares by number of
+  out-of-bag samples rather than total number of samples, for each tree).
+
+* Fixed a bug in na.roughfix.default() that gave warning with matrix input.
+
+Changes in 4.4-2:
+
+* Fixed two memory leaks in the regression code (introduced in 4.3-1).
+
+* Fixed a bug that sometimes caused crash in regression when nodesize
+  is set to something larger than default (5).
+
+* Changed the tree structure in regression slightly: "treemap" is replaced
+  by "leftDaughter" and "rightDaughter".
+
+Changes in 4.4-1:
+
+* Made slight change in regression code so that it won't split `pure'
+  nodes.  Also fixed the `increase in node purity' importance measure
+  in regression.
+
+* The outscale option in randomForest() is removed.  Use the outlier()
+  function instead.  The default outlier() method can be used with other
+  proximity/dissimilarity measures.
+
+* More Fortran subroutines migrated to C.
+
+Changes in 4.3-3:
+
+* Fixed randomForest.formula() so that update() will work.
+
+* Fixed up problem in importance(), which was broken in a couple of ways.
+
+Changes in 4.3-2:
+
+* Fixed a bug that caused crashes in classification if test set data
+  are supplied.
+
+Changes in 4.3-1:
+
+* Fixed bugs in sampling cases and variables without replacement.
+
+* Added the rfNews() function to display the NEWS file.  Advertised in
+  the start up banner.
+
+* (Not user-visible.)  Translated regression tree building code from
+  Fortran to C.  One perhaps noticeable change is less memory usage.
+
+Changes in 4.3-0:
+
+* Thanks to Adele Cutler, there's now casewise variable importance
+  measures in classification.  Similar feature is also added for
+  regression.  Use the new localImp option in randomForest().
+
+* The `importance' component of randomForest object has been changed:
+  The permutation-based measures are not divided by their `standard
+  errors'.  Instead, the `standard errors' are stored in the
+  `importanceSD' component.  One should use the importance() extractor
+  function rather than something like rf.obj$importance for extracting
+  the importance measures.
+
+* The importance() extractor function has been updated:  If the
+  permutation-based measures are available, calling importance()
+  with only a randomForest object returns the matrix of variable
+  importance measures.  There is the `scale' argument, which defaults
+  to TRUE.
+
+* In predict.randomForest, there is a new argument `nodes' (default to
+  FALSE).  For classification, if nodes=TRUE, the returned object has an
+  attribute `nodes', which is an n by ntree matrix of terminal node
+  indicators.  This is ignored for regression.
+
+Changes in 4.2-1:
+
+* There is now a package name space.  Only generics are exported.
+
+* Some function names have been changed:
+    partial.plot -> partialPlot
+    var.imp.plot -> varImpPlot
+    var.used     -> varUsed
+
+* There is a new option `replace' in randomForest() (default to TRUE)
+  indicating whether the sampling of cases is with or without
+  replacement.
+
+* In randomForest(), the `sampsize' option now works for both
+  classification and regression, and indicate the number of cases to be
+  drawn to grow each tree.  For classification, if sampsize is a vector of
+  length the number of classes, then sampling is stratified by class.
+
+* With the formula interface for randomForest(), the default na.action,
+  na.fail, is effective.  I.e., an error is given if there are NAs present
+  in the data.  If na.omit is desired, it must be given explicitly.
+
+* For classification, the err.rate component of the randomForest object
+  (and the corresponding one for test set) now is a ntree by (nclass + 1)
+  matrix, the first column of which contains the overall error rate, and
+  the remaining columns the class error rates.  The running output now
+  also prints class error rates.  The plot method for randomForest will
+  plot the class error rates as well.
+
+* The predict() method now checks whether the variable names in newdata
+  match those from the training data (if the randomForest object is not
+  created from the formula interface).
+
+* partialPlot() and varImpPlot() now have optional arguments xlab, ylab
+  and main for more flexible labelling.  Also, if a factor is given as
+  the variable, a real bar plot is produced.
+
+* partialPlot() will now remove rows with NAs from the data frame given.
+
+* For regression, if proximity=FALSE, an n by n array of integers is
+  erroneously allocated but not used (it's only used for proximity
+  calculation, so not needed otherwise).
+
+* Updated combine() to conform to the new randomForest object.
+
+* na.roughfix() was not working correctly for matrices, which in turns
+  causes problem in rfImpute().
+
+
+Changes in 4.1-0:
+
+* In randomForest(), if sampsize is given, the sampling is now done
+  without replacement, in addition to stratified by class.  Therefore
+  sampsize can not be larger than the class frequencies.
+
+* In classification randomForest, checks are added to avoid trees with
+  only the root node.
+
+* Fixed a bug in the Fortran code for classification that caused segfault
+  on some system when encountering a tree with only root node.
+
+* The help page for predict.randomForest() now states the fact that when
+  newdata is not specified, the OOB predictions from the randomForest
+  object is returned.
+
+* plot.randomForest() and print.randomForest() were not checking for
+  existence of performance (err.rate or mse) on test data correctly.

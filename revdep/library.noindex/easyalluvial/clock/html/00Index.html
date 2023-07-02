@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html>
+<head><title>R: Date-Time Types and Tools</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+<h1> Date-Time Types and Tools
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]" />
+</h1>
+<hr/>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]" /></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]" /></a>
+</div><h2>Documentation for package &lsquo;clock&rsquo; version 0.7.0</h2>
+
+<ul><li><a href="../DESCRIPTION">DESCRIPTION file</a>.</li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation.</a></li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<p style="text-align: center;">
+<a href="#A">A</a>
+<a href="#C">C</a>
+<a href="#D">D</a>
+<a href="#F">F</a>
+<a href="#G">G</a>
+<a href="#I">I</a>
+<a href="#N">N</a>
+<a href="#P">P</a>
+<a href="#S">S</a>
+<a href="#T">T</a>
+<a href="#V">V</a>
+<a href="#W">W</a>
+<a href="#Y">Y</a>
+<a href="#Z">Z</a>
+</p>
+
+
+<h2><a name="A">-- A --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="clock-arithmetic.html">add_days</a></td>
+<td>Clock arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="duration-arithmetic.html">add_days.clock_duration</a></td>
+<td>Arithmetic: duration</td></tr>
+<tr><td style="width: 25%;"><a href="time-point-arithmetic.html">add_days.clock_time_point</a></td>
+<td>Arithmetic: Time points</td></tr>
+<tr><td style="width: 25%;"><a href="weekday-arithmetic.html">add_days.clock_weekday</a></td>
+<td>Arithmetic: weekday</td></tr>
+<tr><td style="width: 25%;"><a href="Date-arithmetic.html">add_days.Date</a></td>
+<td>Arithmetic: date</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-arithmetic.html">add_days.POSIXt</a></td>
+<td>Arithmetic: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="clock-arithmetic.html">add_hours</a></td>
+<td>Clock arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="duration-arithmetic.html">add_hours.clock_duration</a></td>
+<td>Arithmetic: duration</td></tr>
+<tr><td style="width: 25%;"><a href="time-point-arithmetic.html">add_hours.clock_time_point</a></td>
+<td>Arithmetic: Time points</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-arithmetic.html">add_hours.POSIXt</a></td>
+<td>Arithmetic: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="clock-arithmetic.html">add_microseconds</a></td>
+<td>Clock arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="duration-arithmetic.html">add_microseconds.clock_duration</a></td>
+<td>Arithmetic: duration</td></tr>
+<tr><td style="width: 25%;"><a href="time-point-arithmetic.html">add_microseconds.clock_time_point</a></td>
+<td>Arithmetic: Time points</td></tr>
+<tr><td style="width: 25%;"><a href="clock-arithmetic.html">add_milliseconds</a></td>
+<td>Clock arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="duration-arithmetic.html">add_milliseconds.clock_duration</a></td>
+<td>Arithmetic: duration</td></tr>
+<tr><td style="width: 25%;"><a href="time-point-arithmetic.html">add_milliseconds.clock_time_point</a></td>
+<td>Arithmetic: Time points</td></tr>
+<tr><td style="width: 25%;"><a href="clock-arithmetic.html">add_minutes</a></td>
+<td>Clock arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="duration-arithmetic.html">add_minutes.clock_duration</a></td>
+<td>Arithmetic: duration</td></tr>
+<tr><td style="width: 25%;"><a href="time-point-arithmetic.html">add_minutes.clock_time_point</a></td>
+<td>Arithmetic: Time points</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-arithmetic.html">add_minutes.POSIXt</a></td>
+<td>Arithmetic: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="clock-arithmetic.html">add_months</a></td>
+<td>Clock arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="duration-arithmetic.html">add_months.clock_duration</a></td>
+<td>Arithmetic: duration</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-arithmetic.html">add_months.clock_year_month_day</a></td>
+<td>Arithmetic: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-arithmetic.html">add_months.clock_year_month_weekday</a></td>
+<td>Arithmetic: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="Date-arithmetic.html">add_months.Date</a></td>
+<td>Arithmetic: date</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-arithmetic.html">add_months.POSIXt</a></td>
+<td>Arithmetic: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="clock-arithmetic.html">add_nanoseconds</a></td>
+<td>Clock arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="duration-arithmetic.html">add_nanoseconds.clock_duration</a></td>
+<td>Arithmetic: duration</td></tr>
+<tr><td style="width: 25%;"><a href="time-point-arithmetic.html">add_nanoseconds.clock_time_point</a></td>
+<td>Arithmetic: Time points</td></tr>
+<tr><td style="width: 25%;"><a href="clock-arithmetic.html">add_quarters</a></td>
+<td>Clock arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="duration-arithmetic.html">add_quarters.clock_duration</a></td>
+<td>Arithmetic: duration</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-arithmetic.html">add_quarters.clock_year_month_day</a></td>
+<td>Arithmetic: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-arithmetic.html">add_quarters.clock_year_month_weekday</a></td>
+<td>Arithmetic: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-arithmetic.html">add_quarters.clock_year_quarter_day</a></td>
+<td>Arithmetic: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="Date-arithmetic.html">add_quarters.Date</a></td>
+<td>Arithmetic: date</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-arithmetic.html">add_quarters.POSIXt</a></td>
+<td>Arithmetic: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="clock-arithmetic.html">add_seconds</a></td>
+<td>Clock arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="duration-arithmetic.html">add_seconds.clock_duration</a></td>
+<td>Arithmetic: duration</td></tr>
+<tr><td style="width: 25%;"><a href="time-point-arithmetic.html">add_seconds.clock_time_point</a></td>
+<td>Arithmetic: Time points</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-arithmetic.html">add_seconds.POSIXt</a></td>
+<td>Arithmetic: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="clock-arithmetic.html">add_weeks</a></td>
+<td>Clock arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="duration-arithmetic.html">add_weeks.clock_duration</a></td>
+<td>Arithmetic: duration</td></tr>
+<tr><td style="width: 25%;"><a href="time-point-arithmetic.html">add_weeks.clock_time_point</a></td>
+<td>Arithmetic: Time points</td></tr>
+<tr><td style="width: 25%;"><a href="Date-arithmetic.html">add_weeks.Date</a></td>
+<td>Arithmetic: date</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-arithmetic.html">add_weeks.POSIXt</a></td>
+<td>Arithmetic: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="clock-arithmetic.html">add_years</a></td>
+<td>Clock arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="duration-arithmetic.html">add_years.clock_duration</a></td>
+<td>Arithmetic: duration</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-arithmetic.html">add_years.clock_iso_year_week_day</a></td>
+<td>Arithmetic: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-arithmetic.html">add_years.clock_year_day</a></td>
+<td>Arithmetic: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-arithmetic.html">add_years.clock_year_month_day</a></td>
+<td>Arithmetic: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-arithmetic.html">add_years.clock_year_month_weekday</a></td>
+<td>Arithmetic: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-arithmetic.html">add_years.clock_year_quarter_day</a></td>
+<td>Arithmetic: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-arithmetic.html">add_years.clock_year_week_day</a></td>
+<td>Arithmetic: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="Date-arithmetic.html">add_years.Date</a></td>
+<td>Arithmetic: date</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-arithmetic.html">add_years.POSIXt</a></td>
+<td>Arithmetic: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="as-zoned-time-Date.html">as-zoned-time-Date</a></td>
+<td>Convert to a zoned-time from a date</td></tr>
+<tr><td style="width: 25%;"><a href="as-zoned-time-naive-time.html">as-zoned-time-naive-time</a></td>
+<td>Convert to a zoned-time from a naive-time</td></tr>
+<tr><td style="width: 25%;"><a href="as-zoned-time-posixt.html">as-zoned-time-posixt</a></td>
+<td>Convert to a zoned-time from a date-time</td></tr>
+<tr><td style="width: 25%;"><a href="as-zoned-time-sys-time.html">as-zoned-time-sys-time</a></td>
+<td>Convert to a zoned-time from a sys-time</td></tr>
+<tr><td style="width: 25%;"><a href="as_date.html">as_date</a></td>
+<td>Convert to a date</td></tr>
+<tr><td style="width: 25%;"><a href="as_date.html">as_date.clock_calendar</a></td>
+<td>Convert to a date</td></tr>
+<tr><td style="width: 25%;"><a href="as_date.html">as_date.clock_time_point</a></td>
+<td>Convert to a date</td></tr>
+<tr><td style="width: 25%;"><a href="as_date.html">as_date.clock_zoned_time</a></td>
+<td>Convert to a date</td></tr>
+<tr><td style="width: 25%;"><a href="as_date.html">as_date.Date</a></td>
+<td>Convert to a date</td></tr>
+<tr><td style="width: 25%;"><a href="as_date.html">as_date.POSIXt</a></td>
+<td>Convert to a date</td></tr>
+<tr><td style="width: 25%;"><a href="as_date_time.html">as_date_time</a></td>
+<td>Convert to a date-time</td></tr>
+<tr><td style="width: 25%;"><a href="as_date_time.html">as_date_time.clock_calendar</a></td>
+<td>Convert to a date-time</td></tr>
+<tr><td style="width: 25%;"><a href="as_date_time.html">as_date_time.clock_naive_time</a></td>
+<td>Convert to a date-time</td></tr>
+<tr><td style="width: 25%;"><a href="as_date_time.html">as_date_time.clock_sys_time</a></td>
+<td>Convert to a date-time</td></tr>
+<tr><td style="width: 25%;"><a href="as_date_time.html">as_date_time.clock_zoned_time</a></td>
+<td>Convert to a date-time</td></tr>
+<tr><td style="width: 25%;"><a href="as_date_time.html">as_date_time.Date</a></td>
+<td>Convert to a date-time</td></tr>
+<tr><td style="width: 25%;"><a href="as_date_time.html">as_date_time.POSIXt</a></td>
+<td>Convert to a date-time</td></tr>
+<tr><td style="width: 25%;"><a href="as_duration.html">as_duration</a></td>
+<td>Convert to a duration</td></tr>
+<tr><td style="width: 25%;"><a href="as_iso_year_week_day.html">as_iso_year_week_day</a></td>
+<td>Convert to iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="as_naive_time.html">as_naive_time</a></td>
+<td>Convert to a naive-time</td></tr>
+<tr><td style="width: 25%;"><a href="as_sys_time.html">as_sys_time</a></td>
+<td>Convert to a sys-time</td></tr>
+<tr><td style="width: 25%;"><a href="as_weekday.html">as_weekday</a></td>
+<td>Convert to a weekday</td></tr>
+<tr><td style="width: 25%;"><a href="as_year_day.html">as_year_day</a></td>
+<td>Convert to year-day</td></tr>
+<tr><td style="width: 25%;"><a href="as_year_month_day.html">as_year_month_day</a></td>
+<td>Convert to year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="as_year_month_weekday.html">as_year_month_weekday</a></td>
+<td>Convert to year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="as_year_quarter_day.html">as_year_quarter_day</a></td>
+<td>Convert to year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="as_year_week_day.html">as_year_week_day</a></td>
+<td>Convert to year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="as_zoned_time.html">as_zoned_time</a></td>
+<td>Convert to a zoned-time</td></tr>
+<tr><td style="width: 25%;"><a href="as-zoned-time-naive-time.html">as_zoned_time.clock_naive_time</a></td>
+<td>Convert to a zoned-time from a naive-time</td></tr>
+<tr><td style="width: 25%;"><a href="as-zoned-time-sys-time.html">as_zoned_time.clock_sys_time</a></td>
+<td>Convert to a zoned-time from a sys-time</td></tr>
+<tr><td style="width: 25%;"><a href="as-zoned-time-Date.html">as_zoned_time.Date</a></td>
+<td>Convert to a zoned-time from a date</td></tr>
+<tr><td style="width: 25%;"><a href="as-zoned-time-posixt.html">as_zoned_time.POSIXt</a></td>
+<td>Convert to a zoned-time from a date-time</td></tr>
+</table>
+
+<h2><a name="C">-- C --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="calendar-boundary.html">calendar-boundary</a></td>
+<td>Boundaries: calendars</td></tr>
+<tr><td style="width: 25%;"><a href="calendar-count-between.html">calendar-count-between</a></td>
+<td>Counting: calendars</td></tr>
+<tr><td style="width: 25%;"><a href="calendar-count-between.html">calendar_count_between</a></td>
+<td>Counting: calendars</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-count-between.html">calendar_count_between.clock_iso_year_week_day</a></td>
+<td>Counting: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-count-between.html">calendar_count_between.clock_year_day</a></td>
+<td>Counting: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-count-between.html">calendar_count_between.clock_year_month_day</a></td>
+<td>Counting: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-count-between.html">calendar_count_between.clock_year_month_weekday</a></td>
+<td>Counting: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-count-between.html">calendar_count_between.clock_year_quarter_day</a></td>
+<td>Counting: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-count-between.html">calendar_count_between.clock_year_week_day</a></td>
+<td>Counting: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="calendar-boundary.html">calendar_end</a></td>
+<td>Boundaries: calendars</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-boundary.html">calendar_end.clock_iso_year_week_day</a></td>
+<td>Boundaries: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-boundary.html">calendar_end.clock_year_day</a></td>
+<td>Boundaries: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-boundary.html">calendar_end.clock_year_month_day</a></td>
+<td>Boundaries: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-boundary.html">calendar_end.clock_year_month_weekday</a></td>
+<td>Boundaries: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-boundary.html">calendar_end.clock_year_quarter_day</a></td>
+<td>Boundaries: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-boundary.html">calendar_end.clock_year_week_day</a></td>
+<td>Boundaries: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="calendar_group.html">calendar_group</a></td>
+<td>Group calendar components</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-group.html">calendar_group.clock_iso_year_week_day</a></td>
+<td>Grouping: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-group.html">calendar_group.clock_year_day</a></td>
+<td>Grouping: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-group.html">calendar_group.clock_year_month_day</a></td>
+<td>Grouping: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-group.html">calendar_group.clock_year_month_weekday</a></td>
+<td>Grouping: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-group.html">calendar_group.clock_year_quarter_day</a></td>
+<td>Grouping: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-group.html">calendar_group.clock_year_week_day</a></td>
+<td>Grouping: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="calendar_leap_year.html">calendar_leap_year</a></td>
+<td>Is the calendar year a leap year?</td></tr>
+<tr><td style="width: 25%;"><a href="calendar_month_factor.html">calendar_month_factor</a></td>
+<td>Convert a calendar to an ordered factor of month names</td></tr>
+<tr><td style="width: 25%;"><a href="calendar_narrow.html">calendar_narrow</a></td>
+<td>Narrow a calendar to a less precise precision</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-narrow.html">calendar_narrow.clock_iso_year_week_day</a></td>
+<td>Narrow: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-narrow.html">calendar_narrow.clock_year_day</a></td>
+<td>Narrow: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-narrow.html">calendar_narrow.clock_year_month_day</a></td>
+<td>Narrow: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-narrow.html">calendar_narrow.clock_year_month_weekday</a></td>
+<td>Narrow: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-narrow.html">calendar_narrow.clock_year_quarter_day</a></td>
+<td>Narrow: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-narrow.html">calendar_narrow.clock_year_week_day</a></td>
+<td>Narrow: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="calendar_precision.html">calendar_precision</a></td>
+<td>Precision: calendar</td></tr>
+<tr><td style="width: 25%;"><a href="calendar_spanning_seq.html">calendar_spanning_seq</a></td>
+<td>Spanning sequence: calendars</td></tr>
+<tr><td style="width: 25%;"><a href="calendar-boundary.html">calendar_start</a></td>
+<td>Boundaries: calendars</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-boundary.html">calendar_start.clock_iso_year_week_day</a></td>
+<td>Boundaries: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-boundary.html">calendar_start.clock_year_day</a></td>
+<td>Boundaries: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-boundary.html">calendar_start.clock_year_month_day</a></td>
+<td>Boundaries: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-boundary.html">calendar_start.clock_year_month_weekday</a></td>
+<td>Boundaries: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-boundary.html">calendar_start.clock_year_quarter_day</a></td>
+<td>Boundaries: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-boundary.html">calendar_start.clock_year_week_day</a></td>
+<td>Boundaries: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="calendar_widen.html">calendar_widen</a></td>
+<td>Widen a calendar to a more precise precision</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-widen.html">calendar_widen.clock_iso_year_week_day</a></td>
+<td>Widen: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-widen.html">calendar_widen.clock_year_day</a></td>
+<td>Widen: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-widen.html">calendar_widen.clock_year_month_day</a></td>
+<td>Widen: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-widen.html">calendar_widen.clock_year_month_weekday</a></td>
+<td>Widen: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-widen.html">calendar_widen.clock_year_quarter_day</a></td>
+<td>Widen: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-widen.html">calendar_widen.clock_year_week_day</a></td>
+<td>Widen: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="clock-arith.html">clock-arith</a></td>
+<td>Support for vctrs arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="clock-arithmetic.html">clock-arithmetic</a></td>
+<td>Clock arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="clock-codes.html">clock-codes</a></td>
+<td>Integer codes</td></tr>
+<tr><td style="width: 25%;"><a href="clock-getters.html">clock-getters</a></td>
+<td>Calendar getters</td></tr>
+<tr><td style="width: 25%;"><a href="clock-invalid.html">clock-invalid</a></td>
+<td>Invalid calendar dates</td></tr>
+<tr><td style="width: 25%;"><a href="clock-setters.html">clock-setters</a></td>
+<td>Calendar setters</td></tr>
+<tr><td style="width: 25%;"><a href="clock-codes.html">clock_iso_weekdays</a></td>
+<td>Integer codes</td></tr>
+<tr><td style="width: 25%;"><a href="clock_labels.html">clock_labels</a></td>
+<td>Create or retrieve date related labels</td></tr>
+<tr><td style="width: 25%;"><a href="clock_labels.html">clock_labels_languages</a></td>
+<td>Create or retrieve date related labels</td></tr>
+<tr><td style="width: 25%;"><a href="clock_labels.html">clock_labels_lookup</a></td>
+<td>Create or retrieve date related labels</td></tr>
+<tr><td style="width: 25%;"><a href="clock_locale.html">clock_locale</a></td>
+<td>Create a clock locale</td></tr>
+<tr><td style="width: 25%;"><a href="clock-codes.html">clock_months</a></td>
+<td>Integer codes</td></tr>
+<tr><td style="width: 25%;"><a href="clock-codes.html">clock_weekdays</a></td>
+<td>Integer codes</td></tr>
+</table>
+
+<h2><a name="D">-- D --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="date-and-date-time-boundary.html">date-and-date-time-boundary</a></td>
+<td>Boundaries: date and date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date-and-date-time-rounding.html">date-and-date-time-rounding</a></td>
+<td>Date and date-time rounding</td></tr>
+<tr><td style="width: 25%;"><a href="date-and-date-time-shifting.html">date-and-date-time-shifting</a></td>
+<td>Shifting: date and date-time</td></tr>
+<tr><td style="width: 25%;"><a href="Date-arithmetic.html">Date-arithmetic</a></td>
+<td>Arithmetic: date</td></tr>
+<tr><td style="width: 25%;"><a href="date-boundary.html">date-boundary</a></td>
+<td>Boundaries: date</td></tr>
+<tr><td style="width: 25%;"><a href="date-count-between.html">date-count-between</a></td>
+<td>Counting: date</td></tr>
+<tr><td style="width: 25%;"><a href="date-formatting.html">date-formatting</a></td>
+<td>Formatting: date</td></tr>
+<tr><td style="width: 25%;"><a href="Date-getters.html">Date-getters</a></td>
+<td>Getters: date</td></tr>
+<tr><td style="width: 25%;"><a href="date-group.html">date-group</a></td>
+<td>Group date components</td></tr>
+<tr><td style="width: 25%;"><a href="date-rounding.html">date-rounding</a></td>
+<td>Rounding: date</td></tr>
+<tr><td style="width: 25%;"><a href="date-sequence.html">date-sequence</a></td>
+<td>Sequences: date</td></tr>
+<tr><td style="width: 25%;"><a href="Date-setters.html">Date-setters</a></td>
+<td>Setters: date</td></tr>
+<tr><td style="width: 25%;"><a href="date-shifting.html">date-shifting</a></td>
+<td>Shifting: date</td></tr>
+<tr><td style="width: 25%;"><a href="date-time-parse.html">date-time-parse</a></td>
+<td>Parsing: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date-time-zone.html">date-time-zone</a></td>
+<td>Get or set the time zone</td></tr>
+<tr><td style="width: 25%;"><a href="date-today.html">date-today</a></td>
+<td>Current date and date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date_build.html">date_build</a></td>
+<td>Building: date</td></tr>
+<tr><td style="width: 25%;"><a href="date-and-date-time-rounding.html">date_ceiling</a></td>
+<td>Date and date-time rounding</td></tr>
+<tr><td style="width: 25%;"><a href="date-rounding.html">date_ceiling.Date</a></td>
+<td>Rounding: date</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-rounding.html">date_ceiling.POSIXt</a></td>
+<td>Rounding: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date_count_between.html">date_count_between</a></td>
+<td>Counting: date and date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date-count-between.html">date_count_between.Date</a></td>
+<td>Counting: date</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-count-between.html">date_count_between.POSIXt</a></td>
+<td>Counting: date-times</td></tr>
+<tr><td style="width: 25%;"><a href="date-and-date-time-boundary.html">date_end</a></td>
+<td>Boundaries: date and date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date-boundary.html">date_end.Date</a></td>
+<td>Boundaries: date</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-boundary.html">date_end.POSIXt</a></td>
+<td>Boundaries: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date-and-date-time-rounding.html">date_floor</a></td>
+<td>Date and date-time rounding</td></tr>
+<tr><td style="width: 25%;"><a href="date-rounding.html">date_floor.Date</a></td>
+<td>Rounding: date</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-rounding.html">date_floor.POSIXt</a></td>
+<td>Rounding: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date_format.html">date_format</a></td>
+<td>Formatting: date and date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date-formatting.html">date_format.Date</a></td>
+<td>Formatting: date</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-formatting.html">date_format.POSIXt</a></td>
+<td>Formatting: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date_group.html">date_group</a></td>
+<td>Group date and date-time components</td></tr>
+<tr><td style="width: 25%;"><a href="date-group.html">date_group.Date</a></td>
+<td>Group date components</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-group.html">date_group.POSIXt</a></td>
+<td>Group date-time components</td></tr>
+<tr><td style="width: 25%;"><a href="date_leap_year.html">date_leap_year</a></td>
+<td>Is the year a leap year?</td></tr>
+<tr><td style="width: 25%;"><a href="date_month_factor.html">date_month_factor</a></td>
+<td>Convert a date or date-time to an ordered factor of month names</td></tr>
+<tr><td style="width: 25%;"><a href="date-today.html">date_now</a></td>
+<td>Current date and date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date_parse.html">date_parse</a></td>
+<td>Parsing: date</td></tr>
+<tr><td style="width: 25%;"><a href="date-and-date-time-rounding.html">date_round</a></td>
+<td>Date and date-time rounding</td></tr>
+<tr><td style="width: 25%;"><a href="date-rounding.html">date_round.Date</a></td>
+<td>Rounding: date</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-rounding.html">date_round.POSIXt</a></td>
+<td>Rounding: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date_seq.html">date_seq</a></td>
+<td>Sequences: date and date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date-sequence.html">date_seq.Date</a></td>
+<td>Sequences: date</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-sequence.html">date_seq.POSIXt</a></td>
+<td>Sequences: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date-and-date-time-shifting.html">date_shift</a></td>
+<td>Shifting: date and date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date-shifting.html">date_shift.Date</a></td>
+<td>Shifting: date</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-shifting.html">date_shift.POSIXt</a></td>
+<td>Shifting: date and date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date_spanning_seq.html">date_spanning_seq</a></td>
+<td>Spanning sequence: date and date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date-and-date-time-boundary.html">date_start</a></td>
+<td>Boundaries: date and date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date-boundary.html">date_start.Date</a></td>
+<td>Boundaries: date</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-boundary.html">date_start.POSIXt</a></td>
+<td>Boundaries: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date_time_build.html">date_time_build</a></td>
+<td>Building: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date_time_info.html">date_time_info</a></td>
+<td>Info: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date-time-parse.html">date_time_parse</a></td>
+<td>Parsing: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date-time-parse.html">date_time_parse_abbrev</a></td>
+<td>Parsing: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date-time-parse.html">date_time_parse_complete</a></td>
+<td>Parsing: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date-time-parse.html">date_time_parse_RFC_3339</a></td>
+<td>Parsing: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date-time-zone.html">date_time_set_zone</a></td>
+<td>Get or set the time zone</td></tr>
+<tr><td style="width: 25%;"><a href="date-time-zone.html">date_time_zone</a></td>
+<td>Get or set the time zone</td></tr>
+<tr><td style="width: 25%;"><a href="date-today.html">date_today</a></td>
+<td>Current date and date-time</td></tr>
+<tr><td style="width: 25%;"><a href="date_weekday_factor.html">date_weekday_factor</a></td>
+<td>Convert a date or date-time to a weekday factor</td></tr>
+<tr><td style="width: 25%;"><a href="duration-arithmetic.html">duration-arithmetic</a></td>
+<td>Arithmetic: duration</td></tr>
+<tr><td style="width: 25%;"><a href="duration-helper.html">duration-helper</a></td>
+<td>Construct a duration</td></tr>
+<tr><td style="width: 25%;"><a href="duration-rounding.html">duration-rounding</a></td>
+<td>Duration rounding</td></tr>
+<tr><td style="width: 25%;"><a href="duration_cast.html">duration_cast</a></td>
+<td>Cast a duration between precisions</td></tr>
+<tr><td style="width: 25%;"><a href="duration-rounding.html">duration_ceiling</a></td>
+<td>Duration rounding</td></tr>
+<tr><td style="width: 25%;"><a href="duration-helper.html">duration_days</a></td>
+<td>Construct a duration</td></tr>
+<tr><td style="width: 25%;"><a href="duration-rounding.html">duration_floor</a></td>
+<td>Duration rounding</td></tr>
+<tr><td style="width: 25%;"><a href="duration-helper.html">duration_hours</a></td>
+<td>Construct a duration</td></tr>
+<tr><td style="width: 25%;"><a href="duration-helper.html">duration_microseconds</a></td>
+<td>Construct a duration</td></tr>
+<tr><td style="width: 25%;"><a href="duration-helper.html">duration_milliseconds</a></td>
+<td>Construct a duration</td></tr>
+<tr><td style="width: 25%;"><a href="duration-helper.html">duration_minutes</a></td>
+<td>Construct a duration</td></tr>
+<tr><td style="width: 25%;"><a href="duration-helper.html">duration_months</a></td>
+<td>Construct a duration</td></tr>
+<tr><td style="width: 25%;"><a href="duration-helper.html">duration_nanoseconds</a></td>
+<td>Construct a duration</td></tr>
+<tr><td style="width: 25%;"><a href="duration_precision.html">duration_precision</a></td>
+<td>Precision: duration</td></tr>
+<tr><td style="width: 25%;"><a href="duration-helper.html">duration_quarters</a></td>
+<td>Construct a duration</td></tr>
+<tr><td style="width: 25%;"><a href="duration-rounding.html">duration_round</a></td>
+<td>Duration rounding</td></tr>
+<tr><td style="width: 25%;"><a href="duration-helper.html">duration_seconds</a></td>
+<td>Construct a duration</td></tr>
+<tr><td style="width: 25%;"><a href="duration_spanning_seq.html">duration_spanning_seq</a></td>
+<td>Spanning sequence: duration</td></tr>
+<tr><td style="width: 25%;"><a href="duration-helper.html">duration_weeks</a></td>
+<td>Construct a duration</td></tr>
+<tr><td style="width: 25%;"><a href="duration-helper.html">duration_years</a></td>
+<td>Construct a duration</td></tr>
+</table>
+
+<h2><a name="F">-- F --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="format.clock_zoned_time.html">format.clock_zoned_time</a></td>
+<td>Formatting: zoned-time</td></tr>
+</table>
+
+<h2><a name="G">-- G --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="clock-getters.html">get_day</a></td>
+<td>Calendar getters</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-getters.html">get_day.clock_iso_year_week_day</a></td>
+<td>Getters: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-getters.html">get_day.clock_year_day</a></td>
+<td>Getters: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-getters.html">get_day.clock_year_month_day</a></td>
+<td>Getters: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-getters.html">get_day.clock_year_month_weekday</a></td>
+<td>Getters: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-getters.html">get_day.clock_year_quarter_day</a></td>
+<td>Getters: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-getters.html">get_day.clock_year_week_day</a></td>
+<td>Getters: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="Date-getters.html">get_day.Date</a></td>
+<td>Getters: date</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-getters.html">get_day.POSIXt</a></td>
+<td>Getters: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="clock-getters.html">get_hour</a></td>
+<td>Calendar getters</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-getters.html">get_hour.clock_iso_year_week_day</a></td>
+<td>Getters: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-getters.html">get_hour.clock_year_day</a></td>
+<td>Getters: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-getters.html">get_hour.clock_year_month_day</a></td>
+<td>Getters: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-getters.html">get_hour.clock_year_month_weekday</a></td>
+<td>Getters: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-getters.html">get_hour.clock_year_quarter_day</a></td>
+<td>Getters: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-getters.html">get_hour.clock_year_week_day</a></td>
+<td>Getters: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-getters.html">get_hour.POSIXt</a></td>
+<td>Getters: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="clock-getters.html">get_index</a></td>
+<td>Calendar getters</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-getters.html">get_index.clock_year_month_weekday</a></td>
+<td>Getters: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="clock-getters.html">get_microsecond</a></td>
+<td>Calendar getters</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-getters.html">get_microsecond.clock_iso_year_week_day</a></td>
+<td>Getters: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-getters.html">get_microsecond.clock_year_day</a></td>
+<td>Getters: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-getters.html">get_microsecond.clock_year_month_day</a></td>
+<td>Getters: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-getters.html">get_microsecond.clock_year_month_weekday</a></td>
+<td>Getters: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-getters.html">get_microsecond.clock_year_quarter_day</a></td>
+<td>Getters: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-getters.html">get_microsecond.clock_year_week_day</a></td>
+<td>Getters: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="clock-getters.html">get_millisecond</a></td>
+<td>Calendar getters</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-getters.html">get_millisecond.clock_iso_year_week_day</a></td>
+<td>Getters: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-getters.html">get_millisecond.clock_year_day</a></td>
+<td>Getters: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-getters.html">get_millisecond.clock_year_month_day</a></td>
+<td>Getters: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-getters.html">get_millisecond.clock_year_month_weekday</a></td>
+<td>Getters: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-getters.html">get_millisecond.clock_year_quarter_day</a></td>
+<td>Getters: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-getters.html">get_millisecond.clock_year_week_day</a></td>
+<td>Getters: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="clock-getters.html">get_minute</a></td>
+<td>Calendar getters</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-getters.html">get_minute.clock_iso_year_week_day</a></td>
+<td>Getters: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-getters.html">get_minute.clock_year_day</a></td>
+<td>Getters: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-getters.html">get_minute.clock_year_month_day</a></td>
+<td>Getters: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-getters.html">get_minute.clock_year_month_weekday</a></td>
+<td>Getters: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-getters.html">get_minute.clock_year_quarter_day</a></td>
+<td>Getters: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-getters.html">get_minute.clock_year_week_day</a></td>
+<td>Getters: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-getters.html">get_minute.POSIXt</a></td>
+<td>Getters: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="clock-getters.html">get_month</a></td>
+<td>Calendar getters</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-getters.html">get_month.clock_year_month_day</a></td>
+<td>Getters: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-getters.html">get_month.clock_year_month_weekday</a></td>
+<td>Getters: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="Date-getters.html">get_month.Date</a></td>
+<td>Getters: date</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-getters.html">get_month.POSIXt</a></td>
+<td>Getters: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="clock-getters.html">get_nanosecond</a></td>
+<td>Calendar getters</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-getters.html">get_nanosecond.clock_iso_year_week_day</a></td>
+<td>Getters: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-getters.html">get_nanosecond.clock_year_day</a></td>
+<td>Getters: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-getters.html">get_nanosecond.clock_year_month_day</a></td>
+<td>Getters: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-getters.html">get_nanosecond.clock_year_month_weekday</a></td>
+<td>Getters: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-getters.html">get_nanosecond.clock_year_quarter_day</a></td>
+<td>Getters: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-getters.html">get_nanosecond.clock_year_week_day</a></td>
+<td>Getters: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="clock-getters.html">get_quarter</a></td>
+<td>Calendar getters</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-getters.html">get_quarter.clock_year_quarter_day</a></td>
+<td>Getters: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="clock-getters.html">get_second</a></td>
+<td>Calendar getters</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-getters.html">get_second.clock_iso_year_week_day</a></td>
+<td>Getters: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-getters.html">get_second.clock_year_day</a></td>
+<td>Getters: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-getters.html">get_second.clock_year_month_day</a></td>
+<td>Getters: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-getters.html">get_second.clock_year_month_weekday</a></td>
+<td>Getters: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-getters.html">get_second.clock_year_quarter_day</a></td>
+<td>Getters: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-getters.html">get_second.clock_year_week_day</a></td>
+<td>Getters: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-getters.html">get_second.POSIXt</a></td>
+<td>Getters: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="clock-getters.html">get_week</a></td>
+<td>Calendar getters</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-getters.html">get_week.clock_iso_year_week_day</a></td>
+<td>Getters: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-getters.html">get_week.clock_year_week_day</a></td>
+<td>Getters: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="clock-getters.html">get_year</a></td>
+<td>Calendar getters</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-getters.html">get_year.clock_iso_year_week_day</a></td>
+<td>Getters: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-getters.html">get_year.clock_year_day</a></td>
+<td>Getters: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-getters.html">get_year.clock_year_month_day</a></td>
+<td>Getters: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-getters.html">get_year.clock_year_month_weekday</a></td>
+<td>Getters: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-getters.html">get_year.clock_year_quarter_day</a></td>
+<td>Getters: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-getters.html">get_year.clock_year_week_day</a></td>
+<td>Getters: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="Date-getters.html">get_year.Date</a></td>
+<td>Getters: date</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-getters.html">get_year.POSIXt</a></td>
+<td>Getters: date-time</td></tr>
+</table>
+
+<h2><a name="I">-- I --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="clock-invalid.html">invalid_any</a></td>
+<td>Invalid calendar dates</td></tr>
+<tr><td style="width: 25%;"><a href="clock-invalid.html">invalid_count</a></td>
+<td>Invalid calendar dates</td></tr>
+<tr><td style="width: 25%;"><a href="clock-invalid.html">invalid_detect</a></td>
+<td>Invalid calendar dates</td></tr>
+<tr><td style="width: 25%;"><a href="clock-invalid.html">invalid_remove</a></td>
+<td>Invalid calendar dates</td></tr>
+<tr><td style="width: 25%;"><a href="clock-invalid.html">invalid_resolve</a></td>
+<td>Invalid calendar dates</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-arithmetic.html">iso-year-week-day-arithmetic</a></td>
+<td>Arithmetic: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-boundary.html">iso-year-week-day-boundary</a></td>
+<td>Boundaries: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-count-between.html">iso-year-week-day-count-between</a></td>
+<td>Counting: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-getters.html">iso-year-week-day-getters</a></td>
+<td>Getters: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-group.html">iso-year-week-day-group</a></td>
+<td>Grouping: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-narrow.html">iso-year-week-day-narrow</a></td>
+<td>Narrow: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-setters.html">iso-year-week-day-setters</a></td>
+<td>Setters: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-widen.html">iso-year-week-day-widen</a></td>
+<td>Widen: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="iso_year_week_day.html">iso_year_week_day</a></td>
+<td>Calendar: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="is_duration.html">is_duration</a></td>
+<td>Is 'x' a duration?</td></tr>
+<tr><td style="width: 25%;"><a href="is_iso_year_week_day.html">is_iso_year_week_day</a></td>
+<td>Is 'x' a iso-year-week-day?</td></tr>
+<tr><td style="width: 25%;"><a href="is_naive_time.html">is_naive_time</a></td>
+<td>Is 'x' a naive-time?</td></tr>
+<tr><td style="width: 25%;"><a href="is_sys_time.html">is_sys_time</a></td>
+<td>Is 'x' a sys-time?</td></tr>
+<tr><td style="width: 25%;"><a href="is_weekday.html">is_weekday</a></td>
+<td>Is 'x' a weekday?</td></tr>
+<tr><td style="width: 25%;"><a href="is_year_day.html">is_year_day</a></td>
+<td>Is 'x' a year-day?</td></tr>
+<tr><td style="width: 25%;"><a href="is_year_month_day.html">is_year_month_day</a></td>
+<td>Is 'x' a year-month-day?</td></tr>
+<tr><td style="width: 25%;"><a href="is_year_month_weekday.html">is_year_month_weekday</a></td>
+<td>Is 'x' a year-month-weekday?</td></tr>
+<tr><td style="width: 25%;"><a href="is_year_quarter_day.html">is_year_quarter_day</a></td>
+<td>Is 'x' a year-quarter-day?</td></tr>
+<tr><td style="width: 25%;"><a href="is_year_week_day.html">is_year_week_day</a></td>
+<td>Is 'x' a year-week-day?</td></tr>
+<tr><td style="width: 25%;"><a href="is_zoned_time.html">is_zoned_time</a></td>
+<td>Is 'x' a zoned-time?</td></tr>
+</table>
+
+<h2><a name="N">-- N --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="naive_time_info.html">naive_time_info</a></td>
+<td>Info: naive-time</td></tr>
+<tr><td style="width: 25%;"><a href="naive_time_parse.html">naive_time_parse</a></td>
+<td>Parsing: naive-time</td></tr>
+</table>
+
+<h2><a name="P">-- P --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="posixt-arithmetic.html">posixt-arithmetic</a></td>
+<td>Arithmetic: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-boundary.html">posixt-boundary</a></td>
+<td>Boundaries: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-count-between.html">posixt-count-between</a></td>
+<td>Counting: date-times</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-formatting.html">posixt-formatting</a></td>
+<td>Formatting: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-getters.html">posixt-getters</a></td>
+<td>Getters: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-group.html">posixt-group</a></td>
+<td>Group date-time components</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-rounding.html">posixt-rounding</a></td>
+<td>Rounding: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-sequence.html">posixt-sequence</a></td>
+<td>Sequences: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-setters.html">posixt-setters</a></td>
+<td>Setters: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-shifting.html">posixt-shifting</a></td>
+<td>Shifting: date and date-time</td></tr>
+</table>
+
+<h2><a name="S">-- S --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="seq.clock_duration.html">seq.clock_duration</a></td>
+<td>Sequences: duration</td></tr>
+<tr><td style="width: 25%;"><a href="seq.clock_iso_year_week_day.html">seq.clock_iso_year_week_day</a></td>
+<td>Sequences: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="seq.clock_time_point.html">seq.clock_time_point</a></td>
+<td>Sequences: time points</td></tr>
+<tr><td style="width: 25%;"><a href="seq.clock_year_day.html">seq.clock_year_day</a></td>
+<td>Sequences: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="seq.clock_year_month_day.html">seq.clock_year_month_day</a></td>
+<td>Sequences: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="seq.clock_year_month_weekday.html">seq.clock_year_month_weekday</a></td>
+<td>Sequences: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="seq.clock_year_quarter_day.html">seq.clock_year_quarter_day</a></td>
+<td>Sequences: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="seq.clock_year_week_day.html">seq.clock_year_week_day</a></td>
+<td>Sequences: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="clock-setters.html">set_day</a></td>
+<td>Calendar setters</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-setters.html">set_day.clock_iso_year_week_day</a></td>
+<td>Setters: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-setters.html">set_day.clock_year_day</a></td>
+<td>Setters: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-setters.html">set_day.clock_year_month_day</a></td>
+<td>Setters: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-setters.html">set_day.clock_year_month_weekday</a></td>
+<td>Setters: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-setters.html">set_day.clock_year_quarter_day</a></td>
+<td>Setters: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-setters.html">set_day.clock_year_week_day</a></td>
+<td>Setters: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="Date-setters.html">set_day.Date</a></td>
+<td>Setters: date</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-setters.html">set_day.POSIXt</a></td>
+<td>Setters: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="clock-setters.html">set_hour</a></td>
+<td>Calendar setters</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-setters.html">set_hour.clock_iso_year_week_day</a></td>
+<td>Setters: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-setters.html">set_hour.clock_year_day</a></td>
+<td>Setters: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-setters.html">set_hour.clock_year_month_day</a></td>
+<td>Setters: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-setters.html">set_hour.clock_year_month_weekday</a></td>
+<td>Setters: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-setters.html">set_hour.clock_year_quarter_day</a></td>
+<td>Setters: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-setters.html">set_hour.clock_year_week_day</a></td>
+<td>Setters: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-setters.html">set_hour.POSIXt</a></td>
+<td>Setters: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="clock-setters.html">set_index</a></td>
+<td>Calendar setters</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-setters.html">set_index.clock_year_month_weekday</a></td>
+<td>Setters: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="clock-setters.html">set_microsecond</a></td>
+<td>Calendar setters</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-setters.html">set_microsecond.clock_iso_year_week_day</a></td>
+<td>Setters: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-setters.html">set_microsecond.clock_year_day</a></td>
+<td>Setters: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-setters.html">set_microsecond.clock_year_month_day</a></td>
+<td>Setters: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-setters.html">set_microsecond.clock_year_month_weekday</a></td>
+<td>Setters: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-setters.html">set_microsecond.clock_year_quarter_day</a></td>
+<td>Setters: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-setters.html">set_microsecond.clock_year_week_day</a></td>
+<td>Setters: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="clock-setters.html">set_millisecond</a></td>
+<td>Calendar setters</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-setters.html">set_millisecond.clock_iso_year_week_day</a></td>
+<td>Setters: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-setters.html">set_millisecond.clock_year_day</a></td>
+<td>Setters: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-setters.html">set_millisecond.clock_year_month_day</a></td>
+<td>Setters: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-setters.html">set_millisecond.clock_year_month_weekday</a></td>
+<td>Setters: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-setters.html">set_millisecond.clock_year_quarter_day</a></td>
+<td>Setters: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-setters.html">set_millisecond.clock_year_week_day</a></td>
+<td>Setters: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="clock-setters.html">set_minute</a></td>
+<td>Calendar setters</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-setters.html">set_minute.clock_iso_year_week_day</a></td>
+<td>Setters: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-setters.html">set_minute.clock_year_day</a></td>
+<td>Setters: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-setters.html">set_minute.clock_year_month_day</a></td>
+<td>Setters: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-setters.html">set_minute.clock_year_month_weekday</a></td>
+<td>Setters: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-setters.html">set_minute.clock_year_quarter_day</a></td>
+<td>Setters: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-setters.html">set_minute.clock_year_week_day</a></td>
+<td>Setters: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-setters.html">set_minute.POSIXt</a></td>
+<td>Setters: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="clock-setters.html">set_month</a></td>
+<td>Calendar setters</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-setters.html">set_month.clock_year_month_day</a></td>
+<td>Setters: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-setters.html">set_month.clock_year_month_weekday</a></td>
+<td>Setters: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="Date-setters.html">set_month.Date</a></td>
+<td>Setters: date</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-setters.html">set_month.POSIXt</a></td>
+<td>Setters: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="clock-setters.html">set_nanosecond</a></td>
+<td>Calendar setters</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-setters.html">set_nanosecond.clock_iso_year_week_day</a></td>
+<td>Setters: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-setters.html">set_nanosecond.clock_year_day</a></td>
+<td>Setters: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-setters.html">set_nanosecond.clock_year_month_day</a></td>
+<td>Setters: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-setters.html">set_nanosecond.clock_year_month_weekday</a></td>
+<td>Setters: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-setters.html">set_nanosecond.clock_year_quarter_day</a></td>
+<td>Setters: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-setters.html">set_nanosecond.clock_year_week_day</a></td>
+<td>Setters: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="clock-setters.html">set_quarter</a></td>
+<td>Calendar setters</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-setters.html">set_quarter.clock_year_quarter_day</a></td>
+<td>Setters: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="clock-setters.html">set_second</a></td>
+<td>Calendar setters</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-setters.html">set_second.clock_iso_year_week_day</a></td>
+<td>Setters: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-setters.html">set_second.clock_year_day</a></td>
+<td>Setters: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-setters.html">set_second.clock_year_month_day</a></td>
+<td>Setters: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-setters.html">set_second.clock_year_month_weekday</a></td>
+<td>Setters: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-setters.html">set_second.clock_year_quarter_day</a></td>
+<td>Setters: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-setters.html">set_second.clock_year_week_day</a></td>
+<td>Setters: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-setters.html">set_second.POSIXt</a></td>
+<td>Setters: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="clock-setters.html">set_week</a></td>
+<td>Calendar setters</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-setters.html">set_week.clock_iso_year_week_day</a></td>
+<td>Setters: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-setters.html">set_week.clock_year_week_day</a></td>
+<td>Setters: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="clock-setters.html">set_year</a></td>
+<td>Calendar setters</td></tr>
+<tr><td style="width: 25%;"><a href="iso-year-week-day-setters.html">set_year.clock_iso_year_week_day</a></td>
+<td>Setters: iso-year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-setters.html">set_year.clock_year_day</a></td>
+<td>Setters: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-setters.html">set_year.clock_year_month_day</a></td>
+<td>Setters: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-setters.html">set_year.clock_year_month_weekday</a></td>
+<td>Setters: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-setters.html">set_year.clock_year_quarter_day</a></td>
+<td>Setters: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-setters.html">set_year.clock_year_week_day</a></td>
+<td>Setters: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="Date-setters.html">set_year.Date</a></td>
+<td>Setters: date</td></tr>
+<tr><td style="width: 25%;"><a href="posixt-setters.html">set_year.POSIXt</a></td>
+<td>Setters: date-time</td></tr>
+<tr><td style="width: 25%;"><a href="sys-parsing.html">sys-parsing</a></td>
+<td>Parsing: sys-time</td></tr>
+<tr><td style="width: 25%;"><a href="sys_time_info.html">sys_time_info</a></td>
+<td>Info: sys-time</td></tr>
+<tr><td style="width: 25%;"><a href="sys_time_now.html">sys_time_now</a></td>
+<td>What is the current sys-time?</td></tr>
+<tr><td style="width: 25%;"><a href="sys-parsing.html">sys_time_parse</a></td>
+<td>Parsing: sys-time</td></tr>
+<tr><td style="width: 25%;"><a href="sys-parsing.html">sys_time_parse_RFC_3339</a></td>
+<td>Parsing: sys-time</td></tr>
+</table>
+
+<h2><a name="T">-- T --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="time-point-arithmetic.html">time-point-arithmetic</a></td>
+<td>Arithmetic: Time points</td></tr>
+<tr><td style="width: 25%;"><a href="time-point-rounding.html">time-point-rounding</a></td>
+<td>Time point rounding</td></tr>
+<tr><td style="width: 25%;"><a href="time_point_cast.html">time_point_cast</a></td>
+<td>Cast a time point between precisions</td></tr>
+<tr><td style="width: 25%;"><a href="time-point-rounding.html">time_point_ceiling</a></td>
+<td>Time point rounding</td></tr>
+<tr><td style="width: 25%;"><a href="time_point_count_between.html">time_point_count_between</a></td>
+<td>Counting: time point</td></tr>
+<tr><td style="width: 25%;"><a href="time-point-rounding.html">time_point_floor</a></td>
+<td>Time point rounding</td></tr>
+<tr><td style="width: 25%;"><a href="time_point_precision.html">time_point_precision</a></td>
+<td>Precision: time point</td></tr>
+<tr><td style="width: 25%;"><a href="time-point-rounding.html">time_point_round</a></td>
+<td>Time point rounding</td></tr>
+<tr><td style="width: 25%;"><a href="time_point_shift.html">time_point_shift</a></td>
+<td>Shifting: time point</td></tr>
+<tr><td style="width: 25%;"><a href="time_point_spanning_seq.html">time_point_spanning_seq</a></td>
+<td>Spanning sequence: time points</td></tr>
+</table>
+
+<h2><a name="V">-- V --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="clock-arith.html">vec_arith.clock_iso_year_week_day</a></td>
+<td>Support for vctrs arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="clock-arith.html">vec_arith.clock_naive_time</a></td>
+<td>Support for vctrs arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="clock-arith.html">vec_arith.clock_sys_time</a></td>
+<td>Support for vctrs arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="clock-arith.html">vec_arith.clock_weekday</a></td>
+<td>Support for vctrs arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="clock-arith.html">vec_arith.clock_year_day</a></td>
+<td>Support for vctrs arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="clock-arith.html">vec_arith.clock_year_month_day</a></td>
+<td>Support for vctrs arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="clock-arith.html">vec_arith.clock_year_month_weekday</a></td>
+<td>Support for vctrs arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="clock-arith.html">vec_arith.clock_year_quarter_day</a></td>
+<td>Support for vctrs arithmetic</td></tr>
+<tr><td style="width: 25%;"><a href="clock-arith.html">vec_arith.clock_year_week_day</a></td>
+<td>Support for vctrs arithmetic</td></tr>
+</table>
+
+<h2><a name="W">-- W --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="weekday.html">weekday</a></td>
+<td>Construct a weekday vector</td></tr>
+<tr><td style="width: 25%;"><a href="weekday-arithmetic.html">weekday-arithmetic</a></td>
+<td>Arithmetic: weekday</td></tr>
+<tr><td style="width: 25%;"><a href="weekday_code.html">weekday_code</a></td>
+<td>Extract underlying weekday codes</td></tr>
+<tr><td style="width: 25%;"><a href="weekday_factor.html">weekday_factor</a></td>
+<td>Convert a weekday to an ordered factor</td></tr>
+</table>
+
+<h2><a name="Y">-- Y --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="year-day-arithmetic.html">year-day-arithmetic</a></td>
+<td>Arithmetic: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-boundary.html">year-day-boundary</a></td>
+<td>Boundaries: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-count-between.html">year-day-count-between</a></td>
+<td>Counting: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-getters.html">year-day-getters</a></td>
+<td>Getters: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-group.html">year-day-group</a></td>
+<td>Grouping: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-narrow.html">year-day-narrow</a></td>
+<td>Narrow: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-setters.html">year-day-setters</a></td>
+<td>Setters: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-day-widen.html">year-day-widen</a></td>
+<td>Widen: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-arithmetic.html">year-month-day-arithmetic</a></td>
+<td>Arithmetic: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-boundary.html">year-month-day-boundary</a></td>
+<td>Boundaries: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-count-between.html">year-month-day-count-between</a></td>
+<td>Counting: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-getters.html">year-month-day-getters</a></td>
+<td>Getters: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-group.html">year-month-day-group</a></td>
+<td>Grouping: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-narrow.html">year-month-day-narrow</a></td>
+<td>Narrow: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-setters.html">year-month-day-setters</a></td>
+<td>Setters: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-day-widen.html">year-month-day-widen</a></td>
+<td>Widen: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-arithmetic.html">year-month-weekday-arithmetic</a></td>
+<td>Arithmetic: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-boundary.html">year-month-weekday-boundary</a></td>
+<td>Boundaries: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-count-between.html">year-month-weekday-count-between</a></td>
+<td>Counting: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-getters.html">year-month-weekday-getters</a></td>
+<td>Getters: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-group.html">year-month-weekday-group</a></td>
+<td>Grouping: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-narrow.html">year-month-weekday-narrow</a></td>
+<td>Narrow: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-setters.html">year-month-weekday-setters</a></td>
+<td>Setters: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-month-weekday-widen.html">year-month-weekday-widen</a></td>
+<td>Widen: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-arithmetic.html">year-quarter-day-arithmetic</a></td>
+<td>Arithmetic: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-boundary.html">year-quarter-day-boundary</a></td>
+<td>Boundaries: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-count-between.html">year-quarter-day-count-between</a></td>
+<td>Counting: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-getters.html">year-quarter-day-getters</a></td>
+<td>Getters: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-group.html">year-quarter-day-group</a></td>
+<td>Grouping: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-narrow.html">year-quarter-day-narrow</a></td>
+<td>Narrow: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-setters.html">year-quarter-day-setters</a></td>
+<td>Setters: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter-day-widen.html">year-quarter-day-widen</a></td>
+<td>Widen: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-arithmetic.html">year-week-day-arithmetic</a></td>
+<td>Arithmetic: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-boundary.html">year-week-day-boundary</a></td>
+<td>Boundaries: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-count-between.html">year-week-day-count-between</a></td>
+<td>Counting: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-getters.html">year-week-day-getters</a></td>
+<td>Getters: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-group.html">year-week-day-group</a></td>
+<td>Grouping: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-narrow.html">year-week-day-narrow</a></td>
+<td>Narrow: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-setters.html">year-week-day-setters</a></td>
+<td>Setters: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year-week-day-widen.html">year-week-day-widen</a></td>
+<td>Widen: year-week-day</td></tr>
+<tr><td style="width: 25%;"><a href="year_day.html">year_day</a></td>
+<td>Calendar: year-day</td></tr>
+<tr><td style="width: 25%;"><a href="year_month_day.html">year_month_day</a></td>
+<td>Calendar: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year_month_day_parse.html">year_month_day_parse</a></td>
+<td>Parsing: year-month-day</td></tr>
+<tr><td style="width: 25%;"><a href="year_month_weekday.html">year_month_weekday</a></td>
+<td>Calendar: year-month-weekday</td></tr>
+<tr><td style="width: 25%;"><a href="year_quarter_day.html">year_quarter_day</a></td>
+<td>Calendar: year-quarter-day</td></tr>
+<tr><td style="width: 25%;"><a href="year_week_day.html">year_week_day</a></td>
+<td>Calendar: year-week-day</td></tr>
+</table>
+
+<h2><a name="Z">-- Z --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="zoned-parsing.html">zoned-parsing</a></td>
+<td>Parsing: zoned-time</td></tr>
+<tr><td style="width: 25%;"><a href="zoned-zone.html">zoned-zone</a></td>
+<td>Get or set the time zone</td></tr>
+<tr><td style="width: 25%;"><a href="zoned_time_info.html">zoned_time_info</a></td>
+<td>Info: zoned-time</td></tr>
+<tr><td style="width: 25%;"><a href="zoned_time_now.html">zoned_time_now</a></td>
+<td>What is the current zoned-time?</td></tr>
+<tr><td style="width: 25%;"><a href="zoned-parsing.html">zoned_time_parse_abbrev</a></td>
+<td>Parsing: zoned-time</td></tr>
+<tr><td style="width: 25%;"><a href="zoned-parsing.html">zoned_time_parse_complete</a></td>
+<td>Parsing: zoned-time</td></tr>
+<tr><td style="width: 25%;"><a href="zoned_time_precision.html">zoned_time_precision</a></td>
+<td>Precision: zoned-time</td></tr>
+<tr><td style="width: 25%;"><a href="zoned-zone.html">zoned_time_set_zone</a></td>
+<td>Get or set the time zone</td></tr>
+<tr><td style="width: 25%;"><a href="zoned-zone.html">zoned_time_zone</a></td>
+<td>Get or set the time zone</td></tr>
+</table>
+</div></body></html>

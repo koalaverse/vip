@@ -1,0 +1,63 @@
+.endpoints              Endpoints indexes
+DaylightSavingTime      Daylight Saving Time Rules
+Easter                  Date of Easter
+Sys.timeDate            System time as 'timeDate' object
+align                   Align a 'timeDate' object to regular date/time
+                        stamps
+as.timeDate             Coercion from/to 'timeDate'
+blockStart              Equally sized 'timeDate' blocks
+c                       Concatenating 'timeDate' objects
+currentYear             Current year
+dayOfWeek               Day of the week
+dayOfYear               Day of the year
+diff                    Lagged 'timeDate' differences
+difftimeDate            Difference of two 'timeDate' objects
+finCenter               Financial Center of a timeDate object
+firstDay                First and last days
+format                  Format methods
+holiday                 Holiday dates
+holidayDate             Public and ecclesiastical holidays
+holidayLONDON           London Bank Holidays
+holidayNERC             NERC holiday calendar
+holidayNYSE             NYSE holiday calendar
+holidayTSX              TSX holiday calendar
+holidayZURICH           Zurich holiday calendar
+is.na-methods           Methods for 'is.na'
+isBizday                Check if dates are business or holidays
+isRegular               Checks if a date/time vector is regular
+isWeekday               Weekdays and weekends
+julian,timeDate-method
+                        Julian counts and calendar atoms
+kurtosis                Kurtosis
+length                  Length of a 'timeDate' object
+listFinCenter           List of financial centers
+listHolidays            List of holidays
+midnightStandard        Midnight standard
+myFinCenter             myFinCenter variable
+myUnits                 Frequency of date/time units
+nDay                    n-th n-day dates
+names-methods           The names of a 'timeDate' object
+onOrAfter               On-or-after/before dates
+periods                 Rolling periods
+plot,timeDate-method    Plot methods
+rep                     Replicating 'timeDate' objects
+rev                     Reverse 'timeDate' objects
+round                   Rounding and truncating 'timeDate' objects
+rulesFinCenter          Financial centers DST rules
+sample                  Resampling 'timeDate' objects
+setRmetricsOptions      Rmetrics option settings
+show-methods            Show methods
+skewness                Skewness
+sort                    Sorting 'timeDate' objects
+start                   Terminal times and range
+subset                  Subsetting a 'timeDate' object
+summary.timeDate        Summary method
+timeCalendar            'timeDate' from calendar atoms
+timeDate                Create 'timeDate' objects from scratch
+timeDate-class          Class "timeDate"
+timeDate-package        Utilities and tools package
+timeDateMathOps         Mathematical operations with 'timeDate' objects
+timeSequence            Regularly spaced 'timeDate' objects
+unique                  Remove duplicated dates from 'timeDate' objects
+whichFormat             Format recognation
+window                  Time windows

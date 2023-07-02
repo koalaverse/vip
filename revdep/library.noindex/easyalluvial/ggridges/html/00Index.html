@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head><title>R: Ridgeline Plots in 'ggplot2'</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+<h1> Ridgeline Plots in 'ggplot2'
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]" />
+</h1>
+<hr/>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]" /></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]" /></a>
+</div><h2>Documentation for package &lsquo;ggridges&rsquo; version 0.5.4</h2>
+
+<ul><li><a href="../DESCRIPTION">DESCRIPTION file</a>.</li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation.</a></li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="Aus_athletes.html">Aus_athletes</a></td>
+<td>Australian athletes</td></tr>
+<tr><td style="width: 25%;"><a href="Catalan_elections.html">Catalan_elections</a></td>
+<td>Results from Catalan regional elections (1980-2015)</td></tr>
+<tr><td style="width: 25%;"><a href="scale_cyclical.html">cyclical_scale</a></td>
+<td>Create a discrete scale that cycles between values</td></tr>
+<tr><td style="width: 25%;"><a href="geom_density_line.html">GeomDensityLine</a></td>
+<td>Smoothed density estimates drawn with a ridgeline rather than area</td></tr>
+<tr><td style="width: 25%;"><a href="geom_density_ridges.html">GeomDensityRidges</a></td>
+<td>Create ridgeline plot</td></tr>
+<tr><td style="width: 25%;"><a href="geom_density_ridges.html">GeomDensityRidges2</a></td>
+<td>Create ridgeline plot</td></tr>
+<tr><td style="width: 25%;"><a href="geom_ridgeline_gradient.html">GeomDensityRidgesGradient</a></td>
+<td>Plot ridgelines and ridgeline plots with fill gradients along the x axis</td></tr>
+<tr><td style="width: 25%;"><a href="geom_ridgeline.html">GeomRidgeline</a></td>
+<td>Plot a ridgeline (line with filled area underneath)</td></tr>
+<tr><td style="width: 25%;"><a href="geom_ridgeline_gradient.html">GeomRidgelineGradient</a></td>
+<td>Plot ridgelines and ridgeline plots with fill gradients along the x axis</td></tr>
+<tr><td style="width: 25%;"><a href="geom_vridgeline.html">GeomVRidgeline</a></td>
+<td>Plot a vertical ridgeline (ridgeline rotated 90 degrees)</td></tr>
+<tr><td style="width: 25%;"><a href="geom_density_line.html">geom_density_line</a></td>
+<td>Smoothed density estimates drawn with a ridgeline rather than area</td></tr>
+<tr><td style="width: 25%;"><a href="geom_density_ridges.html">geom_density_ridges</a></td>
+<td>Create ridgeline plot</td></tr>
+<tr><td style="width: 25%;"><a href="geom_density_ridges.html">geom_density_ridges2</a></td>
+<td>Create ridgeline plot</td></tr>
+<tr><td style="width: 25%;"><a href="geom_ridgeline_gradient.html">geom_density_ridges_gradient</a></td>
+<td>Plot ridgelines and ridgeline plots with fill gradients along the x axis</td></tr>
+<tr><td style="width: 25%;"><a href="geom_ridgeline.html">geom_ridgeline</a></td>
+<td>Plot a ridgeline (line with filled area underneath)</td></tr>
+<tr><td style="width: 25%;"><a href="geom_ridgeline_gradient.html">geom_ridgeline_gradient</a></td>
+<td>Plot ridgelines and ridgeline plots with fill gradients along the x axis</td></tr>
+<tr><td style="width: 25%;"><a href="geom_vridgeline.html">geom_vridgeline</a></td>
+<td>Plot a vertical ridgeline (ridgeline rotated 90 degrees)</td></tr>
+<tr><td style="width: 25%;"><a href="lincoln_weather.html">lincoln_weather</a></td>
+<td>Weather in Lincoln, Nebraska in 2016.</td></tr>
+<tr><td style="width: 25%;"><a href="position_points_jitter.html">PositionPointsJitter</a></td>
+<td>Randomly jitter the points in a ridgeline plot</td></tr>
+<tr><td style="width: 25%;"><a href="position_points_sina.html">PositionPointsSina</a></td>
+<td>Randomly distribute points in a ridgeline plot between baseline and ridgeline</td></tr>
+<tr><td style="width: 25%;"><a href="position_raincloud.html">PositionRaincloud</a></td>
+<td>Create a cloud of randomly jittered points below a ridgeline plot</td></tr>
+<tr><td style="width: 25%;"><a href="position_points_jitter.html">position_points_jitter</a></td>
+<td>Randomly jitter the points in a ridgeline plot</td></tr>
+<tr><td style="width: 25%;"><a href="position_points_sina.html">position_points_sina</a></td>
+<td>Randomly distribute points in a ridgeline plot between baseline and ridgeline</td></tr>
+<tr><td style="width: 25%;"><a href="position_raincloud.html">position_raincloud</a></td>
+<td>Create a cloud of randomly jittered points below a ridgeline plot</td></tr>
+<tr><td style="width: 25%;"><a href="scale_cyclical.html">ScaleCyclical</a></td>
+<td>Create a discrete scale that cycles between values</td></tr>
+<tr><td style="width: 25%;"><a href="scale_cyclical.html">scale_alpha_cyclical</a></td>
+<td>Create a discrete scale that cycles between values</td></tr>
+<tr><td style="width: 25%;"><a href="scale_cyclical.html">scale_color_cyclical</a></td>
+<td>Create a discrete scale that cycles between values</td></tr>
+<tr><td style="width: 25%;"><a href="scale_cyclical.html">scale_colour_cyclical</a></td>
+<td>Create a discrete scale that cycles between values</td></tr>
+<tr><td style="width: 25%;"><a href="scale_cyclical.html">scale_fill_cyclical</a></td>
+<td>Create a discrete scale that cycles between values</td></tr>
+<tr><td style="width: 25%;"><a href="scale_cyclical.html">scale_linetype_cyclical</a></td>
+<td>Create a discrete scale that cycles between values</td></tr>
+<tr><td style="width: 25%;"><a href="scale_point.html">scale_point_color_continuous</a></td>
+<td>Scales for point aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_point.html">scale_point_color_discrete</a></td>
+<td>Scales for point aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_point.html">scale_point_color_gradient</a></td>
+<td>Scales for point aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_point.html">scale_point_color_hue</a></td>
+<td>Scales for point aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_point.html">scale_point_colour_continuous</a></td>
+<td>Scales for point aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_point.html">scale_point_colour_discrete</a></td>
+<td>Scales for point aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_point.html">scale_point_colour_gradient</a></td>
+<td>Scales for point aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_point.html">scale_point_colour_hue</a></td>
+<td>Scales for point aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_point.html">scale_point_fill_continuous</a></td>
+<td>Scales for point aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_point.html">scale_point_fill_discrete</a></td>
+<td>Scales for point aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_point.html">scale_point_fill_gradient</a></td>
+<td>Scales for point aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_point.html">scale_point_fill_hue</a></td>
+<td>Scales for point aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_point.html">scale_point_shape</a></td>
+<td>Scales for point aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_point.html">scale_point_shape_discrete</a></td>
+<td>Scales for point aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_point.html">scale_point_size_continuous</a></td>
+<td>Scales for point aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_cyclical.html">scale_size_cyclical</a></td>
+<td>Create a discrete scale that cycles between values</td></tr>
+<tr><td style="width: 25%;"><a href="scale_vline.html">scale_vline_color_continuous</a></td>
+<td>Scales for vline aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_vline.html">scale_vline_color_discrete</a></td>
+<td>Scales for vline aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_vline.html">scale_vline_color_gradient</a></td>
+<td>Scales for vline aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_vline.html">scale_vline_color_hue</a></td>
+<td>Scales for vline aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_vline.html">scale_vline_colour_continuous</a></td>
+<td>Scales for vline aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_vline.html">scale_vline_colour_discrete</a></td>
+<td>Scales for vline aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_vline.html">scale_vline_colour_gradient</a></td>
+<td>Scales for vline aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_vline.html">scale_vline_colour_hue</a></td>
+<td>Scales for vline aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_vline.html">scale_vline_linetype</a></td>
+<td>Scales for vline aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_vline.html">scale_vline_linetype_discrete</a></td>
+<td>Scales for vline aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="scale_vline.html">scale_vline_size_continuous</a></td>
+<td>Scales for vline aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="stat_binline.html">StatBinline</a></td>
+<td>Stat for histogram ridgeline plots</td></tr>
+<tr><td style="width: 25%;"><a href="stat_density_ridges.html">StatDensityRidges</a></td>
+<td>Stat for density ridgeline plots</td></tr>
+<tr><td style="width: 25%;"><a href="stat_binline.html">stat_binline</a></td>
+<td>Stat for histogram ridgeline plots</td></tr>
+<tr><td style="width: 25%;"><a href="stat_density_ridges.html">stat_density_ridges</a></td>
+<td>Stat for density ridgeline plots</td></tr>
+<tr><td style="width: 25%;"><a href="theme_ridges.html">theme_ridges</a></td>
+<td>A custom theme specifically for use with ridgeline plots</td></tr>
+</table>
+</div></body></html>

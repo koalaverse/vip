@@ -1,0 +1,445 @@
+> # test.pmethod.cv.R: example pmethod.cv model built by earth
+> # Stephen Milborrow May 2015 Berea
+> 
+> source("test.prolog.R")
+> library(earth)
+Loading required package: Formula
+Loading required package: plotmo
+Loading required package: plotrix
+Loading required package: TeachingDemos
+> data(etitanic)
+> options(digits=4)
+> 
+> printf <- function(format, ...) cat(sprint(format, ...)) # like c printf
+> 
+> cat("\npmethod=cv with formula interface\n\n")
+
+pmethod=cv with formula interface
+
+> 
+> # following is so we can directly compare pmethod=back to pmethod=cv
+> set.seed(2)
+> a100.form <- earth(survived ~ ., data=etitanic, degree=2, trace=0, pmethod="back", nfold=2, ncross=2, keepxy=TRUE)
+> cat("print(a100.form)\n")
+print(a100.form)
+> print(a100.form)
+Selected 8 of 17 terms, and 5 of 6 predictors
+Termination condition: Reached nk 21
+Importance: sexmale, pclass3rd, pclass2nd, age, sibsp, parch-unused
+Number of terms at each degree of interaction: 1 3 4
+GCV 0.1405  RSS 141.8  GRSq 0.4197  RSq 0.439  CVRSq 0.395
+> plot(a100.form, which=1,
++      main="a100.form: pmethod=\"back\"")
+> 
+> par(mfrow = c(2, 2), mar = c(3, 3, 3, 1), mgp = c(1.5, 0.5, 0), oma=c(0,0,2,0))
+> 
+> set.seed(2)
+> cat("\n")
+
+> a101.form <- earth(survived ~ ., data=etitanic, degree=2, trace=1, pmethod="cv", nfold=2, ncross=2)
+=== pmethod="cv": Preliminary model with pmethod="backward" ===
+x[1046,6] with colnames pclass2nd pclass3rd sexmale age sibsp parch
+y[1046,1] with colname survived, and values 1, 1, 0, 0, 0, 1, 1, 0, 1, 0,...
+Forward pass term 1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20
+Reached nk 21
+After forward pass GRSq 0.406 RSq 0.450
+Prune backward penalty 3 nprune null: selected 8 of 17 terms, and 5 of 6 preds
+After pruning pass GRSq 0.42 RSq 0.439
+
+CV fold  1.1  CVRSq  0.449   n.oof  526 50%   n.infold.nz  213 40%   n.oof.nz  214 41%
+CV fold  1.2  CVRSq  0.333   n.oof  520 50%   n.infold.nz  214 41%   n.oof.nz  213 40%
+CV fold  2.1  CVRSq  0.463   n.oof  521 50%   n.infold.nz  213 41%   n.oof.nz  214 41%
+CV fold  2.2  CVRSq  0.336   n.oof  525 50%   n.infold.nz  214 41%   n.oof.nz  213 41%
+CV all        CVRSq  0.395                    n.infold.nz  427 41%
+
+=== pmethod="cv": Calling update.earth internally for nterms selected by cv 7 ===
+update.earth: using 1046 by 6 data argument from original call to earth
+x[1046,6] with colnames pclass2nd pclass3rd sexmale age sibsp parch
+y[1046,1] with colname survived, and values 1, 1, 0, 0, 0, 1, 1, 0, 1, 0,...
+Skipped forward pass
+Prune cv penalty 3: selected 7 of 17 terms, and 5 of 6 preds
+After pruning pass GRSq 0.417 RSq 0.434
+
+> cat("\nprint(a101.form)\n")
+
+print(a101.form)
+> print(a101.form)
+Selected 7 of 17 terms, and 5 of 6 predictors (pmethod="cv")
+Termination condition: Reached nk 21
+Importance: sexmale, pclass3rd, pclass2nd, age, sibsp, parch-unused
+Number of terms at each degree of interaction: 1 2 4
+GRSq 0.4171  RSq 0.4338  mean.oof.RSq 0.3994 (sd 0.0791)
+
+pmethod="backward" would have selected:
+    8 terms 5 preds,  GRSq 0.4197  RSq 0.439  mean.oof.RSq 0.3924
+> cat("\nprint(summary(a101.form))\n")
+
+print(summary(a101.form))
+> print(summary(a101.form))
+Call: earth(formula=survived~., data=etitanic, pmethod="cv", trace=1, degree=2,
+            nfold=2, ncross=2)
+
+                       coefficients
+(Intercept)                 0.90262
+pclass3rd                  -0.74136
+sexmale                    -0.38773
+pclass2nd * sexmale        -0.32761
+pclass3rd * h(4-sibsp)      0.10938
+sexmale * h(age-16)        -0.00514
+sexmale * h(16-age)         0.04200
+
+Selected 7 of 17 terms, and 5 of 6 predictors (pmethod="cv")
+Termination condition: Reached nk 21
+Importance: sexmale, pclass3rd, pclass2nd, age, sibsp, parch-unused
+Number of terms at each degree of interaction: 1 2 4
+GRSq 0.4171  RSq 0.4338  mean.oof.RSq 0.3994 (sd 0.0791)
+
+pmethod="backward" would have selected:
+    8 terms 5 preds,  GRSq 0.4197  RSq 0.439  mean.oof.RSq 0.3924
+> plot(a101.form, which=1, legend.cex=.5, main="a101.form: pmethod=\"cv\"", cex.main=.8, caption="formula interface")
+> 
+> # test trace=.5
+> set.seed(2)
+> a101a.form <- earth(survived ~ ., data=etitanic, degree=2, trace=.5, pmethod="cv", nfold=2, ncross=3)
+Preliminary model with pmethod="backward": GRSq 0.420 RSq 0.439 nterms 8
+CV fold  1.1  CVRSq  0.449   n.oof  526 50%   n.infold.nz  213 40%   n.oof.nz  214 41%
+CV fold  1.2  CVRSq  0.333   n.oof  520 50%   n.infold.nz  214 41%   n.oof.nz  213 40%
+CV fold  2.1  CVRSq  0.463   n.oof  521 50%   n.infold.nz  213 41%   n.oof.nz  214 41%
+CV fold  2.2  CVRSq  0.336   n.oof  525 50%   n.infold.nz  214 41%   n.oof.nz  213 41%
+CV fold  3.1  CVRSq  0.452   n.oof  517 51%   n.infold.nz  213 41%   n.oof.nz  214 40%
+CV fold  3.2  CVRSq  0.371   n.oof  529 49%   n.infold.nz  214 40%   n.oof.nz  213 41%
+CV all        CVRSq  0.400                    n.infold.nz  427 41%
+Final model with pmethod="cv": GRSq 0.417 RSq 0.434 nterms selected by cv 7
+> 
+> # multiple response model
+> set.seed(2015)
+> a102.form <- earth(pclass ~ ., data=etitanic, degree=2, pmethod="cv", nfold=3)
+> cat("\nprint(a102.form)\n")
+
+print(a102.form)
+> print(a102.form)
+Selected 13 of 17 terms, and 5 of 5 predictors (pmethod="cv")
+Termination condition: Reached nk 21
+Importance: age, parch, survived, sibsp, sexmale
+Number of terms at each degree of interaction: 1 7 5
+
+       GCV   RSS     GRSq     RSq   mean.oof.RSq sd(mean.oof.RSq)
+1st 0.1470 144.7 0.258427 0.30039                                
+2nd 0.1876 184.8 0.000087 0.05668                                
+3rd 0.1899 187.0 0.240541 0.28352                                
+All 0.5244 516.5 0.175163 0.22184         0.1769         0.005629
+
+pmethod="backward" would have selected:
+    9 terms 5 preds,  GRSq 0.17523  RSq 0.2065  mean.oof.RSq 0.16585
+> cat("\nprint(summary(a102.form))\n")
+
+print(summary(a102.form))
+> print(summary(a102.form))
+Call: earth(formula=pclass~., data=etitanic, pmethod="cv", degree=2, nfold=3)
+
+                             1st       2nd      3rd
+(Intercept)              0.10670  0.267079  0.62622
+survived                 0.34507  0.128138 -0.47320
+sexmale                  0.09874  0.117929 -0.21667
+h(26-age)                0.00612 -0.013322  0.00720
+h(age-54)                0.08439 -0.035881 -0.04851
+h(sibsp-1)              -0.06288 -0.040683  0.10356
+h(2-parch)               0.24046 -0.060362 -0.18010
+h(parch-2)              -0.06175 -0.090291  0.15204
+survived * sexmale      -0.08186 -0.285173  0.36704
+survived * h(16-age)    -0.03092  0.034844 -0.00393
+h(55-age) * h(2-parch)  -0.00833  0.001282  0.00705
+h(age-55) * h(2-parch)  -0.04785  0.018682  0.02917
+h(1-sibsp) * h(1-parch) -0.15714 -0.031838  0.18897
+
+Selected 13 of 17 terms, and 5 of 5 predictors (pmethod="cv")
+Termination condition: Reached nk 21
+Importance: age, parch, survived, sibsp, sexmale
+Number of terms at each degree of interaction: 1 7 5
+
+       GCV   RSS     GRSq     RSq   mean.oof.RSq sd(mean.oof.RSq)
+1st 0.1470 144.7 0.258427 0.30039                                
+2nd 0.1876 184.8 0.000087 0.05668                                
+3rd 0.1899 187.0 0.240541 0.28352                                
+All 0.5244 516.5 0.175163 0.22184         0.1769         0.005629
+
+pmethod="backward" would have selected:
+    9 terms 5 preds,  GRSq 0.17523  RSq 0.2065  mean.oof.RSq 0.16585
+> plot(a102.form, which=1, nresponse=1, main="a102.form: pmethod=\"cv\" multiple response", cex.main=.8)
+> 
+> # test trace=.5 with multiple response model
+> set.seed(2015)
+> a102.form <- earth(pclass ~ ., data=etitanic, degree=2, trace=.5, pmethod="cv", nfold=3)
+
+Preliminary model with pmethod="backward": GRSq 0.175 RSq 0.206 nterms 9
+
+CV fold 1  CVRSq  0.175   Per response CVRSq  0.251   0.002   0.272  
+                         n.oof  697 33%   n.infold.nz  189 174 334   n.oof.nz   95  87 167
+
+CV fold 2  CVRSq  0.165   Per response CVRSq  0.276   0.019   0.200  
+                         n.oof  697 33%   n.infold.nz  189 174 334   n.oof.nz   95  87 167
+
+CV fold 3  CVRSq  0.174   Per response CVRSq  0.251   0.032   0.237  
+                         n.oof  698 33%   n.infold.nz  190 174 334   n.oof.nz   94  87 167
+
+CV all     CVRSq  0.171   Per response CVRSq  0.259   0.018   0.237  
+                                          n.infold.nz  284 261 501
+
+Final model with pmethod="cv": GRSq 0.175 RSq 0.222 nterms selected by cv 13
+> 
+> # multiple response model
+> # following is useful because the model selected by cv is same as that selected by gcv
+> set.seed(1900) # don't change
+> a103.form <- earth(pclass ~ ., data=etitanic, degree=2,
++            pmethod="cv", nfold=3, nprune=9)
+> cat("\nprint(a103.form)\n")
+
+print(a103.form)
+> print(a103.form)
+Selected 9 of 17 terms, and 5 of 5 predictors (pmethod="cv") (nprune=9)
+Termination condition: Reached nk 21
+Importance: age, parch, survived, sibsp, sexmale
+Number of terms at each degree of interaction: 1 4 4
+
+       GCV   RSS     GRSq     RSq   mean.oof.RSq sd(mean.oof.RSq)
+1st 0.1479 148.5 0.253820 0.28211                                
+2nd 0.1870 187.8 0.003405 0.04119                                
+3rd 0.1896 190.4 0.241873 0.27061                                
+All 0.5244 526.7 0.175230 0.20650         0.1752          0.02776
+
+pmethod="backward" would have selected the same model:
+    9 terms 5 preds,  GRSq 0.17523  RSq 0.2065  mean.oof.RSq 0.17523
+> plot(a103.form, which=1, nresponse=1,
++      main="a103.form: pmethod=\"cv\" multiple response\nmax(GRSq) == which.max(mean.oof.rsq)", cex.main=.8)
+> 
+> # test cv with nprune less than what would be normally selected
+> set.seed(1) # don't change
+> a104.form <- earth(pclass ~ ., data=etitanic, degree=2, pmethod="cv", nfold=3, nprune=7)
+> cat("\nprint(a104.form)\n")
+
+print(a104.form)
+> print(a104.form)
+Selected 6 of 17 terms, and 5 of 5 predictors (pmethod="cv") (nprune=7)
+Termination condition: Reached nk 21
+Importance: age, parch, survived, sibsp, sexmale
+Number of terms at each degree of interaction: 1 2 3
+
+       GCV   RSS     GRSq     RSq   mean.oof.RSq sd(mean.oof.RSq)
+1st 0.1500 152.9  0.24282 0.26083                                
+2nd 0.1899 193.6 -0.01218 0.01189                                
+3rd 0.1958 199.5  0.21699 0.23561                                
+All 0.5357 546.0  0.15742 0.17745         0.1455          0.03024
+
+pmethod="backward" would have selected:
+    7 terms 5 preds,  GRSq 0.16411  RSq 0.18793  mean.oof.RSq 0.14452
+> plot(a104.form, which=1, nresponse=1, grid=T, main="a104.form: pmethod=\"cv\" nprune=7", cex.main=.8)
+> 
+> cat("\n\npmethod=cv with x,y interface\n\n")
+
+
+pmethod=cv with x,y interface
+
+> par(mfrow = c(2, 2), mar = c(3, 3, 3, 1), mgp = c(1.5, 0.5, 0), oma=c(0,0,2,0))
+> 
+> etitanic.except.survived <- etitanic[,c(1,3,4,5,6)]
+> survived <- etitanic$survived
+> 
+> # # following is so we can directly compare pmethod=back to pmethod=cv
+> # # commented out because already done above with model a100.formula
+> # set.seed(2)
+> # a100.xy <- earth(etitanic.except.survived, survived, degree=2, trace=0, pmethod="back", nfold=2, ncross=2, keepxy=TRUE)
+> # cat("\nprint(a100.xy)\n")
+> # print(a100.xy)
+> # plot(a100.xy, which=1, legend.cex=.5, main="a100.xy: pmethod=\"back\"", cex.main=.8)
+> 
+> 
+> set.seed(2)
+> a101.xy <- earth(etitanic.except.survived, survived, degree=2, trace=1, pmethod="cv", nfold=2, ncross=2)
+=== pmethod="cv": Preliminary model with pmethod="backward" ===
+x[1046,6] with colnames pclass2nd pclass3rd sexmale age sibsp parch
+y[1046,1] with colname survived, and values 1, 1, 0, 0, 0, 1, 1, 0, 1, 0,...
+Forward pass term 1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20
+Reached nk 21
+After forward pass GRSq 0.406 RSq 0.450
+Prune backward penalty 3 nprune null: selected 8 of 17 terms, and 5 of 6 preds
+After pruning pass GRSq 0.42 RSq 0.439
+
+CV fold  1.1  CVRSq  0.449   n.oof  526 50%   n.infold.nz  213 40%   n.oof.nz  214 41%
+CV fold  1.2  CVRSq  0.333   n.oof  520 50%   n.infold.nz  214 41%   n.oof.nz  213 40%
+CV fold  2.1  CVRSq  0.463   n.oof  521 50%   n.infold.nz  213 41%   n.oof.nz  214 41%
+CV fold  2.2  CVRSq  0.336   n.oof  525 50%   n.infold.nz  214 41%   n.oof.nz  213 41%
+CV all        CVRSq  0.395                    n.infold.nz  427 41%
+
+=== pmethod="cv": Calling update.earth internally for nterms selected by cv 7 ===
+update.earth: using 1046 by 5 x argument from original call to earth
+update.earth: using 1046 by 1 y argument from original call to earth
+x[1046,6] with colnames pclass2nd pclass3rd sexmale age sibsp parch
+y[1046,1] with colname survived, and values 1, 1, 0, 0, 0, 1, 1, 0, 1, 0,...
+Skipped forward pass
+Prune cv penalty 3: selected 7 of 17 terms, and 5 of 6 preds
+After pruning pass GRSq 0.417 RSq 0.434
+
+> cat("\nprint(a101.xy)\n")
+
+print(a101.xy)
+> print(a101.xy)
+Selected 7 of 17 terms, and 5 of 6 predictors (pmethod="cv")
+Termination condition: Reached nk 21
+Importance: sexmale, pclass3rd, pclass2nd, age, sibsp, parch-unused
+Number of terms at each degree of interaction: 1 2 4
+GRSq 0.4171  RSq 0.4338  mean.oof.RSq 0.3994 (sd 0.0791)
+
+pmethod="backward" would have selected:
+    8 terms 5 preds,  GRSq 0.4197  RSq 0.439  mean.oof.RSq 0.3924
+> cat("\nprint(summary(a101.xy)\n")
+
+print(summary(a101.xy)
+> print(summary(a101.xy))
+Call: earth(x=etitanic.except.survived, y=survived, pmethod="cv", trace=1,
+            degree=2, nfold=2, ncross=2)
+
+                       coefficients
+(Intercept)                 0.90262
+pclass3rd                  -0.74136
+sexmale                    -0.38773
+pclass2nd * sexmale        -0.32761
+pclass3rd * h(4-sibsp)      0.10938
+sexmale * h(age-16)        -0.00514
+sexmale * h(16-age)         0.04200
+
+Selected 7 of 17 terms, and 5 of 6 predictors (pmethod="cv")
+Termination condition: Reached nk 21
+Importance: sexmale, pclass3rd, pclass2nd, age, sibsp, parch-unused
+Number of terms at each degree of interaction: 1 2 4
+GRSq 0.4171  RSq 0.4338  mean.oof.RSq 0.3994 (sd 0.0791)
+
+pmethod="backward" would have selected:
+    8 terms 5 preds,  GRSq 0.4197  RSq 0.439  mean.oof.RSq 0.3924
+> plot(a101.xy, which=1, legend.cex=.5, main="a101.xy: pmethod=\"cv\"", cex.main=.8, caption="xy interface")
+> 
+> # a101.form
+> # a102.xy
+> 
+> # multiple response model
+> x.except.pclass <- etitanic[,c(2,3,4,5,6)]
+> pclass <- etitanic$pclass
+> set.seed(2015)
+> a102.xy <- earth(x.except.pclass, pclass, degree=2,
++            pmethod="cv", nfold=3)
+> cat("\nprint(a102.xy)\n")
+
+print(a102.xy)
+> print(a102.xy)
+Selected 13 of 17 terms, and 5 of 5 predictors (pmethod="cv")
+Termination condition: Reached nk 21
+Importance: age, parch, survived, sibsp, sexmale
+Number of terms at each degree of interaction: 1 7 5
+
+       GCV   RSS     GRSq     RSq   mean.oof.RSq sd(mean.oof.RSq)
+1st 0.1470 144.7 0.258427 0.30039                                
+2nd 0.1876 184.8 0.000087 0.05668                                
+3rd 0.1899 187.0 0.240541 0.28352                                
+All 0.5244 516.5 0.175163 0.22184         0.1769         0.005629
+
+pmethod="backward" would have selected:
+    9 terms 5 preds,  GRSq 0.17523  RSq 0.2065  mean.oof.RSq 0.16585
+> plot(a102.xy, which=1, nresponse=1, main="a102.xy: pmethod=\"cv\" multiple response", cex.main=.8)
+> 
+> # multiple response model
+> # following is useful because the model selected by cv is same as that selected by gcv
+> set.seed(1900) # don't change
+> a103.xy <- earth(x.except.pclass, pclass, degree=2,
++            pmethod="cv", nfold=3, nprune=9)
+> cat("\nprint(a103.xy)\n")
+
+print(a103.xy)
+> print(a103.xy)
+Selected 9 of 17 terms, and 5 of 5 predictors (pmethod="cv") (nprune=9)
+Termination condition: Reached nk 21
+Importance: age, parch, survived, sibsp, sexmale
+Number of terms at each degree of interaction: 1 4 4
+
+       GCV   RSS     GRSq     RSq   mean.oof.RSq sd(mean.oof.RSq)
+1st 0.1479 148.5 0.253820 0.28211                                
+2nd 0.1870 187.8 0.003405 0.04119                                
+3rd 0.1896 190.4 0.241873 0.27061                                
+All 0.5244 526.7 0.175230 0.20650         0.1752          0.02776
+
+pmethod="backward" would have selected the same model:
+    9 terms 5 preds,  GRSq 0.17523  RSq 0.2065  mean.oof.RSq 0.17523
+> cat("\nprint(summary(a103.xy)\n")
+
+print(summary(a103.xy)
+> print(summary(a103.xy))
+Call: earth(x=x.except.pclass, y=pclass, pmethod="cv", degree=2, nprune=9,
+            nfold=3)
+
+                             1st       2nd      3rd
+(Intercept)              0.13968  0.138216  0.72211
+survived                 0.35186  0.160235 -0.51209
+sexmale                  0.10937  0.136529 -0.24590
+h(sibsp-1)              -0.04796 -0.067564  0.11552
+h(2-parch)               0.21733  0.009423 -0.22676
+survived * sexmale      -0.09593 -0.303270  0.39920
+survived * h(16-age)    -0.02326  0.018686  0.00457
+h(55-age) * h(2-parch)  -0.00785  0.000036  0.00781
+h(1-sibsp) * h(1-parch) -0.16239 -0.032878  0.19527
+
+Selected 9 of 17 terms, and 5 of 5 predictors (pmethod="cv") (nprune=9)
+Termination condition: Reached nk 21
+Importance: age, parch, survived, sibsp, sexmale
+Number of terms at each degree of interaction: 1 4 4
+
+       GCV   RSS     GRSq     RSq   mean.oof.RSq sd(mean.oof.RSq)
+1st 0.1479 148.5 0.253820 0.28211                                
+2nd 0.1870 187.8 0.003405 0.04119                                
+3rd 0.1896 190.4 0.241873 0.27061                                
+All 0.5244 526.7 0.175230 0.20650         0.1752          0.02776
+
+pmethod="backward" would have selected the same model:
+    9 terms 5 preds,  GRSq 0.17523  RSq 0.2065  mean.oof.RSq 0.17523
+> plot(a103.xy, which=1, nresponse=1,
++      main="a103.xy: pmethod=\"cv\" multiple response\nmax(GRSq) == which.max(mean.oof.rsq)", cex.main=.8)
+> 
+> # test cv with nprune less than what would be normally selected
+> set.seed(1) # don't change
+> a104.xy <- earth(x.except.pclass, pclass, degree=2, pmethod="cv", nfold=3, nprune=7)
+> cat("\nprint(a104.xy)\n")
+
+print(a104.xy)
+> print(a104.xy)
+Selected 6 of 17 terms, and 5 of 5 predictors (pmethod="cv") (nprune=7)
+Termination condition: Reached nk 21
+Importance: age, parch, survived, sibsp, sexmale
+Number of terms at each degree of interaction: 1 2 3
+
+       GCV   RSS     GRSq     RSq   mean.oof.RSq sd(mean.oof.RSq)
+1st 0.1500 152.9  0.24282 0.26083                                
+2nd 0.1899 193.6 -0.01218 0.01189                                
+3rd 0.1958 199.5  0.21699 0.23561                                
+All 0.5357 546.0  0.15742 0.17745         0.1455          0.03024
+
+pmethod="backward" would have selected:
+    7 terms 5 preds,  GRSq 0.16411  RSq 0.18793  mean.oof.RSq 0.14452
+> plot(a104.xy, which=1, nresponse=1, grid=T, main="a104.xy: pmethod=\"cv\" nprune=7", cex.main=.8)
+> 
+> # This model used to cause following error: (fixed July 2020, see nprune1 code in earth.R)
+> #    evimp: Error in object$prune.terms[isubset, -1] : subscript out of bounds
+> set.seed(1900)
+> a3 <- earth(survived~., data=etitanic, degree=2, nprune=4, nfold=2, pmethod="cv", trace=.5)
+Preliminary model with pmethod="backward": GRSq 0.359 RSq 0.368 nterms 4
+CV fold 1  CVRSq  0.380   n.oof  535 49%   n.infold.nz  213 40%   n.oof.nz  214 42%
+CV fold 2  CVRSq  0.447   n.oof  511 51%   n.infold.nz  214 42%   n.oof.nz  213 40%
+CV all     CVRSq  0.414                    n.infold.nz  427 41%
+Final model with pmethod="cv": GRSq 0.359 RSq 0.368 nterms selected by cv 4
+> print(evimp(a3, trim=FALSE))
+             nsubsets   gcv    rss
+sexmale             3 100.0  100.0
+pclass3rd           2  45.1   46.2
+pclass2nd           1  28.6   29.5
+age-unused          0   0.0    0.0
+sibsp-unused        0   0.0    0.0
+parch-unused        0   0.0    0.0
+> plot(a3, which=1, main="a3: pmethod=\"cv\" nprune=4", cex.main=.8, ylim=c(0,.5))
+> 
+> source("test.epilog.R")

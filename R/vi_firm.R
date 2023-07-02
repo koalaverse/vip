@@ -56,7 +56,7 @@
 #'
 #' @references
 #' J. H. Friedman. Greedy function approximation: A gradient boosting machine.
-#' *Annals of Statistics*, **29*: 1189-1232, 2001.
+#' *Annals of Statistics*, **29**: 1189-1232, 2001.
 #'
 #' Goldstein, A., Kapelner, A., Bleich, J., and Pitkin, E., Peeking Inside the
 #' Black Box: Visualizing Statistical Learning With Plots of Individual

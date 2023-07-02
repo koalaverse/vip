@@ -1,0 +1,39 @@
+Package: easyalluvial
+Title: Generate Alluvial Plots with a Single Line of Code
+Version: 0.3.1
+Authors@R: person( "Bjoern", "Koneswarakantha", role = c("aut","cre"), email = "datistics@gmail.com", comment = c(ORCID = "0000-0003-4585-7799") )
+URL: https://github.com/erblast/easyalluvial/
+Description: Alluvial plots are similar to sankey diagrams and visualise categorical data 
+    over multiple dimensions as flows. (Rosvall M, Bergstrom CT (2010) Mapping Change in 
+    Large Networks. PLoS ONE 5(1): e8694. <doi:10.1371/journal.pone.0008694> 
+    Their graphical grammar however is a bit more complex then that of a regular x/y 
+    plots. The 'ggalluvial' package made a great job of translating that grammar into 
+    'ggplot2' syntax and gives you many options to tweak the appearance of an alluvial 
+    plot, however there still remains a multi-layered complexity that makes it difficult
+    to use 'ggalluvial' for explorative data analysis. 'easyalluvial' provides a simple 
+    interface to this package that allows you to produce a decent alluvial plot from any 
+    dataframe in either long or wide format from a single line of code while also handling 
+    continuous data. It is meant to allow a quick visualisation of entire dataframes 
+    with a focus on different colouring options that can make alluvial plots a great 
+    tool for data exploration. 
+License: CC0
+Encoding: UTF-8
+LazyData: true
+Depends: R(>= 3.5)
+Suggests: testthat, covr, ISLR, nycflights13, vdiffr (>= 0.3.1),
+        pkgdown, mlbench, earth, workflows, future, furrr, e1071,
+        caret, parsnip, vip, rpart, glmnet, xgboost
+RoxygenNote: 7.2.0
+Imports: purrr , tidyr (>= 1.0.0) , dplyr , forcats , ggalluvial (>=
+        0.9.1) , ggplot2 (>= 3.2.0) , ggridges , RColorBrewer , recipes
+        (>= 0.1.5) , rlang , stringr , magrittr , tibble , gridExtra ,
+        randomForest , progressr , progress
+Language: en-US
+NeedsCompilation: no
+Packaged: 2022-07-05 06:01:51 UTC; koneswab
+Author: Bjoern Koneswarakantha [aut, cre]
+    (<https://orcid.org/0000-0003-4585-7799>)
+Maintainer: Bjoern Koneswarakantha <datistics@gmail.com>
+Repository: CRAN
+Date/Publication: 2022-07-05 07:30:08 UTC
+Built: R 4.2.3; ; 2023-07-02 19:07:51 UTC; unix

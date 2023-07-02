@@ -113,7 +113,7 @@ vip(mtcars.ppr, method = "firm", train = mtcars, pred.fun = pfun)
 }
 \references{
 J. H. Friedman. Greedy function approximation: A gradient boosting machine.
-\emph{Annals of Statistics}, *\emph{29}: 1189-1232, 2001.
+\emph{Annals of Statistics}, \strong{29}: 1189-1232, 2001.
 
 Goldstein, A., Kapelner, A., Bleich, J., and Pitkin, E., Peeking Inside the
 Black Box: Visualizing Statistical Learning With Plots of Individual

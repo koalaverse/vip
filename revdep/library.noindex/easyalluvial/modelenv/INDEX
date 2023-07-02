@@ -1,0 +1,17 @@
+check_spec_mode_engine_val
+                        Error handling for unknown mode
+get_model_env           Working with the modelenv model environment
+is_unsupervised_fit     Determine object is has class unsupervised_fit
+is_unsupervised_spec    Determine object is has class unsupervised_spec
+new_unsupervised_fit    Give object unsupervised fit class
+new_unsupervised_spec   Give object unsupervised specification class
+set_dependency          Register Dependency for Model
+set_encoding            Register Encoding Options for Model
+set_fit                 Register Fit method for Model
+set_model_arg           Register Argument for Model
+set_model_engine        Register Engine for Model
+set_model_mode          Register Mode for Model
+set_new_model           Register New Model
+set_pred                Register Prediction Method for Model
+stop_incompatible_mode
+                        Error handling for incompatible modes
