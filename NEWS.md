@@ -9,6 +9,8 @@ The format of this NEWS, starting with [vip](https://cran.r-project.org/package=
 
 ### Changed
 
+* Removed functions `add_sparklines()` and `vint()`.
+
 * The `vi_permute` function now uses [yardstick](https://cran.r-project.org/package=yardstick); consequently, metric functions now conform to [yardstick](https://cran.r-project.org/package=yardstick) metric argument names.
 
 * The `var_fun` argument in `vi_firm()` has been deprecated; use the new `var_continuous` and `var_categorical` instead.
