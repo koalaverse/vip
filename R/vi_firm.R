@@ -5,7 +5,8 @@
 #' \href{https://arxiv.org/abs/1805.04755}{Greenwell et al. (2018)} and
 #' \href{https://arxiv.org/abs/1904.03959}{Scholbeck et al. (2019)}.
 #'
-#' @param object A fitted model object (e.g., a `"randomForest"` object).
+#' @param object A fitted model object (e.g., a
+#' [randomForest][randomForest::randomForest] object).
 #'
 #' @param feature_names Character string giving the names of the predictor
 #' variables (i.e., features) of interest. If `NULL` (the default) then the
