@@ -18,7 +18,8 @@ vi_firm(object, ...)
 )
 }
 \arguments{
-\item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
+\item{object}{A fitted model object (e.g., a
+\link[randomForest:randomForest]{randomForest} object).}
 
 \item{...}{Additional arguments to be passed on to the \code{\link[pdp:partial]{pdp::partial()}}
 function (e.g., \code{ice = TRUE}, \code{prob = TRUE}, or a prediction wrapper via the

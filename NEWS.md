@@ -1,15 +1,13 @@
-# Chagelog
+# NEWS/chagelog 
 
 All notable changes to this project will be documented in this file.
 
-The format of this NEWS, starting with [vip](https://cran.r-project.org/package=vip) 0.3.3, is now based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+The format of this NEWS file, starting with [vip](https://cran.r-project.org/package=vip) 0.3.3, is now based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 
 ## vip 0.4.0
 
 ### Changed
-
-* Removed functions `add_sparklines()` and `vint()`.
 
 * The `vi_permute` function now uses [yardstick](https://cran.r-project.org/package=yardstick); consequently, metric functions now conform to [yardstick](https://cran.r-project.org/package=yardstick) metric argument names.
 
@@ -44,6 +42,12 @@ The format of this NEWS, starting with [vip](https://cran.r-project.org/package=
 * Added support for the [workflows](https://cran.r-project.org/package=workflows) and [parsnip](https://cran.r-project.org/package=parsnip) packages from the [tidymodels](https://www.tidymodels.org/) ecosystem [(PR #128)](https://github.com/koalaverse/vip/pull/128); thanks to @topedo.
 
 * New [pkgdown](https://cran.r-project.org/package=pkgdown) site and vignette based on our original R Journal article.
+
+### Removed
+
+* Function `add_sparklines()` seems out of scope and has been removed.
+* Function `vint()` also seems out of scope and is too slow to implement for most practical problems; for now, the function will likely live on in the [moreparty](https://cran.r-project.org/package=moreparty) package.
+
 
 ### Fixed
 

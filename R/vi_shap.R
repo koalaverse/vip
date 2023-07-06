@@ -39,6 +39,50 @@
 #' @rdname vi_shap
 #'
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' library(ggplot2)  # for theme_light() function
+#' library(xgboost)
+#'
+#' # Simulate training data
+#' trn <- gen_friedman(500, sigma = 1, seed = 101)  # ?vip::gen_friedman
+#'
+#' # Feature matrix
+#' X <- data.matrix(subset(trn, select = -y))  # matrix of feature values
+#'
+#' # Fit an XGBoost model; hyperparameters were tuned using 5-fold CV
+#' set.seed(859)  # for reproducibility
+#' bst <- xgboost(X, label = trn$y, nrounds = 338, max_depth = 3, eta = 0.1,
+#'                verbose = 0)
+#'
+#' # Construct VIP using "exact" SHAP values from XGBoost's internal Tree SHAP
+#' # functionality
+#' vip(bst, method = "shap", train = X, exact = TRUE, include_type = TRUE,
+#'     geom = "point", horizontal = FALSE,
+#'     aesthetics = list(color = "forestgreen", shape = 17, size = 5)) +
+#'   theme_light()
+#'
+#' # Use Monte-Carlo approach, which works for any model; requires prediction
+#' # wrapper
+#' pfun_prob <- function(object, newdata) {  # prediction wrapper
+#'   # For Shapley explanations, this should ALWAYS return a numeric vector
+#'   predict(object, newdata = newdata, type = "prob")[, "yes"]
+#' }
+#'
+#' # Compute Shapley-based VI scores
+#' set.seed(853)  # for reproducibility
+#' vi_shap(rfo, train = subset(t1, select = -survived), pred_wrapper = pfun_prob,
+#'         nsim = 30)
+#' ## # A tibble: 5 × 2
+#' ## Variable Importance
+#' ##   <chr>         <dbl>
+#' ## 1 pclass       0.104
+#' ## 2 age          0.0649
+#' ## 3 sex          0.272
+#' ## 4 sibsp        0.0260
+#' ## 5 parch        0.0291
+#' }
 vi_shap <- function(object, ...) {
   UseMethod("vi_shap")
 }
