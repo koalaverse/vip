@@ -28,14 +28,14 @@ URL: https://github.com/koalaverse/vip/,
 BugReports: https://github.com/koalaverse/vip/issues
 Encoding: UTF-8
 VignetteBuilder: knitr
-Depends: R (>= 2.10)
+Depends: R (>= 4.10)
 Imports: 
     foreach,
     ggplot2 (>= 0.9.0),
     stats,
     tibble,
-    yardstick,
-    utils
+    utils,
+    yardstick
 Suggests: 
     bookdown,
     DT,
@@ -51,7 +51,7 @@ Suggests:
     pdp,
     rmarkdown,
     tinytest (>= 1.4.1),
-    varImp,
+    varImp
 Enhances: 
     C50,
     caret,

@@ -33,6 +33,8 @@ The format of this NEWS file, starting with [vip](https://cran.r-project.org/pac
 
 ### Added
 
+* `vi_model()` now supports [lightgbm](https://cran.r-project.org/package=lightgbm) models. Thanks to @nipnipj for the suggestion [(#146)](https://github.com/koalaverse/vip/issues/146).
+
 * The permutation importance method (i.e., function `vi_permute()`) now integrates with and uses [yardstick](https://cran.r-project.org/package=yardstick) performance metrics.
 
 * `list_metrics()` gained an additional `smaller_is_better` column indicating whether or not the corresponding metric should be minimized (`smaller_is_better = TRUE`) or maximized (`smaller_is_better = FALSE`); thanks to @topedo. Additionally, all the column names are now in lower case. 

@@ -253,6 +253,13 @@
 #'   the relative number of times each feature has been used throughout each
 #'   tree in the ensemble.
 #'
+#' * [lightgbm][lightgbm::lightgbm] - Same as for [xgboost][xgboost::xgboost]
+#' models, except [lgb.importance][lightgbm::lgb.importance] (which this method
+#' calls internally) has an additional argument, `percentage`, that defaults to
+#' `TRUE`, resulting in the VI scores shown as a relative percentage; pass
+#' `percentage = FALSE` in the call to `vi_model()` to produce VI scores for
+#' [lightgbm][lightgbm::lightgbm] models on the raw scale.
+#'
 #' @source
 #' Johan Bring (1994) How to Standardize Regression Coefficients, The American
 #' Statistician, 48:3, 209-213, DOI: 10.1080/00031305.1994.10476059.
@@ -612,6 +619,47 @@ vi_model.H2ORegressionModel <- function(object, ...) {
 
   # Add variable importance type attribute
   attr(tib, which = "type") <- "h2o"
+
+  # Add "vi" class
+  class(tib) <- c("vi", class(tib))
+
+  # Return results
+  tib
+
+}
+
+
+# Package: lightgbm ------------------------------------------------------------
+
+#' @rdname vi_model
+#'
+#' @export
+vi_model.lgb.Booster <- function(object, type = c("gain", "cover", "frequency"),
+                                 ...) {
+
+  # # Check for dependency
+  # if (!requireNamespace("xgboost", quietly = TRUE)) {
+  #   stop("Package \"xgboost\" needed for this function to work. Please ",
+  #        "install it.", call. = FALSE)
+  # }
+
+  # Determine which type of variable importance to compute
+  type <- match.arg(type)
+
+  # Construct model-specific variable importance scores
+  imp <- lightgbm::lgb.importance(model = object, ...)
+  names(imp) <- tolower(names(imp))
+  # if ("weight" %in% names(imp)) {
+  #   type <- "weight"  # gblinear
+  # }
+  vis <- tibble::as_tibble(imp)[, c("feature", type)]
+  tib <- tibble::tibble(
+    "Variable" = vis$feature,
+    "Importance" = vis[[2L]]
+  )
+
+  # Add variable importance type attribute
+  attr(tib, which = "type") <- type
 
   # Add "vi" class
   class(tib) <- c("vi", class(tib))

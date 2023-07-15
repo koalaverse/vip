@@ -6,6 +6,7 @@ msg <- paste0(
 
 
 #' @keywords internal
+#' @noRd
 get_training_data <- function(object) {
   UseMethod("get_training_data")
 }

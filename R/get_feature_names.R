@@ -1,12 +1,15 @@
 #' Extract model formula
 #'
-#' Calls \code{\link[stats]{formula}} to extract the formulae from various
-#' modeling objects, but returns \code{NULL} instead of an error for objects
+#' Calls [formula][stats::formula] to extract the formulae from various
+#' modeling objects, but returns `NULL` instead of an error for objects
 #' that do not contain a formula component.
 #'
 #' @param object An appropriate fitted model object.
 #'
-#' @return Either a \code{\link[stats]{formula}} object or \code{NULL}.
+#' @return Either a \code{\link[stats]{formula}} object or `NULL`.
+#'
+#' @keywords internal
+#' @noRd
 get_formula <- function(object) {
   UseMethod("get_formula")
 }

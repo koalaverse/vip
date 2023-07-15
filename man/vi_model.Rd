@@ -13,6 +13,7 @@
 \alias{vi_model.H2OBinomialModel}
 \alias{vi_model.H2OMultinomialModel}
 \alias{vi_model.H2ORegressionModel}
+\alias{vi_model.lgb.Booster}
 \alias{vi_model.mixo_pls}
 \alias{vi_model.mixo_spls}
 \alias{vi_model.WrappedModel}
@@ -68,6 +69,8 @@ vi_model(object, ...)
 \method{vi_model}{H2OMultinomialModel}(object, ...)
 
 \method{vi_model}{H2ORegressionModel}(object, ...)
+
+\method{vi_model}{lgb.Booster}(object, type = c("gain", "cover", "frequency"), ...)
 
 \method{vi_model}{mixo_pls}(object, ncomp = NULL, ...)
 
@@ -367,6 +370,12 @@ feature.
 the relative number of times each feature has been used throughout each
 tree in the ensemble.
 }
+\item \link[lightgbm:lightgbm]{lightgbm} - Same as for \link[xgboost:xgb.train]{xgboost}
+models, except \link[lightgbm:lgb.importance]{lgb.importance} (which this method
+calls internally) has an additional argument, \code{percentage}, that defaults to
+\code{TRUE}, resulting in the VI scores shown as a relative percentage; pass
+\code{percentage = FALSE} in the call to \code{vi_model()} to produce VI scores for
+\link[lightgbm:lightgbm]{lightgbm} models on the raw scale.
 }
 }
 \note{

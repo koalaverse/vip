@@ -311,6 +311,12 @@ vi_permute.default <- function(
   ...
 ) {
 
+  # # Check for yardstick package
+  # if (!requireNamespace("yardstick", quietly = TRUE)) {
+  #   stop("Package \"yardstick\" needed for this function to work. ",
+  #        "Please install it.", call. = FALSE)
+  # }
+
   # FIXEME: Is there a better way to fix this?
   #
   # ❯ checking R code for possible problems ... NOTE
