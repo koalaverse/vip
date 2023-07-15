@@ -270,6 +270,34 @@
 #' @rdname vi_model
 #'
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Basic example using imputed titanic data set
+#' t3 <- titanic_mice[[1L]]
+#'
+#' # Fit a simple model
+#' set.seed(1449)  # for reproducibility
+#' bst <- lightgbm::lightgbm(
+#'   data = data.matrix(subset(t3, select = -survived)),
+#'   label = ifelse(t3$survived == "yes", 1, 0),
+#'   params = list("objective" = "binary", "force_row_wise" = TRUE),
+#'   verbose = 0
+#' )
+#'
+#' # Compute VI scores
+#' vi(bst)  # defaults to `method = "model"`
+#' vi_model(bst)  # same as above
+#'
+#' # Same as above (since default is `method = "model"`), but returns a plot
+#' vip(bst, geom = "point")
+#' vi_model(bst, type = "cover")
+#' vi_model(bst, type = "cover", percentage = FALSE)
+#'
+#' # Compare to
+#' lightgbm::lgb.importance(bst)
+#' }
+#'
 vi_model <- function(object, ...) {
   UseMethod("vi_model")
 }

@@ -84,3 +84,22 @@ vi_auc <- ranger_fit_workflow |>
 
 # Not always the case, but here we can expect these to be in (0, 1)
 expect_true(all(vi_auc$Importance > 0 & vi_auc$Importance < 1))
+
+
+################################################################################
+# FIRM-based (i.e., model-agnostic) variable importance
+################################################################################
+
+pfun <- function(object, newdata) {
+  mean(predict(object, new_data = newdata, type = "prob")[[".pred_One"]])
+}
+vi_pd <- ranger_fit_workflow |>
+  vi_firm(
+    feature_names = c("A", "B"),  # required
+    train = bivariate_train,      # required
+    # pdp::partial()-specific arguments
+    pred.fun = pfun
+  )
+
+# Not always the case, but here we can expect these to be in (0, 1)
+expect_true(all(vi_pd$Importance > 0))

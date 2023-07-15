@@ -9,6 +9,8 @@ The format of this NEWS file, starting with [vip](https://cran.r-project.org/pac
 
 ### Changed
 
+* Raised R version dependency to >= 4.1.0 (the introduction of the native piper operator `|>`).
+
 * The `vi_permute` function now uses [yardstick](https://cran.r-project.org/package=yardstick); consequently, metric functions now conform to [yardstick](https://cran.r-project.org/package=yardstick) metric argument names.
 
 * The `var_fun` argument in `vi_firm()` has been deprecated; use the new `var_continuous` and `var_categorical` instead.
