@@ -85,12 +85,13 @@ model; for details on the algorithm, see Greenwell and Boehmke (2020).</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>object</dt>
-<dd><p>A fitted model object (e.g., a <code>"randomForest"</code> object).</p></dd>
+<dd><p>A fitted model object (e.g., a
+<a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a> object).</p></dd>
 
 
 <dt>...</dt>
 <dd><p>Additional optional arguments to be passed on to
-<code><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a></code>.</p></dd>
+<a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a> (e.g., <code>.packages</code> or <code>.export</code>).</p></dd>
 
 
 <dt>feature_names</dt>
@@ -119,8 +120,8 @@ performance metric to use in computing model performance (e.g., RMSE for
 regression or accuracy for binary classification). If <code>metric</code> is a
 function, then it requires two arguments, <code>actual</code> and <code>predicted</code>,
 and should return a single, numeric value. Ideally, this should be the same
-metric that was used to train <code>object</code>. See <code><a href="list_metrics.html">list_metrics</a></code>
-for a list of built-in metrics.</p></dd>
+metric that was used to train <code>object</code>. See <code><a href="list_metrics.html">list_metrics()</a></code> for a list of
+built-in metrics.</p></dd>
 
 
 <dt>smaller_is_better</dt>
@@ -177,22 +178,14 @@ the corresponding <a href="https://yardstick.tidymodels.org/reference/yardstick-
 <dt>pred_wrapper</dt>
 <dd><p>Prediction function that requires two arguments,
 <code>object</code> and <code>newdata</code>. The output of this function should be
-determined by the <code>metric</code> being used:</p>
-<dl><dt>Regression</dt>
-<dd><p>A numeric vector of predicted outcomes.</p></dd>
-
-<dt>Binary classification</dt>
-<dd><p>A vector of predicted class labels (e.g., if
-using misclassification error) or a vector of predicted class probabilities
-for the reference class (e.g., if using log loss or AUC).</p></dd>
-
-<dt>Multiclass classification</dt>
-<dd><p>A vector of predicted class labels (e.g.,
-if using misclassification error) or a A matrix/data frame of predicted
-class probabilities for each class (e.g., if using log loss or AUC).</p></dd>
-
-
-</dl></dd>
+determined by the <code>metric</code> being used:</p><ul><li><p>Regression - A numeric vector of predicted outcomes.</p></li>
+<li><p>Binary classification - A vector of predicted class labels (e.g., if using
+misclassification error) or a vector of predicted class probabilities for the
+reference class (e.g., if using log loss or AUC).</p></li>
+<li><p>Multiclass classification - A vector of predicted class labels (e.g., if
+using misclassification error) or a A matrix/data frame of predicted class
+probabilities for each class (e.g., if using log loss or AUC).</p></li>
+</ul></dd>
 
 
 <dt>verbose</dt>
@@ -205,7 +198,9 @@ the construction of variable importance scores. Default is <code>FALSE</code>.</
 in parallel (using a backend provided by the <a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a>
 package). Default is <code>FALSE</code>. If <code>TRUE</code>, a
 <a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a>-compatible backend must be provided by must be
-provided.</p></dd>
+provided. Note that <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> will not not work with
+<a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach</a>'s parellelized for loops; for a workaround, see
+<a href="https://github.com/koalaverse/vip/issues/145" class="external-link">this solution</a>.</p></dd>
 
 
 <dt>parallelize_by</dt>
@@ -237,66 +232,14 @@ pages 343-366.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="co"># Load required packages</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>  <span class="co"># for ggtitle() function</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/imbs-hl/ranger" class="external-link">ranger</a></span><span class="op">)</span>   <span class="co"># for fitting random forests</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#</span></span></span>
-<span class="r-in"><span><span class="co"># Regression example</span></span></span>
-<span class="r-in"><span><span class="co">#</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Simulate training data</span></span></span>
-<span class="r-in"><span><span class="va">trn</span> <span class="op">&lt;-</span> <span class="fu"><a href="gen_friedman.html">gen_friedman</a></span><span class="op">(</span><span class="fl">500</span>, seed <span class="op">=</span> <span class="fl">101</span><span class="op">)</span>  <span class="co"># ?vip::gen_friedman</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Inspect data</span></span></span>
-<span class="r-in"><span><span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="va">trn</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Fit PPR and NN models (hyperparameters were chosen using the caret package</span></span></span>
-<span class="r-in"><span><span class="co"># with 5 repeats of 5-fold cross-validation)</span></span></span>
-<span class="r-in"><span><span class="va">pp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/ppr.html" class="external-link">ppr</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">trn</span>, nterms <span class="op">=</span> <span class="fl">11</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">0803</span><span class="op">)</span> <span class="co"># for reproducibility</span></span></span>
-<span class="r-in"><span><span class="va">nn</span> <span class="op">&lt;-</span> <span class="fu">nnet</span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">trn</span>, size <span class="op">=</span> <span class="fl">7</span>, decay <span class="op">=</span> <span class="fl">0.1</span>, linout <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>           maxit <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Plot VI scores</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2021</span><span class="op">)</span>  <span class="co"># for reproducibility</span></span></span>
-<span class="r-in"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="vip.html">vip</a></span><span class="op">(</span><span class="va">pp</span>, method <span class="op">=</span> <span class="st">"permute"</span>, target <span class="op">=</span> <span class="st">"y"</span>, metric <span class="op">=</span> <span class="st">"rsquared"</span>,</span></span>
-<span class="r-in"><span>          pred_wrapper <span class="op">=</span> <span class="va">predict</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"PPR"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="vip.html">vip</a></span><span class="op">(</span><span class="va">nn</span>, method <span class="op">=</span> <span class="st">"permute"</span>, target <span class="op">=</span> <span class="st">"y"</span>, metric <span class="op">=</span> <span class="st">"rsquared"</span>,</span></span>
-<span class="r-in"><span>          pred_wrapper <span class="op">=</span> <span class="va">predict</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"NN"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">grid.arrange</span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Mean absolute error</span></span></span>
-<span class="r-in"><span><span class="va">mae</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">actual</span>, <span class="va">predicted</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">actual</span> <span class="op">-</span> <span class="va">predicted</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Permutation-based VIP with user-defined MAE metric</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1101</span><span class="op">)</span>  <span class="co"># for reproducibility</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="vip.html">vip</a></span><span class="op">(</span><span class="va">pp</span>, method <span class="op">=</span> <span class="st">"permute"</span>, target <span class="op">=</span> <span class="st">"y"</span>, metric <span class="op">=</span> <span class="va">mae</span>,</span></span>
-<span class="r-in"><span>    smaller_is_better <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>    pred_wrapper <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"PPR"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#</span></span></span>
-<span class="r-in"><span><span class="co"># Classification example</span></span></span>
-<span class="r-in"><span><span class="co">#</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Complete (i.e., imputed version of titanic data); see `?vip::titanic_mice`</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">t1</span> <span class="op">&lt;-</span> <span class="va">titanic_mice</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Fit a (default) probability forest</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1150</span><span class="op">)</span>  <span class="co"># for reproducibility</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-</code></pre></div>
+    
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Brandon M. Greenwell, Brad Boehmke, Bernie Gray.</p>
+  <p></p><p>Developed by Brandon M. Greenwell, Brad Boehmke.</p>
 </div>
 
 <div class="pkgdown-footer-right">

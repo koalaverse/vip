@@ -74,26 +74,28 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>object</dt>
 <dd><p>A fitted model object (e.g., a
-<a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a> object) or
-an object that inherits from class <code>"vi"</code>.</p></dd>
+<a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a> object) or an object that inherits
+from class <code>"vi"</code>.</p></dd>
 
 
 <dt>...</dt>
 <dd><p>Additional optional arguments to be passed on to
-<code><a href="vi_model.html">vi_model</a></code>, <code><a href="vi_firm.html">vi_firm</a></code>, <code><a href="vi_permute.html">vi_permute</a></code>,
-or <code><a href="vi_shap.html">vi_shap</a></code>; see their respective help pages for details.</p></dd>
+<a href="vi_model.html">vi_model</a>, <a href="vi_firm.html">vi_firm</a>,
+<a href="vi_permute.html">vi_permute</a>, or <a href="vi_shap.html">vi_shap</a>; see their
+respective help pages for details.</p></dd>
 
 
 <dt>method</dt>
 <dd><p>Character string specifying the type of variable importance
-(VI) to compute. Current options are <code>"model"</code> (the default), for
-model-specific VI scores (see <code><a href="vi_model.html">vi_model</a></code> for details),
-<code>"firm"</code>, for variance-based VI scores (see <code><a href="vi_firm.html">vi_firm</a></code> for
-details), <code>"permute"</code>, for permutation-based VI scores (see '
-<code><a href="vi_permute.html">vi_permute</a></code> for details), or <code>"shap"</code>, for Shapley-based
-VI scores. For more details on the variance-based methods, see
-<a href="https://arxiv.org/abs/1805.04755" class="external-link">Greenwell et al. (2018)</a> and
-<a href="https://arxiv.org/abs/1904.03959" class="external-link">Scholbeck et al. (2019)</a>.</p></dd>
+(VI) to compute. Current options are:</p><ul><li><p><code>"model"</code> (the default), for model-specific VI scores (see
+<a href="vi_model.html">vi_model</a> for details).</p></li>
+<li><p><code>"firm"</code>, for variance-based VI scores (see <a href="vi_firm.html">vi_firm</a> for
+details).</p></li>
+<li><p><code>"permute"</code>, for permutation-based VI scores (see
+<a href="vi_permute.html">vi_permute</a> for details).</p></li>
+<li><p><code>"shap"</code>, for Shapley-based VI scores (see <a href="vi_shap.html">vi_shap</a> for
+details).</p></li>
+</ul></dd>
 
 
 <dt>feature_names</dt>
@@ -134,19 +136,20 @@ models using different methods.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A tidy data frame (i.e., a <code>"tibble"</code> object) with at least two
-columns: <code>Variable</code> and <code>Importance</code>. For <code>"lm"/"glm"</code>-like
-objects, an additional column, called <code>Sign</code>, is also included which
-includes the sign (i.e., POS/NEG) of the original coefficient. If
-<code>method = "permute"</code> and  <code>nsim &gt; 1</code>, then an additional column,
-<code>StDev</code>, giving the standard deviation of the permutation-based
-variable importance scores is included.</p>
-    </div>
-    <div class="section level2">
-    <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>Greenwell, B. M., Boehmke, B. C., and McCarthy, A. J. A Simple
-and Effective Model-Based Variable Importance Measure. arXiv preprint
-arXiv:1805.04755 (2018).</p>
+<p>A tidy data frame (i.e., a <a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a> object) with two
+columns:</p><ul><li><p><code>Variable</code> - the corresponding feature name;</p></li>
+<li><p><code>Importance</code> - the associated importance, computed as the average change in
+performance after a random permutation (or permutations, if <code>nsim &gt; 1</code>) of
+the feature in question.</p></li>
+</ul><p>For <a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a>/<a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a>-like objects, whenever
+<code>method = "model"</code>, the sign (i.e., POS/NEG) of the original coefficient is
+also included in a column called <code>Sign</code>.</p>
+
+
+<p>If <code>method = "permute"</code> and <code>nsim &gt; 1</code>, then an additional column (<code>StDev</code>)
+containing the standard deviation of the individual permutation scores for
+each feature is also returned; this helps assess the stability/variation of
+the individual permutation importance for each feature.</p>
     </div>
 
     <div class="section level2">
@@ -236,7 +239,7 @@ arXiv:1805.04755 (2018).</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Brandon M. Greenwell, Brad Boehmke, Bernie Gray.</p>
+  <p></p><p>Developed by Brandon M. Greenwell, Brad Boehmke.</p>
 </div>
 
 <div class="pkgdown-footer-right">

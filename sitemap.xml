@@ -19,9 +19,6 @@
     <loc>https://koalaverse.github.io/vip/news/index.html</loc>
   </url>
   <url>
-    <loc>https://koalaverse.github.io/vip/reference/add_sparklines.html</loc>
-  </url>
-  <url>
     <loc>https://koalaverse.github.io/vip/reference/bin.html</loc>
   </url>
   <url>
@@ -31,16 +28,10 @@
     <loc>https://koalaverse.github.io/vip/reference/get_feature_names.html</loc>
   </url>
   <url>
-    <loc>https://koalaverse.github.io/vip/reference/get_formula.html</loc>
-  </url>
-  <url>
     <loc>https://koalaverse.github.io/vip/reference/index.html</loc>
   </url>
   <url>
     <loc>https://koalaverse.github.io/vip/reference/list_metrics.html</loc>
-  </url>
-  <url>
-    <loc>https://koalaverse.github.io/vip/reference/reexports.html</loc>
   </url>
   <url>
     <loc>https://koalaverse.github.io/vip/reference/titanic.html</loc>

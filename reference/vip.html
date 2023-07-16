@@ -86,12 +86,12 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>object</dt>
-<dd><p>A fitted model object (e.g., a <code>"randomForest"</code> object) or
-an object that inherits from class <code>"vi"</code>.</p></dd>
+<dd><p>A fitted model (e.g., of class
+<a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a> object) or a <a href="vi.html">vi</a> object.</p></dd>
 
 
 <dt>...</dt>
-<dd><p>Additional optional arguments to be passed on to <code><a href="vi.html">vi</a></code>.</p></dd>
+<dd><p>Additional optional arguments to be passed on to <a href="vi.html">vi</a>.</p></dd>
 
 
 <dt>num_features</dt>
@@ -101,32 +101,31 @@ scores to plot. Default is <code>10</code>.</p></dd>
 
 <dt>geom</dt>
 <dd><p>Character string specifying which type of plot to construct.
-The currently available options are described below.</p>
-<ul><li><p><code>geom = "col"</code> uses <code><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></code> to construct
-a bar chart of the variable importance scores.</p></li>
-<li><p><code>geom = "point"</code> uses <code><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></code> to
-construct a Cleveland dot plot of the variable importance scores.</p></li>
-<li><p><code>geom = "boxplot"</code> uses <code><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html" class="external-link">geom_boxplot</a></code> to
+The currently available options are described below.</p><ul><li><p><code>geom = "col"</code> uses <a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a> to construct a bar chart
+of the variable importance scores.</p></li>
+<li><p><code>geom = "point"</code> uses <a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a> to construct a
+Cleveland dot plot of the variable importance scores.</p></li>
+<li><p><code>geom = "boxplot"</code> uses <a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html" class="external-link">geom_boxplot</a> to
 construct a boxplot plot of the variable importance scores. This option can
 only for the permutation-based importance method with <code>nsim &gt; 1</code> and
-<code>keep = TRUE</code>; see <code><a href="vi_permute.html">vi_permute</a></code> for details.</p></li>
-<li><p><code>geom = "violin"</code> uses <code><a href="https://ggplot2.tidyverse.org/reference/geom_violin.html" class="external-link">geom_violin</a></code> to
+<code>keep = TRUE</code>; see <a href="vi_permute.html">vi_permute</a> for details.</p></li>
+<li><p><code>geom = "violin"</code> uses <a href="https://ggplot2.tidyverse.org/reference/geom_violin.html" class="external-link">geom_violin</a> to
 construct a violin plot of the variable importance scores. This option can
 only for the permutation-based importance method with <code>nsim &gt; 1</code> and
-<code>keep = TRUE</code>; see <code><a href="vi_permute.html">vi_permute</a></code> for details.</p></li>
+<code>keep = TRUE</code>; see <a href="vi_permute.html">vi_permute</a> for details.</p></li>
 </ul></dd>
 
 
 <dt>mapping</dt>
-<dd><p>Set of aesthetic mappings created by <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></code>
-or <code><a href="https://ggplot2.tidyverse.org/reference/aes_.html" class="external-link">aes_</a></code>. See example usage below.</p></dd>
+<dd><p>Set of aesthetic mappings created by <a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a>
+or <a href="https://ggplot2.tidyverse.org/reference/aes_.html" class="external-link">aes_</a>. See example usage below.</p></dd>
 
 
 <dt>aesthetics</dt>
 <dd><p>List specifying additional arguments passed on to
-<code><a href="https://ggplot2.tidyverse.org/reference/layer.html" class="external-link">layer</a></code>. These are often aesthetics, used to set an
-aesthetic to a fixed value, like <code>colour = "red"</code> or <code>size = 3</code>.
-See example usage below.</p></dd>
+<a href="https://ggplot2.tidyverse.org/reference/layer.html" class="external-link">layer</a>. These are often aesthetics, used to set an aesthetic
+to a fixed value, like<code>colour = "red"</code> or <code>size = 3</code>. See example usage
+below.</p></dd>
 
 
 <dt>horizontal</dt>
@@ -136,14 +135,13 @@ scores on the x-axis (<code>TRUE</code>). Default is <code>TRUE</code>.</p></dd>
 
 <dt>all_permutations</dt>
 <dd><p>Logical indicating whether or not to plot all
-permutation scores along with the average. Default is <code>FALSE</code>. (Only
-used for permutation scores when <code>nsim &gt; 1</code>.)</p></dd>
+permutation scores along with the average. Default is <code>FALSE</code>. (Only used for
+permutation scores when <code>nsim &gt; 1</code>.)</p></dd>
 
 
 <dt>jitter</dt>
 <dd><p>Logical indicating whether or not to jitter the raw permutation
-scores. Default is <code>FALSE</code>. (Only used when
-<code>all_permutations = TRUE</code>.)</p></dd>
+scores. Default is <code>FALSE</code>. (Only used when <code>all_permutations = TRUE</code>.)</p></dd>
 
 
 <dt>include_type</dt>
@@ -180,28 +178,6 @@ variable importance computed in the axis label. Default is <code>FALSE</code>.</
 <span class="r-in"><span><span class="fu">vip</span><span class="op">(</span><span class="va">vis</span>, geom <span class="op">=</span> <span class="st">"point"</span>, horiz <span class="op">=</span> <span class="cn">FALSE</span>, aesthetics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="vip-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The `%T&gt;\%` operator is imported for convenience; see ?magrittr::`%T&gt;%`</span></span></span>
-<span class="r-in"><span><span class="co"># for details</span></span></span>
-<span class="r-in"><span><span class="va">vis</span><span class="op">&lt;-</span> <span class="va">model</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="vi.html">vi</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"permute"</span>, train <span class="op">=</span> <span class="va">mtcars</span>, target <span class="op">=</span> <span class="st">"mpg"</span>,</span></span>
-<span class="r-in"><span>     nsim <span class="op">=</span> <span class="fl">10</span>, metric <span class="op">=</span> <span class="st">"rmse"</span>, pred_wrapper <span class="op">=</span> <span class="va">pfun</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/tee.html" class="external-link">%T&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">vip</span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span><span class="op">}</span></span></span>
-<span class="r-plt img"><img src="vip-4.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="va">vis</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Variable Importance   StDev</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> wt          3.06    0.469  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> hp          1.94    0.506  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> gear        1.05    0.256  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> qsec        0.646   0.252  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> cyl         0.347   0.167  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> am          0.108   0.062<span style="text-decoration: underline;">5</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> vs          0.088<span style="text-decoration: underline;">3</span>  0.073<span style="text-decoration: underline;">2</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> drat        0.041<span style="text-decoration: underline;">9</span>  0.049<span style="text-decoration: underline;">6</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> disp        0.001<span style="text-decoration: underline;">36</span> 0.003<span style="text-decoration: underline;">33</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> carb       -<span style="color: #BB0000;">0.003</span><span style="color: #BB0000; text-decoration: underline;">50</span> 0.004<span style="text-decoration: underline;">62</span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot unaggregated permutation scores (boxplot colored by feature)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>  <span class="co"># for `aes_string()` function</span></span></span>
 <span class="r-in"><span><span class="fu">vip</span><span class="op">(</span><span class="va">vis</span>, geom <span class="op">=</span> <span class="st">"boxplot"</span>, all_permutations <span class="op">=</span> <span class="cn">TRUE</span>, jitter <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
@@ -210,7 +186,7 @@ variable importance computed in the axis label. Default is <code>FALSE</code>.</
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`aes_string()` was deprecated in ggplot2 3.0.0.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please use tidy evaluation idioms with `aes()`.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> See also `vignette("ggplot2-in-packages")` for more information.</span>
-<span class="r-plt img"><img src="vip-5.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="vip-4.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#</span></span></span>
 <span class="r-in"><span><span class="co"># A binary classification example</span></span></span>
@@ -255,7 +231,7 @@ variable importance computed in the axis label. Default is <code>FALSE</code>.</
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Brandon M. Greenwell, Brad Boehmke, Bernie Gray.</p>
+  <p></p><p>Developed by Brandon M. Greenwell, Brad Boehmke.</p>
 </div>
 
 <div class="pkgdown-footer-right">

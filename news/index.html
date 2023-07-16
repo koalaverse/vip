@@ -48,23 +48,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.3.3" id="vip-033">vip 0.3.3<a class="anchor" aria-label="anchor" href="#vip-033"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.4.0" id="vip-040">vip 0.4.0<a class="anchor" aria-label="anchor" href="#vip-040"></a></h2>
 <div class="section level3">
-<h3 id="breaking-changes-0-3-3">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-3-3"></a></h3>
-<ul><li><p>The <code>var_fun</code> argument in <code><a href="../reference/vi_firm.html">vi_firm()</a></code> has been deprecated; use the new <code>var_continuous</code> and <code>var_categorical</code> instead.</p></li>
+<h3 id="changed-0-4-0">Changed<a class="anchor" aria-label="anchor" href="#changed-0-4-0"></a></h3>
+<ul><li><p>This NEWS file now follows the <a href="https://keepachangelog.com/en/1.0.0/" class="external-link">Keep a Changelog</a> format.</p></li>
+<li><p>Raised R version dependency to &gt;= 4.1.0 (the introduction of the native piper operator <code>|&gt;</code>).</p></li>
+<li><p>The <code>vi_permute</code> function now uses <a href="https://cran.r-project.org/package=yardstick" class="external-link">yardstick</a>; consequently, metric functions now conform to <a href="https://cran.r-project.org/package=yardstick" class="external-link">yardstick</a> metric argument names.</p></li>
+<li><p>The <code>var_fun</code> argument in <code><a href="../reference/vi_firm.html">vi_firm()</a></code> has been deprecated; use the new <code>var_continuous</code> and <code>var_categorical</code> instead.</p></li>
 <li><p>The explicit <code>ice</code> argument in <code><a href="../reference/vi_firm.html">vi_firm()</a></code> has been removed; it was not really needed since it can be passed via the <code>...</code> argument.</p></li>
-</ul></div>
-<div class="section level3">
-<h3 id="enhancements-0-3-3">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-3-3"></a></h3>
-<ul><li><p>The permutation importance method (i.e., function <code><a href="../reference/vi_permute.html">vi_permute()</a></code>) now integrates with and uses <a href="https://cran.r-project.org/package=yardstick" class="external-link">yardstick</a> performance metrics.</p></li>
-<li><p><code><a href="../reference/list_metrics.html">list_metrics()</a></code> gained an additional <code>smaller_is_better</code> column indicating whether or not the corresponding metric should be minimized (<code>smaller_is_better = TRUE</code>) or maximized (<code>smaller_is_better = FALSE</code>); thanks to <a href="https://github.com/topedo" class="external-link">@topedo</a>. Additionally, all the column names are now in lower case.</p></li>
-<li><p>Added support for partial least squares via the <a href="https://bioconductor.org/packages/mixOmics/" class="external-link">mixOmics</a> package <a href="https://github.com/koalaverse/vip/pull/129" class="external-link">(PR </a><a href="https://github.com/koalaverse/vip/issues/129" class="external-link">#129</a>); thanks to <a href="https://github.com/topedo" class="external-link">@topedo</a>.</p></li>
-<li><p>Added support for the <a href="https://cran.r-project.org/package=workflows" class="external-link">workflows</a> and <a href="https://cran.r-project.org/package=parsnip" class="external-link">parsnip</a> packages from the <a href="https://www.tidymodels.org/" class="external-link">tidymodels</a> ecosystem <a href="https://github.com/koalaverse/vip/pull/128" class="external-link">(PR </a><a href="https://github.com/koalaverse/vip/issues/128" class="external-link">#128</a>); thanks to <a href="https://github.com/topedo" class="external-link">@topedo</a>.</p></li>
-<li><p>New <a href="https://cran.r-project.org/package=pkgdown" class="external-link">pkgdown</a> site and vignette based on our original R Journal article.</p></li>
-</ul></div>
-<div class="section level3">
-<h3 id="miscellaneous-0-3-3">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-0-3-3"></a></h3>
-<ul><li><p>Tweaked examples.</p></li>
+<li><p>Removed <a href="https://cran.r-project.org/package=magrittr" class="external-link">magrittr</a> from imports; it’s easy enough to just laod the package if you need it or use R’s newer internal pipe operator.</p></li>
+<li><p>Tweaked examples.</p></li>
 <li><p>Tests based on <a href="https://cran.r-project.org/package=fastshap" class="external-link">fastshap</a> now check to make sure it’s available.</p></li>
 <li><p>Suppress loading of <a href="https://bioconductor.org/packages/mixOmics/" class="external-link">mixOmics</a> in tests.</p></li>
 <li><p>Switched lifecycle badge from “maturing”, which has been superseded, to “experimental.”</p></li>
@@ -73,7 +66,21 @@
 <li><p>Switched to using markdown syntax in <code>roxygen2</code> comments.</p></li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-0-3-3">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-3"></a></h3>
+<h3 id="added-0-4-0">Added<a class="anchor" aria-label="anchor" href="#added-0-4-0"></a></h3>
+<ul><li><p><code><a href="../reference/vi_model.html">vi_model()</a></code> now supports <a href="https://cran.r-project.org/package=lightgbm" class="external-link">lightgbm</a> models. Thanks to <a href="https://github.com/nipnipj" class="external-link">@nipnipj</a> for the suggestion <a href="https://github.com/koalaverse/vip/issues/146" class="external-link">(</a><a href="https://github.com/koalaverse/vip/issues/146" class="external-link">#146</a>).</p></li>
+<li><p>The permutation importance method (i.e., function <code><a href="../reference/vi_permute.html">vi_permute()</a></code>) now integrates with and uses <a href="https://cran.r-project.org/package=yardstick" class="external-link">yardstick</a> performance metrics.</p></li>
+<li><p><code><a href="../reference/list_metrics.html">list_metrics()</a></code> gained an additional <code>smaller_is_better</code> column indicating whether or not the corresponding metric should be minimized (<code>smaller_is_better = TRUE</code>) or maximized (<code>smaller_is_better = FALSE</code>); thanks to <a href="https://github.com/topedo" class="external-link">@topedo</a>. Additionally, all the column names are now in lower case.</p></li>
+<li><p>Added support for partial least squares via the <a href="https://bioconductor.org/packages/mixOmics/" class="external-link">mixOmics</a> package <a href="https://github.com/koalaverse/vip/pull/129" class="external-link">(PR </a><a href="https://github.com/koalaverse/vip/issues/129" class="external-link">#129</a>); thanks to <a href="https://github.com/topedo" class="external-link">@topedo</a>.</p></li>
+<li><p>Added support for the <a href="https://cran.r-project.org/package=workflows" class="external-link">workflows</a> and <a href="https://cran.r-project.org/package=parsnip" class="external-link">parsnip</a> packages from the <a href="https://www.tidymodels.org/" class="external-link">tidymodels</a> ecosystem <a href="https://github.com/koalaverse/vip/pull/128" class="external-link">(PR </a><a href="https://github.com/koalaverse/vip/issues/128" class="external-link">#128</a>); thanks to <a href="https://github.com/topedo" class="external-link">@topedo</a>.</p></li>
+<li><p>New <a href="https://cran.r-project.org/package=pkgdown" class="external-link">pkgdown</a> site and vignette based on our original R Journal article.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="removed-0-4-0">Removed<a class="anchor" aria-label="anchor" href="#removed-0-4-0"></a></h3>
+<ul><li>Function <code>add_sparklines()</code> seems out of scope and has been removed.</li>
+<li>Function <code>vint()</code> also seems out of scope and is too slow to implement for most practical problems; for now, the function will likely live on in the <a href="https://cran.r-project.org/package=moreparty" class="external-link">moreparty</a> package.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="fixed-0-4-0">Fixed<a class="anchor" aria-label="anchor" href="#fixed-0-4-0"></a></h3>
 <ul><li>Fix model-based VI support for <a href="https://cran.r-project.org/package=mlr" class="external-link">mlr</a>, <a href="https://cran.r-project.org/package=mlr3" class="external-link">mlr3</a>, <a href="https://cran.r-project.org/package=parsnip" class="external-link">parsnip</a>, and <a href="https://cran.r-project.org/package=workflows" class="external-link">workflows</a> model fits.</li>
 </ul></div>
 </div>
@@ -172,7 +179,7 @@
 <h3 id="new-functions-0-1-3">New functions<a class="anchor" aria-label="anchor" href="#new-functions-0-1-3"></a></h3>
 <ul><li><p>Removed warnings from experimental functions.</p></li>
 <li><p><code><a href="../reference/vi_permute.html">vi_permute()</a></code> gained a type argument (i.e., <code>type = "difference"</code> or <code>type = "ratio"</code>); this argument can be passed via <code><a href="../reference/vi.html">vi()</a></code> or <code><a href="../reference/vip.html">vip()</a></code> as well.</p></li>
-<li><p><code><a href="../reference/add_sparklines.html">add_sparklines()</a></code> creates an HTML widget to display variable importance scores with a sparkline representation of each features effect (i.e., its partial dependence function) <a href="https://github.com/koalaverse/vip/issues/64" class="external-link">(</a><a href="https://github.com/koalaverse/vip/issues/64" class="external-link">#64</a>).</p></li>
+<li><p><code>add_sparklines()</code> creates an HTML widget to display variable importance scores with a sparkline representation of each features effect (i.e., its partial dependence function) <a href="https://github.com/koalaverse/vip/issues/64" class="external-link">(</a><a href="https://github.com/koalaverse/vip/issues/64" class="external-link">#64</a>).</p></li>
 <li><p>Added support for the Olden and Garson algorithms with neural networks fit using the <strong>neuralnet</strong>, <strong>nnet</strong>, and <strong>RSNNS</strong> packages <a href="https://github.com/koalaverse/vip/issues/28" class="external-link">(</a><a href="https://github.com/koalaverse/vip/issues/28" class="external-link">#28</a>).</p></li>
 <li><p>Added support for GLMNET models fit using the <strong>glmnet</strong> package (with and without cross-validation).</p></li>
 </ul></div>
@@ -234,7 +241,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Brandon M. Greenwell, Brad Boehmke, Bernie Gray.</p>
+  <p></p><p>Developed by Brandon M. Greenwell, Brad Boehmke.</p>
 </div>
 
 <div class="pkgdown-footer-right">

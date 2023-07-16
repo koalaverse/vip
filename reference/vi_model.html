@@ -92,6 +92,9 @@ fitted model.</p>
 <span><span class="co"># S3 method for H2ORegressionModel</span></span>
 <span><span class="fu">vi_model</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S3 method for lgb.Booster</span></span>
+<span><span class="fu">vi_model</span><span class="op">(</span><span class="va">object</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gain"</span>, <span class="st">"cover"</span>, <span class="st">"frequency"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S3 method for mixo_pls</span></span>
 <span><span class="fu">vi_model</span><span class="op">(</span><span class="va">object</span>, ncomp <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
@@ -184,26 +187,35 @@ fitted model.</p>
     </div>
 
     <div class="section level2">
+    <h2 id="source">Source<a class="anchor" aria-label="anchor" href="#source"></a></h2>
+    <p>Johan Bring (1994) How to Standardize Regression Coefficients, The American
+Statistician, 48:3, 209-213, DOI: 10.1080/00031305.1994.10476059.</p>
+    </div>
+    <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>object</dt>
-<dd><p>A fitted model object (e.g., a <code>"randomForest"</code> object).</p></dd>
+<dd><p>A fitted model object (e.g., a
+<a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a> object). See the details section
+below to see how variable importance is computed for supported model types.</p></dd>
 
 
 <dt>...</dt>
-<dd><p>Additional optional arguments to be passed on to other methods.</p></dd>
+<dd><p>Additional optional arguments to be passed on to other methods.
+See the details section below for arguments that can be passed to specific
+object types.</p></dd>
 
 
 <dt>type</dt>
 <dd><p>Character string specifying the type of variable importance to
-return (only used for some models). See details for which methods this
-argument applies to.</p></dd>
+return (only used for some models). See the details section below for which
+methods this argument applies to.</p></dd>
 
 
 <dt>lambda</dt>
 <dd><p>Numeric value for the penalty parameter of a
-<code><a href="https://glmnet.stanford.edu/reference/glmnet.html" class="external-link">glmnet</a></code> model (this is equivalent to the <code>s</code>
-argument in <code><a href="https://glmnet.stanford.edu/reference/predict.glmnet.html" class="external-link">coef.glmnet</a></code>). See the section on
-<code><a href="https://glmnet.stanford.edu/reference/glmnet.html" class="external-link">glmnet</a></code> in the details below.</p></dd>
+<a href="https://glmnet.stanford.edu/reference/glmnet.html" class="external-link">glmnet</a> model (this is equivalent to the <code>s</code>
+argument in <a href="https://glmnet.stanford.edu/reference/predict.glmnet.html" class="external-link">coef.glmnet</a>). See the section on
+<a href="https://glmnet.stanford.edu/reference/glmnet.html" class="external-link">glmnet</a> in the details below.</p></dd>
 
 
 <dt>ncomp</dt>
@@ -216,17 +228,18 @@ than were used in the model, all of the model's components are used.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A tidy data frame (i.e., a <code>"tibble"</code> object) with two columns:
-<code>Variable</code> and <code>Importance</code>. For <code>"lm"/"glm"</code>-like object, an
-additional column, called <code>Sign</code>, is also included which includes the
-sign (i.e., POS/NEG) of the original coefficient.</p>
+<p>A tidy data frame (i.e., a <a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a> object) with two
+columns:</p><ul><li><p><code>Variable</code> - the corresponding feature name;</p></li>
+<li><p><code>Importance</code> - the associated importance, computed as the average change in
+performance after a random permutation (or permutations, if <code>nsim &gt; 1</code>) of
+the feature in question.</p></li>
+</ul><p>For <a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a>/<a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a>-like objects, the sign (i.e., POS/NEG)
+of the original coefficient is also included in a column called <code>Sign</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Computes model-specific variable importance scores depending on the class of
-<code>object</code>:</p>
-<dl><dt><code><a href="https://topepo.github.io/C5.0/reference/C5.0.html" class="external-link">C5.0</a></code></dt>
-<dd><p>Variable importance is measured by determining
+<code>object</code>:</p><ul><li><p><a href="https://topepo.github.io/C5.0/reference/C5.0.html" class="external-link">C5.0</a> - Variable importance is measured by determining
 the percentage of training set samples that fall into all the terminal nodes
 after the split. For example, the predictor in the first split automatically
 has an importance measurement of 100 percent since all samples are affected
@@ -235,12 +248,9 @@ terminal nodes cover only a handful of training set samples, the importance
 scores may be close to zero. The same strategy is applied to rule-based
 models and boosted versions of the model. The underlying function can also
 return the number of times each predictor was involved in a split by using
-the option <code>metric = "usage"</code>. See <code><a href="https://topepo.github.io/C5.0/reference/C5imp.html" class="external-link">C5imp</a></code> for
-details.</p></dd>
-
-
-<dt><code><a href="http://topepo.github.io/Cubist/reference/cubist.default.html" class="external-link">cubist</a></code></dt>
-<dd><p>The Cubist output contains variable usage
+the option <code>metric = "usage"</code>. See <a href="https://topepo.github.io/C5.0/reference/C5imp.html" class="external-link">C5imp</a> for
+details.</p></li>
+<li><p><a href="http://topepo.github.io/Cubist/reference/cubist.default.html" class="external-link">cubist</a> - The Cubist output contains variable usage
 statistics. It gives the percentage of times where each variable was used in
 a condition and/or a linear model. Note that this output will probably be
 inconsistent with the rules shown in the output from summary.cubist. At each
@@ -253,29 +263,23 @@ models from the initial node to the terminal node. The percentages shown in
 the Cubist output reflects all the models involved in prediction (as opposed
 to the terminal models shown in the output). The variable importance used
 here is a linear combination of the usage in the rule conditions and the
-model. See <code><a href="http://topepo.github.io/Cubist/reference/summary.cubist.html" class="external-link">summary.cubist</a></code> and
-<code><a href="https://rdrr.io/pkg/caret/man/varImp.html" class="external-link">varImp.cubist</a></code> for details.</p></dd>
-
-
-<dt><code><a href="https://glmnet.stanford.edu/reference/glmnet.html" class="external-link">glmnet</a></code></dt>
-<dd><p>Similar to (generalized) linear models,
+model. See <a href="http://topepo.github.io/Cubist/reference/summary.cubist.html" class="external-link">summary.cubist</a> and
+<a href="https://rdrr.io/pkg/caret/man/varImp.html" class="external-link">varImp</a> for details.</p></li>
+<li><p><a href="https://glmnet.stanford.edu/reference/glmnet.html" class="external-link">glmnet</a> - Similar to (generalized) linear models,
 the absolute value of the coefficients are returned for a specific model.
 It is important that the features  (and hence, the estimated coefficients) be
 standardized prior to fitting the model. You can specify which coefficients
 to return by passing the specific value of the penalty parameter via the
 <code>lambda</code> argument (this is equivalent to the <code>s</code> argument in
-<code><a href="https://glmnet.stanford.edu/reference/predict.glmnet.html" class="external-link">coef.glmnet</a></code>). By default, <code>lambda = NULL</code> and the coefficients
+<a href="https://glmnet.stanford.edu/reference/predict.glmnet.html" class="external-link">coef.glmnet</a>). By default, <code>lambda = NULL</code> and the coefficients
 corresponding to the final penalty value in the sequence are returned; in
-other words, you should ALWAYS SPECIFY <code>lambda</code>! For <code>"cv.glmnet"</code>
+other words, you should ALWAYS SPECIFY <code>lambda</code>! For <a href="https://glmnet.stanford.edu/reference/cv.glmnet.html" class="external-link">cv.glmnet</a>
 objects, the largest value of lambda such that the error is within one standard
-error of the minimum is used by default. For <code>"multnet"</code> objects, the
+error of the minimum is used by default. For a multinomial response, the
 coefficients corresponding to the first class are used; that is, the first
-component of <code><a href="https://glmnet.stanford.edu/reference/predict.glmnet.html" class="external-link">coef.glmnet</a></code>.</p></dd>
-
-
-<dt><code><a href="https://rdrr.io/pkg/partykit/man/cforest.html" class="external-link">cforest</a></code></dt>
-<dd><p>Variable importance is measured in a
-way similar to those computed by <code><a href="https://rdrr.io/pkg/randomForest/man/importance.html" class="external-link">importance</a></code>.
+component of <a href="https://glmnet.stanford.edu/reference/predict.glmnet.html" class="external-link">coef.glmnet</a>.</p></li>
+<li><p><a href="https://rdrr.io/pkg/partykit/man/cforest.html" class="external-link">cforest</a> - Variable importance is measured in a
+way similar to those computed by <a href="https://rdrr.io/pkg/randomForest/man/importance.html" class="external-link">importance</a>.
 Besides the standard version, a conditional version is available that
 adjusts for correlations between predictor variables. If
 <code>conditional = TRUE</code>, the importance of each variable is computed by
@@ -287,19 +291,16 @@ both main effects and interactions. See Strobl et al. (2008) for details.
 Note, however, that all random forest results are subject to random
 variation. Thus, before interpreting the importance ranking, check whether
 the same ranking is achieved with a different random seed - or otherwise
-increase the number of trees ntree in <code><a href="https://rdrr.io/pkg/partykit/man/ctree_control.html" class="external-link">ctree_control</a></code>.
+increase the number of trees ntree in <a href="https://rdrr.io/pkg/partykit/man/ctree_control.html" class="external-link">ctree_control</a>.
 Note that in the presence of missings in the predictor variables the
 procedure described in Hapfelmeier et al. (2012) is performed. See
-<code><a href="https://rdrr.io/pkg/partykit/man/varimp.html" class="external-link">varimp</a></code> for details.</p></dd>
-
-
-<dt><code><a href="https://rdrr.io/pkg/earth/man/earth.html" class="external-link">earth</a></code></dt>
-<dd><p>The <code><a href="https://rdrr.io/pkg/earth/man/earth.html" class="external-link">earth</a></code> package uses
+<a href="https://rdrr.io/pkg/partykit/man/varimp.html" class="external-link">varimp</a> for details.</p></li>
+<li><p><a href="https://rdrr.io/pkg/earth/man/earth.html" class="external-link">earth</a> - The <a href="https://rdrr.io/pkg/earth/man/earth.html" class="external-link">earth</a> package uses
 three criteria for estimating the variable importance in a MARS model (see
-<code><a href="https://rdrr.io/pkg/earth/man/evimp.html" class="external-link">evimp</a></code> for details):</p><ul><li><p>The <code>nsubsets</code> criterion (<code>type = "nsubsets"</code>) counts the
+<a href="https://rdrr.io/pkg/earth/man/evimp.html" class="external-link">evimp</a> for details):</p><ul><li><p>The <code>nsubsets</code> criterion (<code>type = "nsubsets"</code>) counts the
 number of model subsets that include each feature. Variables that are
 included in more subsets are considered more important. This is the
-criterion used by <code><a href="https://rdrr.io/pkg/earth/man/summary.earth.html" class="external-link">summary.earth</a></code> to print variable
+criterion used by <a href="https://rdrr.io/pkg/earth/man/summary.earth.html" class="external-link">summary.earth</a> to print variable
 importance. By "subsets" we mean the subsets of terms generated by
 <code>earth()</code>'s backward pass. There is one subset for each model size
 (from one to the size of the selected model) and the subset is the best set
@@ -307,7 +308,7 @@ of terms for that model size. (These subsets are specified in the
 <code>$prune.terms</code> component of <code>earth()</code>'s return value.) Only
 subsets that are smaller than or equal in size to the final model are used
 for estimating variable importance. This is the default method used by
-<strong>vip</strong>.</p></li>
+vi_model.</p></li>
 <li><p>The <code>rss</code> criterion (<code>type = "rss"</code>) first calculates the
 decrease in the RSS for each subset relative to the previous subset during
 <code>earth()</code>’s backward pass. (For multiple response models, RSS's are
@@ -323,35 +324,26 @@ has a deleterious effect on the model, as measured in terms of its
 estimated predictive power on unseen data.) If that happens often enough,
 the variable can have a negative total importance, and thus appear less
 important than unused variables.</p></li>
-</ul></dd>
-
-
-<dt><code><a href="https://rdrr.io/pkg/gbm/man/gbm.html" class="external-link">gbm</a></code></dt>
-<dd><p>Variable importance is computed using one of
-two approaches (See <code><a href="https://rdrr.io/pkg/gbm/man/summary.gbm.html" class="external-link">summary.gbm</a></code> for details):</p><ul><li><p>The standard approach (<code>type = "relative.influence"</code>) described
+</ul></li>
+<li><p><a href="https://rdrr.io/pkg/gbm/man/gbm.html" class="external-link">gbm</a> - Variable importance is computed using one of
+two approaches (See <a href="https://rdrr.io/pkg/gbm/man/summary.gbm.html" class="external-link">summary.gbm</a> for details):</p><ul><li><p>The standard approach (<code>type = "relative.influence"</code>) described
 in Friedman (2001). When <code>distribution = "gaussian"</code> this returns the
 reduction of squared error attributable to each variable. For other loss
 functions this returns the reduction attributable to each variable in sum
 of squared error in predicting the gradient on each iteration. It describes
 the <em>relative influence</em> of each variable in reducing the loss
-function. This is the default method used by <strong>vip</strong>.</p></li>
+function. This is the default method used by vi_model.</p></li>
 <li><p>An experimental permutation-based approach
 (<code>type = "permutation"</code>). This method randomly permutes each predictor
 variable at a time and computes the associated reduction in predictive
 performance. This is similar to the variable importance measures Leo
-Breiman uses for random forests, but <strong>gbm</strong> currently computes using
+Breiman uses for random forests, but <a href="https://rdrr.io/pkg/gbm/man/gbm.html" class="external-link">gbm</a> currently computes using
 the entire training dataset (not the out-of-bag observations).</p></li>
-</ul></dd>
-
-
-<dt><code><a href="https://rdrr.io/pkg/h2o/man/H2OModel-class.html" class="external-link">H2OModel</a></code></dt>
-<dd><p>See <code><a href="https://rdrr.io/pkg/h2o/man/h2o.varimp.html" class="external-link">h2o.varimp</a></code> or visit
+</ul></li>
+<li><p><a href="https://rdrr.io/pkg/h2o/man/H2OModel-class.html" class="external-link">H2OModel</a> - See <a href="https://rdrr.io/pkg/h2o/man/h2o.varimp.html" class="external-link">h2o.varimp</a> or visit
 <a href="https://docs.h2o.ai/h2o/latest-stable/h2o-docs/variable-importance.html" class="external-link">https://docs.h2o.ai/h2o/latest-stable/h2o-docs/variable-importance.html</a>
-for details.</p></dd>
-
-
-<dt><code><a href="https://rdrr.io/pkg/nnet/man/nnet.html" class="external-link">nnet</a></code></dt>
-<dd><p>Two popular methods for constructing variable
+for details.</p></li>
+<li><p><a href="https://rdrr.io/pkg/nnet/man/nnet.html" class="external-link">nnet</a> - Two popular methods for constructing variable
 importance scores with neural networks are the Garson algorithm
 (Garson 1991), later modified by Goh (1995), and the Olden algorithm
 (Olden et al. 2004). For both algorithms, the basis of these importance
@@ -365,60 +357,46 @@ Gedeon (1997) considers the weights connecting the input features to the
 first two hidden layers (for simplicity and speed); but this method can be
 slow for large networks.. To implement the Olden and Garson algorithms, use
 <code>type = "olden"</code> and <code>type = "garson"</code>, respectively. See
-<code><a href="https://rdrr.io/pkg/NeuralNetTools/man/garson.html" class="external-link">garson</a></code> and <code><a href="https://rdrr.io/pkg/NeuralNetTools/man/olden.html" class="external-link">olden</a></code>
-for details.</p></dd>
-
-
-<dt><code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></code></dt>
-<dd><p>In (generalized) linear models, variable
-importance is typically based on the absolute value of the corresponding
-<em>t</em>-statistics. For such models, the sign of the original coefficient
-is also returned. By default, <code>type = "stat"</code> is used; however, if the
-inputs have been appropriately standardized then the raw coefficients can be
-used with <code>type = "raw"</code>.</p></dd>
-
-
-<dt><code><a href="https://rdrr.io/pkg/sparklyr/man/ml_feature_importances.html" class="external-link">ml_feature_importances</a></code></dt>
-<dd><p>The Spark ML
-library provides standard variable importance for tree-based methods (e.g.,
-random forests). See <code><a href="https://rdrr.io/pkg/sparklyr/man/ml_feature_importances.html" class="external-link">ml_feature_importances</a></code> for
-details.</p></dd>
-
-
-<dt><code><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></code></dt>
-<dd><p>Random forests typically
-provide two measures of variable importance. The first measure is computed
-from permuting out-of-bag (OOB) data: for each tree, the prediction error on
-the OOB portion of the data is recorded (error rate for classification and
-MSE for regression). Then the same is done after permuting each predictor
-variable. The difference between the two are then averaged over all trees in
-the forest, and normalized by the standard deviation of the differences. If
-the standard deviation of the differences is equal to 0 for a variable,
-the division is not done (but the average is almost always equal to 0 in that
-case). See <code><a href="https://rdrr.io/pkg/randomForest/man/importance.html" class="external-link">importance</a></code> for details, including
-additional arguments that can be passed via the <code>...</code> argument.</p>
-<p>The second measure is the total decrease in node impurities from splitting on
-the variable, averaged over all trees. For classification, the node impurity
-is measured by the Gini index. For regression, it is measured by residual sum
-of squares. See <code><a href="https://rdrr.io/pkg/randomForest/man/importance.html" class="external-link">importance</a></code> for details.</p></dd>
-
-
-<dt><code><a href="https://rdrr.io/pkg/party/man/cforest.html" class="external-link">cforest</a></code></dt>
-<dd><p>Same approach described in
-<code><a href="https://rdrr.io/pkg/partykit/man/cforest.html" class="external-link">cforest</a></code> above. See <code><a href="https://rdrr.io/pkg/party/man/varimp.html" class="external-link">varimp</a></code> and
-<code><a href="https://rdrr.io/pkg/party/man/varimp.html" class="external-link">varimpAUC</a></code> (if <code>type = "auc"</code>) for details.</p></dd>
-
-
-<dt><code><a href="https://rdrr.io/pkg/ranger/man/ranger.html" class="external-link">ranger</a></code></dt>
-<dd><p>Variable importance for
-<code><a href="https://rdrr.io/pkg/ranger/man/ranger.html" class="external-link">ranger</a></code> objects is computed in the usual way for random
+<a href="https://rdrr.io/pkg/NeuralNetTools/man/garson.html" class="external-link">garson</a> and <a href="https://rdrr.io/pkg/NeuralNetTools/man/olden.html" class="external-link">olden</a>
+for details.</p></li>
+<li><p><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a>/<a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a> - In (generalized) linear models,
+variable importance is typically based on the absolute value of the
+corresponding <em>t</em>-statistics (Bring, 1994). For such models, the sign of the
+original coefficient is also returned. By default, <code>type = "stat"</code> is used;
+however, if the inputs have been appropriately standardized then the raw
+coefficients can be used with <code>type = "raw"</code>. Note that Bring (1994)
+provides motivation for using the absolute value of the associated
+<em>t</em>-statistics.</p></li>
+<li><p><a href="https://rdrr.io/pkg/sparklyr/man/ml_feature_importances.html" class="external-link">sparklyr</a> - The Spark ML
+library provides standard variable importance measures for tree-based methods
+(e.g., random forests). See
+<a href="https://rdrr.io/pkg/sparklyr/man/ml_feature_importances.html" class="external-link">ml_feature_importances</a> for details.</p></li>
+<li><p><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a> Random forests typically
+provide two measures of variable importance.</p><ul><li><p>The first measure is computed from permuting out-of-bag (OOB) data: for
+each tree, the prediction error on the OOB portion of the data is recorded
+(error rate for classification and MSE for regression). Then the same is
+done after permuting each predictor variable. The difference between the
+two are then averaged over all trees in the forest, and normalized by the
+standard deviation of the differences. If the standard deviation of the
+differences is equal to 0 for a variable, the division is not done (but the
+average is almost always equal to 0 in that case).</p></li>
+<li><p>The second measure is the total decrease in node impurities from
+splitting on the variable, averaged over all trees. For classification, the
+node impurity is measured by the Gini index. For regression, it is measured
+by residual sum of squares.</p></li>
+</ul><p>See <a href="https://rdrr.io/pkg/randomForest/man/importance.html" class="external-link">importance</a> for details, including
+additional arguments that can be passed via the <code>...</code> argument in
+vi_model.</p></li>
+<li><p><a href="https://rdrr.io/pkg/party/man/cforest.html" class="external-link">cforest</a> - Same approach described in
+<a href="https://rdrr.io/pkg/partykit/man/cforest.html" class="external-link">cforest</a> (from package <strong>partykit</strong>) above. See
+<a href="https://rdrr.io/pkg/party/man/varimp.html" class="external-link">varimp</a> and <a href="https://rdrr.io/pkg/party/man/varimp.html" class="external-link">varimpAUC</a> (if <code>type = "auc"</code>)
+for details.</p></li>
+<li><p><a href="https://rdrr.io/pkg/ranger/man/ranger.html" class="external-link">ranger</a> - Variable importance for
+<a href="https://rdrr.io/pkg/ranger/man/ranger.html" class="external-link">ranger</a> objects is computed in the usual way for random
 forests. The approach used depends on the <code>importance</code> argument provided
-in the initial call to <code><a href="https://rdrr.io/pkg/ranger/man/ranger.html" class="external-link">ranger</a></code>. See
-<code><a href="https://rdrr.io/pkg/ranger/man/importance.ranger.html" class="external-link">importance</a></code> for details.</p></dd>
-
-
-<dt><code><a href="https://rdrr.io/pkg/rpart/man/rpart.html" class="external-link">rpart</a></code></dt>
-<dd><p>As stated in one of the <strong>rpart</strong>
+in the initial call to <a href="https://rdrr.io/pkg/ranger/man/ranger.html" class="external-link">ranger</a>. See
+<a href="https://rdrr.io/pkg/ranger/man/importance.ranger.html" class="external-link">importance</a> for details.</p></li>
+<li><p><a href="https://rdrr.io/pkg/rpart/man/rpart.html" class="external-link">rpart</a> - As stated in one of the <a href="https://rdrr.io/pkg/rpart/man/rpart.html" class="external-link">rpart</a>
 vignettes. A variable may appear in the tree many times, either as a primary
 or a surrogate variable. An overall measure of variable importance is the sum
 of the goodness of split measures for each split for which it was the primary
@@ -426,48 +404,75 @@ variable, plus "goodness" * (adjusted agreement) for all splits in which it
 was a surrogate. Imagine two variables which were essentially duplicates of
 each other; if we did not count surrogates, they would split the importance
 with neither showing up as strongly as it should. See
-<code><a href="https://rdrr.io/pkg/rpart/man/rpart.html" class="external-link">rpart</a></code> for details.</p></dd>
-
-
-<dt><code><a href="https://rdrr.io/pkg/caret/man/train.html" class="external-link">train</a></code></dt>
-<dd><p>Various model-specific and model-agnostic
+<a href="https://rdrr.io/pkg/rpart/man/rpart.html" class="external-link">rpart</a> for details.</p></li>
+<li><p><a href="https://rdrr.io/pkg/caret/man/train.html" class="external-link">caret</a> - Various model-specific and model-agnostic
 approaches that depend on the learning algorithm employed in the original
-call to <code><a href="https://rdrr.io/pkg/caret/man/train.html" class="external-link">train</a></code>. See <code><a href="https://rdrr.io/pkg/caret/man/varImp.html" class="external-link">varImp</a></code> for
-details.</p></dd>
-
-
-<dt><code><a href="https://rdrr.io/pkg/xgboost/man/xgb.train.html" class="external-link">xgboost</a></code></dt>
-<dd><p>For linear models, the variable
+call to <a href="https://rdrr.io/pkg/caret/man/train.html" class="external-link">caret</a>. See <a href="https://rdrr.io/pkg/caret/man/varImp.html" class="external-link">varImp</a> for details.</p></li>
+<li><p><a href="https://rdrr.io/pkg/xgboost/man/xgb.train.html" class="external-link">xgboost</a> - For linear models, the variable
 importance is the absolute magnitude of the estimated coefficients. For that
 reason, in order to obtain a meaningful ranking by importance for a linear
 model, the features need to be on the same scale (which you also would want
 to do when using either L1 or L2 regularization). Otherwise, the approach
-described in Friedman (2001) for <code><a href="https://rdrr.io/pkg/gbm/man/gbm.html" class="external-link">gbm</a></code>s is used. See
-<code><a href="https://rdrr.io/pkg/xgboost/man/xgb.train.html" class="external-link">xgb.importance</a></code> for details. For tree models, you can
-obtain three different types of variable importance:</p><ul><li><p>Using <code>type = "gain"</code> (the default) gives the fractional
-contribution of each feature to the model based on the total gain of the
-corresponding feature's splits.</p></li>
-<li><p>Using <code>type = "cover"</code> gives the number of observations related
-to each feature.</p></li>
+described in Friedman (2001) for <a href="https://rdrr.io/pkg/gbm/man/gbm.html" class="external-link">gbm</a>s is used. See
+<a href="https://rdrr.io/pkg/xgboost/man/xgb.importance.html" class="external-link">xgb.importance</a> for details. For tree models, you
+can obtain three different types of variable importance:</p><ul><li><p>Using <code>type = "gain"</code> (the default) gives the fractional contribution of
+each feature to the model based on the total gain of the corresponding
+feature's splits.</p></li>
+<li><p>Using <code>type = "cover"</code> gives the number of observations related to each
+feature.</p></li>
 <li><p>Using <code>type = "frequency"</code> gives the percentages representing
 the relative number of times each feature has been used throughout each
 tree in the ensemble.</p></li>
-</ul></dd>
-
-
-
-</dl></div>
+</ul></li>
+<li><p><a href="https://rdrr.io/pkg/lightgbm/man/lightgbm.html" class="external-link">lightgbm</a> - Same as for <a href="https://rdrr.io/pkg/xgboost/man/xgb.train.html" class="external-link">xgboost</a>
+models, except <a href="https://rdrr.io/pkg/lightgbm/man/lgb.importance.html" class="external-link">lgb.importance</a> (which this method
+calls internally) has an additional argument, <code>percentage</code>, that defaults to
+<code>TRUE</code>, resulting in the VI scores shown as a relative percentage; pass
+<code>percentage = FALSE</code> in the call to <code>vi_model()</code> to produce VI scores for
+<a href="https://rdrr.io/pkg/lightgbm/man/lightgbm.html" class="external-link">lightgbm</a> models on the raw scale.</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
-    <p>Inspired by the <code><a href="https://rdrr.io/pkg/caret/man/varImp.html" class="external-link">varImp</a></code> function.</p>
+    <p>Inspired by the <a href="https://cran.r-project.org/package=caret" class="external-link">caret</a>'s
+<a href="https://rdrr.io/pkg/caret/man/varImp.html" class="external-link">varImp</a> function.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># Basic example using imputed titanic data set</span></span></span>
+<span class="r-in"><span><span class="va">t3</span> <span class="op">&lt;-</span> <span class="va">titanic_mice</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Fit a simple model</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1449</span><span class="op">)</span>  <span class="co"># for reproducibility</span></span></span>
+<span class="r-in"><span><span class="va">bst</span> <span class="op">&lt;-</span> <span class="fu">lightgbm</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lightgbm/man/lightgbm.html" class="external-link">lightgbm</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.matrix.html" class="external-link">data.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">t3</span>, select <span class="op">=</span> <span class="op">-</span><span class="va">survived</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">t3</span><span class="op">$</span><span class="va">survived</span> <span class="op">==</span> <span class="st">"yes"</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"objective"</span> <span class="op">=</span> <span class="st">"binary"</span>, <span class="st">"force_row_wise"</span> <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  verbose <span class="op">=</span> <span class="fl">0</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Compute VI scores</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="vi.html">vi</a></span><span class="op">(</span><span class="va">bst</span><span class="op">)</span>  <span class="co"># defaults to `method = "model"`</span></span></span>
+<span class="r-in"><span><span class="fu">vi_model</span><span class="op">(</span><span class="va">bst</span><span class="op">)</span>  <span class="co"># same as above</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Same as above (since default is `method = "model"`), but returns a plot</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="vip.html">vip</a></span><span class="op">(</span><span class="va">bst</span>, geom <span class="op">=</span> <span class="st">"point"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">vi_model</span><span class="op">(</span><span class="va">bst</span>, type <span class="op">=</span> <span class="st">"cover"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">vi_model</span><span class="op">(</span><span class="va">bst</span>, type <span class="op">=</span> <span class="st">"cover"</span>, percentage <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Compare to</span></span></span>
+<span class="r-in"><span><span class="fu">lightgbm</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lightgbm/man/lgb.importance.html" class="external-link">lgb.importance</a></span><span class="op">(</span><span class="va">bst</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Brandon M. Greenwell, Brad Boehmke, Bernie Gray.</p>
+  <p></p><p>Developed by Brandon M. Greenwell, Brad Boehmke.</p>
 </div>
 
 <div class="pkgdown-footer-right">

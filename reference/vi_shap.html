@@ -71,9 +71,9 @@ below.</p>
 
 
 <dt>...</dt>
-<dd><p>Additional arguments to be passed on to <code><a href="https://rdrr.io/pkg/fastshap/man/explain.html" class="external-link">fastshap::explain()</a></code>
+<dd><p>Additional arguments to be passed on to <code><a href="https://bgreenwell.github.io/fastshap/reference/explain.html" class="external-link">fastshap::explain()</a></code>
 (e.g., <code>nsim =  30</code>, <code>adjust = TRUE</code>, or avprediction wrapper via the
-<code>pred_wrapper</code> argument); see <code><a href="https://rdrr.io/pkg/fastshap/man/explain.html" class="external-link">?fastshap::explain</a></code> for details on these and
+<code>pred_wrapper</code> argument); see <code><a href="https://bgreenwell.github.io/fastshap/reference/explain.html" class="external-link">?fastshap::explain</a></code> for details on these and
 other useful arguments.</p></dd>
 
 
@@ -110,12 +110,58 @@ predictions with feature contributions. Knowledge and information systems
 41.3 (2014): 647-665.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>  <span class="co"># for theme_light() function</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/dmlc/xgboost" class="external-link">xgboost</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Simulate training data</span></span></span>
+<span class="r-in"><span><span class="va">trn</span> <span class="op">&lt;-</span> <span class="fu"><a href="gen_friedman.html">gen_friedman</a></span><span class="op">(</span><span class="fl">500</span>, sigma <span class="op">=</span> <span class="fl">1</span>, seed <span class="op">=</span> <span class="fl">101</span><span class="op">)</span>  <span class="co"># ?vip::gen_friedman</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Feature matrix</span></span></span>
+<span class="r-in"><span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.matrix.html" class="external-link">data.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">trn</span>, select <span class="op">=</span> <span class="op">-</span><span class="va">y</span><span class="op">)</span><span class="op">)</span>  <span class="co"># matrix of feature values</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Fit an XGBoost model; hyperparameters were tuned using 5-fold CV</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">859</span><span class="op">)</span>  <span class="co"># for reproducibility</span></span></span>
+<span class="r-in"><span><span class="va">bst</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/xgboost/man/xgb.train.html" class="external-link">xgboost</a></span><span class="op">(</span><span class="va">X</span>, label <span class="op">=</span> <span class="va">trn</span><span class="op">$</span><span class="va">y</span>, nrounds <span class="op">=</span> <span class="fl">338</span>, max_depth <span class="op">=</span> <span class="fl">3</span>, eta <span class="op">=</span> <span class="fl">0.1</span>,</span></span>
+<span class="r-in"><span>               verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Construct VIP using "exact" SHAP values from XGBoost's internal Tree SHAP</span></span></span>
+<span class="r-in"><span><span class="co"># functionality</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="vip.html">vip</a></span><span class="op">(</span><span class="va">bst</span>, method <span class="op">=</span> <span class="st">"shap"</span>, train <span class="op">=</span> <span class="va">X</span>, exact <span class="op">=</span> <span class="cn">TRUE</span>, include_type <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>    geom <span class="op">=</span> <span class="st">"point"</span>, horizontal <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>    aesthetics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"forestgreen"</span>, shape <span class="op">=</span> <span class="fl">17</span>, size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_light</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Use Monte-Carlo approach, which works for any model; requires prediction</span></span></span>
+<span class="r-in"><span><span class="co"># wrapper</span></span></span>
+<span class="r-in"><span><span class="va">pfun_prob</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span><span class="op">)</span> <span class="op">{</span>  <span class="co"># prediction wrapper</span></span></span>
+<span class="r-in"><span>  <span class="co"># For Shapley explanations, this should ALWAYS return a numeric vector</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">object</span>, newdata <span class="op">=</span> <span class="va">newdata</span>, type <span class="op">=</span> <span class="st">"prob"</span><span class="op">)</span><span class="op">[</span>, <span class="st">"yes"</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Compute Shapley-based VI scores</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">853</span><span class="op">)</span>  <span class="co"># for reproducibility</span></span></span>
+<span class="r-in"><span><span class="fu">vi_shap</span><span class="op">(</span><span class="va">rfo</span>, train <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">t1</span>, select <span class="op">=</span> <span class="op">-</span><span class="va">survived</span><span class="op">)</span>, pred_wrapper <span class="op">=</span> <span class="va">pfun_prob</span>,</span></span>
+<span class="r-in"><span>        nsim <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">## # A tibble: 5 × 2</span></span></span>
+<span class="r-in"><span><span class="co">## Variable Importance</span></span></span>
+<span class="r-in"><span><span class="co">##   &lt;chr&gt;         &lt;dbl&gt;</span></span></span>
+<span class="r-in"><span><span class="co">## 1 pclass       0.104</span></span></span>
+<span class="r-in"><span><span class="co">## 2 age          0.0649</span></span></span>
+<span class="r-in"><span><span class="co">## 3 sex          0.272</span></span></span>
+<span class="r-in"><span><span class="co">## 4 sibsp        0.0260</span></span></span>
+<span class="r-in"><span><span class="co">## 5 parch        0.0291</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Brandon M. Greenwell, Brad Boehmke, Bernie Gray.</p>
+  <p></p><p>Developed by Brandon M. Greenwell, Brad Boehmke.</p>
 </div>
 
 <div class="pkgdown-footer-right">
