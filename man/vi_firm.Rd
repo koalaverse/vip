@@ -18,7 +18,8 @@ vi_firm(object, ...)
 )
 }
 \arguments{
-\item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
+\item{object}{A fitted model object (e.g., a
+\link[randomForest:randomForest]{randomForest} object).}
 
 \item{...}{Additional arguments to be passed on to the \code{\link[pdp:partial]{pdp::partial()}}
 function (e.g., \code{ice = TRUE}, \code{prob = TRUE}, or a prediction wrapper via the
@@ -76,6 +77,11 @@ divided by 4. This can be changed via the \code{var_continuous} and
 \href{https://arxiv.org/abs/1805.04755}{Greenwell et al. (2018)} for details and
 additional examples.
 }
+\note{
+This approach can provide misleading results in the presence of
+interaction effects (akin to interpreting main effect coefficients in a
+linear with higher level interaction effects).
+}
 \examples{
 \dontrun{
 #
@@ -88,23 +94,28 @@ data(mtcars)
 # Fit a projection pursuit regression model
 mtcars.ppr <- ppr(mpg ~ ., data = mtcars, nterms = 1)
 
-# Compute variable importance scores using the FIRM method; note the the pdp
+# Compute variable importance scores using the FIRM method; note that the pdp
 # package knows how to work with a "ppr" object, so there's no need to pass
 # the training data or a prediction wrapper, but it's good practice.
 vi_firm(mtcars.ppr, train = mtcars)
 
-# Define prediction wrapper
-pfun <- function(object, newdata) {  # use PD
-  mean(predict(object, newdata = newdata))  # return averaged prediction
+# For unsopported models, need to define a prediction wrapper; this approach
+# will work for ANY model (supported or unsupported, so better to just always
+# define it pass it)
+pfun <- function(object, newdata) {
+  # To use partial dependence, this function needs to return the AVERAGE
+  # prediction (for ICE, simply omit the averaging step)
+  mean(predict(object, newdata = newdata))
 }
 
-# Equivalent to the previous results
-vi_firm(mtcars.ppr, train = mtcars, pred.fun = pfun)
+# Equivalent to the previous results (but would work if this type of model
+# was not explicitly supported)
+vi_firm(mtcars.ppr, pred.fun = pfun, train = mtcars)
 
 # Equivalent VI scores, but the output is sorted by default
 vi(mtcars.ppr, method = "firm")
 
-# Use MAD to estimate variability for the continuous feature effects
+# Use MAD to estimate variability of the partial dependence values
 vi_firm(mtcars.ppr, var_continuous = stats::mad)
 
 # Plot VI scores
@@ -113,7 +124,7 @@ vip(mtcars.ppr, method = "firm", train = mtcars, pred.fun = pfun)
 }
 \references{
 J. H. Friedman. Greedy function approximation: A gradient boosting machine.
-\emph{Annals of Statistics}, *\emph{29}: 1189-1232, 2001.
+\emph{Annals of Statistics}, \strong{29}: 1189-1232, 2001.
 
 Goldstein, A., Kapelner, A., Bleich, J., and Pitkin, E., Peeking Inside the
 Black Box: Visualizing Statistical Learning With Plots of Individual

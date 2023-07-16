@@ -1,24 +1,18 @@
-# vip 0.3.3
+# vip 0.4.0
 
-## Breaking changes
+## Changed
+
+* This NEWS file now follows the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format.
+
+* Raised R version dependency to >= 4.1.0 (the introduction of the native piper operator `|>`).
+
+* The `vi_permute` function now uses [yardstick](https://cran.r-project.org/package=yardstick); consequently, metric functions now conform to [yardstick](https://cran.r-project.org/package=yardstick) metric argument names.
 
 * The `var_fun` argument in `vi_firm()` has been deprecated; use the new `var_continuous` and `var_categorical` instead.
 
 * The explicit `ice` argument in `vi_firm()` has been removed; it was not really needed since it can be passed via the `...` argument. 
 
-## Enhancements
-
-* The permutation importance method (i.e., function `vi_permute()`) now integrates with and uses [yardstick](https://cran.r-project.org/package=yardstick) performance metrics.
-
-* `list_metrics()` gained an additional `smaller_is_better` column indicating whether or not the corresponding metric should be minimized (`smaller_is_better = TRUE`) or maximized (`smaller_is_better = FALSE`); thanks to @topedo. Additionally, all the column names are now in lower case. 
-
-* Added support for partial least squares via the [mixOmics](https://bioconductor.org/packages/mixOmics/) package [(PR #129)](https://github.com/koalaverse/vip/pull/129); thanks to @topedo.
-
-* Added support for the [workflows](https://cran.r-project.org/package=workflows) and [parsnip](https://cran.r-project.org/package=parsnip) packages from the [tidymodels](https://www.tidymodels.org/) ecosystem [(PR #128)](https://github.com/koalaverse/vip/pull/128); thanks to @topedo.
-
-* New [pkgdown](https://cran.r-project.org/package=pkgdown) site and vignette based on our original R Journal article.
-
-## Miscellaneous
+* Removed [magrittr](https://cran.r-project.org/package=magrittr) from imports; it's easy enough to just laod the package if you need it or use R's newer internal pipe operator.
 
 * Tweaked examples.
 
@@ -34,7 +28,27 @@
 
 * Switched to using markdown syntax in `roxygen2` comments.
 
-## Bug fixes
+## Added
+
+* `vi_model()` now supports [lightgbm](https://cran.r-project.org/package=lightgbm) models. Thanks to @nipnipj for the suggestion [(#146)](https://github.com/koalaverse/vip/issues/146).
+
+* The permutation importance method (i.e., function `vi_permute()`) now integrates with and uses [yardstick](https://cran.r-project.org/package=yardstick) performance metrics.
+
+* `list_metrics()` gained an additional `smaller_is_better` column indicating whether or not the corresponding metric should be minimized (`smaller_is_better = TRUE`) or maximized (`smaller_is_better = FALSE`); thanks to @topedo. Additionally, all the column names are now in lower case. 
+
+* Added support for partial least squares via the [mixOmics](https://bioconductor.org/packages/mixOmics/) package [(PR #129)](https://github.com/koalaverse/vip/pull/129); thanks to @topedo.
+
+* Added support for the [workflows](https://cran.r-project.org/package=workflows) and [parsnip](https://cran.r-project.org/package=parsnip) packages from the [tidymodels](https://www.tidymodels.org/) ecosystem [(PR #128)](https://github.com/koalaverse/vip/pull/128); thanks to @topedo.
+
+* New [pkgdown](https://cran.r-project.org/package=pkgdown) site and vignette based on our original R Journal article.
+
+## Removed
+
+* Function `add_sparklines()` seems out of scope and has been removed.
+* Function `vint()` also seems out of scope and is too slow to implement for most practical problems; for now, the function will likely live on in the [moreparty](https://cran.r-project.org/package=moreparty) package.
+
+
+## Fixed
 
 * Fix model-based VI support for [mlr](https://cran.r-project.org/package=mlr), [mlr3](https://cran.r-project.org/package=mlr3), [parsnip](https://cran.r-project.org/package=parsnip), and [workflows](https://cran.r-project.org/package=workflows) model fits.
 

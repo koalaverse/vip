@@ -1,11 +1,12 @@
 # Error message to display when training data cannot be extracted form object
 msg <- paste0(
   "The training data could not be extracted from object. You can supply the ",
-  "training data using the `train` argument in the call to `vi_model()`."
+  "training data using the `train` argument."
 )
 
 
 #' @keywords internal
+#' @noRd
 get_training_data <- function(object) {
   UseMethod("get_training_data")
 }
@@ -177,4 +178,14 @@ get_training_data.randomForest <- function(object) {
   } else {
     get_training_data.default(object, env = parent.frame(), arg = "x")
   }
+}
+
+
+# Package: workflow ------------------------------------------------------------
+
+#' @keywords internal
+get_training_data.workflow <- function(object) {
+  stop("Training data cannot be extracted from workflow objects. Please ",
+       "supply the raw training data using the `train` argument.",
+       call. = FALSE)
 }

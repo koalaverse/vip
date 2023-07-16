@@ -5,8 +5,10 @@
 ^codecov\.yml$
 ^data-raw$
 ^docs$
+^lightgbm\.model$
 ^README\.Rmd$
 ^README_cache
+^revdep
 ^rjournal$
 ^slowtests
 ^tools$

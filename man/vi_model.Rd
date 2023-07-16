@@ -13,6 +13,7 @@
 \alias{vi_model.H2OBinomialModel}
 \alias{vi_model.H2OMultinomialModel}
 \alias{vi_model.H2ORegressionModel}
+\alias{vi_model.lgb.Booster}
 \alias{vi_model.mixo_pls}
 \alias{vi_model.mixo_spls}
 \alias{vi_model.WrappedModel}
@@ -40,6 +41,10 @@
 \alias{vi_model.workflow}
 \alias{vi_model.xgb.Booster}
 \title{Model-specific variable importance}
+\source{
+Johan Bring (1994) How to Standardize Regression Coefficients, The American
+Statistician, 48:3, 209-213, DOI: 10.1080/00031305.1994.10476059.
+}
 \usage{
 vi_model(object, ...)
 
@@ -64,6 +69,8 @@ vi_model(object, ...)
 \method{vi_model}{H2OMultinomialModel}(object, ...)
 
 \method{vi_model}{H2ORegressionModel}(object, ...)
+
+\method{vi_model}{lgb.Booster}(object, type = c("gain", "cover", "frequency"), ...)
 
 \method{vi_model}{mixo_pls}(object, ncomp = NULL, ...)
 
@@ -126,28 +133,39 @@ vi_model(object, ...)
 \method{vi_model}{xgb.Booster}(object, type = c("gain", "cover", "frequency"), ...)
 }
 \arguments{
-\item{object}{A fitted model object (e.g., a \code{"randomForest"} object).}
+\item{object}{A fitted model object (e.g., a
+\link[randomForest:randomForest]{randomForest} object). See the details section
+below to see how variable importance is computed for supported model types.}
 
-\item{...}{Additional optional arguments to be passed on to other methods.}
+\item{...}{Additional optional arguments to be passed on to other methods.
+See the details section below for arguments that can be passed to specific
+object types.}
 
 \item{type}{Character string specifying the type of variable importance to
-return (only used for some models). See details for which methods this
-argument applies to.}
+return (only used for some models). See the details section below for which
+methods this argument applies to.}
 
 \item{lambda}{Numeric value for the penalty parameter of a
-\code{\link[glmnet]{glmnet}} model (this is equivalent to the \code{s}
-argument in \code{\link[glmnet:predict.glmnet]{coef.glmnet}}). See the section on
-\code{\link[glmnet]{glmnet}} in the details below.}
+\link[glmnet:glmnet]{glmnet} model (this is equivalent to the \code{s}
+argument in \link[glmnet:predict.glmnet]{coef.glmnet}). See the section on
+\link[glmnet:glmnet]{glmnet} in the details below.}
 
 \item{ncomp}{An integer for the number of partial least squares components
 to be used in the importance calculations. If more components are requested
 than were used in the model, all of the model's components are used.}
 }
 \value{
-A tidy data frame (i.e., a \code{"tibble"} object) with two columns:
-\code{Variable} and \code{Importance}. For \code{"lm"/"glm"}-like object, an
-additional column, called \code{Sign}, is also included which includes the
-sign (i.e., POS/NEG) of the original coefficient.
+A tidy data frame (i.e., a \link[tibble:tibble]{tibble} object) with two
+columns:
+\itemize{
+\item \code{Variable} - the corresponding feature name;
+\item \code{Importance} - the associated importance, computed as the average change in
+performance after a random permutation (or permutations, if \code{nsim > 1}) of
+the feature in question.
+}
+
+For \link[stats:lm]{lm}/\link[stats:glm]{glm}-like objects, the sign (i.e., POS/NEG)
+of the original coefficient is also included in a column called \code{Sign}.
 }
 \description{
 Compute model-specific variable importance scores for the predictors in a
@@ -156,10 +174,8 @@ fitted model.
 \details{
 Computes model-specific variable importance scores depending on the class of
 \code{object}:
-
-\describe{
-
-\item{\code{\link[C50]{C5.0}}}{Variable importance is measured by determining
+\itemize{
+\item \link[C50:C5.0]{C5.0} - Variable importance is measured by determining
 the percentage of training set samples that fall into all the terminal nodes
 after the split. For example, the predictor in the first split automatically
 has an importance measurement of 100 percent since all samples are affected
@@ -168,10 +184,9 @@ terminal nodes cover only a handful of training set samples, the importance
 scores may be close to zero. The same strategy is applied to rule-based
 models and boosted versions of the model. The underlying function can also
 return the number of times each predictor was involved in a split by using
-the option \code{metric = "usage"}. See \code{\link[C50]{C5imp}} for
-details.}
-
-\item{\code{\link[Cubist:cubist.default]{cubist}}}{The Cubist output contains variable usage
+the option \code{metric = "usage"}. See \link[C50:C5imp]{C5imp} for
+details.
+\item \link[Cubist:cubist.default]{cubist} - The Cubist output contains variable usage
 statistics. It gives the percentage of times where each variable was used in
 a condition and/or a linear model. Note that this output will probably be
 inconsistent with the rules shown in the output from summary.cubist. At each
@@ -184,25 +199,23 @@ models from the initial node to the terminal node. The percentages shown in
 the Cubist output reflects all the models involved in prediction (as opposed
 to the terminal models shown in the output). The variable importance used
 here is a linear combination of the usage in the rule conditions and the
-model. See \code{\link[Cubist]{summary.cubist}} and
-\code{\link[caret:varImp]{varImp.cubist}} for details.}
-
-\item{\code{\link[glmnet]{glmnet}}}{Similar to (generalized) linear models,
+model. See \link[Cubist:summary.cubist]{summary.cubist} and
+\link[caret:varImp]{varImp} for details.
+\item \link[glmnet:glmnet]{glmnet} - Similar to (generalized) linear models,
 the absolute value of the coefficients are returned for a specific model.
 It is important that the features  (and hence, the estimated coefficients) be
 standardized prior to fitting the model. You can specify which coefficients
 to return by passing the specific value of the penalty parameter via the
 \code{lambda} argument (this is equivalent to the \code{s} argument in
-\code{\link[glmnet:predict.glmnet]{coef.glmnet}}). By default, \code{lambda = NULL} and the coefficients
+\link[glmnet:predict.glmnet]{coef.glmnet}). By default, \code{lambda = NULL} and the coefficients
 corresponding to the final penalty value in the sequence are returned; in
-other words, you should ALWAYS SPECIFY \code{lambda}! For \code{"cv.glmnet"}
+other words, you should ALWAYS SPECIFY \code{lambda}! For \link[glmnet:cv.glmnet]{cv.glmnet}
 objects, the largest value of lambda such that the error is within one standard
-error of the minimum is used by default. For \code{"multnet"} objects, the
+error of the minimum is used by default. For a multinomial response, the
 coefficients corresponding to the first class are used; that is, the first
-component of \code{\link[glmnet:predict.glmnet]{coef.glmnet}}.}
-
-\item{\code{\link[partykit]{cforest}}}{Variable importance is measured in a
-way similar to those computed by \code{\link[randomForest]{importance}}.
+component of \link[glmnet:predict.glmnet]{coef.glmnet}.
+\item \link[partykit:cforest]{cforest} - Variable importance is measured in a
+way similar to those computed by \link[randomForest:importance]{importance}.
 Besides the standard version, a conditional version is available that
 adjusts for correlations between predictor variables. If
 \code{conditional = TRUE}, the importance of each variable is computed by
@@ -214,29 +227,26 @@ both main effects and interactions. See Strobl et al. (2008) for details.
 Note, however, that all random forest results are subject to random
 variation. Thus, before interpreting the importance ranking, check whether
 the same ranking is achieved with a different random seed - or otherwise
-increase the number of trees ntree in \code{\link[partykit]{ctree_control}}.
+increase the number of trees ntree in \link[partykit:ctree_control]{ctree_control}.
 Note that in the presence of missings in the predictor variables the
 procedure described in Hapfelmeier et al. (2012) is performed. See
-\code{\link[partykit]{varimp}} for details.}
-
-\item{\code{\link[earth]{earth}}}{The \code{\link[earth]{earth}} package uses
+\link[partykit:varimp]{varimp} for details.
+\item \link[earth:earth]{earth} - The \link[earth:earth]{earth} package uses
 three criteria for estimating the variable importance in a MARS model (see
-\code{\link[earth]{evimp}} for details):
+\link[earth:evimp]{evimp} for details):
 \itemize{
-
 \item The \code{nsubsets} criterion (\code{type = "nsubsets"}) counts the
 number of model subsets that include each feature. Variables that are
 included in more subsets are considered more important. This is the
-criterion used by \code{\link[earth]{summary.earth}} to print variable
+criterion used by \link[earth:summary.earth]{summary.earth} to print variable
 importance. By "subsets" we mean the subsets of terms generated by
 \code{earth()}'s backward pass. There is one subset for each model size
 (from one to the size of the selected model) and the subset is the best set
 of terms for that model size. (These subsets are specified in the
-\code{$prune.terms} component of \code{earth()}'s return value.) Only
+\verb{$prune.terms} component of \code{earth()}'s return value.) Only
 subsets that are smaller than or equal in size to the final model are used
 for estimating variable importance. This is the default method used by
-\strong{vip}.
-
+\link[=vi_model]{vi_model}.
 \item The \code{rss} criterion (\code{type = "rss"}) first calculates the
 decrease in the RSS for each subset relative to the previous subset during
 \code{earth()}’s backward pass. (For multiple response models, RSS's are
@@ -245,7 +255,6 @@ decreases over all subsets that include the variable. Finally, for ease of
 interpretation the summed decreases are scaled so the largest summed
 decrease is 100. Variables which cause larger net decreases in the RSS are
 considered more important.
-
 \item The \code{gcv} criterion (\code{type = "gcv"}) is similar to the
 \code{rss} approach, but uses the GCV statistic instead of the RSS. Note
 that adding a variable can sometimes increase the GCV. (Adding the variable
@@ -253,35 +262,28 @@ has a deleterious effect on the model, as measured in terms of its
 estimated predictive power on unseen data.) If that happens often enough,
 the variable can have a negative total importance, and thus appear less
 important than unused variables.
-
-}}
-
-\item{\code{\link[gbm]{gbm}}}{Variable importance is computed using one of
-two approaches (See \code{\link[gbm]{summary.gbm}} for details):
+}
+\item \link[gbm:gbm]{gbm} - Variable importance is computed using one of
+two approaches (See \link[gbm:summary.gbm]{summary.gbm} for details):
 \itemize{
-
 \item The standard approach (\code{type = "relative.influence"}) described
 in Friedman (2001). When \code{distribution = "gaussian"} this returns the
 reduction of squared error attributable to each variable. For other loss
 functions this returns the reduction attributable to each variable in sum
 of squared error in predicting the gradient on each iteration. It describes
 the \emph{relative influence} of each variable in reducing the loss
-function. This is the default method used by \strong{vip}.
-
+function. This is the default method used by \link[=vi_model]{vi_model}.
 \item An experimental permutation-based approach
 (\code{type = "permutation"}). This method randomly permutes each predictor
 variable at a time and computes the associated reduction in predictive
 performance. This is similar to the variable importance measures Leo
-Breiman uses for random forests, but \strong{gbm} currently computes using
+Breiman uses for random forests, but \link[gbm:gbm]{gbm} currently computes using
 the entire training dataset (not the out-of-bag observations).
-
-}}
-
-\item{\code{\link[h2o:H2OModel-class]{H2OModel}}}{See \code{\link[h2o]{h2o.varimp}} or visit
+}
+\item \link[h2o:H2OModel-class]{H2OModel} - See \link[h2o:h2o.varimp]{h2o.varimp} or visit
 \url{https://docs.h2o.ai/h2o/latest-stable/h2o-docs/variable-importance.html}
-for details.}
-
-\item{\code{\link[nnet]{nnet}}}{Two popular methods for constructing variable
+for details.
+\item \link[nnet:nnet]{nnet} - Two popular methods for constructing variable
 importance scores with neural networks are the Garson algorithm
 (Garson 1991), later modified by Goh (1995), and the Olden algorithm
 (Olden et al. 2004). For both algorithms, the basis of these importance
@@ -295,49 +297,50 @@ Gedeon (1997) considers the weights connecting the input features to the
 first two hidden layers (for simplicity and speed); but this method can be
 slow for large networks.. To implement the Olden and Garson algorithms, use
 \code{type = "olden"} and \code{type = "garson"}, respectively. See
-\code{\link[NeuralNetTools]{garson}} and \code{\link[NeuralNetTools]{olden}}
-for details.}
+\link[NeuralNetTools:garson]{garson} and \link[NeuralNetTools:olden]{olden}
+for details.
+\item \link[stats:lm]{lm}/\link[stats:glm]{glm} - In (generalized) linear models,
+variable importance is typically based on the absolute value of the
+corresponding \emph{t}-statistics (Bring, 1994). For such models, the sign of the
+original coefficient is also returned. By default, \code{type = "stat"} is used;
+however, if the inputs have been appropriately standardized then the raw
+coefficients can be used with \code{type = "raw"}. Note that Bring (1994)
+provides motivation for using the absolute value of the associated
+\emph{t}-statistics.
+\item \link[sparklyr:ml_feature_importances]{sparklyr} - The Spark ML
+library provides standard variable importance measures for tree-based methods
+(e.g., random forests). See
+\link[sparklyr:ml_feature_importances]{ml_feature_importances} for details.
+\item \link[randomForest:randomForest]{randomForest} Random forests typically
+provide two measures of variable importance.
+\itemize{
+\item The first measure is computed from permuting out-of-bag (OOB) data: for
+each tree, the prediction error on the OOB portion of the data is recorded
+(error rate for classification and MSE for regression). Then the same is
+done after permuting each predictor variable. The difference between the
+two are then averaged over all trees in the forest, and normalized by the
+standard deviation of the differences. If the standard deviation of the
+differences is equal to 0 for a variable, the division is not done (but the
+average is almost always equal to 0 in that case).
+\item The second measure is the total decrease in node impurities from
+splitting on the variable, averaged over all trees. For classification, the
+node impurity is measured by the Gini index. For regression, it is measured
+by residual sum of squares.
+}
 
-\item{\code{\link[stats]{lm}}}{In (generalized) linear models, variable
-importance is typically based on the absolute value of the corresponding
-\emph{t}-statistics. For such models, the sign of the original coefficient
-is also returned. By default, \code{type = "stat"} is used; however, if the
-inputs have been appropriately standardized then the raw coefficients can be
-used with \code{type = "raw"}.}
-
-\item{\code{\link[sparklyr]{ml_feature_importances}}}{The Spark ML
-library provides standard variable importance for tree-based methods (e.g.,
-random forests). See \code{\link[sparklyr]{ml_feature_importances}} for
-details.}
-
-\item{\code{\link[randomForest]{randomForest}}}{Random forests typically
-provide two measures of variable importance. The first measure is computed
-from permuting out-of-bag (OOB) data: for each tree, the prediction error on
-the OOB portion of the data is recorded (error rate for classification and
-MSE for regression). Then the same is done after permuting each predictor
-variable. The difference between the two are then averaged over all trees in
-the forest, and normalized by the standard deviation of the differences. If
-the standard deviation of the differences is equal to 0 for a variable,
-the division is not done (but the average is almost always equal to 0 in that
-case). See \code{\link[randomForest]{importance}} for details, including
-additional arguments that can be passed via the \code{...} argument.
-
-The second measure is the total decrease in node impurities from splitting on
-the variable, averaged over all trees. For classification, the node impurity
-is measured by the Gini index. For regression, it is measured by residual sum
-of squares. See \code{\link[randomForest]{importance}} for details.}
-
-\item{\code{\link[party]{cforest}}}{Same approach described in
-\code{\link[partykit]{cforest}} above. See \code{\link[party]{varimp}} and
-\code{\link[party:varimp]{varimpAUC}} (if \code{type = "auc"}) for details.}
-
-\item{\code{\link[ranger]{ranger}}}{Variable importance for
-\code{\link[ranger]{ranger}} objects is computed in the usual way for random
+See \link[randomForest:importance]{importance} for details, including
+additional arguments that can be passed via the \code{...} argument in
+\link[=vi_model]{vi_model}.
+\item \link[party:cforest]{cforest} - Same approach described in
+\link[partykit:cforest]{cforest} (from package \strong{partykit}) above. See
+\link[party:varimp]{varimp} and \link[party:varimp]{varimpAUC} (if \code{type = "auc"})
+for details.
+\item \link[ranger:ranger]{ranger} - Variable importance for
+\link[ranger:ranger]{ranger} objects is computed in the usual way for random
 forests. The approach used depends on the \code{importance} argument provided
-in the initial call to \code{\link[ranger]{ranger}}. See
-\code{\link[ranger:importance.ranger]{importance}} for details.}
-
-\item{\code{\link[rpart]{rpart}}}{As stated in one of the \strong{rpart}
+in the initial call to \link[ranger:ranger]{ranger}. See
+\link[ranger:importance.ranger]{importance} for details.
+\item \link[rpart:rpart]{rpart} - As stated in one of the \link[rpart:rpart]{rpart}
 vignettes. A variable may appear in the tree many times, either as a primary
 or a surrogate variable. An overall measure of variable importance is the sum
 of the goodness of split measures for each split for which it was the primary
@@ -345,38 +348,65 @@ variable, plus "goodness" * (adjusted agreement) for all splits in which it
 was a surrogate. Imagine two variables which were essentially duplicates of
 each other; if we did not count surrogates, they would split the importance
 with neither showing up as strongly as it should. See
-\code{\link[rpart]{rpart}} for details.}
-
-\item{\code{\link[caret]{train}}}{Various model-specific and model-agnostic
+\link[rpart:rpart]{rpart} for details.
+\item \link[caret:train]{caret} - Various model-specific and model-agnostic
 approaches that depend on the learning algorithm employed in the original
-call to \code{\link[caret]{train}}. See \code{\link[caret]{varImp}} for
-details.}
-
-\item{\code{\link[xgboost:xgb.train]{xgboost}}}{For linear models, the variable
+call to \link[caret:train]{caret}. See \link[caret:varImp]{varImp} for details.
+\item \link[xgboost:xgb.train]{xgboost} - For linear models, the variable
 importance is the absolute magnitude of the estimated coefficients. For that
 reason, in order to obtain a meaningful ranking by importance for a linear
 model, the features need to be on the same scale (which you also would want
 to do when using either L1 or L2 regularization). Otherwise, the approach
-described in Friedman (2001) for \code{\link[gbm]{gbm}}s is used. See
-\code{\link[xgboost:xgb.train]{xgb.importance}} for details. For tree models, you can
-obtain three different types of variable importance:
+described in Friedman (2001) for \link[gbm:gbm]{gbm}s is used. See
+\link[xgboost:xgb.importance]{xgb.importance} for details. For tree models, you
+can obtain three different types of variable importance:
 \itemize{
-
-\item Using \code{type = "gain"} (the default) gives the fractional
-contribution of each feature to the model based on the total gain of the
-corresponding feature's splits.
-
-\item Using \code{type = "cover"} gives the number of observations related
-to each feature.
-
+\item Using \code{type = "gain"} (the default) gives the fractional contribution of
+each feature to the model based on the total gain of the corresponding
+feature's splits.
+\item Using \code{type = "cover"} gives the number of observations related to each
+feature.
 \item Using \code{type = "frequency"} gives the percentages representing
 the relative number of times each feature has been used throughout each
 tree in the ensemble.
-
-}}
-
+}
+\item \link[lightgbm:lightgbm]{lightgbm} - Same as for \link[xgboost:xgb.train]{xgboost}
+models, except \link[lightgbm:lgb.importance]{lgb.importance} (which this method
+calls internally) has an additional argument, \code{percentage}, that defaults to
+\code{TRUE}, resulting in the VI scores shown as a relative percentage; pass
+\code{percentage = FALSE} in the call to \code{vi_model()} to produce VI scores for
+\link[lightgbm:lightgbm]{lightgbm} models on the raw scale.
 }
 }
 \note{
-Inspired by the \code{\link[caret]{varImp}} function.
+Inspired by the \href{https://cran.r-project.org/package=caret}{caret}'s
+\link[caret:varImp]{varImp} function.
+}
+\examples{
+\dontrun{
+# Basic example using imputed titanic data set
+t3 <- titanic_mice[[1L]]
+
+# Fit a simple model
+set.seed(1449)  # for reproducibility
+bst <- lightgbm::lightgbm(
+  data = data.matrix(subset(t3, select = -survived)),
+  label = ifelse(t3$survived == "yes", 1, 0),
+  params = list("objective" = "binary", "force_row_wise" = TRUE),
+  verbose = 0
+)
+
+# Compute VI scores
+vi(bst)  # defaults to `method = "model"`
+vi_model(bst)  # same as above
+
+# Same as above (since default is `method = "model"`), but returns a plot
+vip(bst, geom = "point")
+vi_model(bst, type = "cover")
+vi_model(bst, type = "cover", percentage = FALSE)
+
+# Compare to
+lightgbm::lgb.importance(bst)
+}
+
 }

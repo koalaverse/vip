@@ -158,7 +158,7 @@ get_metric <- function(metric) {
     smaller_is_better <- TRUE
   } else if (metric == "mape") {
     metric_fun <- yardstick::mape_vec
-    smaller_is_better <- FALSE
+    smaller_is_better <- TRUE
   } else {
     # Return informative error
     stop("Metric \"", metric, "\" is not supported; use ",

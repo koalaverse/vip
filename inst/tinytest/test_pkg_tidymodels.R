@@ -24,16 +24,16 @@ if (!requireNamespace("tidymodels", quietly = TRUE)) {
 data("bivariate", package = "modeldata")
 
 # Define a 'ranger'-based random forest model
-ranger_spec <- parsnip::rand_forest(trees = 1e3, mode = "classification") %>%
+ranger_spec <- parsnip::rand_forest(trees = 1e3, mode = "classification") |>
   parsnip::set_engine("ranger", importance = "impurity")
 
 # Fit models
 set.seed(421)  # for reproduicbility
 ranger_fit_workflow <-  # worflows
-  workflows::workflow(Class ~ ., ranger_spec) %>%
+  workflows::workflow(Class ~ ., ranger_spec) |>
   parsnip::fit(bivariate_train)
 ranger_fit_parsnip <-  # parsnip
-  ranger_spec %>%
+  ranger_spec |>
   parsnip::fit(Class ~ ., data = bivariate_train)
 
 # Extract underlying 'ranger' fits
@@ -72,14 +72,34 @@ pfun <- function(object, newdata) {
 
 # Compute permutation-based VI scores using AUC metric
 set.seed(912)  # for reproducibility
-vi_auc <- ranger_fit_workflow %>%
+vi_auc <- ranger_fit_workflow |>
   vi(method = "permute",
      target = "Class",
      metric = "roc_auc",
      pred_wrapper = pfun,
+     event_level = "first",
+     nsim = 10,
      train = bivariate_train,
      reference_class = "One")
 
 # Not always the case, but here we can expect these to be in (0, 1)
 expect_true(all(vi_auc$Importance > 0 & vi_auc$Importance < 1))
 
+
+################################################################################
+# FIRM-based (i.e., model-agnostic) variable importance
+################################################################################
+
+pfun <- function(object, newdata) {
+  mean(predict(object, new_data = newdata, type = "prob")[[".pred_One"]])
+}
+vi_pd <- ranger_fit_workflow |>
+  vi_firm(
+    feature_names = c("A", "B"),  # required
+    train = bivariate_train,      # required
+    # pdp::partial()-specific arguments
+    pred.fun = pfun
+  )
+
+# Not always the case, but here we can expect these to be in (0, 1)
+expect_true(all(vi_pd$Importance > 0))

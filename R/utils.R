@@ -1,13 +1,3 @@
-#' @importFrom magrittr %T>%
-#' @export
-magrittr::`%T>%`
-
-
-#' @importFrom magrittr %>%
-#' @export
-magrittr::`%>%`
-
-
 #' @keywords internal
 abbreviate_names <- function(x, minlength) {
   x$Variable <- abbreviate(x$Variable, minlength = minlength)

@@ -5,7 +5,8 @@
 #' \href{https://arxiv.org/abs/1805.04755}{Greenwell et al. (2018)} and
 #' \href{https://arxiv.org/abs/1904.03959}{Scholbeck et al. (2019)}.
 #'
-#' @param object A fitted model object (e.g., a `"randomForest"` object).
+#' @param object A fitted model object (e.g., a
+#' [randomForest][randomForest::randomForest] object).
 #'
 #' @param feature_names Character string giving the names of the predictor
 #' variables (i.e., features) of interest. If `NULL` (the default) then the
@@ -54,9 +55,13 @@
 #' [Greenwell et al. (2018)](https://arxiv.org/abs/1805.04755) for details and
 #' additional examples.
 #'
+#' @note This approach can provide misleading results in the presence of
+#' interaction effects (akin to interpreting main effect coefficients in a
+#' linear with higher level interaction effects).
+#'
 #' @references
 #' J. H. Friedman. Greedy function approximation: A gradient boosting machine.
-#' *Annals of Statistics*, **29*: 1189-1232, 2001.
+#' *Annals of Statistics*, **29**: 1189-1232, 2001.
 #'
 #' Goldstein, A., Kapelner, A., Bleich, J., and Pitkin, E., Peeking Inside the
 #' Black Box: Visualizing Statistical Learning With Plots of Individual
@@ -89,23 +94,28 @@
 #' # Fit a projection pursuit regression model
 #' mtcars.ppr <- ppr(mpg ~ ., data = mtcars, nterms = 1)
 #'
-#' # Compute variable importance scores using the FIRM method; note the the pdp
+#' # Compute variable importance scores using the FIRM method; note that the pdp
 #' # package knows how to work with a "ppr" object, so there's no need to pass
 #' # the training data or a prediction wrapper, but it's good practice.
 #' vi_firm(mtcars.ppr, train = mtcars)
 #'
-#' # Define prediction wrapper
-#' pfun <- function(object, newdata) {  # use PD
-#'   mean(predict(object, newdata = newdata))  # return averaged prediction
+#' # For unsopported models, need to define a prediction wrapper; this approach
+#' # will work for ANY model (supported or unsupported, so better to just always
+#' # define it pass it)
+#' pfun <- function(object, newdata) {
+#'   # To use partial dependence, this function needs to return the AVERAGE
+#'   # prediction (for ICE, simply omit the averaging step)
+#'   mean(predict(object, newdata = newdata))
 #' }
 #'
-#' # Equivalent to the previous results
-#' vi_firm(mtcars.ppr, train = mtcars, pred.fun = pfun)
+#' # Equivalent to the previous results (but would work if this type of model
+#' # was not explicitly supported)
+#' vi_firm(mtcars.ppr, pred.fun = pfun, train = mtcars)
 #'
 #' # Equivalent VI scores, but the output is sorted by default
 #' vi(mtcars.ppr, method = "firm")
 #'
-#' # Use MAD to estimate variability for the continuous feature effects
+#' # Use MAD to estimate variability of the partial dependence values
 #' vi_firm(mtcars.ppr, var_continuous = stats::mad)
 #'
 #' # Plot VI scores
@@ -155,7 +165,7 @@ vi_firm.default <- function(
   # Construct PD/ICE-based variable importance scores
   vis <- lapply(feature_names, function(x) {
     firm(object, feature_name = x, var_continuous = var_continuous,
-         var_categorical = var_categorical, ...)
+         var_categorical = var_categorical, train = train, ...)
   })
   # vis <- numeric(length(feature_names))  # loses "effects" attribute
   # for (i in seq_along(feature_names)) {
