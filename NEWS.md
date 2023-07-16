@@ -1,13 +1,8 @@
-# NEWS/chagelog 
+# vip 0.4.0
 
-All notable changes to this project will be documented in this file.
+## Changed
 
-The format of this NEWS file, starting with [vip](https://cran.r-project.org/package=vip) 0.3.3, is now based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
-
-
-## vip 0.4.0
-
-### Changed
+* This NEWS file now follows the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format.
 
 * Raised R version dependency to >= 4.1.0 (the introduction of the native piper operator `|>`).
 
@@ -33,7 +28,7 @@ The format of this NEWS file, starting with [vip](https://cran.r-project.org/pac
 
 * Switched to using markdown syntax in `roxygen2` comments.
 
-### Added
+## Added
 
 * `vi_model()` now supports [lightgbm](https://cran.r-project.org/package=lightgbm) models. Thanks to @nipnipj for the suggestion [(#146)](https://github.com/koalaverse/vip/issues/146).
 
@@ -47,13 +42,13 @@ The format of this NEWS file, starting with [vip](https://cran.r-project.org/pac
 
 * New [pkgdown](https://cran.r-project.org/package=pkgdown) site and vignette based on our original R Journal article.
 
-### Removed
+## Removed
 
 * Function `add_sparklines()` seems out of scope and has been removed.
 * Function `vint()` also seems out of scope and is too slow to implement for most practical problems; for now, the function will likely live on in the [moreparty](https://cran.r-project.org/package=moreparty) package.
 
 
-### Fixed
+## Fixed
 
 * Fix model-based VI support for [mlr](https://cran.r-project.org/package=mlr), [mlr3](https://cran.r-project.org/package=mlr3), [parsnip](https://cran.r-project.org/package=parsnip), and [workflows](https://cran.r-project.org/package=workflows) model fits.
 
