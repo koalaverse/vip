@@ -6,10 +6,7 @@
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/vip)](https://cran.r-project.org/package=vip)
 [![R-CMD-check](https://github.com/koalaverse/vip/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/koalaverse/vip/actions/workflows/R-CMD-check.yaml)
 [![Coverage
-Status](https://img.shields.io/codecov/c/github/koalaverse/vip/master.svg)](https://app.codecov.io/github/koalaverse/vip?branch=master)
-[![Coverage
 Status](https://codecov.io/gh/koalaverse/vip/graph/badge.svg)](https://app.codecov.io/github/koalaverse/vip?branch=master)
-
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![Downloads](http://cranlogs.r-pkg.org/badges/vip)](http://cran.r-project.org/package=vip/)
