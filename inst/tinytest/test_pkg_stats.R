@@ -22,12 +22,6 @@ expect_identical(
   target = unname(abs(summary(fit_glm)$coefficients[, "z value"])[-1])
 )
 
-# Expectations for `get_training_data()`
-expect_identical(
-  current = vip:::get_training_data.default(fit_lm),
-  target = friedman1
-)
-
 # Expectations for `get_feature_names()`
 expect_identical(
   current = vip:::get_feature_names.lm(fit_lm),

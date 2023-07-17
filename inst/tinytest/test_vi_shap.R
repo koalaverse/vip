@@ -19,6 +19,6 @@ pfun <- function(object, newdata) {
 
 # Compute SHAP-based VI scores
 set.seed(1511)  # for reproducibility
-vis1 <- vi_shap(fit1, pred_wrapper = pfun, nsim = 10)
-vis2 <- vi_shap(fit2, pred_wrapper = pfun, nsim = 10)
-vis3 <- vi(fit1, method = "shap", pred_wrapper = pfun, nsim = 10)
+vis1 <- vi_shap(fit1, pred_wrapper = pfun, nsim = 10, train = trn1)
+vis2 <- vi_shap(fit2, pred_wrapper = pfun, nsim = 10, train = trn2)
+vis3 <- vi(fit1, method = "shap", pred_wrapper = pfun, nsim = 10, train = trn1)

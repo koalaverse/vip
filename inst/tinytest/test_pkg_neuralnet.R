@@ -33,12 +33,6 @@ expect_identical(
   target = NeuralNetTools::garson(fit, bar_plot = FALSE)$rel_imp
 )
 
-# Expectations for `get_training_data()`
-expect_identical(
-  current = vip:::get_training_data.default(fit),
-  target = friedman1
-)
-
 # Expectations for `get_feature_names()`
 expect_identical(
   current = vip:::get_feature_names.nn(fit),

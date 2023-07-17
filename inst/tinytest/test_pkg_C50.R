@@ -33,16 +33,6 @@ expect_identical(
   C50::C5imp(fit1, metric = "splits", pct = FALSE)$Overall
 )
 
-# Expectations for `get_training_data()`
-expect_identical(
-  current = vip:::get_training_data.C5.0(fit1),
-  target = friedman2
-)
-expect_identical(
-  current = vip:::get_training_data.C5.0(fit2),
-  target = subset(friedman2, select = -y)
-)
-
 # Expectations for `get_feature_names()`
 expect_identical(
   current = vip:::get_feature_names.C5.0(fit1),
