@@ -58,12 +58,6 @@ expect_identical(
   target = abs(coef(fit3, s = fit3$lambda[5L])[[1L]][-1L])
 )
 
-# # Expectations for `get_training_data()`
-# expect_identical(
-#   current = vip:::get_training_data.glmnet(fit),
-#   target = friedman1
-# )
-
 # Expectations for `get_feature_names()`
 expect_identical(
   current = vip:::get_feature_names.glmnet(fit1),

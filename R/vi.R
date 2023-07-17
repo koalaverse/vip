@@ -87,7 +87,7 @@
 #' # Compute permutation-based variable importance scores
 #' set.seed(1434)  # for reproducibility
 #' (vis <- vi(mtcars.ppr, method = "permute", target = "mpg", nsim = 10,
-#'            metric = "rmse", pred_wrapper = pfun))
+#'            metric = "rmse", pred_wrapper = pfun, train = mtcars))
 #'
 #' # Plot variable importance scores
 #' vip(vis, include_type = TRUE, all_permutations = TRUE,
@@ -126,7 +126,7 @@
 #' # Permutation-based importance (note that only the predictors that show up
 #' # in the final tree have non-zero importance)
 #' set.seed(1046)  # for reproducibility
-#' vi(tree2, method = "permute", nsim = 10, target = "Class",
+#' vi(tree2, method = "permute", nsim = 10, target = "Class", train = bc,
 #'    metric = "logloss", pred_wrapper = pfun, reference_class = "malignant")
 #'
 #' # Equivalent (but not sorted)

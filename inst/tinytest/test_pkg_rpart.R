@@ -25,12 +25,6 @@ expect_identical(
 )
 expect_error(vi(no_splits))
 
-# Expectations for `get_training_data()`
-expect_identical(
-  current = vip:::get_training_data.default(fit),
-  target = friedman1
-)
-
 # Expectations for `get_feature_names()`
 expect_identical(
   current = vip:::get_feature_names.rpart(fit),

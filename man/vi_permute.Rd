@@ -165,12 +165,13 @@ rfo <- ranger(y ~ ., data = trn)
 # Compute permutation-based VI scores
 set.seed(2021)  # for reproducibility
 vis <- vi(rfo, method = "permute", target = "y", metric = "rsq",
-          pred_wrapper = pfun)
+          pred_wrapper = pfun, train = trn)
 print(vis)
 
 # Same as above, but using `vi_permute()` directly
 set.seed(2021)  # for reproducibility
-vi_permute(rfo, target = "y", metric = "rsq", pred_wrapper = pfun)
+vi_permute(rfo, target = "y", metric = "rsq", pred_wrapper = pfun
+           train = trn)
 
 # Plot VI scores (could also replace `vi()` with `vip()` in above example)
 vip(vis, include_type = TRUE)
@@ -183,12 +184,12 @@ mae <- function(truth, estimate) {
 # Permutation-based VIP with user-defined MAE metric
 set.seed(1101)  # for reproducibility
 vi_permute(rfo, target = "y", metric = mae, smaller_is_better = TRUE,
-           pred_wrapper = pfun)
+           pred_wrapper = pfun, train = trn)
 
 # Same as above, but using `yardstick` package instead of user-defined metric
 set.seed(1101)  # for reproducibility
 vi_permute(rfo, target = "y", metric = yardstick::mae_vec,
-           smaller_is_better = TRUE, pred_wrapper = pfun)
+           smaller_is_better = TRUE, pred_wrapper = pfun, train = trn)
 
 #
 # Classification (binary) example

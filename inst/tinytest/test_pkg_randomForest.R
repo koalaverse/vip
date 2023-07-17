@@ -48,16 +48,6 @@ expect_identical(
   target = unname(fit4$importance[, "MeanDecreaseGini", drop = TRUE])
 )
 
-# Expectations for `get_training_data()`
-expect_identical(
-  current = vip:::get_training_data.randomForest(fit1),
-  target = friedman1
-)
-expect_identical(  # NOTE: Only x is passed in this call
-  current = vip:::get_training_data.randomForest(fit3),
-  target = subset(friedman1, select = -y)
-)
-
 # Expectations for `get_feature_names()`
 expect_identical(
   current = vip:::get_feature_names.randomForest(fit1),

@@ -27,12 +27,6 @@ expect_identical(
   target = unname(fit2$variable.importance)
 )
 
-# Expectations for `get_training_data()`
-expect_identical(
-  current = vip:::get_training_data.default(fit1),
-  target = friedman1
-)
-
 # Expectations for `get_feature_names()`
 expect_identical(
   current = vip:::get_feature_names.ranger(fit1),

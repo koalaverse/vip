@@ -4,6 +4,8 @@
 
 * This NEWS file now follows the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format.
 
+* The training data has to be explicitly passed in more cases.
+
 * Raised R version dependency to >= 4.1.0 (the introduction of the native piper operator `|>`).
 
 * The `vi_permute` function now uses [yardstick](https://cran.r-project.org/package=yardstick); consequently, metric functions now conform to [yardstick](https://cran.r-project.org/package=yardstick) metric argument names.
