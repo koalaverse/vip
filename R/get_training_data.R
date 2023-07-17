@@ -6,7 +6,6 @@ msg <- paste0(
 
 
 #' @keywords internal
-#' @noRd
 get_training_data <- function(object) {
   UseMethod("get_training_data")
 }
@@ -134,19 +133,19 @@ get_training_data.earth <- function(object) {
 # Package: h2o -----------------------------------------------------------------
 
 #' @keywords internal
-get_training_data.H2OBinomialModel <- function(object, ...) {
+get_training_data.H2OBinomialModel <- function(object) {
   as.data.frame(h2o::h2o.getFrame(object@allparameters$training_frame))
 }
 
 
 #' @keywords internal
-get_training_data.H2OMultinomialModel <- function(object, ...) {
+get_training_data.H2OMultinomialModel <- function(object) {
   as.data.frame(h2o::h2o.getFrame(object@allparameters$training_frame))
 }
 
 
 #' @keywords internal
-get_training_data.H2ORegressionModel <- function(object, ...) {
+get_training_data.H2ORegressionModel <- function(object) {
   as.data.frame(h2o::h2o.getFrame(object@allparameters$training_frame))
 }
 
