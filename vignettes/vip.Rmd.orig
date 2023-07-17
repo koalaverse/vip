@@ -34,7 +34,12 @@ knitr::opts_chunk$set(
 
 # Execute the code from the vignette
 # knitr::knit("vignettes/vip.Rmd.orig", output = "vignettes/vip.Rmd")
-# And don't forget to replace "man/" with "../man/" in `vip.Rmd` file
+#
+# TODO:
+# * Don't forget to replace "man/" with "../man/" in `vip.Rmd` file.
+# * Don't forget to manually add
+#   '`r system.file("references.bib", package = "vip")`' to the `bibliography`
+#   field in `vip.Rmd`.
 ```
 
 This vignette is essentially an up-to-date version of @RJ-2020-013. Please use that if you'd like to cite our work.

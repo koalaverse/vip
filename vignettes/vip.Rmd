@@ -14,7 +14,7 @@ vignette: >
   %\VignetteIndexEntry{vip}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-bibliography: '/Users/bgreenwell/Dropbox/devel/vip/inst/references.bib'
+bibliography: '`r system.file("references.bib", package = "vip")`'
 ---
 
 
