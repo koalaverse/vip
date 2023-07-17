@@ -357,8 +357,8 @@ Next, we compute PDP-based VI scores for the fitted PPR and NN models. The PDP m
 pp <- ppr(y ~ ., data = trn, nterms = 11)
 
 # Construct VIPs
-p1 <- vip(pp, method = "firm") + ggtitle("PPR")
-p2 <- vip(nn, method = "firm") + ggtitle("NN")
+p1 <- vip(pp, method = "firm", train = trn) + ggtitle("PPR")
+p2 <- vip(nn, method = "firm", train = trn) + ggtitle("NN")
 
 # Display plots in a grid (Figure 7)
 p1 + p2
@@ -379,8 +379,8 @@ Obtaining the ICE-based feature importance scores is also straightforward, just 
 
 ```r
 # Construct VIPs
-p1 <- vip(pp, method = "firm", ice = TRUE) + ggtitle("PPR")
-p2 <- vip(nn, method = "firm", ice = TRUE) + ggtitle("NN")
+p1 <- vip(pp, method = "firm", ice = TRUE, train = trn) + ggtitle("PPR")
+p2 <- vip(nn, method = "firm", ice = TRUE, train = trn) + ggtitle("NN")
 
 # Display plots in a grid (Figure 9)
 p1 + p2
@@ -393,7 +393,7 @@ When using `method = "firm"`, the feature effect values are stored in an attribu
 
 ```r
 # Construct PDP-based VI scores
-(vis <- vi(pp, method = "firm"))
+(vis <- vi(pp, method = "firm", train = trn))
 ```
 
 ```
@@ -457,9 +457,9 @@ pfun_nnet <- function(object, newdata) {  # needs to return a numeric vector
 
 # Plot VI scores
 set.seed(2021)  # for reproducibility
-p1 <- vip(pp, method = "permute", target = "y", metric = "rsq",
+p1 <- vip(pp, method = "permute", train = trn, target = "y", metric = "rsq",
           pred_wrapper = pfun_ppr) + ggtitle("PPR")
-p2 <- vip(nn, method = "permute", target = "y", metric = "rsq",
+p2 <- vip(nn, method = "permute", train = trn, target = "y", metric = "rsq",
           pred_wrapper = pfun_nnet) + ggtitle("NN")
 
 # Display plots in a grid (Figure 11)
@@ -474,7 +474,7 @@ The permutation approach introduces randomness into the procedure and therefore 
 ```r
 # Use 10 Monte Carlo reps
 set.seed(403)  # for reproducibility
-vis <- vi(pp, method = "permute", target = "y", metric = "rsq",
+vis <- vi(pp, method = "permute", train = trn, target = "y", metric = "rsq",
           pred_wrapper = pfun_ppr, nsim = 30)
 vip(vis, geom = "boxplot")  # Figure 12
 ```
@@ -538,12 +538,13 @@ To use this for computing permutation-based VI scores just pass it via the `metr
 ```r
 # Construct VIP (Figure 13)
 set.seed(2321)  # for reproducibility
-p1 <- vip(nn, method = "permute", target = "y", metric = mae,
-    smaller_is_better = TRUE, pred_wrapper = pfun_nnet) +
+p1 <- vip(nn, method = "permute", train = trn, target = "y", metric = mae,
+          smaller_is_better = TRUE, pred_wrapper = pfun_nnet) +
   ggtitle("Custom loss function: MAE")
 set.seed(2321)  # for reproducibility
-p2 <- vip(nn, method = "permute", target = "y", metric = yardstick::mae_vec,
-    smaller_is_better = TRUE, pred_wrapper = pfun_nnet) +
+p2 <- vip(nn, method = "permute", train = trn, target = "y",
+          metric = yardstick::mae_vec, smaller_is_better = TRUE,
+          pred_wrapper = pfun_nnet) +
   ggtitle("Using `yardstick`'s MAE function")
 p1 + p2
 ```
@@ -570,8 +571,8 @@ When using the permutation method with `nsim > 1`, the default is to keep all th
 ```r
 # Construct VIP (Figure 15)
 set.seed(8264)  # for reproducibility
-vip(nn, method = "permute", pred_wrapper = pfun_nnet, target = "y",
-    metric = "mae", nsim = 10, geom = "point",
+vip(nn, method = "permute", pred_wrapper = pfun_nnet, train = trn,
+    target = "y", metric = "mae", nsim = 10, geom = "point",
     all_permutations = TRUE, jitter = TRUE) +
   ggtitle("Plotting all permutation scores")
 ```

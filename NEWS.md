@@ -4,7 +4,7 @@
 
 * This NEWS file now follows the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format.
 
-* The training data has to be explicitly passed in more cases.
+* The training data has to be explicitly passed in more cases when using `vi_permute()`, `vi_shap()`, and `vi_firm()`.
 
 * Raised R version dependency to >= 4.1.0 (the introduction of the native piper operator `|>`).
 
