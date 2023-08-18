@@ -67,7 +67,7 @@ website](https://koalaverse.github.io/vip/index.html).
 
 - **Shapley-based variable importance** - An efficient implementation of
   feature importance based on the popular [Shapley
-  values](https://github.com/slundberg/shap) via the
+  values](https://github.com/shap/shap) via the
   [fastshap](https://cran.r-project.org/package=fastshap) package.
 
 - **Variance-based variable importance** - Compute variable importance
