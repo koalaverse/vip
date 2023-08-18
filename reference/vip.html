@@ -117,8 +117,9 @@ only for the permutation-based importance method with <code>nsim &gt; 1</code> a
 
 
 <dt>mapping</dt>
-<dd><p>Set of aesthetic mappings created by <a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a>
-or <a href="https://ggplot2.tidyverse.org/reference/aes_.html" class="external-link">aes_</a>. See example usage below.</p></dd>
+<dd><p>Set of aesthetic mappings created by
+<a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a>-related functions and/or tidy eval helpers. See example
+usage below.</p></dd>
 
 
 <dt>aesthetics</dt>
@@ -179,13 +180,11 @@ variable importance computed in the axis label. Default is <code>FALSE</code>.</
 <span class="r-plt img"><img src="vip-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot unaggregated permutation scores (boxplot colored by feature)</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>  <span class="co"># for `aes_string()` function</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>  <span class="co"># for `aes()`-related functions and tidy eval helpers</span></span></span>
 <span class="r-in"><span><span class="fu">vip</span><span class="op">(</span><span class="va">vis</span>, geom <span class="op">=</span> <span class="st">"boxplot"</span>, all_permutations <span class="op">=</span> <span class="cn">TRUE</span>, jitter <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>    mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes_.html" class="external-link">aes_string</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"Variable"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="co">#mapping = aes_string(fill = "Variable"),   # for ggplot2 (&lt; 3.0.0)</span></span></span>
+<span class="r-in"><span>    mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">.data</span><span class="op">[[</span><span class="st">"Variable"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,  <span class="co"># for ggplot2 (&gt;= 3.0.0)</span></span></span>
 <span class="r-in"><span>    aesthetics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"grey35"</span>, size <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`aes_string()` was deprecated in ggplot2 3.0.0.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please use tidy evaluation idioms with `aes()`.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> See also `vignette("ggplot2-in-packages")` for more information.</span>
 <span class="r-plt img"><img src="vip-4.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#</span></span></span>
