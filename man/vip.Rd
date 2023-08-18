@@ -58,8 +58,9 @@ only for the permutation-based importance method with \code{nsim > 1} and
 \code{keep = TRUE}; see \link[=vi_permute]{vi_permute} for details.
 }}
 
-\item{mapping}{Set of aesthetic mappings created by \link[ggplot2:aes]{aes}
-or \link[ggplot2:aes_]{aes_}. See example usage below.}
+\item{mapping}{Set of aesthetic mappings created by
+\link[ggplot2:aes]{aes}-related functions and/or tidy eval helpers. See example
+usage below.}
 
 \item{aesthetics}{List specifying additional arguments passed on to
 \link[ggplot2:layer]{layer}. These are often aesthetics, used to set an aesthetic
@@ -107,9 +108,10 @@ vip(vis, geom = "point", horiz = FALSE)
 vip(vis, geom = "point", horiz = FALSE, aesthetics = list(size = 3))
 
 # Plot unaggregated permutation scores (boxplot colored by feature)
-library(ggplot2)  # for `aes_string()` function
+library(ggplot2)  # for `aes()`-related functions and tidy eval helpers
 vip(vis, geom = "boxplot", all_permutations = TRUE, jitter = TRUE,
-    mapping = aes_string(fill = "Variable"),
+    #mapping = aes_string(fill = "Variable"),   # for ggplot2 (< 3.0.0)
+    mapping = aes(fill = .data[["Variable"]]),  # for ggplot2 (>= 3.0.0)
     aesthetics = list(color = "grey35", size = 0.8))
 
 #
