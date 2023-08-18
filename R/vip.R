@@ -27,8 +27,9 @@
 #'  only for the permutation-based importance method with \code{nsim > 1} and
 #'  `keep = TRUE`; see [vi_permute][vip::vi_permute] for details.
 #'
-#' @param mapping Set of aesthetic mappings created by [aes][ggplot2::aes]
-#' or [aes_][ggplot2::aes_]. See example usage below.
+#' @param mapping Set of aesthetic mappings created by
+#' [aes][ggplot2::aes]-related functions and/or tidy eval helpers. See example
+#' usage below.
 #'
 #' @param aesthetics List specifying additional arguments passed on to
 #' [layer][ggplot2::layer]. These are often aesthetics, used to set an aesthetic
@@ -79,9 +80,10 @@
 #' vip(vis, geom = "point", horiz = FALSE, aesthetics = list(size = 3))
 #'
 #' # Plot unaggregated permutation scores (boxplot colored by feature)
-#' library(ggplot2)  # for `aes_string()` function
+#' library(ggplot2)  # for `aes()`-related functions and tidy eval helpers
 #' vip(vis, geom = "boxplot", all_permutations = TRUE, jitter = TRUE,
-#'     mapping = aes_string(fill = "Variable"),
+#'     #mapping = aes_string(fill = "Variable"),   # for ggplot2 (< 3.0.0)
+#'     mapping = aes(fill = .data[["Variable"]]),  # for ggplot2 (>= 3.0.0)
 #'     aesthetics = list(color = "grey35", size = 0.8))
 #'
 #' #
@@ -161,7 +163,7 @@ vip.default <- function(
   }
   imp <- sort_importance_scores(imp, decreasing = TRUE)  # make sure these are sorted first!
   imp <- imp[seq_len(num_features), ]  # only retain num_features variable importance scores
-  x.string <- "reorder(Variable, Importance)"
+  # x.string <- "reorder(Variable, Importance)"
 
   # Clean up raw scores for permutation-based VI scores
   if (!is.null(attr(imp, which = "raw_scores"))) {
@@ -178,7 +180,11 @@ vip.default <- function(
   }
 
   # Initialize plot
-  p <- ggplot2::ggplot(imp, ggplot2::aes_string(x = x.string, y = "Importance"))
+  # p <- ggplot2::ggplot(imp, ggplot2::aes_string(x = x.string, y = "Importance"))
+  p <- ggplot2::ggplot(imp, ggplot2::aes(
+    x = reorder(Variable, Importance),
+    y = Importance
+  ))
 
   # Construct a barplot
   if (geom == "col") {

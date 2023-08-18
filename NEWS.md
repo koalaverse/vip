@@ -1,14 +1,23 @@
+# vip 0.4.1
+
+## Changed
+
+* Minor tweaks to URLs and tests to pass CRAN checks.
+
+
 # vip 0.4.0
 
 ## Changed
 
 * This NEWS file now follows the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format.
 
-* The training data has to be explicitly passed in more cases.
+* Removed lifecycle badge from `README` file.
+
+* The training data has to be explicitly passed in more cases when using `vi_permute()`, `vi_shap()`, and `vi_firm()`.
 
 * Raised R version dependency to >= 4.1.0 (the introduction of the native piper operator `|>`).
 
-* The `vi_permute` function now uses [yardstick](https://cran.r-project.org/package=yardstick); consequently, metric functions now conform to [yardstick](https://cran.r-project.org/package=yardstick) metric argument names.
+* The `vi_permute` function now relies on the [yardstick](https://cran.r-project.org/package=yardstick) package for compouting performance measures (e.g., RMSE and log loss); consequently, user-supplied metric functions now nned to conform to [yardstick](https://cran.r-project.org/package=yardstick) metric argument names.
 
 * The `var_fun` argument in `vi_firm()` has been deprecated; use the new `var_continuous` and `var_categorical` instead.
 

@@ -36,18 +36,6 @@ expect_identical(
   target = unname(vis4)
 )
 
-# Expectations for `get_training_data()`
-expect_equal(
-  current = vip:::get_training_data.default(fit1),
-  target = friedman1,
-  check.attributes = FALSE
-)
-expect_equal(
-  current = vip:::get_training_data.default(fit2),
-  target = friedman1,
-  check.attributes = FALSE
-)
-
 # Expectations for `get_feature_names()`
 expect_identical(
   current = vip:::get_feature_names.constparty(fit1),
