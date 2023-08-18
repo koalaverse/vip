@@ -1,10 +1,11 @@
+.DS_Store
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
-inst/doc
-README.Rmd
-.DS_Store
-logs
+CRAN-COMMENTS.md
 derby.log
 docs
+inst/doc
+logs
+README.Rmd

@@ -38,7 +38,7 @@ knitr::include_graphics("man/figures/one-pkg.png")
 
 * **Permutation-based variable importance** - An efficient implementation of the permutation feature importance algorithm discussed in [this chapter](https://christophm.github.io/interpretable-ml-book/feature-importance.html) from [Christoph Molnar's *Interpretable Machine Learning* book](https://christophm.github.io/interpretable-ml-book/).
 
-* **Shapley-based variable importance** - An efficient implementation of feature importance based on the popular [Shapley values](https://github.com/slundberg/shap) via the [fastshap](https://cran.r-project.org/package=fastshap) package. 
+* **Shapley-based variable importance** - An efficient implementation of feature importance based on the popular [Shapley values](https://github.com/shap/shap) via the [fastshap](https://cran.r-project.org/package=fastshap) package. 
 
 * **Variance-based variable importance** - Compute variable importance using a simple *feature importance ranking measure* (FIRM) approach. For details, see see [Greenwell et al. (2018)](https://arxiv.org/abs/1805.04755) and [Scholbeck et al. (2019)](https://arxiv.org/abs/1904.03959).
 

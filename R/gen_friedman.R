@@ -1,20 +1,3 @@
-#' Bin a numeric vector
-#'
-#' Function to bin a numeric vector
-#'
-#' @param x A numeric vector.
-#'
-#' @param Integer specifying the number of bins to split `x` into.
-#'
-#' @keywords internal
-bin <- function(x, n_bins) {
-  quantiles <- stats::quantile(x, probs = seq(from = 0, to = 1,
-                                              length = n_bins + 1))
-  bins <- cut(x, breaks = quantiles, label = FALSE, include.lowest = TRUE)
-  as.factor(paste0("class", bins))
-}
-
-
 #' Friedman benchmark data
 #'
 #' Simulate data from the Friedman 1 benchmark problem. These data were
@@ -49,6 +32,12 @@ bin <- function(x, n_bins) {
 #' gen_friedman()
 gen_friedman <- function(n_samples = 100, n_features = 10, n_bins = NULL,
                          sigma = 0.1, seed = NULL) {
+  bin <- function(x, n_bins) {
+    quantiles <- stats::quantile(x, probs = seq(from = 0, to = 1,
+                                                length = n_bins + 1))
+    bins <- cut(x, breaks = quantiles, label = FALSE, include.lowest = TRUE)
+    as.factor(paste0("class", bins))
+  }
   if (!is.null(seed)) {
     set.seed(seed)
   }
