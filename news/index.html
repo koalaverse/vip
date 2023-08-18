@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">vip</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,13 +48,21 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.0" id="vip-040">vip 0.4.0<a class="anchor" aria-label="anchor" href="#vip-040"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.4.1" id="vip-041">vip 0.4.1<a class="anchor" aria-label="anchor" href="#vip-041"></a></h2>
+<div class="section level3">
+<h3 id="changed-0-4-1">Changed<a class="anchor" aria-label="anchor" href="#changed-0-4-1"></a></h3>
+<ul><li>Minor tweaks to URLs and tests to pass CRAN checks.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.0" id="vip-040">vip 0.4.0<a class="anchor" aria-label="anchor" href="#vip-040"></a></h2><p class="text-muted">CRAN release: 2023-07-19</p>
 <div class="section level3">
 <h3 id="changed-0-4-0">Changed<a class="anchor" aria-label="anchor" href="#changed-0-4-0"></a></h3>
 <ul><li><p>This NEWS file now follows the <a href="https://keepachangelog.com/en/1.0.0/" class="external-link">Keep a Changelog</a> format.</p></li>
-<li><p>The training data has to be explicitly passed in more cases.</p></li>
+<li><p>Removed lifecycle badge from <code>README</code> file.</p></li>
+<li><p>The training data has to be explicitly passed in more cases when using <code><a href="../reference/vi_permute.html">vi_permute()</a></code>, <code><a href="../reference/vi_shap.html">vi_shap()</a></code>, and <code><a href="../reference/vi_firm.html">vi_firm()</a></code>.</p></li>
 <li><p>Raised R version dependency to &gt;= 4.1.0 (the introduction of the native piper operator <code>|&gt;</code>).</p></li>
-<li><p>The <code>vi_permute</code> function now uses <a href="https://cran.r-project.org/package=yardstick" class="external-link">yardstick</a>; consequently, metric functions now conform to <a href="https://cran.r-project.org/package=yardstick" class="external-link">yardstick</a> metric argument names.</p></li>
+<li><p>The <code>vi_permute</code> function now relies on the <a href="https://cran.r-project.org/package=yardstick" class="external-link">yardstick</a> package for compouting performance measures (e.g., RMSE and log loss); consequently, user-supplied metric functions now nned to conform to <a href="https://cran.r-project.org/package=yardstick" class="external-link">yardstick</a> metric argument names.</p></li>
 <li><p>The <code>var_fun</code> argument in <code><a href="../reference/vi_firm.html">vi_firm()</a></code> has been deprecated; use the new <code>var_continuous</code> and <code>var_categorical</code> instead.</p></li>
 <li><p>The explicit <code>ice</code> argument in <code><a href="../reference/vi_firm.html">vi_firm()</a></code> has been removed; it was not really needed since it can be passed via the <code>...</code> argument.</p></li>
 <li><p>Removed <a href="https://cran.r-project.org/package=magrittr" class="external-link">magrittr</a> from imports; it’s easy enough to just laod the package if you need it or use R’s newer internal pipe operator.</p></li>
