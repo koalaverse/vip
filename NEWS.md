@@ -1,3 +1,10 @@
+# vip 0.4.1
+
+## Changed
+
+* Minor tweaks to URLs and tests to pass CRAN checks.
+
+
 # vip 0.4.0
 
 ## Changed

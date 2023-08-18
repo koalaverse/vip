@@ -30,7 +30,7 @@
 #'
 #' @details This approach to computing VI scores is based on the mean absolute
 #' value of the SHAP values for each feature; see, for example,
-#' <https://github.com/slundberg/shap> and the references therein.
+#' <https://github.com/shap/shap> and the references therein.
 #'
 #' Strumbelj, E., and Kononenko, I. Explaining prediction models and individual
 #' predictions with feature contributions. Knowledge and information systems
