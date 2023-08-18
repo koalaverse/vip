@@ -1,3 +1,6 @@
+Variable <- NULL
+Importance <- NULL
+
 #' Variable importance plots
 #'
 #' Plot variable importance scores for the predictors in a model.
@@ -50,6 +53,8 @@
 #' variable importance computed in the axis label. Default is `FALSE`.
 #'
 #' @param ... Additional optional arguments to be passed on to [vi][vip::vi].
+#'
+#' @importFrom stats reorder
 #'
 #' @rdname vip
 #'
