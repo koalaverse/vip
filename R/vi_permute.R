@@ -23,7 +23,7 @@
 #' @param metric Either a function or character string specifying the
 #' performance metric to use in computing model performance (e.g., RMSE for
 #' regression or accuracy for binary classification). If `metric` is a
-#' function, then it requires two arguments, `actual` and `predicted`,
+#' function, then it requires two arguments, `truth` and `estimate`,
 #' and should return a single, numeric value. Ideally, this should be the same
 #' metric that was used to train `object`. See [list_metrics()] for a list of
 #' built-in metrics.
