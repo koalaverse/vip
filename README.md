@@ -207,13 +207,6 @@ See `CLAUDE.md` for detailed instructions!
 - **[IML book](https://christophm.github.io/interpretable-ml-book/)** - Theory background
 - **[Development guide](CLAUDE.md)** - Contributing guidelines
 
-## 🏆 Recognition
-
-- **Featured in [The R Journal](https://doi.org/10.32614/RJ-2020-013)** (peer-reviewed)
-- **400+ GitHub stars** and growing
-- **Used by 100+ CRAN packages** in reverse dependencies
-- **Thousands of monthly downloads** worldwide
-
 ## ✨ What's new in v0.4.1
 
 - ✅ **ggplot2 S7 compatibility** - Future-proof plotting
