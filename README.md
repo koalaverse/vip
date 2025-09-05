@@ -7,7 +7,7 @@
   
   [![CRAN Status](https://www.r-pkg.org/badges/version/vip)](https://cran.r-project.org/package=vip)
   [![R-CMD-check](https://github.com/koalaverse/vip/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/koalaverse/vip/actions/workflows/R-CMD-check.yaml)
-  [![Codecov](https://codecov.io/gh/koalaverse/vip/graph/badge.svg)](https://app.codecov.io/github/koalaverse/vip?branch=master)
+  [![Codecov](https://codecov.io/gh/koalaverse/vip/graph/badge.svg)](https://app.codecov.io/github/koalaverse/vip?branch=main)
   [![CRAN Downloads](https://cranlogs.r-pkg.org/badges/grand-total/vip)](https://cran.r-project.org/package=vip/)
   [![R Journal](https://img.shields.io/badge/The%20R%20Journal-10.32614%2FRJ--2020--013-brightgreen)](https://doi.org/10.32614/RJ-2020-013)
   [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
