@@ -209,6 +209,53 @@ vi_permute_parallel <- function(object, train, metric, nsim, parallel = FALSE, .
 }
 ```
 
+### 5. ggplot2 Compatibility (Important!)
+With ggplot2's transition to S7 classes, testing ggplot object classes requires updated approaches:
+
+```r
+# ❌ DEPRECATED: Direct class testing (will break with ggplot2 S7)
+expect_identical(class(p), c("gg", "ggplot"))
+
+# ✅ RECOMMENDED: Use is_ggplot() for forward compatibility
+expect_true(ggplot2::is_ggplot(p))
+
+# Alternative approaches:
+expect_true(inherits(p, "ggplot"))  # fallback option
+```
+
+**Key Points:**
+- Always use `ggplot2::is_ggplot()` rather than `class()` for ggplot objects in tests
+- This ensures compatibility with both current and future ggplot2 versions
+- Updated in vip 0.4.1 to address [issue #162](https://github.com/koalaverse/vip/issues/162)
+
+### 6. Documentation and README Style Guidelines
+
+**Sentence Case Requirements:**
+- **ALWAYS use sentence case** for all headings, bullet points, and descriptions
+- Examples:
+  - ✅ "Key features" (not "Key Features")  
+  - ✅ "Model-specific variable importance" (not "Model-Specific Variable Importance")
+  - ✅ "Adding model support" (not "Adding Model Support")
+
+**Emoji Usage Guidelines:**
+- **Section headers**: Emojis are encouraged (🚀, ✨, 🛠️, etc.)
+- **Tables and content**: Use sparingly, only when they add clear value
+- **Lists and bullets**: Avoid emojis in favor of clean, readable text
+- **General rule**: When in doubt, leave it out
+
+**Examples:**
+```markdown
+# ✅ GOOD
+## 🚀 Quick start
+- **Universal interface**: Works with 40+ model types
+- **Multiple methods**: Model-specific, permutation, SHAP
+
+# ❌ AVOID
+## 🚀 Quick Start  # Title case
+- **🎯 Universal Interface**: Works with 40+ model types  # Emoji in bullet + title case
+- **🔬 Multiple Methods**: Model-specific, permutation, SHAP  # Same issues
+```
+
 ## Development Commands
 
 ### Essential R CMD Commands

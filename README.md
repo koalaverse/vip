@@ -3,7 +3,7 @@
 <div align="center">
   <img src="man/figures/logo-vip.png" width="200" height="230" />
   
-  **🔍 Make your ML models interpretable with beautiful variable importance plots**
+  **🔍 Make your ML models more interpretable with beautiful variable importance plots**
   
   [![CRAN Status](https://www.r-pkg.org/badges/version/vip)](https://cran.r-project.org/package=vip)
   [![R-CMD-check](https://github.com/koalaverse/vip/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/koalaverse/vip/actions/workflows/R-CMD-check.yaml)
@@ -19,16 +19,16 @@
 
 **vip** provides a unified framework for constructing **variable importance plots** from virtually any machine learning model in R. Stop juggling different `importance()` functions across packages – `vip` gives you **one consistent interface** for interpretable ML.
 
-### ✨ Key Features
+### ✨ Key features
 
-- **🎯 Universal Interface**: Works with 40+ model types from different packages
-- **🔬 Multiple Methods**: Model-specific, permutation, SHAP, and variance-based importance
-- **📊 Beautiful Plots**: Publication-ready visualizations with ggplot2
-- **⚡ Efficient**: Optimized algorithms with parallel processing support
-- **🔧 Extensible**: Easy to add support for new model types
-- **📚 Well-Documented**: Comprehensive guides and academic backing
+- **Universal interface**: Works with 40+ model types from different packages
+- **Multiple methods**: Model-specific, permutation, SHAP, and variance-based importance
+- **Beautiful plots**: Publication-ready visualizations with ggplot2
+- **Efficient algorithms**: Optimized with parallel processing support
+- **Extensible design**: Easy to add support for new model types
+- **Well-documented**: Comprehensive guides and academic backing
 
-## 🛠️ Quick Start
+## 🛠️ Quick start
 
 ### Installation
 
@@ -41,7 +41,7 @@ install.packages("vip")
 pak::pak("koalaverse/vip")
 ```
 
-### 30-Second Example
+### 30-second example
 
 ```r
 library(vip)
@@ -65,59 +65,35 @@ print(vi_scores)
 vip(model)
 ```
 
-<details>
-<summary><b>🎨 See the plot output</b></summary>
+## 🎯 Supported methods
 
-![VIP Plot Example](man/figures/one-pkg.png)
-
-*Variable importance made simple and beautiful*
-
-</details>
-
-## 🎯 Supported Methods
-
-| Method | Description | Use Case | Function |
+| Method | Description | Use case | Function |
 |--------|-------------|----------|----------|
-| **🏷️ Model-specific** | Extract built-in importance | Fast, model-native | `vi(model, method = "model")` |
-| **🔀 Permutation** | Shuffle features, measure impact | Model-agnostic, robust | `vi(model, method = "permute")` |
-| **🎲 Shapley Values** | Game theory attribution | Detailed explanations | `vi(model, method = "shap")` |
-| **📊 Variance-based** | FIRM approach | Feature ranking | `vi(model, method = "firm")` |
+| **Model-specific** | Extract built-in importance | Fast, model-native | `vi(model, method = "model")` |
+| **Permutation** | Shuffle features, measure impact | Model-agnostic, robust | `vi(model, method = "permute")` |
+| **Shapley values** | Game theory attribution | Detailed explanations | `vi(model, method = "shap")` |
+| **Variance-based** | FIRM approach | Feature ranking | `vi(model, method = "firm")` |
 
-## 🔧 Supported Models (40+)
+## 🔧 Supported models (40+)
 
-<details>
-<summary><b>Tree-based Models</b></summary>
-
+**Tree-based models**
 - `randomForest` • `ranger` • `xgboost` • `lightgbm` • `gbm` • `C5.0` • `Cubist` • `rpart` • `party` • `partykit`
-</details>
 
-<details>
-<summary><b>Linear Models</b></summary>
-
+**Linear models**
 - `lm` • `glm` • `glmnet` • `earth` (MARS)
-</details>
 
-<details>
-<summary><b>Neural Networks</b></summary>
-
+**Neural networks**
 - `nnet` • `neuralnet` • `h2o` • `RSNNS`
-</details>
 
-<details>
-<summary><b>Meta-frameworks</b></summary>
-
+**Meta-frameworks**
 - `caret` • `tidymodels` • `parsnip` • `workflows` • `mlr` • `mlr3` • `sparklyr`
-</details>
 
-<details>
-<summary><b>Specialized Models</b></summary>
-
+**Specialized models**
 - `pls` • `mixOmics` • And many more...
-</details>
 
-## 🏃‍♂️ Advanced Examples
+## 🏃‍♂️ Advanced examples
 
-### 🔀 Permutation Importance with Custom Metrics
+### Permutation importance with custom metrics
 
 ```r
 library(ranger)
@@ -143,7 +119,7 @@ vip(vi_perm, num_features = 10, geom = "point") +
   theme_minimal()
 ```
 
-### 🎲 SHAP Values for Detailed Attribution
+### SHAP values for detailed attribution
 
 ```r
 library(xgboost)
@@ -169,11 +145,11 @@ vip(vi_shap, geom = "col", aesthetics = list(fill = "steelblue", alpha = 0.8)) +
   theme_light()
 ```
 
-## 🤝 Contributing & Development
+## 🤝 Contributing and development
 
-We ❤️ contributions! Here's how to get involved:
+We welcome contributions! Here's how to get involved:
 
-### 🚀 Quick Development Setup
+### Development setup
 
 ```bash
 # Clone the repo
@@ -184,7 +160,7 @@ cd vip
 # The project includes a comprehensive CLAUDE.md development guide
 ```
 
-### 🧪 Testing Framework
+### Testing framework
 
 We use `tinytest` for lightweight, reliable testing:
 
@@ -196,15 +172,15 @@ tinytest::test_package("vip")
 tinytest::run_test_file("inst/tinytest/test_vip.R")
 ```
 
-### 📋 Development Workflow
+### Development workflow
 
-1. **🔍 Check Issues**: Look for [good first issues](https://github.com/koalaverse/vip/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
-2. **🌿 Create Branch**: `git checkout -b feature/awesome-feature`
-3. **🧪 Write Tests**: Follow TDD principles (see `CLAUDE.md`)
-4. **✅ Run Checks**: `R CMD check` and tests
-5. **📤 Submit PR**: With clear description
+1. **Check issues**: Look for [good first issues](https://github.com/koalaverse/vip/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+2. **Create branch**: `git checkout -b feature/awesome-feature`
+3. **Write tests**: Follow TDD principles (see `CLAUDE.md`)
+4. **Run checks**: `R CMD check` and tests
+5. **Submit PR**: With clear description
 
-### 🎯 Adding Model Support
+### Adding model support
 
 Adding support for new models is straightforward:
 
@@ -224,38 +200,34 @@ vi_model.your_model_class <- function(object, ...) {
 
 See `CLAUDE.md` for detailed instructions!
 
-## 📚 Learning Resources
+## 📚 Learning resources
 
-- **📖 [Package Website](https://koalaverse.github.io/vip/)** - Comprehensive documentation
-- **📄 [R Journal Paper](https://doi.org/10.32614/RJ-2020-013)** - Academic foundation
-- **🎓 [IML Book](https://christophm.github.io/interpretable-ml-book/)** - Theory background
-- **💻 [Development Guide](CLAUDE.md)** - Contributing guidelines
+- **[Package website](https://koalaverse.github.io/vip/)** - Comprehensive documentation
+- **[R Journal paper](https://doi.org/10.32614/RJ-2020-013)** - Academic foundation
+- **[IML book](https://christophm.github.io/interpretable-ml-book/)** - Theory background
+- **[Development guide](CLAUDE.md)** - Contributing guidelines
 
 ## 🏆 Recognition
 
-- **📊 Featured in [The R Journal](https://doi.org/10.32614/RJ-2020-013)** (peer-reviewed)
-- **⭐ 400+ GitHub stars** and growing
-- **📦 Used by 100+ CRAN packages** in reverse dependencies
-- **🌍 Thousands of monthly downloads** worldwide
+- **Featured in [The R Journal](https://doi.org/10.32614/RJ-2020-013)** (peer-reviewed)
+- **400+ GitHub stars** and growing
+- **Used by 100+ CRAN packages** in reverse dependencies
+- **Thousands of monthly downloads** worldwide
 
-## ✨ What's New in v0.4.1
+## ✨ What's new in v0.4.1
 
 - ✅ **ggplot2 S7 compatibility** - Future-proof plotting
-- 🔧 **lightgbm support** - Popular gradient boosting
-- 🎯 **Enhanced yardstick integration** - Better metrics
-- 📱 **Improved documentation** - Clearer examples
-
-<details>
-<summary><b>📅 Full changelog</b></summary>
+- **lightgbm support** - Popular gradient boosting
+- **Enhanced yardstick integration** - Better metrics
+- **Improved documentation** - Clearer examples
 
 See [NEWS.md](NEWS.md) for complete version history and migration notes.
-</details>
 
-## 🆘 Getting Help
+## 🆘 Getting help
 
-- **🐛 Bug reports**: [GitHub Issues](https://github.com/koalaverse/vip/issues)
-- **💡 Feature requests**: [GitHub Discussions](https://github.com/koalaverse/vip/discussions)
-- **❓ Questions**: [Stack Overflow](https://stackoverflow.com/questions/tagged/vip) (tag: `vip`)
+- **Bug reports**: [GitHub Issues](https://github.com/koalaverse/vip/issues)
+- **Feature requests**: [GitHub Discussions](https://github.com/koalaverse/vip/discussions)
+- **Questions**: [Stack Overflow](https://stackoverflow.com/questions/tagged/vip) (tag: `vip`)
 
 ## 📄 Citation
 
