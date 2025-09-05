@@ -19,7 +19,7 @@ Description: A general framework for constructing variable importance plots from
   These include 1) an efficient permutation-based variable importance measure, 
   2) variable importance based on Shapley values (Strumbelj and Kononenko, 
   2014) <doi:10.1007/s10115-013-0679-x>, and 3) the variance-based 
-  approach described in Greenwell et al. (2018) <arXiv:1805.04755>. A 
+  approach described in Greenwell et al. (2018) <doi:10.48550/arXiv.1805.04755>. A 
   variance-based method for quantifying the relative strength of interaction 
   effects is also included (see the previous reference for details).
 License: GPL (>= 2)
@@ -78,6 +78,5 @@ Enhances:
     tidymodels,
     workflows (>= 0.2.3),
     xgboost
-LazyData: true
 RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)

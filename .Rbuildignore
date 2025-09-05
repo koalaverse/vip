@@ -3,6 +3,7 @@
 ^\.github$
 ^_pkgdown\.yml$
 ^codecov\.yml$
+^CRAN-COMMENTS\.md$
 ^data-raw$
 ^docs$
 ^lightgbm\.model$

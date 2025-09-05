@@ -50,8 +50,5 @@ expect_error(vip:::get_training_data.default(bst))
 # Call `vip::vip()` directly
 p <- vip(bst, method = "model", include_type = TRUE)
 
-# Expect `p` to be a `"gg" "ggplot"` object
-expect_identical(
-  current = class(p),
-  target = c("gg", "ggplot")
-)
+# Expect `p` to be a ggplot object (compatible with ggplot2 S7 transition)
+expect_true(ggplot2::is_ggplot(p))
