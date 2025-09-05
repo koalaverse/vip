@@ -77,19 +77,19 @@ vip(model)
 ## 🔧 Supported models (40+)
 
 **Tree-based models**
-- `randomForest` • `ranger` • `xgboost` • `lightgbm` • `gbm` • `C5.0` • `Cubist` • `rpart` • `party` • `partykit`
+- [randomForest](https://cran.r-project.org/package=randomForest) • [ranger](https://cran.r-project.org/package=ranger) • [xgboost](https://cran.r-project.org/package=xgboost) • [lightgbm](https://cran.r-project.org/package=lightgbm) • [gbm](https://cran.r-project.org/package=gbm) • [C50](https://cran.r-project.org/package=C50) • [Cubist](https://cran.r-project.org/package=Cubist) • [rpart](https://cran.r-project.org/package=rpart) • [party](https://cran.r-project.org/package=party) • [partykit](https://cran.r-project.org/package=partykit)
 
 **Linear models**
-- `lm` • `glm` • `glmnet` • `earth` (MARS)
+- [glmnet](https://cran.r-project.org/package=glmnet) • [earth](https://cran.r-project.org/package=earth) (MARS) • Base R (lm, glm)
 
 **Neural networks**
-- `nnet` • `neuralnet` • `h2o` • `RSNNS`
+- [nnet](https://cran.r-project.org/package=nnet) • [neuralnet](https://cran.r-project.org/package=neuralnet) • [h2o](https://cran.r-project.org/package=h2o) • [RSNNS](https://cran.r-project.org/package=RSNNS)
 
 **Meta-frameworks**
-- `caret` • `tidymodels` • `parsnip` • `workflows` • `mlr` • `mlr3` • `sparklyr`
+- [caret](https://cran.r-project.org/package=caret) • [tidymodels](https://cran.r-project.org/package=tidymodels) • [parsnip](https://cran.r-project.org/package=parsnip) • [workflows](https://cran.r-project.org/package=workflows) • [mlr](https://cran.r-project.org/package=mlr) • [mlr3](https://cran.r-project.org/package=mlr3) • [sparklyr](https://cran.r-project.org/package=sparklyr)
 
 **Specialized models**
-- `pls` • `mixOmics` • And many more...
+- [pls](https://cran.r-project.org/package=pls) • [mixOmics](https://bioconductor.org/packages/mixOmics/) (Bioconductor) • And many more...
 
 ## 🏃‍♂️ Advanced examples
 
@@ -162,7 +162,7 @@ cd vip
 
 ### Testing framework
 
-We use `tinytest` for lightweight, reliable testing:
+We use [tinytest](https://cran.r-project.org/package=tinytest) for lightweight, reliable testing:
 
 ```r
 # Run all tests
